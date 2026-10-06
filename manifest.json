@@ -1,0 +1,19 @@
+{
+  "name": "Resale Tracker",
+  "short_name": "Resale",
+  "description": "Profit calculator and inventory tracker for Depop, Vinted and more.",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#ffffff",
+  "theme_color": "#0b5cad",
+  "icons": [
+    {
+      "src": "icon.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
