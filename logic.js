@@ -1,0 +1,143 @@
+// Run with: node tests/logic.test.js
+const assert = require("assert");
+const L = require("../logic.js");
+let passed = 0;
+function test(name, fn) {
+  try { fn(); passed++; console.log("  ok  " + name); }
+  catch (e) { console.error("FAIL  " + name + "\n      " + e.message); process.exitCode = 1; }
+}
+const sold = (o) => Object.assign({ status: "Sold", current: 40, soldFor: 40, cost: 10, bump: false }, o);
+
+test("money formats and rounds", () => {
+  assert.strictEqual(L.money(5), "$5.00");
+  assert.strictEqual(L.money(-3.456), "-$3.46");
+  assert.strictEqual(L.money(0.1 + 0.2), "$0.30");
+});
+test("profit with no fees is price minus cost", () => assert.strictEqual(L.profitOf(sold()), 30));
+test("profit uses soldFor over current", () => assert.strictEqual(L.profitOf(sold({ soldFor: 35 })), 25));
+test("old items without fee fields keep their old profit", () => assert.strictEqual(L.profitOf(sold({ feePercent: undefined })), 30));
+test("percent bump comes off profit", () => assert.strictEqual(L.profitOf(sold({ bump: true, bumpRate: 12 })), 25.2));
+test("flat bump comes off profit", () => assert.strictEqual(L.profitOf(sold({ bump: true, bumpAmount: 2 })), 28));
+test("platform percent fee", () => assert.strictEqual(L.platformFee(sold({ feePercent: 10 })), 4));
+test("platform percent + flat fee", () => assert.strictEqual(L.platformFee(sold({ feePercent: 10, feeFlat: 0.45 })), 4.45));
+test("fee is rounded to the cent", () => assert.strictEqual(L.platformFee(sold({ soldFor: 12.34, feePercent: 13 })), 1.6));
+test("platform fee is zero while not sold", () => assert.strictEqual(L.platformFee(sold({ status: "Listed", feePercent: 10 })), 0));
+test("shipping label comes off profit", () => assert.strictEqual(L.profitOf(sold({ shipCost: 4.5 })), 25.5));
+test("all costs together", () => {
+  const it = sold({ bump: true, bumpAmount: 1, feePercent: 10, feeFlat: 0.5, shipCost: 5 });
+  assert.strictEqual(L.costsTotal(it), 10.5);
+  assert.strictEqual(L.profitOf(it), 19.5);
+});
+test("bad values are treated as zero", () => {
+  assert.strictEqual(L.profitOf(sold({ feePercent: "abc", feeFlat: -3, shipCost: null })), 30);
+});
+test("profit can be negative", () => assert.strictEqual(L.profitOf(sold({ soldFor: 5, shipCost: 6 })), -11));
+test("no float drift on sums", () => assert.strictEqual(L.profitOf(sold({ soldFor: 0.3, cost: 0.1, shipCost: 0.1 })), 0.1));
+test("bulk split adds up exactly", () => {
+  const parts = L.bulkCosts(3, 10);
+  assert.deepStrictEqual(parts, [3.34, 3.33, 3.33]);
+  assert.strictEqual(Math.round(parts.reduce((a, b) => a + b, 0) * 100), 1000);
+});
+test("bulk split of 7 items for 100", () => {
+  const parts = L.bulkCosts(7, 100);
+  assert.strictEqual(Math.round(parts.reduce((a, b) => a + b, 0) * 100), 10000);
+});
+test("ship by: Monday sale -> Tuesday", () => assert.strictEqual(L.shipByDate("2026-10-05"), "2026-10-06"));
+test("ship by: Friday sale -> Monday", () => assert.strictEqual(L.shipByDate("2026-10-09"), "2026-10-12"));
+test("ship by: Saturday sale -> Monday", () => assert.strictEqual(L.shipByDate("2026-10-10"), "2026-10-12"));
+test("ship by: Sunday sale -> Monday", () => assert.strictEqual(L.shipByDate("2026-10-11"), "2026-10-12"));
+test("ship by crosses a month end", () => assert.strictEqual(L.shipByDate("2026-10-30"), "2026-11-02"));
+test("day maths", () => {
+  assert.strictEqual(L.dayDiff("2026-10-01", "2026-10-06"), 5);
+  assert.strictEqual(L.addDays("2026-02-27", 2), "2026-03-01");
+});
+test("quick name needs two words", () => {
+  assert.ok(!L.isQuickNameOk(""));
+  assert.ok(!L.isQuickNameOk("   "));
+  assert.ok(!L.isQuickNameOk("Hoodie"));
+  assert.ok(L.isQuickNameOk("Nike hoodie"));
+  assert.ok(L.isQuickNameOk("  Black   Nike hoodie "));
+});
+test("capWords", () => assert.strictEqual(L.capWords("nike black hoodie"), "Nike Black Hoodie"));
+test("backup reminder", () => {
+  const day = 86400000, now = 100 * day;
+  assert.ok(!L.backupDue(0, now, 0, 7));
+  assert.ok(L.backupDue(0, now, 3, 7));
+  assert.ok(!L.backupDue(now - 2 * day, now, 3, 7));
+  assert.ok(L.backupDue(now - 8 * day, now, 3, 7));
+});
+
+// ---- withdrawals ----
+const done = (site, price, o) => Object.assign({ status: "Sold", site: site, current: price, soldFor: price, cost: 0 }, o);
+const shop = () => ({
+  items: [done("Depop", 50), done("Depop", 20), done("Vinted", 30), { status: "Listed", site: "Depop", current: 99, soldFor: null, cost: 0 }],
+  balances: { Depop: 5, Vinted: 0, eBay: 10 },
+  goals: []
+});
+test("total available = starting balances + unwithdrawn profit", () => {
+  const s = shop();
+  assert.strictEqual(L.withdrawPlan(s.items, s.balances, s.goals, null).amount, 115);
+});
+test("per platform amount counts only that platform", () => {
+  const s = shop();
+  assert.strictEqual(L.withdrawPlan(s.items, s.balances, s.goals, "Depop").amount, 75);
+  assert.strictEqual(L.withdrawPlan(s.items, s.balances, s.goals, "Vinted").amount, 30);
+  assert.strictEqual(L.withdrawPlan(s.items, s.balances, s.goals, "eBay").amount, 10);
+});
+test("withdrawing one platform leaves the others alone", () => {
+  const s = shop();
+  const rec = L.applyWithdrawal(s.items, s.balances, s.goals, "Depop", 111, "2026-10-06");
+  assert.strictEqual(rec.amount, 75);
+  assert.strictEqual(rec.platform, "Depop");
+  assert.strictEqual(s.balances.Depop, 0);
+  assert.strictEqual(s.balances.eBay, 10);
+  assert.strictEqual(L.withdrawPlan(s.items, s.balances, s.goals, "Depop").amount, 0);
+  assert.strictEqual(L.withdrawPlan(s.items, s.balances, s.goals, null).amount, 40);
+});
+test("withdrawing the total zeroes everything", () => {
+  const s = shop();
+  const rec = L.applyWithdrawal(s.items, s.balances, s.goals, null, 222, "2026-10-06");
+  assert.strictEqual(rec.amount, 115);
+  assert.strictEqual(L.withdrawPlan(s.items, s.balances, s.goals, null).amount, 0);
+  assert.ok(Object.values(s.balances).every((v) => v === 0));
+});
+test("a platform with nothing in it is blocked", () => {
+  const s = shop();
+  s.balances.eBay = 0;
+  assert.ok(L.withdrawPlan(s.items, s.balances, s.goals, "eBay").blocked !== "");
+});
+test("undo restores items and balances", () => {
+  const s = shop();
+  const rec = L.applyWithdrawal(s.items, s.balances, s.goals, "Depop", 333, "2026-10-06");
+  L.undoWithdrawal(s.items, s.balances, s.goals, rec);
+  assert.strictEqual(L.withdrawPlan(s.items, s.balances, s.goals, "Depop").amount, 75);
+  assert.strictEqual(s.balances.Depop, 5);
+});
+test("two withdrawals in a row, then undo only the last", () => {
+  const s = shop();
+  L.applyWithdrawal(s.items, s.balances, s.goals, "Depop", 1, "d");
+  const second = L.applyWithdrawal(s.items, s.balances, s.goals, "Vinted", 2, "d");
+  L.undoWithdrawal(s.items, s.balances, s.goals, second);
+  assert.strictEqual(L.withdrawPlan(s.items, s.balances, s.goals, "Vinted").amount, 30);
+  assert.strictEqual(L.withdrawPlan(s.items, s.balances, s.goals, "Depop").amount, 0);
+});
+test("purchased goals come out of the total", () => {
+  const s = shop();
+  s.goals = [{ amount: 40, purchased: true, settled: 0 }];
+  assert.strictEqual(L.withdrawPlan(s.items, s.balances, s.goals, null).amount, 75);
+});
+test("per-platform withdrawal is blocked if it would leave goals unpaid", () => {
+  const s = shop();
+  s.goals = [{ amount: 100, purchased: true, settled: 0 }];
+  const plan = L.withdrawPlan(s.items, s.balances, s.goals, "Depop");
+  assert.ok(plan.blocked.indexOf("Total") !== -1);
+});
+test("total withdrawal settles purchased goals, and undo unsettles them", () => {
+  const s = shop();
+  s.goals = [{ amount: 40, purchased: true, settled: 0 }];
+  const rec = L.applyWithdrawal(s.items, s.balances, s.goals, null, 9, "d");
+  assert.strictEqual(s.goals[0].settled, 9);
+  L.undoWithdrawal(s.items, s.balances, s.goals, rec);
+  assert.strictEqual(s.goals[0].settled, 0);
+});
+console.log(passed + " tests passed" + (process.exitCode ? " (some failed)" : ""));
