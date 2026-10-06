@@ -1,7 +1,7 @@
 // Offline support. Bump VERSION when you change app files so phones pick up the new copy.
-const VERSION = "v1";
+const VERSION = "v2";
 const CACHE = "resale-tracker-" + VERSION;
-const APP_FILES = ["./", "index.html", "manifest.json", "icon.png"];
+const APP_FILES = ["./", "index.html", "logic.js", "manifest.json", "icon.png"];
 const LIBRARY_HOSTS = ["cdn.jsdelivr.net", "unpkg.com", "tessdata.projectnaptha.com"];
 
 self.addEventListener("install", function (event) {
