@@ -20,6 +20,9 @@ jobs:
       - name: Check manifest.json is valid
         run: node -e "JSON.parse(require('fs').readFileSync('manifest.json','utf8'))"
 
+      - name: Check logic.js has no typos
+        run: node --check logic.js
+
       - name: Check the app's JavaScript has no typos
         run: |
           node -e "
@@ -29,3 +32,6 @@ jobs:
           found.forEach((m, i) => require('fs').writeFileSync('part' + i + '.js', m[1]));
           "
           for f in part*.js; do node --check "$f"; done
+
+      - name: Run the money and date tests
+        run: node tests/logic.test.js
