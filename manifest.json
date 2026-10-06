@@ -1,5 +1,5 @@
 {
-  "name": "Resale Tracker",
+  "name": "Resale Tracker"
   "short_name": "Resale",
   "description": "Profit calculator and inventory tracker for Depop, Vinted and more.",
   "start_url": "./index.html",
