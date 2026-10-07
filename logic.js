@@ -162,42 +162,111 @@
     Object.keys(record.balances).forEach(function (name) { balances[name] = record.balances[name]; });
   }
 
-  // ---- investments that repeat every month (like rent) ----
-  // An investment can be set to repeat monthly. When you mark it paid, the month is saved on it (its "cycle").
-  // Starting a new month keeps the money you paid as a separate paid record, so your balance stays right,
-  // and puts the investment back to unpaid for the new month.
-  function monthOf(dateText) { return String(dateText || "").slice(0, 7); }
+  // ---- investments that repeat (rent every month, a subscription every week, and so on) ----
+  // A repeating investment has a schedule: repeat = "daily", "weekly", "monthly" or "yearly",
+  // plus repeatDay (weekday 0-6 with 0 = Sunday for weekly, day of the month 1-31 for monthly and yearly)
+  // and repeatMonth (1-12, yearly only). The "period" is the stretch since the most recent due date.
+  // When you mark it paid, the date that period started on is saved on it (its "cycle").
+  // When a new period starts, the money you paid stays as a separate paid record, so your balance stays right,
+  // and the investment goes back to unpaid.
   const MONTH_NAMES = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+  const DAY_NAMES = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+  const REPEATS = ["none", "daily", "weekly", "monthly", "yearly"];
+  function monthOf(dateText) { return String(dateText || "").slice(0, 7); }
   // "2026-10" -> "Oct 2026"
   function monthLabel(month) {
     const p = String(month || "").split("-");
     const name = MONTH_NAMES[Number(p[1]) - 1];
     return name ? name + " " + p[0] : String(month || "");
   }
-  function resetInvestment(goals, goal, month) {
+  function daysInMonth(year, month) { return new Date(Date.UTC(year, month, 0)).getUTCDate(); }
+  function pad2(n) { return (n < 10 ? "0" : "") + n; }
+  function clampInt(value, low, high, fallback) {
+    const n = Math.round(Number(value));
+    if (!(n >= low && n <= high)) return fallback;
+    return n;
+  }
+  function dueDate(year, month, day) { return year + "-" + pad2(month) + "-" + pad2(Math.min(day, daysInMonth(year, month))); }
+  // The date the current period started on (the most recent due date up to and including today). "" if it doesn't repeat.
+  function periodStart(goal, todayText) {
+    const repeat = goal && goal.repeat;
+    if (REPEATS.indexOf(repeat) < 1) return "";
+    if (repeat === "daily") return todayText;
+    if (repeat === "weekly") {
+      const want = clampInt(goal.repeatDay, 0, 6, 1);
+      const have = new Date(parseDate(todayText)).getUTCDay();
+      return addDays(todayText, -((have - want + 7) % 7));
+    }
+    const p = todayText.split("-").map(Number);
+    const day = clampInt(goal.repeatDay, 1, 31, 1);
+    if (repeat === "monthly") {
+      const here = dueDate(p[0], p[1], day);
+      if (here <= todayText) return here;
+      return p[1] === 1 ? dueDate(p[0] - 1, 12, day) : dueDate(p[0], p[1] - 1, day);
+    }
+    const month = clampInt(goal.repeatMonth, 1, 12, 1);
+    const thisYear = dueDate(p[0], month, day);
+    return thisYear <= todayText ? thisYear : dueDate(p[0] - 1, month, day);
+  }
+  function shortDay(dateText) {
+    const p = String(dateText).split("-");
+    return MONTH_NAMES[Number(p[1]) - 1] + " " + Number(p[2]);
+  }
+  function ordinal(n) {
+    const t = n % 100;
+    if (t >= 11 && t <= 13) return n + "th";
+    return n + (["th", "st", "nd", "rd"][n % 10] || "th");
+  }
+  // What a paid period is called: "Oct 2026", "week of Oct 5", "Oct 6", "2026"
+  function periodLabel(goal, key) {
+    if (!key) return "";
+    if (key.length === 7) return monthLabel(key);
+    if (goal.repeat === "weekly") return "week of " + shortDay(key);
+    if (goal.repeat === "daily") return shortDay(key);
+    if (goal.repeat === "yearly") return key.slice(0, 4);
+    return monthLabel(key.slice(0, 7));
+  }
+  // A plain-words description of the schedule.
+  function repeatText(goal) {
+    if (!goal || REPEATS.indexOf(goal.repeat) < 1) return "";
+    if (goal.repeat === "daily") return "Every day";
+    if (goal.repeat === "weekly") return "Every week on " + DAY_NAMES[clampInt(goal.repeatDay, 0, 6, 1)];
+    const day = clampInt(goal.repeatDay, 1, 31, 1);
+    const dayText = day === 31 ? "the last day" : "the " + ordinal(day);
+    if (goal.repeat === "monthly") return "Every month on " + dayText;
+    return "Every year on " + MONTH_NAMES[clampInt(goal.repeatMonth, 1, 12, 1) - 1] + " " + day;
+  }
+  // Old saves stored just the month ("2026-10"). Treat that as the first day of the month.
+  function normalCycle(cycle) { return String(cycle || "").length === 7 ? cycle + "-01" : String(cycle || ""); }
+  function resetInvestment(goals, goal, key) {
     if (goal.purchased) {
-      const paidMonth = goal.cycle || month;
+      const paid = goal.cycle || key;
       goals.push({
-        name: goal.name + " (" + monthLabel(paidMonth) + ")",
+        name: goal.name + " (" + periodLabel(goal, paid) + ")",
         amount: goal.amount,
         purchased: true,
         settled: goal.settled || 0,
         repeat: "none",
+        repeatDay: 1,
+        repeatMonth: 1,
         autoReset: false,
         cycle: ""
       });
     }
     goal.purchased = false;
     goal.settled = 0;
-    goal.cycle = month;
+    goal.cycle = key;
   }
-  // Resets every paid monthly investment that is set to reset by itself and was paid in an earlier month.
+  // Resets every paid repeating investment that is set to reset by itself and was paid in an earlier period.
   // Returns the names that were reset.
-  function rolloverInvestments(goals, month) {
+  function rolloverInvestments(goals, todayText) {
     const names = [];
     goals.slice().forEach(function (g) {
-      if (g.repeat === "monthly" && g.autoReset && g.purchased && g.cycle && g.cycle < month) {
-        resetInvestment(goals, g, month);
+      const key = periodStart(g, todayText);
+      if (key === "" || !g.autoReset || !g.purchased || !g.cycle) return;
+      const paidKey = normalCycle(g.cycle);
+      if (paidKey < key) {
+        resetInvestment(goals, g, key);
         names.push(g.name);
       }
     });
@@ -211,6 +280,7 @@
     isWeekend: isWeekend, shipByDate: shipByDate, wordCount: wordCount, isQuickNameOk: isQuickNameOk,
     capWords: capWords, backupDue: backupDue,
     withdrawPlan: withdrawPlan, applyWithdrawal: applyWithdrawal, undoWithdrawal: undoWithdrawal,
-    monthOf: monthOf, monthLabel: monthLabel, resetInvestment: resetInvestment, rolloverInvestments: rolloverInvestments
+    monthOf: monthOf, monthLabel: monthLabel, periodStart: periodStart, periodLabel: periodLabel, repeatText: repeatText,
+    resetInvestment: resetInvestment, rolloverInvestments: rolloverInvestments
   };
 });
