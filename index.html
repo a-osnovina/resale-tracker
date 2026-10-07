@@ -248,7 +248,8 @@ details summary { cursor: pointer; }
 .fab { position: fixed; right: max(16px, calc(50% - 380px + 16px)); bottom: calc(18px + env(safe-area-inset-bottom)); z-index: 30; display: flex; align-items: center; gap: 8px; min-height: 56px; padding: 0 22px 0 18px; border-radius: 999px; font-size: 17px; font-weight: 700; box-shadow: 0 6px 18px rgba(0, 0, 0, 0.35); }
 .fab .ico { width: 24px; height: 24px; }
 @media (max-width: 380px) { .fab-text { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); } .fab { padding: 0 16px; } }
-#shipped-row { text-align: left; margin-top: 8px; margin-bottom: 70px; }
+#shipped-row { text-align: left; margin-top: 8px; margin-bottom: 70px; display: flex; gap: 8px; flex-wrap: wrap; }
+#shipped-row button[hidden] { display: none; }
 #bump-amount-row { display: none; margin-left: 12px; }
 #bump-vinted-row { margin-left: 12px; }
 #sold-for-row { display: none; }
@@ -1174,7 +1175,7 @@ progress::-moz-progress-bar { background: var(--primary); border-radius: 5px; }
   <div class="seg tabs3" id="stock-tabs"></div>
   <div id="list"></div>
   <div id="list-count" class="small count-right"></div>
-  <div id="shipped-row"><button type="button" id="shipped-toggle" class="small-btn" hidden></button></div>
+  <div id="shipped-row"><button type="button" id="shipped-toggle" class="small-btn" hidden></button><button type="button" id="archive-toggle" class="small-btn" hidden></button></div>
     </div>
     <div id="stock-storage" hidden>
       <div id="storage-view"></div>
@@ -1755,8 +1756,8 @@ const PLAN_SETTING_FIELDS = [
 ];
 
 // "Shipped" frees the slot the item was in. Sold items stay in their slot until they are shipped.
-const STATUSES = ["In progress", "Listed", "Sold", "Shipped"];
-const STATUS_CLASS = { "In progress": "row-progress", "Listed": "row-listed", "Sold": "row-sold", "Shipped": "row-shipped" };
+const STATUSES = ["In progress", "Listed", "Sold", "Shipped", "Archived"];
+const STATUS_CLASS = { "In progress": "row-progress", "Listed": "row-listed", "Sold": "row-sold", "Shipped": "row-shipped", "Archived": "row-shipped" };
 // The button on each card that moves an item to its next step.
 const NEXT_STEP = { "In progress": "Mark as Listed", "Listed": "Mark as Sold", "Sold": "Mark as Shipped" };
 // Optional tools (each gets a button) and which extra details every item shows. Both are chosen in Settings.
@@ -2119,7 +2120,7 @@ function migrateItem(item) {
   item.bin = typeof item.bin === "string" ? item.bin : "";
   item.slot = Math.floor(Number(item.slot)) || 0;
   item.weight = Number(item.weight) || 0;
-  if (!item.bin || item.slot < 1 || item.status === "Shipped") {
+  if (!item.bin || item.slot < 1 || item.status === "Shipped" || item.status === "Archived") {
     item.bin = "";
     item.slot = 0;
   }
@@ -2145,6 +2146,9 @@ function migrateItem(item) {
   item.bumpDays = Number(item.bumpDays) === 7 ? 7 : 3;
   item.bumpDate = typeof item.bumpDate === "string" ? item.bumpDate : "";
   item.noReduce = !!item.noReduce;
+  // Archived items remember what they were (Listed or In progress) and the day they were archived, so Restore can put them back.
+  item.archivedFrom = item.status === "Archived" && item.archivedFrom === "Listed" ? "Listed" : "In progress";
+  item.archivedOn = item.status === "Archived" && typeof item.archivedOn === "string" ? item.archivedOn : "";
   item.withdrawn = Number(item.withdrawn) || 0;
   // Purchase cost (what you paid for the item) and which bulk upload it came from are new. Older items cost $0.
   item.cost = Number(item.cost) > 0 ? Number(item.cost) : 0;
@@ -2526,7 +2530,6 @@ function applySuggestedSlot() {
 
 // Shows a short message at the bottom so it is clear that a tap did something.
 function showToast(text) {
-  logNotif(text, "info");
   let t = document.getElementById("toast");
   if (!t) {
     t = document.createElement("div");
@@ -2541,13 +2544,13 @@ function showToast(text) {
 }
 
 // ---- notification history: the bell on Home keeps every alert and message so you can look back ----
-// Each entry: { t: time in ms, text, kind: "info" | "ship" | "price", k: alert key, item: item name }.
+// Only late-shipping ("ship") and lower-price ("price") alerts are kept. Each entry: { t: time in ms, text, kind, k: alert key, item: item name }.
 var NOTIF_MAX = 200;
 function cleanNotifs(list) {
   if (!Array.isArray(list)) return [];
-  return list.filter(function (e) { return e && typeof e.text === "string" && Number(e.t) > 0; })
+  return list.filter(function (e) { return e && typeof e.text === "string" && Number(e.t) > 0 && (e.kind === "ship" || e.kind === "price"); })
     .map(function (e) {
-      return { t: Number(e.t), text: e.text.slice(0, 300), kind: e.kind === "ship" || e.kind === "price" ? e.kind : "info", k: typeof e.k === "string" ? e.k : "", item: typeof e.item === "string" ? e.item : "" };
+      return { t: Number(e.t), text: e.text.slice(0, 300), kind: e.kind, k: typeof e.k === "string" ? e.k : "", item: typeof e.item === "string" ? e.item : "" };
     }).slice(-NOTIF_MAX);
 }
 var notifFirstRun = false;
@@ -2577,7 +2580,7 @@ function updateBell() {
   bell.setAttribute("aria-label", n === 0 ? "Notifications" : "Notifications, " + n + " new");
 }
 function logNotif(text, kind, key, itemName) {
-  if (!text || text === "Undone." || text === "Alert is back on Home." || !Array.isArray(notifLog)) return;
+  if (!text || (kind !== "ship" && kind !== "price") || !Array.isArray(notifLog)) return;
   const last = notifLog[notifLog.length - 1];
   if (last && last.text === text && Date.now() - last.t < 3000) return;
   notifLog.push({ t: Date.now(), text: String(text), kind: kind || "info", k: key || "", item: itemName || "" });
@@ -2620,7 +2623,7 @@ function openNotifSheet() {
   scanBody.innerHTML = "";
   scanBody.appendChild(el("h3", "", "Notifications"));
   if (notifLog.length === 0) {
-    scanBody.appendChild(el("div", "small", "Nothing yet. Late-shipping alerts, price reminders and confirmations will collect here."));
+    scanBody.appendChild(el("div", "small", "Nothing yet. Late-shipping alerts and lower-price reminders will collect here."));
   } else {
     scanBody.appendChild(el("div", "small", "Newest first. Tap an item alert to jump to the item."));
     let lastDay = "";
@@ -2701,7 +2704,6 @@ function hideUndo() {
 }
 // Shows the message with an Undo button for about 8 seconds. snap is captureState() taken before the change.
 function showUndo(text, snap) {
-  logNotif(text, "info");
   let bar = document.getElementById("undo-bar");
   if (!bar) {
     bar = document.createElement("div");
@@ -3656,7 +3658,7 @@ function renderPlatformLinks() {
   panel.appendChild(el("div", "small", "Open the app, or show only the items you have on that platform."));
   platforms.filter(function (p) { return p.enabled; }).forEach(function (p) {
     const row = el("div", "plat-link-row");
-    const count = items.filter(function (it) { return it.site === p.name && it.status !== "Shipped"; }).length;
+    const count = items.filter(function (it) { return it.site === p.name && it.status !== "Shipped" && it.status !== "Archived"; }).length;
     row.appendChild(el("b", "", p.name));
     const link = platformLink(p);
     if (link) {
@@ -5720,7 +5722,7 @@ function askDeleteItem(item) {
     const at = items.indexOf(item);
     if (at === -1) return;
     const snap = captureState();
-    if (item.status !== "Shipped") markFreed(item.bin, item.slot);
+    if (item.status !== "Shipped" && item.status !== "Archived") markFreed(item.bin, item.slot);
     openMenus.delete(item);
     openCards.delete(item);
     items.splice(at, 1);
@@ -5806,6 +5808,47 @@ function attachSwipe(card, buttonCount, onSwipeRight) {
   }, true);
 }
 
+document.getElementById("archive-toggle").addEventListener("click", function () {
+  stockTab = stockTab === "archive" ? "listed" : "archive";
+  render();
+});
+// Archive: for items you won't sell anymore. They leave the Stock lists, price reminders and storage, and can be restored.
+function askArchive(item) {
+  const spot = item.bin && item.slot ? slotLabel(item.bin, item.slot) : "";
+  scanBody.innerHTML = "";
+  scanBody.appendChild(el("h3", "", "Archive this item?"));
+  scanBody.appendChild(el("p", "", item.name + ". It leaves your Stock lists and price reminders" + (spot ? " and frees slot " + spot : "") + ". You can restore it any time from Archive."));
+  scanBody.appendChild(modalButton("Yes, archive it", "primary", function () {
+    const snap = captureState();
+    markFreed(item.bin, item.slot);
+    item.archivedFrom = item.status === "Listed" ? "Listed" : "In progress";
+    item.archivedOn = todayText();
+    item.status = "Archived";
+    item.bin = "";
+    item.slot = 0;
+    openCards.delete(item);
+    openMenus.delete(item);
+    save();
+    render();
+    closeScanModal();
+    showUndo(item.name + " archived.", snap);
+  }));
+  scanBody.appendChild(modalButton("Cancel", "", closeScanModal));
+  scanModal.hidden = false;
+}
+function restoreArchived(item) {
+  const snap = captureState();
+  item.status = item.archivedFrom === "Listed" ? "Listed" : "In progress";
+  item.archivedFrom = "In progress";
+  item.archivedOn = "";
+  openCards.delete(item);
+  openMenus.delete(item);
+  stockTab = stockTabOf(item);
+  save();
+  render();
+  showUndo(item.name + " restored to " + item.status + ".", snap);
+}
+
 document.getElementById("shipped-toggle").addEventListener("click", function () {
   showShipped = !showShipped;
   save();
@@ -5835,7 +5878,7 @@ function render() {
     return items[a].name.localeCompare(items[b].name, undefined, { sensitivity: "base", numeric: true }) || a - b;
   });
   let hiddenShipped = 0;
-  const tabCounts = { listed: 0, progress: 0, sold: 0 };
+  const tabCounts = { listed: 0, progress: 0, sold: 0, archive: 0 };
   const groupCount = {};
   items.forEach(function (it) { groupCount[it.status] = (groupCount[it.status] || 0) + 1; });
   let lastGroup = "";
@@ -5884,6 +5927,10 @@ function render() {
   const shippedToggle = document.getElementById("shipped-toggle");
   shippedToggle.hidden = shippedTotal === 0 || stockTab !== "sold" || searchText !== "";
   shippedToggle.textContent = showShipped ? "Hide shipped items" : "Show shipped items (" + shippedTotal + ")";
+  const archivedTotal = items.filter(function (it) { return it.status === "Archived"; }).length;
+  const archiveToggle = document.getElementById("archive-toggle");
+  archiveToggle.hidden = (archivedTotal === 0 && stockTab !== "archive") || searchText !== "";
+  archiveToggle.textContent = stockTab === "archive" ? "Back to stock" : "Archive (" + archivedTotal + ")";
 
   const banner = document.getElementById("reduce-banner");
   // Items whose reminder you already dismissed stay quiet until a new one comes due.
@@ -7978,7 +8025,7 @@ function showStockPane(which) {
 var stockTab = "listed";
 var STOCK_TABS = [["listed", "Listed"], ["progress", "In progress"], ["sold", "Sold"]];
 function stockTabOf(item) {
-  return item.status === "Listed" ? "listed" : (item.status === "In progress" ? "progress" : "sold");
+  return item.status === "Listed" ? "listed" : (item.status === "In progress" ? "progress" : (item.status === "Archived" ? "archive" : "sold"));
 }
 function paintStockTabs(counts) {
   const box = $("stock-tabs");
@@ -7997,7 +8044,7 @@ function paintStockTabs(counts) {
 function stockEmptyText() {
   if (searchText !== "") return "No items match your search.";
   if (filter !== "All" || binFilter !== "All") return "No items match these filters.";
-  return { listed: "Nothing is listed right now.", progress: "Nothing is in progress.", sold: "No sold items are waiting." }[stockTab];
+  return { listed: "Nothing is listed right now.", progress: "Nothing is in progress.", sold: "No sold items are waiting.", archive: "Nothing is archived." }[stockTab];
 }
 function stockMeta(item, ship) {
   const parts = [];
@@ -8014,6 +8061,8 @@ function stockMeta(item, ship) {
     parts.push("Sold " + money(salePrice(item)));
     if (ship && ship.late) parts.push(dayWord(ship.daysLate) + " late");
     else if (ship && !ship.unknown && ship.by) parts.push(ship.today ? "ship today" : "ship by " + prettyDay(ship.by));
+  } else if (item.status === "Archived") {
+    parts.push("Archived" + (item.archivedOn ? " " + prettyDay(item.archivedOn) : "") + " \u00B7 was " + item.archivedFrom);
   } else {
     parts.push("Shipped");
   }
@@ -8025,7 +8074,7 @@ function buildStockRow(item, index) {
   const ship = shipInfo(item);
   const shipAlerting = !!(ship && ship.late && !shipDismissed[shipKey(item)]);
   const expanded = openCards.has(item);
-  const card = el("div", "srow-card" + (item.status === "Shipped" ? " row-shipped" : "") + (shipAlerting ? " row-overdue" : "") + (expanded ? " open" : " closed"));
+  const card = el("div", "srow-card" + (item.status === "Shipped" || item.status === "Archived" ? " row-shipped" : "") + (shipAlerting ? " row-overdue" : "") + (expanded ? " open" : " closed"));
   card.dataset.idx = String(index);
 
   const row = el("div", "srow");
@@ -8134,6 +8183,11 @@ function buildItemDetail(item, index, done, profit, ship, shipAlerting) {
     next.type = "button";
     next.onclick = function () { nextStep(item); };
     actions.appendChild(next);
+  } else if (item.status === "Archived") {
+    const restore = el("button", "primary next-step", "Restore");
+    restore.type = "button";
+    restore.onclick = function () { restoreArchived(item); };
+    actions.appendChild(restore);
   } else {
     const editFirst = el("button", "next-step", "Edit");
     editFirst.type = "button";
@@ -8167,6 +8221,7 @@ function buildItemDetail(item, index, done, profit, ship, shipAlerting) {
       more.appendChild(b);
     }
     if (nextLabel) add("Edit", "", function () { startEdit(index); });
+    if (item.status === "In progress" || item.status === "Listed") add("Archive", "", function () { askArchive(item); });
     if (item.status === "Listed" && !isDue(item)) add("Lower price", "", function () { lowerPrice(item); });
     if (shipAlerting) add("Dismiss alert", "", function () { dismissShip([item]); });
     if (!done && isDue(item) && !dueDismissed[dueKey(item)]) add("Dismiss reminder", "", function () { dismissDue([item]); });
@@ -8300,7 +8355,7 @@ function renderStorage() {
     box.appendChild(card);
   }
 
-  const loose = items.filter(function (it) { return it.status !== "Shipped" && !(it.bin && it.slot > 0); });
+  const loose = items.filter(function (it) { return it.status !== "Shipped" && it.status !== "Archived" && !(it.bin && it.slot > 0); });
   if (loose.length) {
     const warn = el("div", "nospot");
     warn.appendChild(el("div", "nospot-label", "No spot yet (" + loose.length + ")"));
