@@ -762,14 +762,87 @@ body.no-storage #storage-group, body.no-storage #bins-box { display: none !impor
 #manage-storage-btn { width: 100%; margin-top: 10px; }
 #tools-box > .filters-panel, #alerts-details > .switch-card { margin-top: 8px; }
 .goal-row { grid-template-columns: 1fr 40px; }
+
+/* ---- v6: bottom tab bar (Home, Stock, Money, Plan) ---- */
+:root { --bar-h: 68px; }
+body { padding: 0 12px calc(var(--bar-h) + 28px + env(safe-area-inset-bottom)); }
+.top { gap: 8px; padding-top: calc(10px + env(safe-area-inset-top)); padding-bottom: 6px; position: sticky; top: 0; z-index: 25; background: var(--bg); }
+.top-text { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 1px; }
+#app-title { font-size: 13px; font-weight: 600; color: var(--muted); cursor: default; overflow-wrap: anywhere; }
+#view-title { font-size: 26px; font-weight: 800; letter-spacing: -0.02em; }
+#settings-label { display: none; }
+#tools-button, #top-search { flex: none; width: 44px; min-height: 44px; height: 44px; padding: 0; margin-left: 0; display: inline-flex; align-items: center; justify-content: center; background: var(--surface); border: 1px solid var(--line); border-radius: 12px; color: var(--text); }
+#top-search svg { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+#tools-button .ico { width: 20px; height: 20px; }
+body:not([data-view="home"]) #top-search { display: none; }
+
+/* Home */
+.view > :first-child { margin-top: 12px; }
+#view-home #ship-alert-row { margin-top: 12px; }
+#ship-alert { min-height: 48px; border-radius: 12px; white-space: normal; }
+#ship-alert-x { min-height: 48px; border-radius: 12px; }
+#view-home #reduce-banner { margin-top: 12px; border-radius: 14px; }
+.msec { margin-top: 12px; }
+.msec-title { margin: 0 2px 6px; font-size: 12px; font-weight: 800; letter-spacing: 0.05em; text-transform: uppercase; color: var(--muted); }
+.msec .dropdown-panel { position: static; max-height: none; overflow: visible; box-shadow: none; border: 1px solid var(--line-soft); border-radius: 14px; padding: 8px 12px 12px; }
+#view-home .summary { position: static; display: flex; gap: 8px; align-items: stretch; background: transparent; border: 0; box-shadow: none; padding: 0; margin: 12px 0 0; transform: none !important; }
+#view-home .summary.empty { display: none; }
+.summary .stats { flex: 1; min-width: 0; display: flex; }
+.summary .stat.main { flex: 1; min-width: 0; justify-content: center; background: var(--primary); border-radius: 14px; padding: 10px 14px; cursor: pointer; }
+.summary .stat:not(.main), .summary .stat-buttons { display: none; }
+.summary .stat-label, .summary .balance { color: #ffffff; }
+.summary .main .stat-value { font-size: 28px; }
+#goals-mini { flex: 1; min-width: 0; background: var(--surface); border: 1px solid var(--line-soft); border-radius: 14px; padding: 10px 12px; margin: 0; align-self: stretch; }
+#view-home .banner { margin-top: 12px; }
+
+/* Bottom bar */
+#tabbar { position: fixed; left: 0; right: 0; bottom: 0; z-index: 35; background: var(--surface); border-top: 1px solid var(--line-soft); padding-bottom: env(safe-area-inset-bottom); }
+.tabbar-in { max-width: 760px; margin: 0 auto; height: var(--bar-h); display: flex; align-items: center; justify-content: space-around; padding: 0 8px; }
+.bar-tab { flex: 1; min-width: 0; min-height: 56px; padding: 0; border: 0; border-radius: 12px; background: transparent; color: var(--muted); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; font-size: 12px; font-weight: 600; }
+.bar-tab svg { width: 24px; height: 24px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.bar-tab.on { color: var(--accent-text); font-weight: 800; }
+.tab-add { flex: none; width: 58px; height: 58px; min-height: 58px; margin: -22px 8px 0; padding: 0; border-radius: 50%; border: 4px solid var(--bg); background: var(--primary); color: #ffffff; display: flex; align-items: center; justify-content: center; box-shadow: 0 6px 16px rgba(0, 0, 0, 0.3); }
+.tab-add svg { width: 26px; height: 26px; fill: none; stroke: currentColor; stroke-width: 2.6; stroke-linecap: round; }
+#add-item-button { display: none !important; }
+#toast, #undo-bar { bottom: calc(var(--bar-h) + 24px + env(safe-area-inset-bottom)); }
+#scroll-top { bottom: calc(var(--bar-h) + 16px + env(safe-area-inset-bottom)); }
+
+/* Plan and Sales report open as full screens above the bar */
+#planner-modal, #sales-modal { top: calc(56px + env(safe-area-inset-top)); bottom: calc(var(--bar-h) + env(safe-area-inset-bottom)); z-index: 20; background: var(--bg); align-items: stretch; }
+#planner-modal .modal-panel, #sales-modal .modal-panel { max-height: none; height: 100%; min-height: 0; max-width: 760px; margin: 0 auto; border-radius: 0; background: var(--bg); }
+#planner-modal .tools-head { display: none; }
+#planner-modal .modal-panel { padding-top: 4px; }
+
+/* Stock and Money */
+#stock-seg { margin: 12px 0 0; }
+#view-stock .search-row { margin-top: 12px; }
+#view-stock .filters-box { margin-top: 8px; }
+#reduce-banner { margin-top: 0; }
+.row-btn { width: 100%; margin-top: 16px; min-height: 60px; padding: 8px 14px; display: flex; flex-direction: column; align-items: flex-start; justify-content: center; gap: 1px; text-align: left; border-radius: 14px; background: var(--surface); }
+.row-btn > span:first-child { font-size: 16px; font-weight: 800; color: var(--accent-text); }
+.row-btn .row-sub { font-size: 13px; color: var(--muted); }
+#view-money .msec { margin-top: 16px; }
+#view-money .bal-panel-row .big { font-size: 30px; }
+
 </style>
 </head>
 <body>
   <div class="top">
-    <h1 id="app-title">Resale Tracker</h1>
+    <div class="top-text">
+      <span id="app-title">Resale Tracker</span>
+      <h1 id="view-title">Today</h1>
+    </div>
+    <button type="button" id="top-search" class="icon-btn" aria-label="Search your items"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M16 16l5 5"/></svg></button>
     <button type="button" id="tools-button" aria-label="Settings"><span id="settings-label">Settings</span></button>
   </div>
 
+  <!-- HOME: what needs doing today -->
+  <section class="view" id="view-home" aria-label="Today">
+    <div id="ship-alert-row"><button type="button" id="ship-alert"></button><button type="button" id="ship-alert-x" aria-label="Dismiss the shipping alert">Dismiss</button></div>
+  <div id="reduce-banner"></div>
+      <section id="pipeline-box" class="msec">
+        <div class="dropdown-panel" id="pipeline-panel"></div>
+      </section>
   <div class="summary" id="summary-box">
     <div class="stats">
       <div class="stat main">
@@ -789,9 +862,7 @@ body.no-storage #storage-group, body.no-storage #bins-box { display: none !impor
       <progress id="mini-bar" value="0" max="1"></progress>
       <div id="mini-text" class="small"></div>
     </div>
-    <div id="ship-alert-row"><button type="button" id="ship-alert"></button><button type="button" id="ship-alert-x" aria-label="Dismiss the shipping alert">Dismiss</button></div>
   </div>
-
   <div id="backup-banner" class="banner" hidden>
     <div id="backup-banner-text"></div>
     <div class="banner-buttons">
@@ -799,66 +870,16 @@ body.no-storage #storage-group, body.no-storage #bins-box { display: none !impor
       <button type="button" id="backup-banner-later" class="small-btn">Later</button>
     </div>
   </div>
-  <div class="tabs" id="tabs-loose">
-    <details id="balance-drop">
-      <summary>Balance</summary>
-      <div class="dropdown-panel">
-        <div class="bal-panel-row"><span>Available balance</span><span class="big">$<span id="balance2">0.00</span></span></div>
-        <div class="bal-panel-row"><span>Total profit</span><span class="big profit">$<span id="total2">0.00</span></span></div>
-        <div class="bal-panel-note">By platform</div>
-        <div id="balance-by-platform"></div>
-        <div class="form-actions"><button type="button" id="withdraw-button2" class="primary">Withdraw</button></div>
-      </div>
-    </details>
-      <details id="pipeline-box">
-        <summary>Timeline</summary>
-        <div class="dropdown-panel" id="pipeline-panel"></div>
-      </details>
-      <details id="goals-box">
-        <summary>Investments</summary>
-        <div class="dropdown-panel">
-          <div class="goals-head">
-            <div id="overall-text">No investments in progress</div>
-            <button type="button" id="add-goal-button" class="small-btn">+ Add investment</button>
-          </div>
-          <div id="overall-box">
-            <progress id="overall-bar" value="0" max="1"></progress>
-          </div>
-          <div id="priority-hint" class="small">Drag ⋮⋮ or use the arrows to set the order. Your balance fills them from the top.</div>
+  </section>
 
-          <form id="goal-form">
-            <label class="field">Investment name <input id="goal-name" required placeholder="e.g. Printer or Rent"></label>
-            <label class="field">Amount ($) <input id="goal-amount" type="number" inputmode="decimal" step="0.01" min="0.01" required></label>
-            <div id="goal-schedule"></div>
-            <div class="form-actions"><button type="submit" class="primary">Save investment</button></div>
-          </form>
-
-          <div id="goal-list"></div>
-
-          <details id="purchased-goals">
-            <summary id="purchased-summary">Paid investments (0)</summary>
-            <div id="purchased-list"></div>
-          </details>
-        </div>
-      </details>
-    <details id="bins-drop">
-      <summary>Storage</summary>
-      <div class="dropdown-panel" id="bins-drop-panel">
-  <div id="bin-chips"></div>
-  <button type="button" id="manage-storage-btn" class="small-btn">Manage storage and labels</button>
-
-      </div>
-    </details>
-    <details id="platforms-drop">
-      <summary>Platforms</summary>
-      <div class="dropdown-panel" id="platforms-drop-panel"></div>
-    </details>
-    <button type="button" id="planner-button" class="tab-btn">Planner</button>
-    <button type="button" id="sales-button" class="tab-btn">Sales report</button>
-  </div>
-
+  <!-- STOCK: your items, and where they are stored -->
+  <section class="view" id="view-stock" aria-label="Stock" hidden>
+    <div class="seg" id="stock-seg">
+      <button type="button" id="seg-stock-items" class="on">Items</button>
+      <button type="button" id="seg-stock-storage">Storage</button>
+    </div>
+    <div id="stock-items">
   <!-- ITEM LIST -->
-  <h2>Item list</h2>
   <div class="search-row">
     <input id="search" type="search" placeholder="Search your items" aria-label="Search your items" autocomplete="off">
     <button type="button" id="filters-btn" class="small-btn">Filters</button>
@@ -892,6 +913,69 @@ body.no-storage #storage-group, body.no-storage #bins-box { display: none !impor
   </div>
     </div>
   </details>
+  <div id="list"></div>
+  <div id="list-count" class="small count-right"></div>
+  <div id="shipped-row"><button type="button" id="shipped-toggle" class="small-btn" hidden></button></div>
+    </div>
+    <div id="stock-storage" hidden>
+    <section id="bins-drop" class="msec">
+      <div class="dropdown-panel" id="bins-drop-panel">
+  <div id="bin-chips"></div>
+  <button type="button" id="manage-storage-btn" class="small-btn">Manage storage and labels</button>
+
+      </div>
+    </section>
+    </div>
+  </section>
+
+  <!-- MONEY: balance, investments, sales report, platforms -->
+  <section class="view" id="view-money" aria-label="Money" hidden>
+    <section id="balance-drop" class="msec">
+      <h2 class="msec-title">Balance</h2>
+      <div class="dropdown-panel">
+        <div class="bal-panel-row"><span>Available balance</span><span class="big">$<span id="balance2">0.00</span></span></div>
+        <div class="bal-panel-row"><span>Total profit</span><span class="big profit">$<span id="total2">0.00</span></span></div>
+        <div class="bal-panel-note">By platform</div>
+        <div id="balance-by-platform"></div>
+        <div class="form-actions"><button type="button" id="withdraw-button2" class="primary">Withdraw</button></div>
+      </div>
+    </section>
+      <section id="goals-box" class="msec">
+      <h2 class="msec-title">Investments</h2>
+        <div class="dropdown-panel">
+          <div class="goals-head">
+            <div id="overall-text">No investments in progress</div>
+            <button type="button" id="add-goal-button" class="small-btn">+ Add investment</button>
+          </div>
+          <div id="overall-box">
+            <progress id="overall-bar" value="0" max="1"></progress>
+          </div>
+          <div id="priority-hint" class="small">Drag ⋮⋮ or use the arrows to set the order. Your balance fills them from the top.</div>
+
+          <form id="goal-form">
+            <label class="field">Investment name <input id="goal-name" required placeholder="e.g. Printer or Rent"></label>
+            <label class="field">Amount ($) <input id="goal-amount" type="number" inputmode="decimal" step="0.01" min="0.01" required></label>
+            <div id="goal-schedule"></div>
+            <div class="form-actions"><button type="submit" class="primary">Save investment</button></div>
+          </form>
+
+          <div id="goal-list"></div>
+
+          <details id="purchased-goals">
+            <summary id="purchased-summary">Paid investments (0)</summary>
+            <div id="purchased-list"></div>
+          </details>
+        </div>
+      </section>
+    <button type="button" id="sales-button" class="row-btn"><span>Sales report</span><span class="row-sub">Weeks, lots, time and efficiency</span></button>
+    <section id="platforms-drop" class="msec">
+      <h2 class="msec-title">Platforms</h2>
+      <div class="dropdown-panel" id="platforms-drop-panel"></div>
+    </section>
+  </section>
+
+  <div hidden><button type="button" id="planner-button" tabindex="-1">Planner</button></div>
+
   <div id="item-sheet" hidden>
     <form id="item-form">
       <div class="sheet-head">
@@ -1036,14 +1120,17 @@ body.no-storage #storage-group, body.no-storage #bins-box { display: none !impor
       </div>
     </form>
   </div>
-
-  <div id="reduce-banner"></div>
-  <div id="list"></div>
-  <div id="list-count" class="small count-right"></div>
-  <div id="shipped-row"><button type="button" id="shipped-toggle" class="small-btn" hidden></button></div>
-
   <button type="button" id="add-item-button" class="fab primary" aria-label="Add item"><span class="ico" aria-hidden="true"><svg viewBox="0 0 24 24" focusable="false"><path d="M12 5v14M5 12h14"/></svg></span><span class="fab-text">Add item</span></button>
   <button type="button" id="scroll-top" class="primary" aria-label="Back to top"></button>
+  <nav id="tabbar" aria-label="Main">
+    <div class="tabbar-in">
+      <button type="button" class="bar-tab on" id="tab-home" data-view="home"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 11l9-7 9 7v9a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1v-9z"/></svg>Home</button>
+      <button type="button" class="bar-tab" id="tab-stock" data-view="stock"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21 8 12 3 3 8v8l9 5 9-5V8z"/><path d="M3 8l9 5 9-5M12 13v8"/></svg>Stock</button>
+      <button type="button" class="tab-add" id="tab-add" aria-label="Add item"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg></button>
+      <button type="button" class="bar-tab" id="tab-money" data-view="money"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20V10M10 20V4M16 20v-8M22 20H2"/></svg>Money</button>
+      <button type="button" class="bar-tab" id="tab-plan" data-view="plan"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="5" width="16" height="15" rx="2"/><path d="M4 10h16M8 3v4M16 3v4"/></svg>Plan</button>
+    </div>
+  </nav>
 
   <div id="add-menu" hidden>
     <div class="modal-panel">
@@ -1060,11 +1147,11 @@ body.no-storage #storage-group, body.no-storage #bins-box { display: none !impor
   <div id="tools-modal" hidden>
     <div class="modal-panel tools-panel">
       <div class="tools-head"><h3>Settings</h3><button type="button" id="tools-close" class="small-btn">Close</button></div>
-  <div class="tools-group">Tools</div>
+  <div class="tools-group">Features you use</div>
   <details class="filters-box" id="tools-box">
-    <summary>Turn tools on or off</summary>
+    <summary>Turn features on or off</summary>
     <div class="filters-panel">
-      <div class="small tools-intro">Turn on the tools you use. Each one gets a button on the main page.</div>
+      <div class="small tools-intro">Turn on the features you use. Each one gets its own spot in the bottom bar or on Home.</div>
       <div class="switch-card" id="feature-switches"></div>
     </div>
   </details>
@@ -1213,7 +1300,7 @@ body.no-storage #storage-group, body.no-storage #bins-box { display: none !impor
 
   <div id="sales-modal" hidden>
     <div class="modal-panel tools-panel">
-      <div class="tools-head"><h3>Sales report</h3><button type="button" id="sales-close" class="small-btn">Close</button></div>
+      <div class="tools-head"><h3>Sales report</h3><button type="button" id="sales-close" class="small-btn">Back</button></div>
     <div class="filters-panel" id="weekly-box">
       <div class="seg">
         <button type="button" id="seg-weekly" class="on">By week</button>
@@ -3195,7 +3282,8 @@ function renderPlatformLinks() {
     show.addEventListener("click", function () {
       setFilters(p.name, "All", "All");
       applyFilters();
-      document.getElementById("platforms-drop").open = false;
+      showView("stock");
+      showStockPane("items");
       document.getElementById("search").scrollIntoView({ behavior: "smooth", block: "start" });
     });
     row.appendChild(show);
@@ -3480,6 +3568,8 @@ document.getElementById("filters-btn").addEventListener("click", function () {
 
 // Tapping the red alert at the top jumps to the first late order.
 document.getElementById("ship-alert").addEventListener("click", function () {
+  showView("stock");
+  showStockPane("items");
   if (filter !== "All" || statusFilter !== "All" || binFilter !== "All" || searchText !== "") {
     searchText = "";
     document.getElementById("search").value = "";
@@ -3643,6 +3733,8 @@ function dismissDue(list) {
 }
 function showCard(item) {
   closeScanModal();
+  showView("stock");
+  showStockPane("items");
   if (filter !== "All" || statusFilter !== "All" || binFilter !== "All" || searchText !== "") {
     searchText = ""; document.getElementById("search").value = "";
     setFilters("All", "All", "All");
@@ -7301,6 +7393,7 @@ function closePlanner() {
   plannerModal.hidden = true;
   if (timerTick) clearInterval(timerTick);
   timerTick = null;
+  if (currentView === "plan") showView("home");
 }
 document.getElementById("planner-button").addEventListener("click", openPlanner);
 document.getElementById("planner-close").addEventListener("click", closePlanner);
@@ -7356,7 +7449,7 @@ document.addEventListener("keydown", function (event) {
 const summaryBox = document.getElementById("summary-box");
 document.getElementById("tools-button").insertBefore(icon("gear"), document.getElementById("settings-label"));
 function updateSummaryBox() {
-  const alertShown = document.getElementById("ship-alert-row").style.display === "flex";
+  const alertShown = false;
   const miniShown = features.investments && document.getElementById("goals-mini").style.display === "block";
   summaryBox.classList.toggle("empty", !features.summary && !alertShown && !miniShown);
 }
@@ -7370,6 +7463,10 @@ function applyFeatures() {
   document.getElementById("pipeline-box").hidden = !features.timeline;
   document.getElementById("goals-box").hidden = !features.investments;
   document.getElementById("planner-button").hidden = !features.planner;
+  document.getElementById("tab-plan").hidden = !features.planner;
+  if (!features.planner && currentView === "plan") showView("home");
+  document.getElementById("stock-seg").hidden = !features.storage;
+  if (!features.storage) showStockPane("items");
   document.getElementById("sales-button").hidden = !features.sales;
   document.body.classList.toggle("no-invest", !features.investments);
   updateSummaryBox();
@@ -7396,14 +7493,14 @@ function switchRow(title, desc, checked, onChange) {
   return row;
 }
 const FEATURE_TEXT = {
-  balance: ["Balance", "A Balance button: available balance, profit by platform and Withdraw."],
-  summary: ["Balance at the top", "Also show your balance and profit in the box at the top."],
+  balance: ["Balance", "In Money: available balance, profit by platform and Withdraw."],
+  summary: ["Balance on Home", "Also show your balance in a box on Home."],
   timeline: ["Timeline", "Where your items are in the process, plus your to-do list."],
   investments: ["Investments", "Things you save for or pay, like a printer or rent."],
   storage: ["Storage", "Boxes, shelves and slots that say where each item is kept."],
   platforms: ["Platforms", "Open Depop or Vinted, or show only the items on one platform."],
-  planner: ["Planner", "A calendar with your to-dos, ship-by days and bills."],
-  sales: ["Sales report", "All your sales and past data: weeks, lots, time and efficiency."]
+  planner: ["Planner", "The Plan tab: a calendar with your to-dos, ship-by days and bills."],
+  sales: ["Sales report", "In Money: all your sales and past data: weeks, lots, time and efficiency."]
 };
 const CARD_TEXT = {
   picture: "Picture", price: "Price", profit: "Profit (sold items)", weight: "Weight", cost: "What you paid",
@@ -7419,7 +7516,7 @@ function storageHowTo() {
   box.appendChild(intro);
   const ol = document.createElement("ol");
   [
-    "Tap Storage on the main page, then + Add storage. Name it (like A) and set how many slots it has.",
+    "Open Stock, tap Storage, then Manage storage and labels and + Add storage. Name it (like A) and set how many slots it has.",
     "When you add an item, pick its storage and slot.",
     "Marking an item shipped opens its slot again.",
     "Optional QR labels: Print labels, stick one on each slot, then Add item > Scan a QR code."
@@ -7636,6 +7733,53 @@ document.getElementById("wipe-button").addEventListener("click", openWipeSheet);
   }, { passive: true });
   update();
 })();
+
+// ---- Bottom tab bar: Home, Stock, Money, Plan ----
+// Each tab shows one part of the app. Plan opens the planner, and the Sales report (in Money) opens as a full screen above the bar.
+var currentView = "home";
+const VIEW_TITLES = { home: "Today", stock: "Stock", money: "Money", plan: "Plan" };
+function showView(name) {
+  if (!VIEW_TITLES[name]) name = "home";
+  if (name === "plan" && !features.planner) name = "home";
+  currentView = name;
+  Object.keys(VIEW_TITLES).forEach(function (key) {
+    const section = document.getElementById("view-" + key);
+    if (section) section.hidden = key !== name;
+    const tab = document.getElementById("tab-" + key);
+    if (tab) {
+      tab.classList.toggle("on", key === name);
+      if (key === name) tab.setAttribute("aria-current", "page"); else tab.removeAttribute("aria-current");
+    }
+  });
+  document.body.setAttribute("data-view", name);
+  document.getElementById("view-title").textContent = VIEW_TITLES[name];
+  if (name !== "money" && !salesModal.hidden) closeSales();
+  if (name !== "plan" && !plannerModal.hidden) closePlanner();
+  if (name === "plan" && plannerModal.hidden) openPlanner();
+  window.scrollTo(0, 0);
+}
+// Stock has two parts: your items, and where they are stored.
+function showStockPane(which) {
+  if (which === "storage" && !features.storage) which = "items";
+  document.getElementById("stock-items").hidden = which !== "items";
+  document.getElementById("stock-storage").hidden = which !== "storage";
+  document.getElementById("seg-stock-items").classList.toggle("on", which === "items");
+  document.getElementById("seg-stock-storage").classList.toggle("on", which === "storage");
+}
+document.querySelectorAll(".bar-tab").forEach(function (button) {
+  button.addEventListener("click", function () { showView(button.getAttribute("data-view")); });
+});
+document.getElementById("tab-add").addEventListener("click", function () { addItemButton.click(); });
+document.getElementById("seg-stock-items").addEventListener("click", function () { showStockPane("items"); });
+document.getElementById("seg-stock-storage").addEventListener("click", function () { showStockPane("storage"); });
+document.getElementById("top-search").addEventListener("click", function () {
+  showView("stock");
+  showStockPane("items");
+  document.getElementById("search").focus();
+});
+document.querySelector("#summary-box .stat.main").addEventListener("click", function () { showView("money"); });
+showView("home");
+showStockPane("items");
 
 applyTitle();
 renderPhotoTypeEditor();
