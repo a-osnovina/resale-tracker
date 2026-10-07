@@ -217,6 +217,11 @@
     if (t >= 11 && t <= 13) return n + "th";
     return n + (["th", "st", "nd", "rd"][n % 10] || "th");
   }
+  // Is this repeating investment due on this exact day? (the day a new period starts)
+  function isDueOn(goal, dateText) {
+    const start = periodStart(goal, dateText);
+    return start !== "" && start === dateText;
+  }
   // What a paid period is called: "Oct 2026", "week of Oct 5", "Oct 6", "2026"
   function periodLabel(goal, key) {
     if (!key) return "";
@@ -280,7 +285,7 @@
     isWeekend: isWeekend, shipByDate: shipByDate, wordCount: wordCount, isQuickNameOk: isQuickNameOk,
     capWords: capWords, backupDue: backupDue,
     withdrawPlan: withdrawPlan, applyWithdrawal: applyWithdrawal, undoWithdrawal: undoWithdrawal,
-    monthOf: monthOf, monthLabel: monthLabel, periodStart: periodStart, periodLabel: periodLabel, repeatText: repeatText,
+    monthOf: monthOf, monthLabel: monthLabel, periodStart: periodStart, isDueOn: isDueOn, periodLabel: periodLabel, repeatText: repeatText,
     resetInvestment: resetInvestment, rolloverInvestments: rolloverInvestments
   };
 });

@@ -260,4 +260,11 @@ test("a manual reset works even with auto-reset off, and an unpaid one just move
   assert.strictEqual(unpaid.length, 1);
   assert.strictEqual(unpaid[0].cycle, "2026-10-01");
 });
+test("a repeating investment is due on the day its period starts", () => {
+  assert.strictEqual(L.isDueOn({ repeat: "monthly", repeatDay: 15 }, "2026-10-15"), true);
+  assert.strictEqual(L.isDueOn({ repeat: "monthly", repeatDay: 15 }, "2026-10-16"), false);
+  assert.strictEqual(L.isDueOn({ repeat: "weekly", repeatDay: 1 }, "2026-10-05"), true);
+  assert.strictEqual(L.isDueOn({ repeat: "none" }, "2026-10-05"), false);
+  assert.strictEqual(L.isDueOn({ repeat: "monthly", repeatDay: 31 }, "2026-02-28"), true);
+});
 console.log(passed + " tests passed" + (process.exitCode ? " (some failed)" : ""));

@@ -687,14 +687,74 @@ body.no-invest #goals-mini { display: none !important; }
 .look-note { margin-top: 6px; }
 /* Color styles: two extra light looks and two extra dark looks */
 :root[data-theme="light"][data-look="rose"] { --bg: #fff8fa; --surface-2: #fceef2; --summary-bg: #f8e3ea; --tint: #fdeaf0; --text: #2a1a20; --muted: #5e464f; --line: #9d7f8b; --line-soft: #ecd0d9; --accent-text: #a3154f; --accent-line: #a3154f; --primary: #a3154f; --info-bg: #fde6ee; --info-text: #6e0e36; --listed-bg: #fde3ec; --listed-edge: #c0336f; --thumb-bg: #ecd9df; --track: #9d7f8b; }
-:root[data-theme="light"][data-look="sage"] { --bg: #f9fcf9; --surface-2: #eef5ef; --summary-bg: #e1ece4; --tint: #e7f2ea; --text: #17241b; --muted: #43534a; --line: #7d9486; --line-soft: #cddbd1; --accent-text: #1b6a43; --accent-line: #1b6a43; --primary: #1b6a43; --info-bg: #e0f2e7; --info-text: #124629; --listed-bg: #dcefe3; --listed-edge: #2e8a5e; --thumb-bg: #d3dfd6; --track: #7d9486; }
+:root[data-theme="light"][data-look="sage"] { --bg: #f9fcf9; --surface-2: #eef5ef; --summary-bg: #e1ece4; --tint: #e7f2ea; --text: #17241b; --muted: #43534a; --line: #7d9486; --line-soft: #cddbd1; --accent-text: #1b6a43; --accent-line: #1b6a43; --primary: #1b6a43; --info-bg: #e0f2e7; --info-text: #124629; --listed-bg: #dcebf5; --listed-edge: #2b78a8; --thumb-bg: #d3dfd6; --track: #7d9486; }
 :root[data-theme="dark"][data-look="midnight"] { --bg: #060a14; --surface: #0f1730; --surface-2: #172145; --summary-bg: #0b1226; --tint: #14213f; --text: #e6ebf7; --muted: #aab5d0; --line: #5c6a92; --line-soft: #26335c; --accent-text: #86b1ff; --accent-line: #6c9bff; --primary: #2f5fd0; --info-bg: #112147; --info-text: #b3ceff; --listed-bg: #112147; --thumb-bg: #202c52; --track: #4a5880; }
 :root[data-theme="dark"][data-look="plum"] { --bg: #150c17; --surface: #22142a; --surface-2: #2e1c38; --summary-bg: #1c1023; --tint: #33203f; --text: #f1e8f5; --muted: #c7b3d1; --line: #7d6490; --line-soft: #3d2a4b; --accent-text: #e2a6ff; --accent-line: #d58cff; --primary: #8a3fc0; --info-bg: #2f1b3d; --info-text: #efc9ff; --listed-bg: #2b1a3d; --listed-edge: #c58cf0; --thumb-bg: #3a2748; --track: #6a5278; }
+
+/* ---- v5 ---- */
+.top { align-items: center; }
+#tools-button { margin-left: auto; flex: none; min-height: 40px; padding: 0 12px; display: inline-flex; align-items: center; gap: 6px; font-size: 14px; font-weight: 700; color: var(--accent-text); background: var(--surface); border: 1px solid var(--line); border-radius: 10px; }
+.bal-panel-row { display: flex; justify-content: space-between; align-items: baseline; gap: 10px; padding: 6px 0; border-bottom: 1px solid var(--line-soft); font-size: 15px; }
+.bal-panel-row .big { font-size: 26px; font-weight: 800; color: var(--accent-text); }
+.bal-panel-row .big.profit { color: var(--profit); font-size: 20px; }
+.bal-panel-note { margin: 8px 0 2px; font-size: 13px; font-weight: 700; color: var(--muted); }
+.plat-link-row { display: flex; align-items: center; gap: 8px; padding: 8px 0; border-bottom: 1px solid var(--line-soft); }
+.plat-link-row b { flex: 1; min-width: 0; }
+.plat-link-row a, .plat-link-row button { min-height: 38px; display: inline-flex; align-items: center; justify-content: center; padding: 0 12px; font-size: 14px; font-weight: 700; border: 1px solid var(--line); border-radius: 10px; background: var(--surface); color: var(--accent-text); text-decoration: none; }
+.plat-link-row .off { opacity: 0.5; }
+.how-to { margin: 4px 0 10px; border: 1px solid var(--line-soft); border-radius: 10px; background: var(--surface-2); }
+.how-to > summary { min-height: 40px; display: flex; align-items: center; padding: 0 12px; font-size: 14px; font-weight: 700; color: var(--accent-text); cursor: pointer; }
+.how-to ol { margin: 0 12px 10px 30px; padding: 0; font-size: 14px; }
+.how-to li { margin: 4px 0; }
+.sub-title { margin: 16px 0 4px; font-size: 15px; font-weight: 800; }
+.photo-editor { border-top: 2px solid var(--line-soft); margin-top: 14px; padding-top: 2px; }
+.goal-row { display: grid; grid-template-columns: 24px 1fr 40px; gap: 4px 8px; align-items: center; padding: 10px 8px; margin: 8px 0; background: var(--surface-2); border: 1px solid var(--line-soft); border-radius: 12px; }
+.goal-row.editing { display: block; padding: 4px 12px 14px; margin: 6px 0; background: var(--tint); }
+.goal-body { min-width: 0; cursor: pointer; }
+.goal-row .goal-head { min-height: 28px; }
+.goal-body .goal-amt { display: block; font-size: 13px; margin: 0 0 4px; }
+.goal-body .goal-repeat { margin: 4px 0 0; }
+.goal-handle { touch-action: none; cursor: grab; text-align: center; color: var(--muted); font-size: 16px; line-height: 1; letter-spacing: -3px; -webkit-user-select: none; user-select: none; padding: 14px 0; }
+.goal-arrows { display: flex; flex-direction: column; gap: 4px; }
+.arrow-btn { min-height: 34px; width: 40px; padding: 0; display: flex; align-items: center; justify-content: center; }
+.arrow-btn:disabled { opacity: 0.35; }
+.goal-row.dragging { position: relative; z-index: 5; box-shadow: 0 6px 16px rgba(0, 0, 0, 0.35); }
+.goal-row .goal-actions { grid-column: 1 / -1; grid-template-columns: 1fr 1fr; }
+.goal-row .goal-actions .wide { grid-column: 1 / -1; }
+.cal-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 8px; }
+.cal-head b { flex: 1; text-align: center; font-size: 16px; }
+.cal-head button { min-height: 38px; padding: 0 12px; }
+.cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; }
+.cal-dow { text-align: center; font-size: 12px; font-weight: 700; color: var(--muted); }
+.cal-cell { min-height: 46px; padding: 3px 0 2px; display: flex; flex-direction: column; align-items: center; justify-content: flex-start; gap: 3px; border-radius: 10px; font-size: 14px; font-weight: 700; }
+.cal-blank { visibility: hidden; }
+.cal-cell.today { border: 2px solid var(--accent-line); }
+.cal-cell.sel { background: var(--primary); border-color: var(--primary); color: #ffffff; }
+.cal-dots { display: flex; gap: 3px; min-height: 7px; }
+.cal-dot { width: 7px; height: 7px; border-radius: 50%; }
+.cal-dot.todo { background: var(--accent-line); }
+.cal-dot.ship { background: #d92d20; }
+.cal-dot.bill { background: var(--profit); }
+.cal-cell.sel .cal-dot { box-shadow: 0 0 0 1.5px #ffffff; }
+.cal-legend { display: flex; flex-wrap: wrap; gap: 4px 14px; margin: 8px 0 2px; font-size: 12px; color: var(--muted); }
+.cal-legend span { display: inline-flex; align-items: center; gap: 5px; }
+.cal-agenda { margin-top: 12px; padding-top: 8px; border-top: 2px solid var(--line-soft); }
+.cal-agenda h4 { margin: 0 0 6px; font-size: 16px; }
+.ag-row { display: flex; align-items: center; gap: 8px; padding: 6px 0; font-size: 15px; border-bottom: 1px solid var(--line-soft); }
+.ag-row .tag { flex: none; font-size: 12px; font-weight: 800; padding: 1px 8px; border-radius: 999px; color: #ffffff; }
+.ag-row .tag.ship { background: #d92d20; }
+.ag-row .tag.bill { background: var(--profit); }
+.todo-row .link-btn { flex: 1; min-width: 0; min-height: 38px; text-align: left; background: none; border: 0; padding: 0 4px; font-size: 15px; color: inherit; overflow-wrap: anywhere; }
+.todo-row input[type=checkbox] { flex: none; width: 22px; height: 22px; }
+.tl-todo { margin-top: 12px; padding-top: 8px; border-top: 2px solid var(--line-soft); }
+body.no-storage #storage-section { display: none !important; }
+#sold-main { margin-top: 4px; }
 </style>
 </head>
 <body>
   <div class="top">
     <h1 id="app-title">Resale Tracker</h1>
+    <button type="button" id="tools-button" aria-label="Settings"><span id="settings-label">Settings</span></button>
   </div>
 
   <div class="summary" id="summary-box">
@@ -727,6 +787,16 @@ body.no-invest #goals-mini { display: none !important; }
     </div>
   </div>
   <div class="tabs" id="tabs-loose">
+    <details id="balance-drop">
+      <summary>Balance</summary>
+      <div class="dropdown-panel">
+        <div class="bal-panel-row"><span>Available balance</span><span class="big">$<span id="balance2">0.00</span></span></div>
+        <div class="bal-panel-row"><span>Total profit</span><span class="big profit">$<span id="total2">0.00</span></span></div>
+        <div class="bal-panel-note">By platform</div>
+        <div id="balance-by-platform"></div>
+        <div class="form-actions"><button type="button" id="withdraw-button2" class="primary">Withdraw</button></div>
+      </div>
+    </details>
       <details id="pipeline-box">
         <summary>Timeline</summary>
         <div class="dropdown-panel" id="pipeline-panel"></div>
@@ -741,7 +811,7 @@ body.no-invest #goals-mini { display: none !important; }
           <div id="overall-box">
             <progress id="overall-bar" value="0" max="1"></progress>
           </div>
-          <div id="priority-hint" class="small">Your balance fills investments from the top. Tap one to change its order.</div>
+          <div id="priority-hint" class="small">Drag ⋮⋮ or use the arrows to set the order. Your balance fills them from the top.</div>
 
           <form id="goal-form">
             <label class="field">Investment name <input id="goal-name" required placeholder="e.g. Printer or Rent"></label>
@@ -777,9 +847,12 @@ body.no-invest #goals-mini { display: none !important; }
 
       </div>
     </details>
+    <details id="platforms-drop">
+      <summary>Platforms</summary>
+      <div class="dropdown-panel" id="platforms-drop-panel"></div>
+    </details>
     <button type="button" id="planner-button" class="tab-btn">Planner</button>
     <button type="button" id="sales-button" class="tab-btn">Sales report</button>
-    <button type="button" id="tools-button" class="tab-btn">Settings</button>
   </div>
 
   <!-- ITEM LIST -->
@@ -855,18 +928,25 @@ body.no-invest #goals-mini { display: none !important; }
           <input type="file" id="pic-file" accept="image/*" hidden>
         </div>
 
-        <div class="form-section">Price and where it is listed</div>
+        <div class="form-section">Price and platform</div>
         <label class="field">Price ($) <input id="original" type="number" inputmode="decimal" step="0.01" min="0" placeholder="0.00"></label>
 
         <div id="site-main-holder">
-          <label class="field" id="site-row">Listed on
+          <label class="field" id="site-row"><span id="site-label">Listed on</span>
             <select id="site">
               <option value="">Choose a site</option>
             </select>
           </label>
         </div>
 
-        <div class="form-section">Where it is stored</div>
+        <div id="sold-main" hidden>
+          <label class="field">Date sold <input id="sold" type="date"></label>
+          <label class="field" id="sold-for-row">Sold for ($) <input id="sold-for" type="number" inputmode="decimal" step="0.01" min="0" placeholder="same as price"></label>
+          <label class="field" id="shipped-date-row">Date shipped <input id="shipped" type="date"></label>
+        </div>
+
+        <div id="storage-section">
+          <div class="form-section">Where it is stored</div>
         <div id="slot-fields">
           <label class="check-line" style="grid-column: 1 / -1; margin-top: 4px;"><input type="checkbox" id="no-slot"> Not put away in a slot yet</label>
           <label class="field" id="bin-label">Storage
@@ -888,6 +968,7 @@ body.no-invest #goals-mini { display: none !important; }
             </div>
           </div>
           <div id="slot-suggest" class="small" style="grid-column: 1 / -1; margin-top: 6px;"></div>
+        </div>
         </div>
 
         <button type="button" id="advanced-toggle" class="advanced-toggle">Advanced options</button>
@@ -913,11 +994,8 @@ body.no-invest #goals-mini { display: none !important; }
           <label class="field">Current price ($) <input id="current" type="number" inputmode="decimal" step="0.01" min="0" placeholder="same as price above"></label>
           <label class="check" style="margin-top:8px"><input type="checkbox" id="no-reduce"> Don't remind me to lower this price (expensive item)</label>
 
-          <label class="field">Date sold <input id="sold" type="date"></label>
-          <label class="field" id="sold-for-row">Sold for ($) <input id="sold-for" type="number" inputmode="decimal" step="0.01" min="0" placeholder="same as current price"></label>
           <label class="field" id="ship-cost-row">Postage label you paid ($) <input id="ship-cost" type="number" inputmode="decimal" step="0.01" min="0" placeholder="0"></label>
           <div class="field-hint" id="fee-note">The platform's selling fee (set under Platforms) is taken off your profit automatically.</div>
-          <label class="field" id="shipped-date-row">Date shipped <input id="shipped" type="date"></label>
 
           <div id="bump-block">
             <label class="check" style="margin-top:14px"><input type="checkbox" id="bump"> <span id="bump-label"></span></label>
@@ -975,9 +1053,18 @@ body.no-invest #goals-mini { display: none !important; }
   <details class="filters-box" id="cards-box">
     <summary>What each item shows</summary>
     <div class="filters-panel">
-      <div class="small">Each item in the list shows its picture, platform and status. Pick any extra details to show on every item. Tap an item to open it and see everything you filled in.</div>
+      <div class="small">Pick the details every item shows. Tap an item to open it and see everything.</div>
       <div id="card-switches"></div>
       <div id="swipe-switch"></div>
+      <div class="photo-editor">
+        <div class="sub-title">Photo checklist</div>
+        <div class="small">The photos you tick off on each item. Add, rename or remove them here.</div>
+        <div id="photo-types-list"></div>
+        <div class="plat-add">
+          <input id="new-photo-type" maxlength="24" placeholder="New photo name">
+          <button type="button" id="add-photo-type" class="small-btn primary">Add photo</button>
+        </div>
+      </div>
     </div>
   </details>
   <div class="tools-group">Money</div>
@@ -998,37 +1085,14 @@ body.no-invest #goals-mini { display: none !important; }
       </div>
     </div>
   </details>
-
-  <div class="tools-group">Items</div>
-  <details class="filters-box" id="photos-box">
-    <summary>Photo checklist</summary>
-    <div class="filters-panel">
-      <div class="small">These are the photos you tick off for each item. Add your own, rename them, or remove ones you never take. When one item doesn't need a photo (like sleeves on a vest), tick N/A for it on that item.</div>
-      <div id="photo-types-list"></div>
-      <div class="plat-add">
-        <input id="new-photo-type" maxlength="24" placeholder="New photo name">
-        <button type="button" id="add-photo-type" class="small-btn primary">Add photo</button>
-      </div>
-    </div>
-  </details>
-
-  <details class="filters-box storage-help" id="storage-help">
-    <summary>How storage works</summary>
-    <div class="filters-panel">
-      <div class="small"><b>Storage</b> is where your items physically live: a box, a shelf, a rail, a drawer. It is optional. Skip it if you keep everything in one place.</div>
-      <ol class="small">
-        <li>Tap <b>Storage</b> on the main page, then <b>+ Add storage</b>. Give it a short name (like A or Shelf) and a number of slots (spots).</li>
-        <li>When you add an item, pick its storage and slot. Then you always know where it is.</li>
-        <li>When you mark an item shipped, its slot opens up again.</li>
-        <li>Want QR labels? Open <b>Manage storage and labels</b>, tap <b>Print labels</b>, and stick one on each slot. Then <b>Add item &gt; Scan a QR code</b> jumps straight to that spot.</li>
-      </ol>
-      <div class="small">The Scan a QR code choice only appears once you have created some storage.</div>
-    </div>
+  <div class="tools-group">Planner</div>
+  <details class="filters-box" id="plan-box">
+    <summary>My time estimates</summary>
+    <div class="filters-panel" id="plan-settings-body"></div>
   </details>
   <div class="tools-group">Reminders and alerts</div>
-  <details class="filters-box" id="alerts-box">
-    <summary>Reminders and alerts</summary>
-    <div class="filters-panel">
+  <div class="switch-card" id="alerts-box">
+    <div class="alerts-inner">
       <div class="switch-row">
         <div class="switch-text"><b>Reminders to lower prices</b><span>When on, listed items get a reminder once they have sat unsold for the number of days below.</span></div>
         <span class="switch"><input type="checkbox" id="reminders-on" aria-label="Reminders to lower prices"><span class="track"></span></span>
@@ -1053,7 +1117,7 @@ body.no-invest #goals-mini { display: none !important; }
         <span class="switch"><input type="checkbox" id="ship-pulse-on" aria-label="Pulse late alerts"><span class="track"></span></span>
       </div>
     </div>
-  </details>
+  </div>
   <div class="tools-group">Appearance</div>
   <details class="filters-box" id="look-box">
     <summary>Title and colors</summary>
@@ -1140,6 +1204,7 @@ body.no-invest #goals-mini { display: none !important; }
         <div id="export-note" class="small" hidden></div>
       </div>
     </div>
+      <div id="sales-extra"></div>
     </div>
   </div>
 
@@ -1215,6 +1280,7 @@ body.no-invest #goals-mini { display: none !important; }
     plus: '<path d="M12 5v14M5 12h14"/>',
     up: '<path d="M6 14.5l6-6 6 6"/>',
     down: '<path d="M6 9.5l6 6 6-6"/>',
+    gear: '<circle cx="12" cy="12" r="3.2"/><path d="M12 2.8v3M12 18.2v3M2.8 12h3M18.2 12h3M5.5 5.5l2.1 2.1M16.4 16.4l2.1 2.1M18.5 5.5l-2.1 2.1M7.6 16.4l-2.1 2.1"/>',
     pencil: '<path d="M4 20h4L18.5 9.5a2.1 2.1 0 0 0-3-3L5 17v3z"/><path d="M13.5 6.5l3 3"/>'
   };
   // Returns a small <span> holding the icon. Usage: node.appendChild(icon("alert")).
@@ -1238,7 +1304,7 @@ body.no-invest #goals-mini { display: none !important; }
 // The money and date rules live in js/logic.js (tested with: node tests/logic.test.js).
 const { money, salePrice, isDone, feeTotal, platformFee, shipCostOf, costsTotal, profitOf, bulkCosts,
   parseDate, formatDate, dayDiff, addDays, isWeekend, shipByDate, capWords, wordCount, isQuickNameOk, backupDue,
-  withdrawPlan, applyWithdrawal, undoWithdrawal, monthOf, monthLabel, periodStart, periodLabel, repeatText, resetInvestment, rolloverInvestments } = window.ResaleLogic;
+  withdrawPlan, applyWithdrawal, undoWithdrawal, monthOf, monthLabel, periodStart, isDueOn, periodLabel, repeatText, resetInvestment, rolloverInvestments } = window.ResaleLogic;
 
 // The browser's own alert and confirm pop-ups are blocked in some browsers, so the app shows its own.
 const msgModal = document.getElementById("msg-modal");
@@ -1313,8 +1379,8 @@ const STATUS_CLASS = { "In progress": "row-progress", "Listed": "row-listed", "S
 // The button on each card that moves an item to its next step.
 const NEXT_STEP = { "In progress": "Mark as Listed", "Listed": "Mark as Sold", "Sold": "Mark as Shipped" };
 // Optional tools (each gets a button) and which extra details every item shows. Both are chosen in Settings.
-const FEATURE_KEYS = ["summary", "timeline", "investments", "planner", "sales"];
-const CARD_KEYS = ["price", "profit", "weight", "cost", "storage", "photos", "notes"];
+const FEATURE_KEYS = ["balance", "summary", "timeline", "investments", "storage", "platforms", "planner", "sales"];
+const CARD_KEYS = ["picture", "price", "profit", "weight", "cost", "storage", "photos", "notes"];
 function cleanFeatures(obj) {
   const out = {};
   FEATURE_KEYS.forEach(function (k) { out[k] = !obj || obj[k] === undefined ? true : !!obj[k]; });
@@ -1478,10 +1544,13 @@ function cleanPlatforms(list) {
     const value = Number(p.bumpValue) > 0 ? Number(p.bumpValue) : 0;
     const feePercent = Number(p.feePercent) > 0 ? Math.min(Number(p.feePercent), 100) : 0;
     const feeFlat = Number(p.feeFlat) > 0 ? Number(p.feeFlat) : 0;
-    result.push({ name: name, enabled: p.enabled !== false, bumpType: type, bumpValue: value, bumpDays: !!p.bumpDays, feePercent: feePercent, feeFlat: feeFlat });
+    const url = typeof p.url === "string" && /^https?:\/\//i.test(p.url.trim()) ? p.url.trim().slice(0, 200) : "";
+    result.push({ name: name, enabled: p.enabled !== false, bumpType: type, bumpValue: value, bumpDays: !!p.bumpDays, feePercent: feePercent, feeFlat: feeFlat, url: url });
   });
   return result;
 }
+const DEFAULT_PLATFORM_URLS = { depop: "https://www.depop.com", vinted: "https://www.vinted.com", facebook: "https://www.facebook.com/marketplace", ebay: "https://www.ebay.com" };
+function platformLink(p) { return p.url || DEFAULT_PLATFORM_URLS[p.name.toLowerCase()] || ""; }
 function findPlatform(name) {
   const wanted = String(name || "").trim().toLowerCase();
   if (wanted === "") return null;
@@ -1546,7 +1615,10 @@ function cleanTodos(list) {
   list.forEach(function (t) {
     if (!t || typeof t !== "object" || String(t.text || "").trim() === "") return;
     const day = Math.floor(Number(t.day));
-    result.push({ id: Number(t.id) || Date.now() + result.length, text: String(t.text).trim().slice(0, 100), day: day >= 0 && day <= 6 ? day : -1, done: !!t.done });
+    let date = /^\d{4}-\d{2}-\d{2}$/.test(String(t.date || "")) ? String(t.date) : "";
+    // Older to-dos picked a weekday. They become the next day that falls on.
+    if (date === "" && day >= 0 && day <= 6) date = addDays(todayText(), (day - weekdayIndex(todayText()) + 7) % 7);
+    result.push({ id: Number(t.id) || Date.now() + result.length, text: String(t.text).trim().slice(0, 100), day: -1, date: date, done: !!t.done });
   });
   return result;
 }
@@ -1897,10 +1969,11 @@ function updateStatusUI() {
   const s = statusInput.value;
   const inProgress = s === "In progress";
   nameRow.hidden = false;
-  (inProgress ? siteAdvHolder : siteMainHolder).appendChild(siteRow);
-  soldForRow.style.display = s === "Sold" || s === "Shipped" ? "block" : "none";
+  document.getElementById("site-label").textContent = inProgress ? "Planning to list on (optional)" : "Listed on";
+  document.getElementById("sold-main").hidden = !(s === "Sold" || s === "Shipped");
+  soldForRow.style.display = "block";
   shippedDateRow.style.display = s === "Shipped" ? "block" : "none";
-  document.getElementById("slot-fields").style.display = s === "Shipped" ? "none" : "";
+  document.getElementById("storage-section").style.display = s === "Shipped" ? "none" : "";
   shipCostRow.style.display = s === "Sold" || s === "Shipped" ? "block" : "none";
   feeNote.style.display = shipCostRow.style.display;
   updateNameHint();
@@ -2485,7 +2558,7 @@ function markQrUsed() {
 }
 const addMenu = document.getElementById("add-menu");
 function openAddMenu() {
-  const hasStorage = bins.length > 0;
+  const hasStorage = features.storage && bins.length > 0;
   const ready = qrInUse();
   document.getElementById("menu-qr").hidden = !hasStorage;
   document.getElementById("menu-qr").disabled = !ready;
@@ -2951,6 +3024,62 @@ function visiblePlatformsForBalance() {
 }
 function buildBalanceBlocks() { renderPlatformEditor(); }
 let lastItemByPlatform = {};
+// The Platforms button: open the platform's app or site, or show only the items on that platform.
+function renderPlatformLinks() {
+  const panel = document.getElementById("platforms-drop-panel");
+  panel.innerHTML = "";
+  panel.appendChild(el("div", "small", "Open the app, or show only the items you have on that platform."));
+  platforms.filter(function (p) { return p.enabled; }).forEach(function (p) {
+    const row = el("div", "plat-link-row");
+    const count = items.filter(function (it) { return it.site === p.name && it.status !== "Shipped"; }).length;
+    row.appendChild(el("b", "", p.name));
+    const link = platformLink(p);
+    if (link) {
+      const a = el("a", "", "Open");
+      a.href = link;
+      a.target = "_blank";
+      a.rel = "noopener";
+      row.appendChild(a);
+    } else {
+      const none = el("button", "off", "No link");
+      none.type = "button";
+      none.disabled = true;
+      row.appendChild(none);
+    }
+    const show = el("button", "", "Items (" + count + ")");
+    show.type = "button";
+    show.addEventListener("click", function () {
+      setFilters(p.name, "All", "All");
+      applyFilters();
+      document.getElementById("platforms-drop").open = false;
+      document.getElementById("search").scrollIntoView({ behavior: "smooth", block: "start" });
+    });
+    row.appendChild(show);
+    panel.appendChild(row);
+  });
+  if (filter !== "All") {
+    const all = el("button", "block", "Show all platforms again");
+    all.type = "button";
+    all.style.marginTop = "10px";
+    all.addEventListener("click", function () {
+      setFilters("All", "All", "All");
+      applyFilters();
+      document.getElementById("platforms-drop").open = false;
+    });
+    panel.appendChild(all);
+  }
+}
+// The by-platform lines inside the Balance button.
+function paintBalancePanel() {
+  const box = document.getElementById("balance-by-platform");
+  box.innerHTML = "";
+  visiblePlatformsForBalance().forEach(function (p) {
+    const row = el("div", "bal-panel-row");
+    row.appendChild(el("span", "", p.name));
+    row.appendChild(el("b", "", money((balances[p.name] || 0) + (lastItemByPlatform[p.name] || 0))));
+    box.appendChild(row);
+  });
+}
 function paintBalances() {
   Object.keys(balanceRefs).forEach(function (name) {
     const start = balances[name] || 0;
@@ -2996,7 +3125,7 @@ function ensureBalanceBlocks() {
 // ---- the two dropdowns in the top box ----
 // Clicking outside one closes it (so only one stays open), and Escape closes both.
 // composedPath() is used because buttons inside a panel get rebuilt when the page redraws.
-const dropdowns = [goalsBox, document.getElementById("pipeline-box"), document.getElementById("bins-drop")];
+const dropdowns = [goalsBox, document.getElementById("pipeline-box"), document.getElementById("bins-drop"), document.getElementById("balance-drop"), document.getElementById("platforms-drop")];
 document.addEventListener("click", function (event) {
   const path = event.composedPath();
   dropdowns.forEach(function (box) {
@@ -3335,6 +3464,10 @@ function openWithdrawSheet() {
   scanModal.hidden = false;
 }
 document.getElementById("withdraw-button").addEventListener("click", openWithdrawSheet);
+document.getElementById("withdraw-button2").addEventListener("click", function () {
+  document.getElementById("balance-drop").open = false;
+  openWithdrawSheet();
+});
 
 // ---- lower-price alert: a window listing the items, and a way to dismiss it ----
 let dueDismissed = {};
@@ -4063,6 +4196,7 @@ function askCancelBulk() {
 
 // Step 3: where do the items go?
 function openBulkPlace() {
+  if (!features.storage) { bulkFinish(null, ""); return; }
   const b = bulk;
   const n = b.entries.length;
   if (n === 0) {
@@ -4813,29 +4947,106 @@ function buildGoalEditor(goal) {
   return form;
 }
 
+// Moves a goal so it sits where another investment is (used by dragging).
+function moveGoalTo(goal, target) {
+  if (goal === target) return;
+  const from = goals.indexOf(goal);
+  const targetAt = goals.indexOf(target);
+  goals.splice(from, 1);
+  const to = goals.indexOf(target);
+  goals.splice(from < targetAt ? to + 1 : to, 0, goal);
+  save();
+  render();
+}
+// Drag the ⋮⋮ handle up or down to change the order.
+function startGoalDrag(event, row, handle, goal) {
+  event.preventDefault();
+  const list = document.getElementById("goal-list");
+  const rows = Array.prototype.filter.call(list.children, function (r) { return r.classList.contains("goal-row") && !r.classList.contains("editing"); });
+  const active = goals.filter(function (g) { return !g.purchased; });
+  const from = rows.indexOf(row);
+  if (from === -1 || rows.length !== active.length) return;
+  const rects = rows.map(function (r) { return r.getBoundingClientRect(); });
+  const startY = event.clientY;
+  const pid = event.pointerId;
+  try { handle.setPointerCapture(pid); } catch (e) {}
+  row.classList.add("dragging");
+  let target = from;
+  function move(e) {
+    const dy = e.clientY - startY;
+    row.style.transform = "translateY(" + dy + "px)";
+    const center = rects[from].top + rects[from].height / 2 + dy;
+    let t = from;
+    if (center < rects[0].top) t = 0;
+    else if (center > rects[rects.length - 1].bottom) t = rects.length - 1;
+    else {
+      for (let i = 0; i < rects.length; i++) {
+        if (center >= rects[i].top && center <= rects[i].bottom) { t = i; break; }
+      }
+    }
+    target = t;
+  }
+  function finish() {
+    handle.removeEventListener("pointermove", move);
+    handle.removeEventListener("pointerup", finish);
+    handle.removeEventListener("pointercancel", finish);
+    row.classList.remove("dragging");
+    row.style.transform = "";
+    if (target !== from) moveGoalTo(goal, active[target]);
+  }
+  handle.addEventListener("pointermove", move);
+  handle.addEventListener("pointerup", finish);
+  handle.addEventListener("pointercancel", finish);
+}
+
 function buildActiveGoal(goal, rank, count, have, balance) {
   if (editingGoal === goal) return buildGoalEditor(goal);
 
   const row = el("div", "goal-row");
+  const full = have >= goal.amount;
+
+  const handle = el("div", "goal-handle", "⋮⋮");
+  handle.setAttribute("role", "button");
+  handle.setAttribute("aria-label", "Drag to change the order");
+  handle.addEventListener("pointerdown", function (event) { startGoalDrag(event, row, handle, goal); });
+  row.appendChild(handle);
+
+  const body = el("div", "goal-body");
   const head = el("div", "goal-head");
   head.appendChild(el("span", "rank", String(rank + 1)));
   head.appendChild(el("span", "goal-name", goal.name));
-  const full = have >= goal.amount;
-  head.appendChild(el("span", "goal-amt" + (full ? " full" : ""), money(have) + " / " + money(goal.amount) + (full ? " \u2713" : "")));
-  head.appendChild(el("span", "goal-chev", openGoal === goal ? "\u25B4" : "\u25BE"));
-  head.onclick = function () {
-    openGoal = openGoal === goal ? null : goal;
-    render();
-  };
-  row.appendChild(head);
-  if (goal.repeat !== "none") {
-    row.appendChild(el("div", "goal-repeat", repeatText(goal) + (goal.autoReset ? " \u00B7 resets by itself" : " \u00B7 you reset it yourself")));
-  }
-
+  head.appendChild(el("span", "goal-chev", openGoal === goal ? "▴" : "▾"));
+  body.appendChild(head);
+  body.appendChild(el("span", "goal-amt" + (full ? " full" : ""), money(have) + " of " + money(goal.amount) + (full ? " ✓" : "")));
   const bar = document.createElement("progress");
   bar.max = goal.amount;
   bar.value = have;
-  row.appendChild(bar);
+  body.appendChild(bar);
+  if (goal.repeat !== "none") {
+    body.appendChild(el("div", "goal-repeat", repeatText(goal) + (goal.autoReset ? " · resets by itself" : "")));
+  }
+  body.onclick = function () {
+    openGoal = openGoal === goal ? null : goal;
+    render();
+  };
+  row.appendChild(body);
+
+  const arrows = el("div", "goal-arrows");
+  const up = el("button", "arrow-btn");
+  up.type = "button";
+  up.appendChild(icon("up"));
+  up.setAttribute("aria-label", "Move up");
+  up.disabled = rank === 0;
+  up.onclick = function () { moveGoal(goal, -1); };
+  const down = el("button", "arrow-btn");
+  down.type = "button";
+  down.appendChild(icon("down"));
+  down.setAttribute("aria-label", "Move down");
+  down.disabled = rank === count - 1;
+  down.onclick = function () { moveGoal(goal, 1); };
+  arrows.appendChild(up);
+  arrows.appendChild(down);
+  row.appendChild(arrows);
 
   if (openGoal === goal) {
     const actions = el("div", "goal-actions");
@@ -4860,16 +5071,6 @@ function buildActiveGoal(goal, rank, count, have, balance) {
       render();
     };
     actions.appendChild(edit);
-
-    const up = el("button", "", "\u2191 Up");
-    up.disabled = rank === 0;
-    up.onclick = function () { moveGoal(goal, -1); };
-    actions.appendChild(up);
-
-    const down = el("button", "", "\u2193 Down");
-    down.disabled = rank === count - 1;
-    down.onclick = function () { moveGoal(goal, 1); };
-    actions.appendChild(down);
 
     const remove = el("button", "danger", "Delete");
     remove.onclick = function () { removeGoal(goal); };
@@ -5116,17 +5317,20 @@ function render() {
     card.dataset.idx = String(index);
     const top = el("div", "card-top");
 
-    // Picture
-    if (item.picture) {
-      const pic = el("img", "thumb");
-      pic.src = item.picture;
-      pic.alt = item.name;
-      top.appendChild(pic);
-    } else {
-      const empty = el("div", "thumb empty");
-      empty.appendChild(icon("camera"));
-      empty.setAttribute("aria-label", "No picture");
-      top.appendChild(empty);
+    // Picture (only built when the item is open, or when you chose to show pictures on closed items)
+    if (wants("picture")) {
+      if (item.picture) {
+        const pic = el("img", "thumb");
+        pic.src = item.picture;
+        pic.alt = item.name;
+        pic.loading = "lazy";
+        top.appendChild(pic);
+      } else {
+        const empty = el("div", "thumb empty");
+        empty.appendChild(icon("camera"));
+        empty.setAttribute("aria-label", "No picture");
+        top.appendChild(empty);
+      }
     }
 
     const main = el("div", "card-main");
@@ -5136,7 +5340,7 @@ function render() {
     const meta = el("div", "card-meta", (item.site ? item.site + " \u00B7 " : "") + item.status);
     if (shipAlerting) meta.appendChild(el("span", "badge late", "Ship now"));
     if (!done && isDue(item)) meta.appendChild(el("span", "badge due-badge", "Lower price?"));
-    if (wants("storage") && item.bin && item.slot > 0 && item.status !== "Shipped") {
+    if (features.storage && wants("storage") && item.bin && item.slot > 0 && item.status !== "Shipped") {
       const slotBadge = el("span", "badge slot", slotLabel(item.bin, item.slot));
       slotBadge.title = "Storage " + item.bin + ", slot " + item.slot + " (tap to see it)";
       slotBadge.onclick = function () {
@@ -5397,6 +5601,10 @@ function render() {
   lastTotal = total;
   document.getElementById("total").textContent = total.toFixed(2);
   document.getElementById("balance").textContent = balance.toFixed(2);
+  document.getElementById("balance2").textContent = balance.toFixed(2);
+  document.getElementById("total2").textContent = total.toFixed(2);
+  paintBalancePanel();
+  renderPlatformLinks();
   renderGoals(balance);
   renderBins();
   renderWeekly();
@@ -5972,6 +6180,21 @@ function renderPlatformEditor() {
     }
     addBalanceRow(card, p);
 
+    const urlLabel = el("label", "field", "App or website link");
+    const urlInput = document.createElement("input");
+    urlInput.type = "url";
+    urlInput.placeholder = DEFAULT_PLATFORM_URLS[p.name.toLowerCase()] || "https://";
+    urlInput.value = p.url || "";
+    urlLabel.appendChild(urlInput);
+    card.appendChild(urlLabel);
+    urlInput.addEventListener("change", function () {
+      let v = urlInput.value.trim();
+      if (v !== "" && !/^https?:\/\//i.test(v)) v = "https://" + v;
+      p.url = v;
+      save();
+      renderPlatformLinks();
+    });
+
     const typeLabel = el("label", "field", "Bump cost");
     const type = document.createElement("select");
     Object.keys(BUMP_TYPE_LABELS).forEach(function (k) {
@@ -6167,7 +6390,7 @@ function renderBulkHistory() {
 // ---- Planner ----
 const plannerModal = document.getElementById("planner-modal");
 const plannerBody = document.getElementById("planner-body");
-let plannerOpen = { pipeline: true, week: true, todo: true };
+let plannerOpen = { cal: true };
 let plannerCalc = 10;
 let plannerMetric = "profit";
 let timerTick = null;
@@ -6364,8 +6587,24 @@ function renderPipelineBox() {
   panel.innerHTML = "";
   panel.appendChild(el("div", "pipe-title", "Where your items are"));
   drawPipeline(panel, planNeeds());
+  const box = el("div", "tl-todo");
+  box.appendChild(el("div", "pipe-title", "To do"));
+  const today = todayText();
+  const due = todos.filter(function (t) { return !t.done && (!t.date || t.date <= today); });
+  const later = todos.filter(function (t) { return !t.done && t.date && t.date > today; }).length;
+  if (due.length === 0) box.appendChild(el("div", "small", "Nothing to do today."));
+  due.slice(0, 6).forEach(function (t) { box.appendChild(todoRow(t)); });
+  if (due.length > 6) box.appendChild(el("div", "small", "+" + (due.length - 6) + " more in the Planner"));
+  if (later > 0) box.appendChild(el("div", "small", later + (later === 1 ? " more is" : " more are") + " planned for later days in the Planner."));
+  const add = el("button", "small-btn primary", "+ Add a to-do");
+  add.type = "button";
+  add.style.marginTop = "8px";
+  add.addEventListener("click", function () { openTodoSheet(null, ""); });
+  box.appendChild(add);
+  panel.appendChild(box);
 }
 
+let plannerTarget = null;
 function plannerSection(key, title, build) {
   const box = el("details", "planner-sec");
   box.open = !!plannerOpen[key];
@@ -6374,7 +6613,7 @@ function plannerSection(key, title, build) {
   build(panel);
   box.appendChild(panel);
   box.addEventListener("toggle", function () { plannerOpen[key] = box.open; });
-  plannerBody.appendChild(box);
+  (plannerTarget || plannerBody).appendChild(box);
 }
 function plannerNum(value, onChange, step) {
   const input = document.createElement("input");
@@ -6400,8 +6639,10 @@ function renderPlanner() {
   plannerBody.innerHTML = "";
   const need = planNeeds();
 
-  // 2. How much you need to give each step
-  plannerSection("week", "How much you need to give each step", function (panel) {
+  plannerSection("cal", "Calendar and to-dos", buildCalendar);
+
+  // 2. Work waiting
+  plannerSection("week", "Work waiting and time needed", function (panel) {
     const steps = PLAN_STEPS.filter(function (st) { return need[st.key].minutes > 0 && (st.key !== "lower" || remindersOn); });
     if (steps.length === 0) {
       panel.appendChild(el("div", "small", "Nothing is waiting right now."));
@@ -6427,87 +6668,6 @@ function renderPlanner() {
       card.appendChild(track);
       panel.appendChild(card);
     });
-  });
-
-  // 3. To-do
-  plannerSection("todo", "To-do list", function (panel) {
-    const auto = [];
-    PLAN_STEPS.forEach(function (st) {
-      const n = need[st.key];
-      if (n.count === 0 || (st.key === "lower" && !remindersOn)) return;
-      const text = st.label + ": " + n.count + (n.count === 1 ? " item" : " items") + " (" + fmtMin(n.minutes) + ")";
-      let when = "";
-      if (st.key === "ship") {
-        const dates = items.filter(function (it) { return it.status === "Sold" && it.sold; })
-          .map(function (it) { return shipByDate(it.sold); }).sort();
-        if (dates.length) when = dates[0] <= todayText() ? "Ship now" : "Ship by " + prettyDay(dates[0]);
-      }
-      auto.push({ text: text, when: when });
-    });
-    if (auto.length === 0) panel.appendChild(el("div", "small", "No item work waiting."));
-    auto.forEach(function (t) {
-      const row = el("div", "todo-row");
-      row.appendChild(el("span", "todo-text", t.text));
-      if (t.when) row.appendChild(el("span", "todo-day", t.when));
-      panel.appendChild(row);
-    });
-    panel.appendChild(el("b", "", "Your own to-dos"));
-    todos.slice().sort(function (a, b) { return (a.done - b.done) || (a.day - b.day); }).forEach(function (t) {
-      const row = el("div", "todo-row" + (t.done ? " done" : ""));
-      const box = document.createElement("input");
-      box.type = "checkbox";
-      box.checked = t.done;
-      box.addEventListener("change", function () { t.done = box.checked; save(); renderPlanner(); });
-      row.appendChild(box);
-      row.appendChild(el("span", "todo-text", t.text));
-      if (t.day >= 0) row.appendChild(el("span", "todo-day", DAY_NAMES[t.day]));
-      const del = el("button", "small-btn", "\u00D7");
-      del.type = "button";
-      del.setAttribute("aria-label", "Delete to-do");
-      del.addEventListener("click", function () { todos = todos.filter(function (x) { return x !== t; }); save(); renderPlanner(); });
-      row.appendChild(del);
-      panel.appendChild(row);
-    });
-    const form = el("div", "plat-add");
-    const text = document.createElement("input");
-    text.maxLength = 100;
-    text.placeholder = "e.g. Buy mailers";
-    const day = document.createElement("select");
-    day.hidden = true;
-    const none = document.createElement("option");
-    none.value = "-1";
-    none.textContent = "Any day";
-    day.appendChild(none);
-    DAY_LONG.forEach(function (n, i) {
-      const o = document.createElement("option");
-      o.value = String(i);
-      o.textContent = n;
-      day.appendChild(o);
-    });
-    const dayBtn = el("button", "small-btn", "Day");
-    dayBtn.type = "button";
-    dayBtn.addEventListener("click", function () { day.hidden = false; dayBtn.hidden = true; });
-    const add = el("button", "small-btn primary", "Add");
-    add.type = "button";
-    add.addEventListener("click", function () {
-      if (text.value.trim() === "") return;
-      todos.push({ id: Date.now(), text: text.value.trim().slice(0, 100), day: Number(day.value), done: false });
-      save();
-      renderPlanner();
-    });
-    form.appendChild(text);
-    form.appendChild(dayBtn);
-    form.appendChild(day);
-    form.appendChild(add);
-    panel.appendChild(form);
-    panel.appendChild(el("div", "need-note", "Tap Day only if you want to pick a day for a to-do."));
-    if (todos.some(function (t) { return t.done; })) {
-      const clear = el("button", "small-btn", "Clear finished");
-      clear.type = "button";
-      clear.style.marginTop = "8px";
-      clear.addEventListener("click", function () { todos = todos.filter(function (t) { return !t.done; }); save(); renderPlanner(); });
-      panel.appendChild(clear);
-    }
   });
 
   // 4. New batch calculator
@@ -6537,126 +6697,329 @@ function renderPlanner() {
     panel.appendChild(row);
   });
 
-  // 5. Time log
-  plannerSection("log", "Time log (timer or type it in)", function (panel) {
-    const t = timerState();
-    const stepSel = document.createElement("select");
-    PLAN_STEPS.forEach(function (st) {
-      const o = document.createElement("option");
-      o.value = st.key;
-      o.textContent = st.label;
-      stepSel.appendChild(o);
-    });
-    if (t) {
-      stepSel.value = t.step;
-      stepSel.disabled = true;
-      panel.appendChild(el("div", "small", "Timing " + stepLabel(t.step) + ""));
-      const clock = el("div", "timer-now", "0:00");
-      clock.id = "timer-clock";
-      panel.appendChild(clock);
-      const stop = el("button", "primary", "Stop and save");
-      stop.type = "button";
-      stop.addEventListener("click", function () {
-        const mins = Math.max(1, Math.round((Date.now() - t.start) / 60000));
-        try { localStorage.removeItem("planTimer"); } catch (e) {}
-        timeLog.push({ id: Date.now(), date: todayText(), step: t.step, minutes: mins, items: 0 });
-        save();
-        renderPlanner();
-        showToast("Saved " + fmtMin(mins) + " of " + stepLabel(t.step).toLowerCase() + ".");
-      });
-      const drop = el("button", "", "Cancel timer");
-      drop.type = "button";
-      drop.addEventListener("click", function () { try { localStorage.removeItem("planTimer"); } catch (e) {} renderPlanner(); });
-      panel.appendChild(stop);
-      panel.appendChild(drop);
-    } else {
-      const l = el("label", "field", "Start a timer for");
-      l.appendChild(stepSel);
-      panel.appendChild(l);
-      const start = el("button", "primary", "Start timer");
-      start.type = "button";
-      start.addEventListener("click", function () {
-        try { localStorage.setItem("planTimer", JSON.stringify({ step: stepSel.value, start: Date.now() })); } catch (e) {}
-        renderPlanner();
-      });
-      panel.appendChild(start);
-    }
-    panel.appendChild(el("b", "", "Or add time you already spent"));
-    const mStep = document.createElement("select");
-    PLAN_STEPS.forEach(function (st) {
-      const o = document.createElement("option");
-      o.value = st.key;
-      o.textContent = st.label;
-      mStep.appendChild(o);
-    });
-    const mMin = plannerNum("", function () {});
-    mMin.value = "";
-    mMin.placeholder = "Minutes";
-    const mItems = plannerNum("", function () {});
-    mItems.value = "";
-    mItems.placeholder = "Items (optional)";
-    const mDate = document.createElement("input");
-    mDate.type = "date";
-    mDate.value = todayText();
-    const g = el("div", "set-grid");
-    [["Step", mStep], ["Minutes", mMin], ["Items done (optional)", mItems], ["Date", mDate]].forEach(function (p) {
-      const l = el("label", "field", p[0]);
-      l.appendChild(p[1]);
-      g.appendChild(l);
-    });
-    panel.appendChild(g);
-    const addLog = el("button", "small-btn primary", "Add to log");
-    addLog.type = "button";
-    addLog.style.marginTop = "8px";
-    addLog.addEventListener("click", function () {
-      const mins = Number(mMin.value);
-      if (!(mins > 0) || !mDate.value) { alert("Type the minutes and pick a date."); return; }
-      timeLog.push({ id: Date.now(), date: mDate.value, step: mStep.value, minutes: mins, items: Math.max(0, Math.floor(Number(mItems.value) || 0)) });
-      save();
-      renderPlanner();
-    });
-    panel.appendChild(addLog);
-    timeLog.slice().sort(function (a, b) { return b.date.localeCompare(a.date) || b.id - a.id; }).slice(0, 8).forEach(function (e) {
-      const row = el("div", "log-row");
-      row.appendChild(el("span", "", prettyDay(e.date) + " · " + stepLabel(e.step) + (e.items ? " (" + e.items + " items)" : "")));
-      const right = el("span", "", fmtMin(e.minutes) + " ");
-      const del = el("button", "small-btn", "×");
-      del.type = "button";
-      del.addEventListener("click", function () { timeLog = timeLog.filter(function (x) { return x !== e; }); save(); renderPlanner(); });
-      right.appendChild(del);
-      row.appendChild(right);
-      panel.appendChild(row);
-    });
-  });
-
-  // 6. Weekly efficiency
-  plannerSection("eff", "Weekly efficiency", function (panel) { buildEfficiency(panel); });
-
-  // 7. Estimates
-  plannerSection("est", "My time estimates", function (panel) {
-    panel.appendChild(el("div", "small", "These numbers drive every time in the planner. Change them to match how fast you really are."));
-    const g = el("div", "set-grid");
-    PLAN_SETTING_FIELDS.forEach(function (f) {
-      const l = el("label", "field", f.label);
-      l.appendChild(plannerNum(plan[f.key], function (v) { plan[f.key] = v; save(); renderPlanner(); }, "0.5"));
-      g.appendChild(l);
-    });
-    panel.appendChild(g);
-    const reset = el("button", "small-btn", "Reset estimates");
-    reset.type = "button";
-    reset.style.marginTop = "8px";
-    reset.addEventListener("click", function () {
-      askYesNo("Put all estimates back to the starting numbers?", "Reset", function () {
-        plan = JSON.parse(JSON.stringify(DEFAULT_PLAN));
-        save();
-        renderPlanner();
-      });
-    });
-    panel.appendChild(reset);
-  });
-
   plannerModal.querySelector(".tools-panel").scrollTop = scroll;
   startTimerTick();
+}
+
+
+// ---- Sales report: past data (time log and weekly efficiency) ----
+function renderSalesExtra() {
+  const box = document.getElementById("sales-extra");
+  const scrollBox = document.getElementById("sales-modal").querySelector(".tools-panel");
+  const scroll = scrollBox.scrollTop;
+  box.innerHTML = "";
+  plannerTarget = box;
+  try {
+  // 5. Time log
+    plannerSection("log", "Time log (timer or type it in)", function (panel) {
+      const t = timerState();
+      const stepSel = document.createElement("select");
+      PLAN_STEPS.forEach(function (st) {
+        const o = document.createElement("option");
+        o.value = st.key;
+        o.textContent = st.label;
+        stepSel.appendChild(o);
+      });
+      if (t) {
+        stepSel.value = t.step;
+        stepSel.disabled = true;
+        panel.appendChild(el("div", "small", "Timing " + stepLabel(t.step) + ""));
+        const clock = el("div", "timer-now", "0:00");
+        clock.id = "timer-clock";
+        panel.appendChild(clock);
+        const stop = el("button", "primary", "Stop and save");
+        stop.type = "button";
+        stop.addEventListener("click", function () {
+          const mins = Math.max(1, Math.round((Date.now() - t.start) / 60000));
+          try { localStorage.removeItem("planTimer"); } catch (e) {}
+          timeLog.push({ id: Date.now(), date: todayText(), step: t.step, minutes: mins, items: 0 });
+          save();
+          refreshHistory();
+          showToast("Saved " + fmtMin(mins) + " of " + stepLabel(t.step).toLowerCase() + ".");
+        });
+        const drop = el("button", "", "Cancel timer");
+        drop.type = "button";
+        drop.addEventListener("click", function () { try { localStorage.removeItem("planTimer"); } catch (e) {} refreshHistory(); });
+        panel.appendChild(stop);
+        panel.appendChild(drop);
+      } else {
+        const l = el("label", "field", "Start a timer for");
+        l.appendChild(stepSel);
+        panel.appendChild(l);
+        const start = el("button", "primary", "Start timer");
+        start.type = "button";
+        start.addEventListener("click", function () {
+          try { localStorage.setItem("planTimer", JSON.stringify({ step: stepSel.value, start: Date.now() })); } catch (e) {}
+          refreshHistory();
+        });
+        panel.appendChild(start);
+      }
+      panel.appendChild(el("b", "", "Or add time you already spent"));
+      const mStep = document.createElement("select");
+      PLAN_STEPS.forEach(function (st) {
+        const o = document.createElement("option");
+        o.value = st.key;
+        o.textContent = st.label;
+        mStep.appendChild(o);
+      });
+      const mMin = plannerNum("", function () {});
+      mMin.value = "";
+      mMin.placeholder = "Minutes";
+      const mItems = plannerNum("", function () {});
+      mItems.value = "";
+      mItems.placeholder = "Items (optional)";
+      const mDate = document.createElement("input");
+      mDate.type = "date";
+      mDate.value = todayText();
+      const g = el("div", "set-grid");
+      [["Step", mStep], ["Minutes", mMin], ["Items done (optional)", mItems], ["Date", mDate]].forEach(function (p) {
+        const l = el("label", "field", p[0]);
+        l.appendChild(p[1]);
+        g.appendChild(l);
+      });
+      panel.appendChild(g);
+      const addLog = el("button", "small-btn primary", "Add to log");
+      addLog.type = "button";
+      addLog.style.marginTop = "8px";
+      addLog.addEventListener("click", function () {
+        const mins = Number(mMin.value);
+        if (!(mins > 0) || !mDate.value) { alert("Type the minutes and pick a date."); return; }
+        timeLog.push({ id: Date.now(), date: mDate.value, step: mStep.value, minutes: mins, items: Math.max(0, Math.floor(Number(mItems.value) || 0)) });
+        save();
+        refreshHistory();
+      });
+      panel.appendChild(addLog);
+      timeLog.slice().sort(function (a, b) { return b.date.localeCompare(a.date) || b.id - a.id; }).slice(0, 8).forEach(function (e) {
+        const row = el("div", "log-row");
+        row.appendChild(el("span", "", prettyDay(e.date) + " · " + stepLabel(e.step) + (e.items ? " (" + e.items + " items)" : "")));
+        const right = el("span", "", fmtMin(e.minutes) + " ");
+        const del = el("button", "small-btn", "×");
+        del.type = "button";
+        del.addEventListener("click", function () { timeLog = timeLog.filter(function (x) { return x !== e; }); save(); refreshHistory(); });
+        right.appendChild(del);
+        row.appendChild(right);
+        panel.appendChild(row);
+      });
+    });
+  
+    // 6. Weekly efficiency
+    plannerSection("eff", "Weekly efficiency", function (panel) { buildEfficiency(panel); });
+  
+  
+  } finally {
+    plannerTarget = null;
+  }
+  scrollBox.scrollTop = scroll;
+  startTimerTick();
+}
+function refreshHistory() { renderSalesExtra(); }
+
+// ---- To-dos: one list, shown in the Timeline and in the Planner calendar ----
+function refreshTodoViews() {
+  renderPipelineBox();
+  if (!plannerModal.hidden) renderPlanner();
+}
+function openTodoSheet(todo, presetDate) {
+  scanBody.innerHTML = "";
+  scanBody.appendChild(el("h3", "", todo ? "Edit to-do" : "New to-do"));
+  const textLabel = el("label", "field", "What needs doing");
+  const text = document.createElement("input");
+  text.maxLength = 100;
+  text.value = todo ? todo.text : "";
+  text.placeholder = "e.g. Buy mailers";
+  textLabel.appendChild(text);
+  scanBody.appendChild(textLabel);
+  const dateLabel = el("label", "field", "Day (leave empty for any day)");
+  const date = document.createElement("input");
+  date.type = "date";
+  date.value = todo ? todo.date : (presetDate || "");
+  dateLabel.appendChild(date);
+  scanBody.appendChild(dateLabel);
+  function saveIt() {
+    const value = text.value.trim();
+    if (value === "") { text.focus(); return; }
+    if (todo) {
+      todo.text = value.slice(0, 100);
+      todo.date = date.value;
+    } else {
+      todos.push({ id: Date.now(), text: value.slice(0, 100), day: -1, date: date.value, done: false });
+    }
+    save();
+    closeScanModal();
+    refreshTodoViews();
+  }
+  text.addEventListener("keydown", function (event) {
+    if (event.key === "Enter") { event.preventDefault(); saveIt(); }
+  });
+  scanBody.appendChild(modalButton("Save", "primary", saveIt));
+  if (todo) {
+    scanBody.appendChild(modalButton("Delete to-do", "", function () {
+      todos = todos.filter(function (x) { return x !== todo; });
+      save();
+      closeScanModal();
+      refreshTodoViews();
+    }));
+  }
+  scanBody.appendChild(modalButton("Cancel", "", closeScanModal));
+  scanModal.hidden = false;
+  text.focus();
+}
+function todoRow(t) {
+  const row = el("div", "todo-row" + (t.done ? " done" : ""));
+  const box = document.createElement("input");
+  box.type = "checkbox";
+  box.checked = t.done;
+  box.setAttribute("aria-label", "Done: " + t.text);
+  box.addEventListener("change", function () { t.done = box.checked; save(); refreshTodoViews(); });
+  row.appendChild(box);
+  const label = el("button", "link-btn", t.text);
+  label.type = "button";
+  label.title = "Tap to edit";
+  label.addEventListener("click", function () { openTodoSheet(t); });
+  row.appendChild(label);
+  if (t.date) row.appendChild(el("span", "todo-day", t.date < todayText() && !t.done ? "Late: " + prettyDay(t.date) : prettyDay(t.date)));
+  return row;
+}
+
+// ---- Planner calendar ----
+let calMonth = "";
+let calDay = "";
+function shiftMonth(month, delta) {
+  const p = month.split("-").map(Number);
+  let y = p[0];
+  let m = p[1] + delta;
+  if (m < 1) { m = 12; y--; }
+  if (m > 12) { m = 1; y++; }
+  return y + "-" + pad(m);
+}
+function eventsOn(day) {
+  return {
+    todos: todos.filter(function (t) { return t.date === day; }),
+    ships: items.filter(function (it) { return it.status === "Sold" && it.sold && shipByDate(it.sold) === day; }),
+    bills: goals.filter(function (g) { return g.repeat !== "none" && g.repeat !== "daily" && isDueOn(g, day); })
+  };
+}
+function buildCalendar(panel) {
+  const today = todayText();
+  if (!calMonth) calMonth = monthOf(today);
+  if (!calDay) calDay = today;
+  const head = el("div", "cal-head");
+  const prev = el("button", "", "‹");
+  prev.type = "button";
+  prev.setAttribute("aria-label", "Earlier month");
+  prev.addEventListener("click", function () { calMonth = shiftMonth(calMonth, -1); renderPlanner(); });
+  const next = el("button", "", "›");
+  next.type = "button";
+  next.setAttribute("aria-label", "Later month");
+  next.addEventListener("click", function () { calMonth = shiftMonth(calMonth, 1); renderPlanner(); });
+  const now = el("button", "small-btn", "Today");
+  now.type = "button";
+  now.addEventListener("click", function () { calMonth = monthOf(today); calDay = today; renderPlanner(); });
+  head.appendChild(prev);
+  head.appendChild(el("b", "", monthLabel(calMonth)));
+  head.appendChild(now);
+  head.appendChild(next);
+  panel.appendChild(head);
+
+  const grid = el("div", "cal-grid");
+  ["M", "T", "W", "T", "F", "S", "S"].forEach(function (d) { grid.appendChild(el("div", "cal-dow", d)); });
+  const first = calMonth + "-01";
+  const blanks = weekdayIndex(first);
+  for (let i = 0; i < blanks; i++) grid.appendChild(el("div", "cal-blank"));
+  const days = new Date(Date.UTC(Number(calMonth.slice(0, 4)), Number(calMonth.slice(5, 7)), 0)).getUTCDate();
+  for (let d = 1; d <= days; d++) {
+    const day = calMonth + "-" + pad(d);
+    const ev = eventsOn(day);
+    const cell = el("button", "cal-cell" + (day === today ? " today" : "") + (day === calDay ? " sel" : ""));
+    cell.type = "button";
+    cell.appendChild(el("span", "", String(d)));
+    const dots = el("span", "cal-dots");
+    if (ev.todos.length) dots.appendChild(el("span", "cal-dot todo"));
+    if (ev.ships.length) dots.appendChild(el("span", "cal-dot ship"));
+    if (ev.bills.length) dots.appendChild(el("span", "cal-dot bill"));
+    cell.appendChild(dots);
+    cell.addEventListener("click", function () { calDay = day; renderPlanner(); });
+    grid.appendChild(cell);
+  }
+  panel.appendChild(grid);
+  const legend = el("div", "cal-legend");
+  [["todo", "To-do"], ["ship", "Ship by"], ["bill", "Investment due"]].forEach(function (p) {
+    const item = el("span", "");
+    item.appendChild(el("span", "cal-dot " + p[0]));
+    item.appendChild(document.createTextNode(p[1]));
+    legend.appendChild(item);
+  });
+  panel.appendChild(legend);
+
+  const agenda = el("div", "cal-agenda");
+  agenda.appendChild(el("h4", "", calDay === today ? "Today, " + prettyDay(calDay) : prettyDay(calDay)));
+  const ev = eventsOn(calDay);
+  ev.ships.forEach(function (it) {
+    const row = el("div", "ag-row");
+    row.appendChild(el("span", "tag ship", "Ship by"));
+    row.appendChild(el("span", "", it.name + (it.site ? " (" + it.site + ")" : "")));
+    agenda.appendChild(row);
+  });
+  ev.bills.forEach(function (g) {
+    const row = el("div", "ag-row");
+    row.appendChild(el("span", "tag bill", "Due"));
+    row.appendChild(el("span", "", g.name + " " + money(g.amount)));
+    agenda.appendChild(row);
+  });
+  ev.todos.forEach(function (t) { agenda.appendChild(todoRow(t)); });
+  if (!ev.ships.length && !ev.bills.length && !ev.todos.length) agenda.appendChild(el("div", "small", "Nothing planned for this day."));
+  const add = el("button", "small-btn primary", "+ Add a to-do on this day");
+  add.type = "button";
+  add.style.marginTop = "10px";
+  add.addEventListener("click", function () { openTodoSheet(null, calDay); });
+  agenda.appendChild(add);
+  panel.appendChild(agenda);
+
+  const loose = todos.filter(function (t) { return !t.done && (!t.date || t.date < today); });
+  if (loose.length) {
+    const box = el("div", "cal-agenda");
+    box.appendChild(el("h4", "", "Any day and running late"));
+    loose.forEach(function (t) { box.appendChild(todoRow(t)); });
+    panel.appendChild(box);
+  }
+  if (todos.some(function (t) { return t.done; })) {
+    const clear = el("button", "small-btn", "Clear finished to-dos");
+    clear.type = "button";
+    clear.style.marginTop = "10px";
+    clear.addEventListener("click", function () { todos = todos.filter(function (t) { return !t.done; }); save(); refreshTodoViews(); });
+    panel.appendChild(clear);
+  }
+}
+
+// ---- Settings: the planner's time estimates ----
+function renderPlanSettings() {
+  const panel = document.getElementById("plan-settings-body");
+  panel.innerHTML = "";
+  panel.appendChild(el("div", "small", "These numbers set the times in the timeline and planner. Change them to match how fast you really are."));
+  const g = el("div", "set-grid");
+  PLAN_SETTING_FIELDS.forEach(function (f) {
+    const l = el("label", "field", f.label);
+    l.appendChild(plannerNum(plan[f.key], function (v) {
+      plan[f.key] = v;
+      save();
+      renderPlanSettings();
+      refreshTodoViews();
+    }, "0.5"));
+    g.appendChild(l);
+  });
+  panel.appendChild(g);
+  const reset = el("button", "small-btn", "Reset estimates");
+  reset.type = "button";
+  reset.style.marginTop = "8px";
+  reset.addEventListener("click", function () {
+    askYesNo("Put all estimates back to the starting numbers?", "Reset", function () {
+      plan = JSON.parse(JSON.stringify(DEFAULT_PLAN));
+      save();
+      renderPlanSettings();
+      refreshTodoViews();
+    });
+  });
+  panel.appendChild(reset);
 }
 
 function startTimerTick() {
@@ -6664,7 +7027,7 @@ function startTimerTick() {
   timerTick = null;
   const clock = document.getElementById("timer-clock");
   const t = timerState();
-  if (!clock || !t || plannerModal.hidden) return;
+  if (!clock || !t || (plannerModal.hidden && document.getElementById("sales-modal").hidden)) return;
   function paint() {
     const sec = Math.max(0, Math.floor((Date.now() - t.start) / 1000));
     const c = document.getElementById("timer-clock");
@@ -6863,6 +7226,7 @@ document.getElementById("tools-button").addEventListener("click", function () {
   renderBulkHistory();
   renderPlatformEditor();
   renderPhotoTypeEditor();
+  renderPlanSettings();
   fillLowerInputs();
   toolsModal.hidden = false;
   toolsModal.querySelector(".tools-panel").scrollTop = 0;
@@ -6877,17 +7241,24 @@ document.addEventListener("keydown", function (event) {
 const salesModal = document.getElementById("sales-modal");
 document.getElementById("sales-button").addEventListener("click", function () {
   renderBulkHistory();
+  renderSalesExtra();
   salesModal.hidden = false;
   salesModal.querySelector(".tools-panel").scrollTop = 0;
 });
-document.getElementById("sales-close").addEventListener("click", function () { salesModal.hidden = true; });
-salesModal.addEventListener("click", function (event) { if (event.target === salesModal) salesModal.hidden = true; });
+function closeSales() {
+  salesModal.hidden = true;
+  if (timerTick) clearInterval(timerTick);
+  timerTick = null;
+}
+document.getElementById("sales-close").addEventListener("click", closeSales);
+salesModal.addEventListener("click", function (event) { if (event.target === salesModal) closeSales(); });
 document.addEventListener("keydown", function (event) {
-  if (event.key === "Escape" && !salesModal.hidden && msgModal.hidden) salesModal.hidden = true;
+  if (event.key === "Escape" && !salesModal.hidden && msgModal.hidden) closeSales();
 });
 
 // ---- Tools you can turn on or off (chosen in Settings) ----
 const summaryBox = document.getElementById("summary-box");
+document.getElementById("tools-button").insertBefore(icon("gear"), document.getElementById("settings-label"));
 function updateSummaryBox() {
   const alertShown = document.getElementById("ship-alert-row").style.display === "flex";
   const miniShown = features.investments && document.getElementById("goals-mini").style.display === "block";
@@ -6895,6 +7266,11 @@ function updateSummaryBox() {
 }
 function applyFeatures() {
   summaryBox.querySelector(".stats").hidden = !features.summary;
+  document.getElementById("balance-drop").hidden = !features.balance;
+  document.getElementById("bins-drop").hidden = !features.storage;
+  document.getElementById("platforms-drop").hidden = !features.platforms;
+  document.body.classList.toggle("no-storage", !features.storage);
+  binFilterInput.closest("label").hidden = !features.storage;
   document.getElementById("pipeline-box").hidden = !features.timeline;
   document.getElementById("goals-box").hidden = !features.investments;
   document.getElementById("planner-button").hidden = !features.planner;
@@ -6924,16 +7300,37 @@ function switchRow(title, desc, checked, onChange) {
   return row;
 }
 const FEATURE_TEXT = {
-  summary: ["Balance and profit", "Available balance, total profit and the Withdraw button at the top."],
-  timeline: ["Timeline", "Where your items are in the process, from photos to shipped."],
-  investments: ["Investments", "Things you save for or pay, like a printer or rent, with a progress bar."],
-  planner: ["Planner", "Your plan for the day, a to-do list and a work timer."],
-  sales: ["Sales report", "Sales by week and by lot, plus the spreadsheet download."]
+  balance: ["Balance", "A Balance button: available balance, profit by platform and Withdraw."],
+  summary: ["Balance at the top", "Also show your balance and profit in the box at the top."],
+  timeline: ["Timeline", "Where your items are in the process, plus your to-do list."],
+  investments: ["Investments", "Things you save for or pay, like a printer or rent."],
+  storage: ["Storage", "Boxes, shelves and slots that say where each item is kept."],
+  platforms: ["Platforms", "Open Depop or Vinted, or show only the items on one platform."],
+  planner: ["Planner", "A calendar with your to-dos, ship-by days and bills."],
+  sales: ["Sales report", "All your sales and past data: weeks, lots, time and efficiency."]
 };
 const CARD_TEXT = {
-  price: "Price", profit: "Profit (sold items)", weight: "Weight", cost: "What you paid",
+  picture: "Picture", price: "Price", profit: "Profit (sold items)", weight: "Weight", cost: "What you paid",
   storage: "Storage spot", photos: "Photo progress", notes: "Dates and reminders"
 };
+const CARD_DESC = { picture: "Off: the picture only loads once you open an item." };
+// A short "how it works" box shown right under the Storage switch.
+function storageHowTo() {
+  const box = el("details", "how-to");
+  box.appendChild(el("summary", "", "How storage works"));
+  const intro = el("div", "small", "Storage is where your items physically live: a box, shelf or rail. It is optional.");
+  intro.style.margin = "0 12px 4px";
+  box.appendChild(intro);
+  const ol = document.createElement("ol");
+  [
+    "Tap Storage on the main page, then + Add storage. Name it (like A) and set how many slots it has.",
+    "When you add an item, pick its storage and slot.",
+    "Marking an item shipped opens its slot again.",
+    "Optional QR labels: Print labels, stick one on each slot, then Add item > Scan a QR code."
+  ].forEach(function (t) { ol.appendChild(el("li", "", t)); });
+  box.appendChild(ol);
+  return box;
+}
 function buildSettingsSwitches() {
   const featureBox = document.getElementById("feature-switches");
   featureBox.innerHTML = "";
@@ -6942,12 +7339,14 @@ function buildSettingsSwitches() {
       features[key] = on;
       saveSetting("features", features);
       applyFeatures();
+      render();
     }));
+    if (key === "storage") featureBox.appendChild(storageHowTo());
   });
   const cardBox = document.getElementById("card-switches");
   cardBox.innerHTML = "";
   CARD_KEYS.forEach(function (key) {
-    cardBox.appendChild(switchRow(CARD_TEXT[key], "", !!cardFields[key], function (on) {
+    cardBox.appendChild(switchRow(CARD_TEXT[key], CARD_DESC[key] || "", !!cardFields[key], function (on) {
       cardFields[key] = on;
       saveSetting("cardFields", cardFields);
       render();
