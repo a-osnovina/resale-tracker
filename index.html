@@ -8870,6 +8870,30 @@ $("tab-add").addEventListener("click", function () { addItemButton.click(); });
 $("seg-stock-items").addEventListener("click", function () { showStockPane("items"); });
 $("seg-stock-storage").addEventListener("click", function () { showStockPane("storage"); });
 $("top-bell").addEventListener("click", openNotifSheet);
+// One time: alerts you dismissed before the bell existed only left a "dismissed" note, so rebuild them into the history.
+// The exact time is unknown, so each one is dated by its sold date (shipping) or its reminder date (price).
+function backfillDismissed() {
+  try { if (localStorage.getItem("notifBackfill") === "1") return; } catch (e) { return; }
+  function add(key, kind, text, name, dateText) {
+    const t = new Date(dateText + "T12:00:00").getTime();
+    if (!(t > 0) || t > Date.now()) return;
+    if (notifLog.some(function (e) { return e.k === key; })) return;
+    notifLog.push({ t: t, text: text, kind: kind, k: key, item: name });
+  }
+  Object.keys(shipDismissed).forEach(function (k) {
+    const i = k.lastIndexOf("|");
+    if (i > 0) add("ship:" + k, "ship", "Ship now: " + k.slice(0, i) + " was late. (Dismissed)", k.slice(0, i), k.slice(i + 1));
+  });
+  Object.keys(dueDismissed).forEach(function (k) {
+    const i = k.lastIndexOf("|");
+    if (i > 0) add("price:" + k, "price", "Time to lower the price: " + k.slice(0, i) + " (Dismissed)", k.slice(0, i), k.slice(i + 1));
+  });
+  notifLog.sort(function (a, b) { return a.t - b.t; });
+  notifLog = notifLog.slice(-NOTIF_MAX);
+  saveNotifs();
+  try { localStorage.setItem("notifBackfill", "1"); } catch (e) {}
+}
+backfillDismissed();
 updateBell();
 function goMoney() { showView("money"); }
 $("home-balance-tile").addEventListener("click", goMoney);
