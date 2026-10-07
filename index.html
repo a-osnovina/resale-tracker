@@ -25,6 +25,7 @@
   --line-soft: #d5dae0;
   --accent-text: #0b5cad;
   --accent-line: #0b5cad;
+  --primary: #0b5cad;
   --profit: #17692f;
   --danger: #b42318;
   --info-bg: #e8f3ff;
@@ -149,7 +150,7 @@ h2 { font-size: 18px; margin: 26px 0 10px; }
 /* Buttons: big enough for a thumb */
 button { font: inherit; font-size: 16px; min-height: 44px; padding: 0 16px; border: 1px solid var(--line); border-radius: 10px; background: var(--surface); color: var(--text); cursor: pointer; touch-action: manipulation; }
 button:disabled { opacity: 0.5; }
-button.primary { background: #0b5cad; border-color: var(--accent-line); color: #ffffff; font-weight: 600; }
+button.primary { background: var(--primary); border-color: var(--accent-line); color: #ffffff; font-weight: 600; }
 button.danger { color: var(--danger); }
 button.quiet { border-color: transparent; background: transparent; color: var(--muted); text-decoration: underline; }
 button.small-btn { min-height: 40px; padding: 0 12px; font-size: 14px; }
@@ -231,7 +232,7 @@ details summary { cursor: pointer; }
 /* Add / edit item window: dark backdrop, blue top bar, blue-edged bottom bar, so you can see where it starts and ends */
 #item-sheet { position: fixed; top: 0; right: 0; bottom: 0; left: 0; z-index: 40; background: rgba(15, 23, 42, 0.65); display: flex; align-items: flex-end; justify-content: center; }
 #item-form { display: flex; flex-direction: column; width: 100%; max-width: 760px; max-height: 94vh; background: var(--surface); border-radius: 20px 20px 0 0; overflow: hidden; box-shadow: 0 -4px 24px rgba(0, 0, 0, 0.35); }
-.sheet-head { flex: none; display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 12px 16px; background: #0b5cad; color: #ffffff; }
+.sheet-head { flex: none; display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 12px 16px; background: var(--primary); color: #ffffff; }
 .sheet-head h2 { margin: 0; font-size: 20px; color: #ffffff; }
 .sheet-head button { min-height: 40px; font-size: 14px; background: rgba(255, 255, 255, 0.15); border-color: rgba(255, 255, 255, 0.6); color: #ffffff; }
 .sheet-body { flex: 1; min-height: 0; overflow: auto; padding: 4px 16px 28px; -webkit-overflow-scrolling: touch; }
@@ -309,7 +310,7 @@ body.pulse-alerts .row-overdue, body.pulse-alerts #ship-alert { animation: ship-
 .card-profit { font-weight: 700; color: var(--profit); margin-top: 2px; }
 .badge { display: inline-block; font-size: 13px; padding: 1px 8px; border-radius: 999px; background: rgba(0, 0, 0, 0.08); color: var(--muted); margin-left: 4px; }
 .badge.ok { background: #1a7f37; color: #ffffff; font-weight: 700; }
-.badge.slot { background: #0b5cad; color: #ffffff; font-weight: 700; cursor: pointer; }
+.badge.slot { background: var(--primary); color: #ffffff; font-weight: 700; cursor: pointer; }
 .due { font-size: 14px; color: var(--warn-text); font-weight: bold; }
 .sold-mini { display: flex; align-items: center; gap: 10px; width: 100%; text-align: left; min-height: 48px; margin: 6px 0; padding: 8px 12px; border-radius: 12px; background: var(--sold-bg); border: 0; border-left: 6px solid var(--sold-edge); font-size: 15px; color: inherit; }
 .sold-mini.shipped { background: var(--shipped-bg); border-left-color: var(--shipped-edge); }
@@ -357,7 +358,7 @@ body.goals-unpinned #goals-mini { display: none !important; }
 .switch input { position: absolute; top: 0; left: 0; width: 100%; height: 100%; margin: 0; opacity: 0; z-index: 1; cursor: pointer; }
 .switch .track { position: absolute; top: 0; right: 0; bottom: 0; left: 0; border-radius: 999px; background: var(--track); transition: background 0.18s; }
 .switch .track::after { content: ""; position: absolute; top: 3px; left: 3px; width: 26px; height: 26px; border-radius: 50%; background: var(--surface); box-shadow: 0 1px 3px rgba(0, 0, 0, 0.35); transition: transform 0.18s; }
-.switch input:checked + .track { background: #0b5cad; }
+.switch input:checked + .track { background: var(--primary); }
 .switch input:checked + .track::after { transform: translateX(22px); }
 .switch input:focus-visible + .track { outline: 3px solid #8bb8e8; outline-offset: 2px; }
 @media (prefers-reduced-motion: reduce) { .switch .track, .switch .track::after { transition: none; } }
@@ -391,7 +392,7 @@ body.goals-unpinned #goals-mini { display: none !important; }
 .tile { display: flex; flex-direction: column; align-items: stretch; padding: 0; min-height: 0; text-align: left; border: 1px solid var(--listed-edge); border-radius: 12px; overflow: hidden; background: var(--listed-bg); font-size: 14px; }
 .tile-pic { position: relative; width: 100%; aspect-ratio: 1 / 1; background: var(--thumb-bg); display: flex; align-items: center; justify-content: center; color: var(--muted); font-size: 13px; }
 .tile-pic img { display: block; width: 100%; height: 100%; object-fit: cover; object-position: top; }
-.tile-code { position: absolute; top: 6px; left: 6px; background: #0b5cad; color: #ffffff; font-weight: 700; font-size: 13px; padding: 2px 8px; border-radius: 999px; }
+.tile-code { position: absolute; top: 6px; left: 6px; background: var(--primary); color: #ffffff; font-weight: 700; font-size: 13px; padding: 2px 8px; border-radius: 999px; }
 .tile-info { padding: 6px 8px 8px; }
 .tile-name { font-weight: 700; font-size: 14px; line-height: 1.25; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; overflow-wrap: anywhere; }
 .tile-sub { font-size: 12px; color: var(--muted); margin-top: 2px; }
@@ -527,7 +528,7 @@ label.has-error { color: var(--danger); font-weight: 700; }
 .set-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px 12px; }
 .chart { display: flex; align-items: flex-end; gap: 6px; height: 130px; padding: 18px 0 0; border-bottom: 1px solid var(--line); }
 .chart .col { flex: 1; display: flex; flex-direction: column; justify-content: flex-end; align-items: center; height: 100%; position: relative; }
-.bar { width: 70%; background: #0b5cad; border-radius: 4px 4px 0 0; min-height: 2px; }
+.bar { width: 70%; background: var(--primary); border-radius: 4px 4px 0 0; min-height: 2px; }
 .bar.neg { background: #b3261e; }
 .bar-val { font-size: 11px; margin-bottom: 2px; }
 .chart-labels { display: flex; gap: 6px; font-size: 11px; color: var(--muted); }
@@ -551,7 +552,7 @@ label.has-error { color: var(--danger); font-weight: 700; }
 .need-card { border: 1px solid var(--line-soft); border-radius: 10px; padding: 10px 12px; margin-top: 8px; background: var(--surface-2); }
 .need-card-head { display: flex; justify-content: space-between; gap: 10px; font-size: 15px; }
 .need-track { height: 8px; background: var(--line-soft); border-radius: 4px; margin-top: 8px; overflow: hidden; }
-.need-fill { height: 100%; background: #0b5cad; border-radius: 4px; }
+.need-fill { height: 100%; background: var(--primary); border-radius: 4px; }
 #pipeline-box.inline > summary { display: none; }
 #pipeline-box.inline .dropdown-panel { position: static; max-height: none; box-shadow: none; border-radius: 10px; padding: 8px 8px 2px; }
 .pipe-step { cursor: pointer; }
@@ -577,7 +578,7 @@ label.has-error { color: var(--danger); font-weight: 700; }
 .seg button { flex: 1; border-radius: 0; min-height: 40px; font-size: 15px; background: var(--surface-2); }
 .seg button:first-child { border-radius: 10px 0 0 10px; }
 .seg button:last-child { border-radius: 0 10px 10px 0; }
-.seg button.on { background: #0b5cad; border-color: var(--accent-line); color: #ffffff; font-weight: 700; }
+.seg button.on { background: var(--primary); border-color: var(--accent-line); color: #ffffff; font-weight: 700; }
 .pane-title { font-weight: 800; font-size: 15px; margin: 4px 0 8px; color: var(--text); }
 .plat-head .small-btn { min-height: 34px; font-size: 13px; }
 .tools-group { margin: 18px 2px 2px; font-size: 13px; font-weight: 800; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); }
@@ -609,7 +610,7 @@ label.has-error { color: var(--danger); font-weight: 700; }
 /* Pop-ups: each kind has its own color stripe, title and main button */
 #scan-body { --kind: var(--accent-line); border-top: 8px solid var(--kind); }
 #scan-body h3 { color: var(--kind); }
-#scan-body button.primary { background: var(--kind-bg, #0b5cad); border-color: var(--kind-bg, #0b5cad); }
+#scan-body button.primary { background: var(--kind-bg, var(--primary)); border-color: var(--kind-bg, var(--primary)); }
 #scan-body[data-kind="list"] { --kind: var(--listed-edge); --kind-bg: #1d6fb8; }
 #scan-body[data-kind="sold"] { --kind: var(--sold-edge); --kind-bg: #1f7a3d; }
 #scan-body[data-kind="ship"] { --kind: var(--ship-kind); --kind-bg: #5b4bb3; }
@@ -627,7 +628,7 @@ label.has-error { color: var(--danger); font-weight: 700; }
 #app-title { cursor: pointer; min-width: 0; overflow-wrap: anywhere; }
 .icon-btn { flex: none; width: 40px; min-height: 40px; padding: 0; display: inline-flex; align-items: center; justify-content: center; }
 .icon-btn .ico { width: 18px; height: 18px; }
-/* Planner and Tools look and act like the Locations and Investments buttons */
+/* Planner and Tools look and act like the Storage and Investments buttons */
 .tabs .tab-btn { flex: 1 1 72px; min-width: 0; display: flex; align-items: center; justify-content: center; gap: 6px; min-height: 44px; padding: 0 8px; background: var(--surface); border: 1px solid var(--line); border-radius: 10px; color: var(--accent-text); font-size: 14px; font-weight: 700; text-align: center; white-space: nowrap; cursor: pointer; touch-action: manipulation; }
 #tabs-loose { flex-wrap: wrap; }
 #tabs-loose > details { flex: 1 1 72px; min-width: 0; }
@@ -651,16 +652,52 @@ label.has-error { color: var(--danger); font-weight: 700; }
 #filters-dirty { margin-top: 10px; color: var(--warn-text); font-weight: 600; }
 .danger-zone { margin-top: 14px; padding: 12px; background: var(--error-bg); border: 1px solid var(--error-edge); border-radius: 12px; }
 .danger-zone .toolbar button { flex: 1; }
+.schedule { margin-top: 4px; }
+.schedule .field[hidden], .schedule .check[hidden] { display: none; }
+
+/* ---- v4: settings, tool buttons, collapsed cards, swipe, looks ---- */
+[hidden] { display: none !important; }
+#tools-modal, #planner-modal, #sales-modal { position: fixed; top: 0; right: 0; bottom: 0; left: 0; z-index: 50; background: rgba(0, 0, 0, 0.45); display: flex; align-items: flex-end; justify-content: center; }
+#tabs-loose { flex-wrap: wrap; }
+#tabs-loose > details, #tabs-loose > .tab-btn { flex: 1 1 calc(33.333% - 8px); min-width: 96px; }
+#tabs-loose > details > summary { padding: 0 6px; }
+.summary.empty { display: none; }
+body.no-invest #goals-mini { display: none !important; }
+.switch-card { background: var(--surface); border: 1px solid var(--line-soft); border-radius: 12px; padding: 4px 12px; margin-top: 10px; }
+.tools-intro { margin: 2px 2px 0; }
+.storage-help ol { margin: 6px 0 6px 20px; padding: 0; }
+.storage-help li { margin: 4px 0; }
+.badge.late { background: #d92d20; color: #ffffff; font-weight: 700; }
+.badge.due-badge { background: var(--warn-bg); color: var(--warn-text); border: 1px solid var(--warn-edge); font-weight: 700; }
+.card.closed .card-top { cursor: pointer; }
+.card-chev { position: absolute; top: 8px; right: 12px; font-size: 14px; color: var(--muted); pointer-events: none; }
+.card .card-title { padding-right: 22px; }
+.swipe-wrap { position: relative; margin: 14px 0; border-radius: 12px; overflow: hidden; }
+.swipe-wrap > .card { margin: 0; position: relative; z-index: 1; touch-action: pan-y; -webkit-user-select: none; user-select: none; }
+.swipe-bg { position: absolute; top: 0; bottom: 0; display: flex; align-items: stretch; }
+.swipe-next { left: 0; width: 150px; background: var(--sold-edge); color: #ffffff; align-items: center; padding-left: 14px; font-weight: 800; font-size: 15px; }
+.swipe-actions { right: 0; }
+.swipe-btn { flex: none; width: 76px; min-height: 0; border: 0; border-radius: 0; margin: 0; padding: 0 4px; font-size: 13px; font-weight: 800; color: #ffffff; }
+.swipe-btn.edit { background: #0b5cad; }
+.swipe-btn.lower { background: #b26a00; }
+.swipe-btn.dismiss { background: #5b6770; }
+.swipe-btn.delete { background: #b42318; }
+#menu-qr[hidden] { display: none; }
+.plat-card .bal-line { font-size: 13px; }
+.look-note { margin-top: 6px; }
+/* Color styles: two extra light looks and two extra dark looks */
+:root[data-theme="light"][data-look="rose"] { --bg: #fff8fa; --surface-2: #fceef2; --summary-bg: #f8e3ea; --tint: #fdeaf0; --text: #2a1a20; --muted: #5e464f; --line: #9d7f8b; --line-soft: #ecd0d9; --accent-text: #a3154f; --accent-line: #a3154f; --primary: #a3154f; --info-bg: #fde6ee; --info-text: #6e0e36; --listed-bg: #fde3ec; --listed-edge: #c0336f; --thumb-bg: #ecd9df; --track: #9d7f8b; }
+:root[data-theme="light"][data-look="sage"] { --bg: #f9fcf9; --surface-2: #eef5ef; --summary-bg: #e1ece4; --tint: #e7f2ea; --text: #17241b; --muted: #43534a; --line: #7d9486; --line-soft: #cddbd1; --accent-text: #1b6a43; --accent-line: #1b6a43; --primary: #1b6a43; --info-bg: #e0f2e7; --info-text: #124629; --listed-bg: #dcefe3; --listed-edge: #2e8a5e; --thumb-bg: #d3dfd6; --track: #7d9486; }
+:root[data-theme="dark"][data-look="midnight"] { --bg: #060a14; --surface: #0f1730; --surface-2: #172145; --summary-bg: #0b1226; --tint: #14213f; --text: #e6ebf7; --muted: #aab5d0; --line: #5c6a92; --line-soft: #26335c; --accent-text: #86b1ff; --accent-line: #6c9bff; --primary: #2f5fd0; --info-bg: #112147; --info-text: #b3ceff; --listed-bg: #112147; --thumb-bg: #202c52; --track: #4a5880; }
+:root[data-theme="dark"][data-look="plum"] { --bg: #150c17; --surface: #22142a; --surface-2: #2e1c38; --summary-bg: #1c1023; --tint: #33203f; --text: #f1e8f5; --muted: #c7b3d1; --line: #7d6490; --line-soft: #3d2a4b; --accent-text: #e2a6ff; --accent-line: #d58cff; --primary: #8a3fc0; --info-bg: #2f1b3d; --info-text: #efc9ff; --listed-bg: #2b1a3d; --listed-edge: #c58cf0; --thumb-bg: #3a2748; --track: #6a5278; }
 </style>
 </head>
 <body>
   <div class="top">
     <h1 id="app-title">Resale Tracker</h1>
-    <button type="button" id="title-edit" class="small-btn icon-btn" aria-label="Rename the app"></button>
   </div>
 
-  <div class="summary collapsed" id="summary-box">
-    <button type="button" id="summary-toggle" class="summary-toggle" aria-label="Open the top box" aria-expanded="false"></button>
+  <div class="summary" id="summary-box">
     <div class="stats">
       <div class="stat main">
         <span class="stat-label">Available balance</span>
@@ -673,47 +710,6 @@ label.has-error { color: var(--danger); font-weight: 700; }
         <span class="stat-label">Total profit</span>
         <span class="stat-value profit">$<span id="total">0.00</span></span>
       </div>
-    </div>
-
-    <div class="tabs" id="tabs-pinned">
-      <details id="pipeline-box">
-        <summary>Timeline</summary>
-        <div class="dropdown-panel" id="pipeline-panel"></div>
-      </details>
-
-      <details id="goals-box">
-        <summary>Investments</summary>
-        <div class="dropdown-panel">
-          <div class="goals-head">
-            <div id="overall-text">No investments in progress</div>
-            <button type="button" id="add-goal-button" class="small-btn">+ Add investment</button>
-          </div>
-          <div id="overall-box">
-            <progress id="overall-bar" value="0" max="1"></progress>
-          </div>
-          <div id="priority-hint" class="small">Your balance fills investments from the top. Tap one to change its order.</div>
-
-          <form id="goal-form">
-            <label class="field">Investment name <input id="goal-name" required placeholder="e.g. Printer or Rent"></label>
-            <label class="field">Amount ($) <input id="goal-amount" type="number" inputmode="decimal" step="0.01" min="0.01" required></label>
-            <label class="field">Repeats
-              <select id="goal-repeat">
-                <option value="none">Doesn't repeat</option>
-                <option value="monthly">Every month (like rent)</option>
-              </select>
-            </label>
-            <label class="check" id="goal-auto-row" hidden><input type="checkbox" id="goal-auto"> Reset automatically at the start of each month</label>
-            <div class="form-actions"><button type="submit" class="primary">Save investment</button></div>
-          </form>
-
-          <div id="goal-list"></div>
-
-          <details id="purchased-goals">
-            <summary id="purchased-summary">Paid investments (0)</summary>
-            <div id="purchased-list"></div>
-          </details>
-        </div>
-      </details>
     </div>
 
     <div id="goals-mini">
@@ -731,27 +727,59 @@ label.has-error { color: var(--danger); font-weight: 700; }
     </div>
   </div>
   <div class="tabs" id="tabs-loose">
+      <details id="pipeline-box">
+        <summary>Timeline</summary>
+        <div class="dropdown-panel" id="pipeline-panel"></div>
+      </details>
+      <details id="goals-box">
+        <summary>Investments</summary>
+        <div class="dropdown-panel">
+          <div class="goals-head">
+            <div id="overall-text">No investments in progress</div>
+            <button type="button" id="add-goal-button" class="small-btn">+ Add investment</button>
+          </div>
+          <div id="overall-box">
+            <progress id="overall-bar" value="0" max="1"></progress>
+          </div>
+          <div id="priority-hint" class="small">Your balance fills investments from the top. Tap one to change its order.</div>
+
+          <form id="goal-form">
+            <label class="field">Investment name <input id="goal-name" required placeholder="e.g. Printer or Rent"></label>
+            <label class="field">Amount ($) <input id="goal-amount" type="number" inputmode="decimal" step="0.01" min="0.01" required></label>
+            <div id="goal-schedule"></div>
+            <div class="form-actions"><button type="submit" class="primary">Save investment</button></div>
+          </form>
+
+          <div id="goal-list"></div>
+
+          <details id="purchased-goals">
+            <summary id="purchased-summary">Paid investments (0)</summary>
+            <div id="purchased-list"></div>
+          </details>
+        </div>
+      </details>
     <details id="bins-drop">
-      <summary>Locations</summary>
+      <summary>Storage</summary>
       <div class="dropdown-panel" id="bins-drop-panel">
   <div id="bin-chips"></div>
   <details class="filters-box" id="bins-box">
-    <summary id="bins-summary">Manage locations and labels</summary>
+    <summary id="bins-summary">Manage storage and labels</summary>
     <div class="filters-panel">
       <div id="bins-list"></div>
       <form id="bin-form">
-        <label class="field">Location name (a short letter or word, like A) <input id="bin-name" maxlength="12" required></label>
+        <label class="field">Storage name (a short letter or word, like A) <input id="bin-name" maxlength="12" required></label>
         <label class="field">Number of slots <input id="bin-slots" type="number" inputmode="numeric" step="1" min="1" max="100" value="12" required></label>
-        <div class="form-actions"><button type="submit" class="primary">Save location</button></div>
+        <div class="form-actions"><button type="submit" class="primary">Save storage</button></div>
       </form>
-      <button type="button" id="add-bin-button">+ Add location</button>
+      <button type="button" id="add-bin-button">+ Add storage</button>
     </div>
   </details>
 
       </div>
     </details>
     <button type="button" id="planner-button" class="tab-btn">Planner</button>
-    <button type="button" id="tools-button" class="tab-btn">Tools</button>
+    <button type="button" id="sales-button" class="tab-btn">Sales report</button>
+    <button type="button" id="tools-button" class="tab-btn">Settings</button>
   </div>
 
   <!-- ITEM LIST -->
@@ -778,7 +806,7 @@ label.has-error { color: var(--danger); font-weight: 700; }
         <option>Shipped</option>
       </select>
     </label>
-    <label class="field">Location
+    <label class="field">Storage
       <select id="filter-bin"></select>
     </label>
   </div>
@@ -841,8 +869,8 @@ label.has-error { color: var(--danger); font-weight: 700; }
         <div class="form-section">Where it is stored</div>
         <div id="slot-fields">
           <label class="check-line" style="grid-column: 1 / -1; margin-top: 4px;"><input type="checkbox" id="no-slot"> Not put away in a slot yet</label>
-          <label class="field" id="bin-label">Location
-            <select id="bin"><option value="">No location</option></select>
+          <label class="field" id="bin-label">Storage
+            <select id="bin"><option value="">No storage</option></select>
           </label>
           <label class="field" id="slot-label">Slot
             <select id="slot"><option value="">No slot</option></select>
@@ -851,12 +879,12 @@ label.has-error { color: var(--danger); font-weight: 700; }
             <div id="slot-full-text"></div>
             <div class="slot-full-buttons">
               <button type="button" id="add-slot-btn" class="small-btn"></button>
-              <button type="button" id="new-bin-btn" class="small-btn">Create a new location</button>
+              <button type="button" id="new-bin-btn" class="small-btn">Create a new storage</button>
             </div>
             <div id="new-bin-box" hidden>
-              <label class="field">New location name <input id="nb-name" maxlength="12" autocapitalize="characters"></label>
+              <label class="field">New storage name <input id="nb-name" maxlength="12" autocapitalize="characters"></label>
               <label class="field">Number of slots <input id="nb-slots" type="number" inputmode="numeric" min="1" max="100" value="12"></label>
-              <button type="button" id="nb-create" class="small-btn primary">Create location and use it</button>
+              <button type="button" id="nb-create" class="small-btn primary">Create storage and use it</button>
             </div>
           </div>
           <div id="slot-suggest" class="small" style="grid-column: 1 / -1; margin-top: 6px;"></div>
@@ -939,59 +967,34 @@ label.has-error { color: var(--danger); font-weight: 700; }
 
   <div id="tools-modal" hidden>
     <div class="modal-panel tools-panel">
-      <div class="tools-head"><h3>Tools</h3><button type="button" id="tools-close" class="small-btn">Close</button></div>
+      <div class="tools-head"><h3>Settings</h3><button type="button" id="tools-close" class="small-btn">Close</button></div>
+  <div class="tools-group">Tools</div>
+  <div class="small tools-intro">Turn on the tools you use. Each one gets a button on the main page.</div>
+  <div class="switch-card" id="feature-switches"></div>
+  <div class="tools-group">Item list</div>
+  <details class="filters-box" id="cards-box">
+    <summary>What each item shows</summary>
+    <div class="filters-panel">
+      <div class="small">Each item in the list shows its picture, platform and status. Pick any extra details to show on every item. Tap an item to open it and see everything you filled in.</div>
+      <div id="card-switches"></div>
+      <div id="swipe-switch"></div>
+    </div>
+  </details>
   <div class="tools-group">Money</div>
-  <details class="filters-box" id="weekly-box">
-    <summary>Sales history and profit per lot</summary>
-    <div class="filters-panel">
-      <div class="seg">
-        <button type="button" id="seg-weekly" class="on">By week</button>
-        <button type="button" id="seg-bulk">By lot</button>
-      </div>
-      <div id="pane-weekly">
-        <div id="weekly-summary" class="pane-title">Weekly sales</div>
-        <div id="weekly-body"></div>
-      </div>
-      <div id="pane-bulk" hidden>
-        <div id="bulkhist-summary" class="pane-title">Bulk history</div>
-        <div id="bulkhist-body"></div>
-      </div>
-      <div class="export-card">
-        <div class="export-text"><b>Download your items</b><span>Saves a spreadsheet you can open in Excel, Numbers or Google Sheets. Handy for taxes and keeping your own records.</span></div>
-        <div class="export-row">
-          <select id="export-scope" aria-label="What to download">
-            <option value="all">All items</option>
-            <option value="sold">Sold and shipped only</option>
-          </select>
-          <button type="button" id="export-button" class="small-btn"><span class="ico" aria-hidden="true"><svg viewBox="0 0 24 24" focusable="false"><path d="M12 4v11M7 11l5 5 5-5M5 20h14"/></svg></span> Download</button>
-        </div>
-        <div id="export-note" class="small" hidden></div>
-      </div>
-    </div>
-  </details>
-
-  <details class="filters-box" id="balances">
-    <summary>Platform balances</summary>
-    <div class="filters-panel">
-      <div class="small">Type what each platform already held when you started. Item profit is added on top.</div>
-      <div id="balances-list"></div>
-      <div class="bal-block">
-        <div class="bal-name">Combined</div>
-        <div class="bal-line"><span>Starting balances</span><span id="start-all">$0.00</span></div>
-        <div class="bal-line"><span>Item profit</span><span id="item-all">$0.00</span></div>
-        <div class="bal-line total"><span>Total</span><span id="sum-all">$0.00</span></div>
-      </div>
-    </div>
-  </details>
-
   <details class="filters-box" id="platforms-box">
-    <summary>Platforms, fees and bump costs</summary>
+    <summary>Platforms, fees and balances</summary>
     <div class="filters-panel">
-      <div class="small">Turn a platform off if you do not sell there. Bump cost is what you pay to advertise or bump an item on that platform. It is taken off your profit.</div>
+      <div class="small">Turn off a platform you don't sell on. Bump costs and fees come off your profit.</div>
       <div id="platforms-list"></div>
       <div class="plat-add">
         <input id="new-platform-name" maxlength="20" placeholder="New platform name">
         <button type="button" id="add-platform-button" class="small-btn primary">Add platform</button>
+      </div>
+      <div class="bal-block">
+        <div class="bal-name">All platforms</div>
+        <div class="bal-line"><span>Starting balances</span><span id="start-all">$0.00</span></div>
+        <div class="bal-line"><span>Item profit</span><span id="item-all">$0.00</span></div>
+        <div class="bal-line total"><span>Total</span><span id="sum-all">$0.00</span></div>
       </div>
     </div>
   </details>
@@ -1009,7 +1012,20 @@ label.has-error { color: var(--danger); font-weight: 700; }
     </div>
   </details>
 
-  <div class="tools-group">Reminders and display</div>
+  <details class="filters-box storage-help" id="storage-help">
+    <summary>How storage works</summary>
+    <div class="filters-panel">
+      <div class="small"><b>Storage</b> is where your items physically live: a box, a shelf, a rail, a drawer. It is optional. Skip it if you keep everything in one place.</div>
+      <ol class="small">
+        <li>Tap <b>Storage</b> on the main page, then <b>+ Add storage</b>. Give it a short name (like A or Shelf) and a number of slots (spots).</li>
+        <li>When you add an item, pick its storage and slot. Then you always know where it is.</li>
+        <li>When you mark an item shipped, its slot opens up again.</li>
+        <li>Want QR labels? Open <b>Manage storage and labels</b>, tap <b>Print labels</b>, and stick one on each slot. Then <b>Add item &gt; Scan a QR code</b> jumps straight to that spot.</li>
+      </ol>
+      <div class="small">The Scan a QR code choice only appears once you have created some storage.</div>
+    </div>
+  </details>
+  <div class="tools-group">Reminders and alerts</div>
   <details class="filters-box" id="alerts-box">
     <summary>Reminders and alerts</summary>
     <div class="filters-panel">
@@ -1036,21 +1052,27 @@ label.has-error { color: var(--danger); font-weight: 700; }
         <div class="switch-text"><b>Pulse late alerts</b><span>Makes late alerts gently flash. Off by default. Phones set to reduce motion never flash.</span></div>
         <span class="switch"><input type="checkbox" id="ship-pulse-on" aria-label="Pulse late alerts"><span class="track"></span></span>
       </div>
-      <div class="switch-row">
-        <div class="switch-text"><b>Appearance</b><span>Auto follows your phone's light or dark setting.</span></div>
-        <select id="theme-select" aria-label="Appearance"><option value="auto">Auto</option><option value="light">Light</option><option value="dark">Dark</option></select>
-      </div>
     </div>
   </details>
-  <details class="filters-box" id="display-box">
-    <summary>What stays pinned at the top</summary>
+  <div class="tools-group">Appearance</div>
+  <details class="filters-box" id="look-box">
+    <summary>Title and colors</summary>
     <div class="filters-panel">
-      <div class="small">Pinned things stay in the grey box at the top while you scroll. Unpinned ones sit under the title and scroll away.</div>
-      <label class="field">Pin at the top
-        <select id="pin-choice">
-                    <option value="goals">Progress bar (investments)</option>
-          <option value="pipeline">Planner timeline</option>
-          <option value="none">Nothing (the whole top box scrolls away with the page)</option>
+      <label class="field">App title <input id="title-input" maxlength="30" autocomplete="off"></label>
+      <div class="form-actions"><button type="button" id="title-save" class="primary">Save title</button></div>
+      <label class="field">Colors
+        <select id="theme-select" aria-label="Colors">
+          <option value="auto">Automatic (follows your phone)</option>
+          <optgroup label="Light">
+            <option value="light">Light: Classic</option>
+            <option value="light-rose">Light: Rose</option>
+            <option value="light-sage">Light: Sage</option>
+          </optgroup>
+          <optgroup label="Dark">
+            <option value="dark">Dark: Classic</option>
+            <option value="dark-midnight">Dark: Midnight</option>
+            <option value="dark-plum">Dark: Plum</option>
+          </optgroup>
         </select>
       </label>
     </div>
@@ -1076,17 +1098,48 @@ label.has-error { color: var(--danger); font-weight: 700; }
     </details>
     <div id="backup-note"></div>
     <div class="export-card">
-      <div class="export-text"><b>Example backup</b><span>A sample file with a few made-up items, an investment and a location, so you can see how a backup looks or try the app with data. Restoring it replaces what is in the app, so save your own backup first.</span></div>
+      <div class="export-text"><b>Example backup</b><span>A sample file with a few made-up items, an investment and a storage, so you can see how a backup looks or try the app with data. Restoring it replaces what is in the app, so save your own backup first.</span></div>
       <div class="toolbar"><button type="button" id="example-backup" class="small-btn">Download example backup</button></div>
     </div>
     <div class="danger-zone">
-      <div class="export-text"><b>Start from zero</b><span>Deletes all your items, investments, balances, locations, planner data and settings from this copy of the app. Save a backup first if you might want anything back.</span></div>
+      <div class="export-text"><b>Start from zero</b><span>Deletes all your items, investments, balances, storage, planner data and settings from this copy of the app. Save a backup first if you might want anything back.</span></div>
       <div class="toolbar"><button type="button" id="wipe-button" class="danger">Delete everything and start over</button></div>
     </div>
   </div>
 
     </div>
   </details>
+    </div>
+  </div>
+
+  <div id="sales-modal" hidden>
+    <div class="modal-panel tools-panel">
+      <div class="tools-head"><h3>Sales report</h3><button type="button" id="sales-close" class="small-btn">Close</button></div>
+    <div class="filters-panel" id="weekly-box">
+      <div class="seg">
+        <button type="button" id="seg-weekly" class="on">By week</button>
+        <button type="button" id="seg-bulk">By lot</button>
+      </div>
+      <div id="pane-weekly">
+        <div id="weekly-summary" class="pane-title">Weekly sales</div>
+        <div id="weekly-body"></div>
+      </div>
+      <div id="pane-bulk" hidden>
+        <div id="bulkhist-summary" class="pane-title">Bulk history</div>
+        <div id="bulkhist-body"></div>
+      </div>
+      <div class="export-card">
+        <div class="export-text"><b>Download your items</b><span>Saves a spreadsheet you can open in Excel, Numbers or Google Sheets. Handy for taxes and keeping your own records.</span></div>
+        <div class="export-row">
+          <select id="export-scope" aria-label="What to download">
+            <option value="all">All items</option>
+            <option value="sold">Sold and shipped only</option>
+          </select>
+          <button type="button" id="export-button" class="small-btn"><span class="ico" aria-hidden="true"><svg viewBox="0 0 24 24" focusable="false"><path d="M12 4v11M7 11l5 5 5-5M5 20h14"/></svg></span> Download</button>
+        </div>
+        <div id="export-note" class="small" hidden></div>
+      </div>
+    </div>
     </div>
   </div>
 
@@ -1185,7 +1238,7 @@ label.has-error { color: var(--danger); font-weight: 700; }
 // The money and date rules live in js/logic.js (tested with: node tests/logic.test.js).
 const { money, salePrice, isDone, feeTotal, platformFee, shipCostOf, costsTotal, profitOf, bulkCosts,
   parseDate, formatDate, dayDiff, addDays, isWeekend, shipByDate, capWords, wordCount, isQuickNameOk, backupDue,
-  withdrawPlan, applyWithdrawal, undoWithdrawal, monthOf, monthLabel, resetInvestment, rolloverInvestments } = window.ResaleLogic;
+  withdrawPlan, applyWithdrawal, undoWithdrawal, monthOf, monthLabel, periodStart, periodLabel, repeatText, resetInvestment, rolloverInvestments } = window.ResaleLogic;
 
 // The browser's own alert and confirm pop-ups are blocked in some browsers, so the app shows its own.
 const msgModal = document.getElementById("msg-modal");
@@ -1259,6 +1312,27 @@ const STATUSES = ["In progress", "Listed", "Sold", "Shipped"];
 const STATUS_CLASS = { "In progress": "row-progress", "Listed": "row-listed", "Sold": "row-sold", "Shipped": "row-shipped" };
 // The button on each card that moves an item to its next step.
 const NEXT_STEP = { "In progress": "Mark as Listed", "Listed": "Mark as Sold", "Sold": "Mark as Shipped" };
+// Optional tools (each gets a button) and which extra details every item shows. Both are chosen in Settings.
+const FEATURE_KEYS = ["summary", "timeline", "investments", "planner", "sales"];
+const CARD_KEYS = ["price", "profit", "weight", "cost", "storage", "photos", "notes"];
+function cleanFeatures(obj) {
+  const out = {};
+  FEATURE_KEYS.forEach(function (k) { out[k] = !obj || obj[k] === undefined ? true : !!obj[k]; });
+  return out;
+}
+function cleanCardFields(obj) {
+  const out = {};
+  CARD_KEYS.forEach(function (k) { out[k] = !!(obj && obj[k]); });
+  return out;
+}
+function loadSetting(key) {
+  try { return JSON.parse(localStorage.getItem(key)); } catch (e) { return null; }
+}
+let features = cleanFeatures(loadSetting("features"));
+let cardFields = cleanCardFields(loadSetting("cardFields"));
+let swipeOn = true;
+try { swipeOn = localStorage.getItem("swipeOn") !== "0"; } catch (e) {}
+const openCards = new Set();
 
 // The bin you start with the first time the app opens. You can add bins and change slot counts in the app.
 const DEFAULT_BINS = [{ name: "A", slots: 12 }];
@@ -1377,15 +1451,18 @@ try {
 function cleanGoals(list) {
   if (!Array.isArray(list)) return [];
   return list.filter(function (g) { return g && typeof g === "object"; }).map(function (g) {
-    const repeat = g.repeat === "monthly" ? "monthly" : "none";
+    const repeat = ["daily", "weekly", "monthly", "yearly"].indexOf(g.repeat) !== -1 ? g.repeat : "none";
+    const cycle = String(g.cycle || "");
     return {
       name: String(g.name || ""),
       amount: Number(g.amount) || 0,
       purchased: !!g.purchased,
       settled: Number(g.settled) || 0,
       repeat: repeat,
-      autoReset: repeat === "monthly" && !!g.autoReset,
-      cycle: /^\d{4}-\d{2}$/.test(String(g.cycle || "")) ? String(g.cycle) : ""
+      repeatDay: repeat === "weekly" ? (Number.isFinite(Number(g.repeatDay)) && g.repeatDay !== "" && g.repeatDay !== null ? Math.min(6, Math.max(0, Math.round(Number(g.repeatDay)))) : 1) : (Math.min(31, Math.max(1, Math.round(Number(g.repeatDay)) || 1))),
+      repeatMonth: Math.min(12, Math.max(1, Math.round(Number(g.repeatMonth)) || 1)),
+      autoReset: repeat !== "none" && !!g.autoReset,
+      cycle: /^\d{4}-\d{2}(-\d{2})?$/.test(cycle) ? cycle : ""
     };
   });
 }
@@ -1653,7 +1730,6 @@ const statusFilterInput = document.getElementById("status-filter");
 const remindInput = document.getElementById("remind-days");
 const goalForm = document.getElementById("goal-form");
 const addGoalButton = document.getElementById("add-goal-button");
-const balancesBox = document.getElementById("balances");
 const goalsBox = document.getElementById("goals-box");
 const nameInput = document.getElementById("name");
 const nameRow = document.getElementById("name-row");
@@ -1881,7 +1957,7 @@ function fillOptions(select, options) {
 }
 
 function refreshBinOptions() {
-  const options = [{ value: "", text: "No location" }];
+  const options = [{ value: "", text: "No storage" }];
   bins.forEach(function (b) { options.push({ value: b.name, text: b.name }); });
   fillOptions(binInput, options);
 }
@@ -1926,7 +2002,7 @@ function applySuggestedSlot() {
   if (bins.length === 0) return;
   const pick = suggestSlot();
   if (!pick) {
-    // Everything is full: show the newest bin so the panel can offer "Add a slot" or "Create a new location".
+    // Everything is full: show the newest bin so the panel can offer "Add a slot" or "Create a new storage".
     binInput.value = bins[bins.length - 1].name;
     refreshSlotOptions();
     return;
@@ -2016,10 +2092,10 @@ function syncSlotUI() {
   if (!none) needHelp = bin ? freeSlotCount(bin) === 0 : (bins.length === 0 || suggestSlot() === null);
   panel.hidden = !needHelp;
   if (needHelp) {
-    document.getElementById("slot-full-text").textContent = bin ? "Location " + bin.name + " has no empty slots." : (bins.length === 0 ? "No locations yet." : "Every slot is full.");
+    document.getElementById("slot-full-text").textContent = bin ? "Storage " + bin.name + " has no empty slots." : (bins.length === 0 ? "No storage yet." : "Every slot is full.");
     const addBtn = document.getElementById("add-slot-btn");
     addBtn.hidden = !bin || bin.slots >= MAX_SLOTS;
-    addBtn.textContent = bin ? "Add a slot to location " + bin.name : "";
+    addBtn.textContent = bin ? "Add a slot to storage " + bin.name : "";
   } else {
     document.getElementById("new-bin-box").hidden = true;
   }
@@ -2050,7 +2126,7 @@ document.getElementById("add-slot-btn").addEventListener("click", function () {
   render();
   refreshSlotOptions();
   slotInput.value = String(bin.slots);
-  document.getElementById("slot-suggest").textContent = "Added slot " + slotLabel(bin.name, bin.slots) + ". Print its label under Manage locations and labels.";
+  document.getElementById("slot-suggest").textContent = "Added slot " + slotLabel(bin.name, bin.slots) + ". Print its label under Manage storage and labels.";
   syncSlotUI();
 });
 document.getElementById("new-bin-btn").addEventListener("click", function () {
@@ -2064,8 +2140,8 @@ document.getElementById("new-bin-btn").addEventListener("click", function () {
 document.getElementById("nb-create").addEventListener("click", function () {
   const name = document.getElementById("nb-name").value.trim().toUpperCase();
   const slots = Math.floor(Number(document.getElementById("nb-slots").value));
-  if (name === "") { alert("Please give the location a name."); return; }
-  if (findBin(name)) { alert("You already have a location named " + name + "."); return; }
+  if (name === "") { alert("Please give the storage a name."); return; }
+  if (findBin(name)) { alert("You already have a storage named " + name + "."); return; }
   if (!(slots >= 1 && slots <= MAX_SLOTS)) { alert("Slots must be a number from 1 to " + MAX_SLOTS + "."); return; }
   bins.push({ name: name, slots: slots });
   save();
@@ -2074,7 +2150,7 @@ document.getElementById("nb-create").addEventListener("click", function () {
   binInput.value = name;
   refreshSlotOptions();
   slotInput.value = "1";
-  document.getElementById("slot-suggest").textContent = "Created location " + name + " with " + slots + " slots. Print its labels under Manage locations and labels.";
+  document.getElementById("slot-suggest").textContent = "Created storage " + name + " with " + slots + " slots. Print its labels under Manage storage and labels.";
   syncSlotUI();
 });
 
@@ -2409,16 +2485,18 @@ function markQrUsed() {
 }
 const addMenu = document.getElementById("add-menu");
 function openAddMenu() {
+  const hasStorage = bins.length > 0;
   const ready = qrInUse();
+  document.getElementById("menu-qr").hidden = !hasStorage;
   document.getElementById("menu-qr").disabled = !ready;
   document.getElementById("menu-qr-sub").textContent = ready ? "Point the camera at a slot label" : "Not set up yet";
   const warn = document.getElementById("menu-qr-warning");
-  warn.hidden = ready;
+  warn.hidden = ready || !hasStorage;
   warn.innerHTML = "";
-  if (!ready) {
+  if (!ready && hasStorage) {
     warn.appendChild(document.createTextNode("To start using QR codes:"));
     const ol = document.createElement("ol");
-    ["Open \"Manage locations and labels\" on the main page and tap Print labels for a location.", "Print them and stick one on each slot.", "Come back here. This option turns on after you have opened the labels."].forEach(function (t) {
+    ["Open \"Manage storage and labels\" on the main page and tap Print labels for a storage.", "Print them and stick one on each slot.", "Come back here. This option turns on after you have opened the labels."].forEach(function (t) {
       const li = document.createElement("li");
       li.textContent = t;
       ol.appendChild(li);
@@ -2871,47 +2949,48 @@ function visiblePlatformsForBalance() {
     return p.enabled || (balances[p.name] || 0) !== 0 || items.some(function (it) { return it.site === p.name; });
   });
 }
-function buildBalanceBlocks() {
-  const list = document.getElementById("balances-list");
-  list.innerHTML = "";
-  Object.keys(balanceRefs).forEach(function (k) { delete balanceRefs[k]; });
-  const shown = visiblePlatformsForBalance();
-  balanceSig = shown.map(function (p) { return p.name; }).join("|");
-  shown.forEach(function (p) {
-    const block = el("div", "bal-block");
-    block.appendChild(el("div", "bal-name", p.name + (p.enabled ? "" : " (off)")));
-    const label = el("label", "field", "Starting balance ($)");
-    const input = document.createElement("input");
-    input.type = "number";
-    input.inputMode = "decimal";
-    input.step = "0.01";
-    input.min = "0";
-    input.placeholder = "0.00";
-    input.value = balances[p.name] ? balances[p.name] : "";
-    label.appendChild(input);
-    block.appendChild(label);
-    const itemLine = el("div", "bal-line");
-    itemLine.appendChild(el("span", "", "Item profit"));
-    const itemSpan = el("span", "", "$0.00");
-    itemLine.appendChild(itemSpan);
-    const totalLine = el("div", "bal-line total");
-    totalLine.appendChild(el("span", "", "Total"));
-    const sumSpan = el("span", "", "$0.00");
-    totalLine.appendChild(sumSpan);
-    block.appendChild(itemLine);
-    block.appendChild(totalLine);
-    list.appendChild(block);
-    balanceRefs[p.name] = { input: input, item: itemSpan, sum: sumSpan };
-    input.addEventListener("input", function () {
-      balances[p.name] = Number(input.value) || 0;
-      save();
-      render();
-    });
+function buildBalanceBlocks() { renderPlatformEditor(); }
+let lastItemByPlatform = {};
+function paintBalances() {
+  Object.keys(balanceRefs).forEach(function (name) {
+    const start = balances[name] || 0;
+    const made = lastItemByPlatform[name] || 0;
+    balanceRefs[name].item.textContent = money(made);
+    balanceRefs[name].sum.textContent = money(start + made);
+  });
+}
+// The starting balance box, shown inside each platform's card in Settings.
+function addBalanceRow(card, p) {
+  const label = el("label", "field", "Starting balance ($)");
+  const input = document.createElement("input");
+  input.type = "number";
+  input.inputMode = "decimal";
+  input.step = "0.01";
+  input.min = "0";
+  input.placeholder = "0.00";
+  input.value = balances[p.name] ? balances[p.name] : "";
+  label.appendChild(input);
+  card.appendChild(label);
+  const itemLine = el("div", "bal-line");
+  itemLine.appendChild(el("span", "", "Item profit"));
+  const itemSpan = el("span", "", "$0.00");
+  itemLine.appendChild(itemSpan);
+  const totalLine = el("div", "bal-line total");
+  totalLine.appendChild(el("span", "", "Total"));
+  const sumSpan = el("span", "", "$0.00");
+  totalLine.appendChild(sumSpan);
+  card.appendChild(itemLine);
+  card.appendChild(totalLine);
+  balanceRefs[p.name] = { input: input, item: itemSpan, sum: sumSpan };
+  input.addEventListener("input", function () {
+    balances[p.name] = Number(input.value) || 0;
+    save();
+    render();
   });
 }
 function ensureBalanceBlocks() {
   const sig = visiblePlatformsForBalance().map(function (p) { return p.name; }).join("|");
-  if (sig !== balanceSig) buildBalanceBlocks();
+  if (sig !== balanceSig) renderPlatformEditor();
 }
 
 // ---- the two dropdowns in the top box ----
@@ -2972,7 +3051,7 @@ filterInput.addEventListener("change", function () {
   markFiltersDirty();
 });
 
-// Location, type and brand lists are built from your items, so they only offer what exists.
+// Storage, type and brand lists are built from your items, so they only offer what exists.
 const binFilterInput = document.getElementById("filter-bin");
 function sameText(a, b) { return String(a || "").trim().toLowerCase() === String(b || "").trim().toLowerCase(); }
 function fillFilterSelect(select, current, values, extras) {
@@ -2999,7 +3078,7 @@ function distinctSorted(getter) {
 }
 function refreshFilterOptions() {
   const binNames = bins.map(function (b) { return b.name; });
-  draftBin = fillFilterSelect(binFilterInput, draftBin, binNames, [["none", "No location / not in a slot"]]);
+  draftBin = fillFilterSelect(binFilterInput, draftBin, binNames, [["none", "No storage / not in a slot"]]);
   if (binFilter !== "All" && binFilter !== "none" && binNames.indexOf(binFilter) === -1) binFilter = "All";
 }
 binFilterInput.addEventListener("change", function () {
@@ -3087,10 +3166,16 @@ shipPulseBox.addEventListener("change", function () {
 const themeSelect = document.getElementById("theme-select");
 let themeChoice = "auto";
 try { themeChoice = localStorage.getItem("theme") || "auto"; } catch (e) {}
+const THEME_CHOICES = ["auto", "light", "light-rose", "light-sage", "dark", "dark-midnight", "dark-plum"];
 function applyTheme() {
-  if (themeChoice === "light" || themeChoice === "dark") document.documentElement.setAttribute("data-theme", themeChoice);
-  else document.documentElement.removeAttribute("data-theme");
-  themeSelect.value = themeChoice === "light" || themeChoice === "dark" ? themeChoice : "auto";
+  if (THEME_CHOICES.indexOf(themeChoice) === -1) themeChoice = "auto";
+  const parts = themeChoice.split("-");
+  const root = document.documentElement;
+  if (parts[0] === "light" || parts[0] === "dark") root.setAttribute("data-theme", parts[0]);
+  else root.removeAttribute("data-theme");
+  if (parts[1]) root.setAttribute("data-look", parts[1]);
+  else root.removeAttribute("data-look");
+  themeSelect.value = themeChoice;
 }
 themeSelect.addEventListener("change", function () {
   themeChoice = themeSelect.value;
@@ -3384,11 +3469,11 @@ const scanModal = document.getElementById("scan-modal");
 const scanBody = document.getElementById("scan-body");
 
 function syncModalLock() {
-  const open = ["scan-modal", "price-modal", "add-menu", "tools-modal", "planner-modal", "msg-modal"].some(function (id) { return !document.getElementById(id).hidden; });
+  const open = ["scan-modal", "price-modal", "add-menu", "tools-modal", "planner-modal", "sales-modal", "msg-modal"].some(function (id) { return !document.getElementById(id).hidden; });
   document.body.classList.toggle("modal-open", open);
 }
 new MutationObserver(syncModalLock).observe(scanModal, { attributes: true, attributeFilter: ["hidden"] });
-["price-modal", "tools-modal", "planner-modal", "msg-modal", "add-menu"].forEach(function (id) {
+["price-modal", "tools-modal", "planner-modal", "sales-modal", "msg-modal", "add-menu"].forEach(function (id) {
   new MutationObserver(syncModalLock).observe(document.getElementById(id), { attributes: true, attributeFilter: ["hidden"] });
 });
 
@@ -3396,7 +3481,7 @@ new MutationObserver(syncModalLock).observe(scanModal, { attributes: true, attri
 // Each kind of pop-up gets its own color so you can tell at a glance what you are doing:
 // the pop-up's data-kind is picked from its title.
 const SHEET_KINDS = [[/^List /, "list"], [/^Sold/, "sold"], [/ship/i, "ship"], [/lower the price/i, "price"],
-  [/^Withdraw/, "money"], [/^Bulk|^Where do|^Item \d/, "bulk"], [/^Slot|^Location /, "slot"]];
+  [/^Withdraw/, "money"], [/^Bulk|^Where do|^Item \d/, "bulk"], [/^Slot|^Storage /, "slot"]];
 new MutationObserver(function () {
   const heading = scanBody.querySelector("h3");
   const text = heading ? heading.textContent : "";
@@ -3436,7 +3521,7 @@ document.addEventListener("keydown", function (event) {
 function openSlotView(bin, n) {
   scanBody.innerHTML = "";
   scanBody.appendChild(el("h3", "", "Slot " + slotLabel(bin.name, n)));
-  scanBody.appendChild(el("div", "small", "Location " + bin.name + " \u00B7 slot " + n + " of " + bin.slots));
+  scanBody.appendChild(el("div", "small", "Storage " + bin.name + " \u00B7 slot " + n + " of " + bin.slots));
 
   const index = itemInSlot(bin.name, n);
   if (index === -1) {
@@ -3469,7 +3554,7 @@ function openSlotView(bin, n) {
       startEdit(index);
     }));
   }
-  scanBody.appendChild(modalButton("See all of location " + bin.name, "", function () { openBinView(bin); }));
+  scanBody.appendChild(modalButton("See all of storage " + bin.name, "", function () { openBinView(bin); }));
   scanBody.appendChild(modalButton("Close", "", closeScanModal));
   scanModal.hidden = false;
 }
@@ -3477,7 +3562,7 @@ function openSlotView(bin, n) {
 // One bin: every slot with what is in it.
 function openBinView(bin) {
   scanBody.innerHTML = "";
-  scanBody.appendChild(el("h3", "", "Location " + bin.name));
+  scanBody.appendChild(el("h3", "", "Storage " + bin.name));
   const used = binUsed(bin);
   const waiting = items.filter(function (it) { return it.bin === bin.name && it.status === "Sold"; }).length;
   let summary = used + "/" + bin.slots + " slots used";
@@ -3532,8 +3617,8 @@ function openScanTarget(binParam, slotParam) {
   markQrUsed();
   const bin = findBin(binParam);
   if (!bin) {
-    openScanMessage("Location " + String(binParam).toUpperCase() + " isn't set up here",
-      "Add it under Manage locations and labels. If you expected to see items, this may be a different browser or device than the one that holds your data.");
+    openScanMessage("Storage " + String(binParam).toUpperCase() + " isn't set up here",
+      "Add it under Manage storage and labels. If you expected to see items, this may be a different browser or device than the one that holds your data.");
     return;
   }
   if (slotParam === null || slotParam === undefined || slotParam === "") {
@@ -3542,7 +3627,7 @@ function openScanTarget(binParam, slotParam) {
   }
   const n = Number(slotParam);
   if (!(n >= 1 && n <= bin.slots && Math.floor(n) === n)) {
-    openScanMessage("Slot " + slotParam + " doesn't exist", "Location " + bin.name + " has " + bin.slots + " slots. You can change that under Manage locations and labels.");
+    openScanMessage("Slot " + slotParam + " doesn't exist", "Storage " + bin.name + " has " + bin.slots + " slots. You can change that under Manage storage and labels.");
     return;
   }
   openSlotView(bin, n);
@@ -3676,7 +3761,7 @@ function startCamera() {
     })
     .then(function () {
       if (!cameraStream) return;
-      cameraMsg.textContent = "Point the camera at a slot or location label";
+      cameraMsg.textContent = "Point the camera at a slot or storage label";
       scanLoop();
     })
     .catch(function (err) {
@@ -3926,7 +4011,7 @@ function renderBulkItem() {
     return true;
   }
 
-  const next = modalButton(last ? "Add item and choose a location" : "Next item", "primary", function () {
+  const next = modalButton(last ? "Add item and choose a storage" : "Next item", "primary", function () {
     if (!takeDraft()) return;
     if (last) openBulkPlace();
     else renderBulkItem();
@@ -3997,23 +4082,23 @@ function openBulkPlace() {
     const free = freeSlotList(bin);
     if (free.length < n) return;
     anyFits = true;
-    scanBody.appendChild(modalButton("Location " + bin.name + " (" + free.length + " open slots)", "primary", function () {
+    scanBody.appendChild(modalButton("Storage " + bin.name + " (" + free.length + " open slots)", "primary", function () {
       bulkFinish(free.slice(0, n), "");
     }));
   });
   if (!anyFits && open.length >= n) {
-    scanBody.appendChild(modalButton("Spread across open slots in all locations (" + open.length + " open)", "primary", function () {
+    scanBody.appendChild(modalButton("Spread across open slots in all storage (" + open.length + " open)", "primary", function () {
       bulkFinish(open.slice(0, n), "");
     }));
   }
   if (!anyFits && open.length < n) {
     scanBody.appendChild(el("div", "small", bins.length === 0
-      ? "You have no locations yet. Create one below."
-      : "Your locations have only " + open.length + " open " + (open.length === 1 ? "slot" : "slots") + " in total, fewer than " + n + ". Create a new location below."));
+      ? "You have no storage yet. Create one below."
+      : "Your storage has only " + open.length + " open " + (open.length === 1 ? "slot" : "slots") + " in total, fewer than " + n + ". Create a new storage below."));
   }
 
-  scanBody.appendChild(el("div", "slot-item-name", "Or create a new location"));
-  const nbNameLabel = el("label", "field", "New location name");
+  scanBody.appendChild(el("div", "slot-item-name", "Or create a new storage"));
+  const nbNameLabel = el("label", "field", "New storage name");
   const nbName = document.createElement("input");
   nbName.maxLength = 12;
   nbName.value = nextBinName();
@@ -4030,19 +4115,19 @@ function openBulkPlace() {
   nbSlotsLabel.appendChild(nbSlots);
   scanBody.appendChild(nbSlotsLabel);
   scanBody.appendChild(el("div", "small", "The slots start at the number of items you added. You can change it."));
-  scanBody.appendChild(modalButton("Create location and place items", "primary", function () {
+  scanBody.appendChild(modalButton("Create storage and place items", "primary", function () {
     const name = nbName.value.trim().toUpperCase();
     const slots = Math.floor(Number(nbSlots.value));
-    if (name === "") { alert("Please give the location a name."); return; }
-    if (findBin(name)) { alert("You already have a location named " + name + "."); return; }
+    if (name === "") { alert("Please give the storage a name."); return; }
+    if (findBin(name)) { alert("You already have a storage named " + name + "."); return; }
     if (!(slots >= 1 && slots <= MAX_SLOTS)) { alert("Slots must be a number from 1 to " + MAX_SLOTS + "."); return; }
     bins.push({ name: name, slots: slots });
     const spots = [];
     for (let s = 1; s <= Math.min(n, slots); s++) spots.push({ bin: name, slot: s });
-    bulkFinish(spots, "Created location " + name + " with " + slots + " slots.");
+    bulkFinish(spots, "Created storage " + name + " with " + slots + " slots.");
   }));
 
-  scanBody.appendChild(modalButton("Don't put them in a location yet", "", function () { bulkFinish(null, ""); }));
+  scanBody.appendChild(modalButton("Don't put them in a storage yet", "", function () { bulkFinish(null, ""); }));
   scanBody.appendChild(modalButton("Go back to the last item", "", function () {
     bulkUndo();
     renderBulkItem();
@@ -4265,7 +4350,7 @@ addBinButton.addEventListener("click", function () {
   if (binForm.style.display === "block") {
     binForm.style.display = "none";
     binForm.reset();
-    addBinButton.textContent = "+ Add location";
+    addBinButton.textContent = "+ Add storage";
   } else {
     binForm.style.display = "block";
     addBinButton.textContent = "Close form";
@@ -4278,11 +4363,11 @@ binForm.addEventListener("submit", function (event) {
   const name = document.getElementById("bin-name").value.trim().toUpperCase();
   const slots = Math.floor(Number(document.getElementById("bin-slots").value));
   if (name === "") {
-    alert("Please give the location a name.");
+    alert("Please give the storage a name.");
     return;
   }
   if (findBin(name)) {
-    alert("You already have a location named " + name + ".");
+    alert("You already have a storage named " + name + ".");
     return;
   }
   if (!(slots >= 1 && slots <= MAX_SLOTS)) {
@@ -4294,12 +4379,12 @@ binForm.addEventListener("submit", function (event) {
   render();
   binForm.reset();
   binForm.style.display = "none";
-  addBinButton.textContent = "+ Add location";
+  addBinButton.textContent = "+ Add storage";
 });
 
 function buildBinEditor(bin, used) {
   const editor = el("form", "goal-row editing");
-  editor.appendChild(el("div", "bin-name", "Location " + bin.name));
+  editor.appendChild(el("div", "bin-name", "Storage " + bin.name));
 
   const label = el("label", "field", "Number of slots");
   const input = document.createElement("input");
@@ -4312,7 +4397,7 @@ function buildBinEditor(bin, used) {
   input.required = true;
   label.appendChild(input);
   editor.appendChild(label);
-  editor.appendChild(el("div", "small", "Adding slots keeps your existing labels working. Print labels for the new ones. A location can't shrink while the slots you'd remove still hold items."));
+  editor.appendChild(el("div", "small", "Adding slots keeps your existing labels working. Print labels for the new ones. A storage can't shrink while the slots you'd remove still hold items."));
 
   const buttons = el("div", "form-actions");
   const saveBtn = el("button", "primary", "Save");
@@ -4327,16 +4412,16 @@ function buildBinEditor(bin, used) {
   buttons.appendChild(cancel);
   editor.appendChild(buttons);
 
-  const remove = el("button", "danger block", "Delete location");
+  const remove = el("button", "danger block", "Delete storage");
   remove.type = "button";
   remove.style.width = "100%";
   remove.style.marginTop = "10px";
   remove.onclick = function () {
     if (used > 0) {
-      alert("Location " + bin.name + " still holds " + used + (used === 1 ? " item" : " items") + ". Ship or move them first.");
+      alert("Storage " + bin.name + " still holds " + used + (used === 1 ? " item" : " items") + ". Ship or move them first.");
       return;
     }
-    askYesNo("Delete location " + bin.name + "? Its printed labels will stop working.", "Delete location", function () {
+    askYesNo("Delete storage " + bin.name + "? Its printed labels will stop working.", "Delete storage", function () {
       bins.splice(bins.indexOf(bin), 1);
       Object.keys(freed).forEach(function (key) {
         if (key.indexOf(bin.name + "|") === 0) delete freed[key];
@@ -4359,7 +4444,7 @@ function buildBinEditor(bin, used) {
       for (let s = n + 1; s <= bin.slots; s++) {
         const idx = itemInSlot(bin.name, s);
         if (idx !== -1) {
-          alert("Slot " + slotLabel(bin.name, s) + " still holds " + items[idx].name + ". Ship or move it first, then shrink the location.");
+          alert("Slot " + slotLabel(bin.name, s) + " still holds " + items[idx].name + ". Ship or move it first, then shrink the storage.");
           return;
         }
       }
@@ -4390,7 +4475,7 @@ function renderBins() {
 
     const row = el("div", "bin-row");
     const head = el("div", "bin-head");
-    head.appendChild(el("span", "bin-name", "Location " + bin.name));
+    head.appendChild(el("span", "bin-name", "Storage " + bin.name));
     head.appendChild(el("span", "bin-count", used + "/" + bin.slots + " slots used"));
     row.appendChild(head);
 
@@ -4419,7 +4504,7 @@ function renderBins() {
     box.appendChild(row);
   });
 
-  if (bins.length === 0) box.appendChild(el("div", "small", "No locations yet. Add one below."));
+  if (bins.length === 0) box.appendChild(el("div", "small", "No storage yet. Add one below."));
 
   // One button per bin on the main page: tap it to see what is inside, with pictures.
   const chips = document.getElementById("bin-chips");
@@ -4427,12 +4512,12 @@ function renderBins() {
   bins.forEach(function (bin) {
     const chip = el("button", "chip");
     chip.type = "button";
-    chip.appendChild(el("span", "chip-name", "Location " + bin.name));
+    chip.appendChild(el("span", "chip-name", "Storage " + bin.name));
     chip.appendChild(el("span", "chip-count", binUsed(bin) + "/" + bin.slots + " slots used"));
     chip.onclick = function () { openBinView(bin); };
     chips.appendChild(chip);
   });
-  document.getElementById("bins-summary").textContent = "Manage locations and labels";
+  document.getElementById("bins-summary").textContent = "Manage storage and labels";
 }
 
 // ---- printable labels: a QR code plus big readable text, one per slot ----
@@ -4485,7 +4570,7 @@ function buildLabel(url, code, sub) {
 
 function openLabels(bin) {
   markQrUsed();
-  document.getElementById("labels-title").textContent = "Labels for location " + bin.name;
+  document.getElementById("labels-title").textContent = "Labels for storage " + bin.name;
   const address = appAddress();
   const live = /^https?:$/.test(window.location.protocol);
   labelsNote.textContent = live
@@ -4502,7 +4587,7 @@ function openLabels(bin) {
       const base = address + "?bin=" + encodeURIComponent(bin.name);
       labelsGrid.appendChild(buildLabel(base, "LOC " + bin.name, "Scan to see what's inside"));
       for (let n = 1; n <= bin.slots; n++) {
-        labelsGrid.appendChild(buildLabel(base + "&slot=" + n, slotLabel(bin.name, n), "Location " + bin.name + " \u00B7 slot " + n));
+        labelsGrid.appendChild(buildLabel(base + "&slot=" + n, slotLabel(bin.name, n), "Storage " + bin.name + " \u00B7 slot " + n));
       }
     }, function () {
       labelsGrid.textContent = "Sorry, the label maker could not be loaded. Check your internet connection and try again.";
@@ -4595,6 +4680,79 @@ function removeGoal(goal) {
   });
 }
 
+// The "Repeats" boxes used when adding or editing an investment. read() gives back the chosen schedule.
+function buildScheduleFields(goal) {
+  const box = el("div", "schedule");
+  function select(options, value) {
+    const sel = document.createElement("select");
+    options.forEach(function (p) {
+      const o = document.createElement("option");
+      o.value = String(p[0]);
+      o.textContent = p[1];
+      sel.appendChild(o);
+    });
+    sel.value = String(value);
+    return sel;
+  }
+  const repeatLabel = el("label", "field", "Repeats");
+  const repeatSel = select([["none", "Doesn't repeat"], ["daily", "Every day"], ["weekly", "Every week"], ["monthly", "Every month"], ["yearly", "Every year"]], goal && goal.repeat ? goal.repeat : "none");
+  repeatLabel.appendChild(repeatSel);
+  box.appendChild(repeatLabel);
+
+  const weekLabel = el("label", "field", "On this day of the week");
+  const weekSel = select([[1, "Monday"], [2, "Tuesday"], [3, "Wednesday"], [4, "Thursday"], [5, "Friday"], [6, "Saturday"], [0, "Sunday"]], goal && goal.repeat === "weekly" ? goal.repeatDay : 1);
+  weekLabel.appendChild(weekSel);
+  box.appendChild(weekLabel);
+
+  const monthLabelBox = el("label", "field", "In this month");
+  const monthSel = select(["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"].map(function (m, i) { return [i + 1, m]; }), goal && goal.repeatMonth ? goal.repeatMonth : 1);
+  monthLabelBox.appendChild(monthSel);
+  box.appendChild(monthLabelBox);
+
+  const dayOptions = [];
+  for (let d = 1; d <= 30; d++) dayOptions.push([d, String(d)]);
+  dayOptions.push([31, "Last day of the month"]);
+  const dayLabel = el("label", "field", "On this day of the month");
+  const daySel = select(dayOptions, goal && (goal.repeat === "monthly" || goal.repeat === "yearly") && goal.repeatDay ? goal.repeatDay : 1);
+  dayLabel.appendChild(daySel);
+  box.appendChild(dayLabel);
+
+  const autoLabel = el("label", "check", "");
+  const autoBox = document.createElement("input");
+  autoBox.type = "checkbox";
+  autoBox.checked = !!(goal && goal.autoReset);
+  autoLabel.appendChild(autoBox);
+  const autoText = document.createTextNode(" Reset by itself each time");
+  autoLabel.appendChild(autoText);
+  box.appendChild(autoLabel);
+
+  function sync() {
+    const r = repeatSel.value;
+    weekLabel.hidden = r !== "weekly";
+    monthLabelBox.hidden = r !== "yearly";
+    dayLabel.hidden = r !== "monthly" && r !== "yearly";
+    autoLabel.hidden = r === "none";
+    autoText.textContent = " Reset by itself at the start of each " + ({ daily: "day", weekly: "week", monthly: "month", yearly: "year" }[r] || "period");
+  }
+  repeatSel.addEventListener("change", sync);
+  sync();
+  return {
+    node: box,
+    read: function () {
+      const r = repeatSel.value;
+      return {
+        repeat: r,
+        repeatDay: r === "weekly" ? Number(weekSel.value) : (r === "monthly" || r === "yearly" ? Number(daySel.value) : 1),
+        repeatMonth: r === "yearly" ? Number(monthSel.value) : 1,
+        autoReset: r !== "none" && autoBox.checked
+      };
+    },
+    reset: function () { repeatSel.value = "none"; autoBox.checked = false; sync(); }
+  };
+}
+const newGoalSchedule = buildScheduleFields(null);
+document.getElementById("goal-schedule").appendChild(newGoalSchedule.node);
+
 function buildGoalEditor(goal) {
   const form = el("form", "goal-row editing");
 
@@ -4616,26 +4774,8 @@ function buildGoalEditor(goal) {
   amountLabel.appendChild(amountInput);
   form.appendChild(amountLabel);
 
-  const repeatLabel = el("label", "field", "Repeats");
-  const repeatSelect = document.createElement("select");
-  [["none", "Doesn't repeat"], ["monthly", "Every month (like rent)"]].forEach(function (p) {
-    const o = document.createElement("option");
-    o.value = p[0];
-    o.textContent = p[1];
-    repeatSelect.appendChild(o);
-  });
-  repeatSelect.value = goal.repeat === "monthly" ? "monthly" : "none";
-  repeatLabel.appendChild(repeatSelect);
-  form.appendChild(repeatLabel);
-  const autoLabel = el("label", "check", "");
-  const autoBox = document.createElement("input");
-  autoBox.type = "checkbox";
-  autoBox.checked = !!goal.autoReset;
-  autoLabel.appendChild(autoBox);
-  autoLabel.appendChild(document.createTextNode(" Reset automatically at the start of each month"));
-  autoLabel.hidden = repeatSelect.value !== "monthly";
-  repeatSelect.addEventListener("change", function () { autoLabel.hidden = repeatSelect.value !== "monthly"; });
-  form.appendChild(autoLabel);
+  const schedule = buildScheduleFields(goal);
+  form.appendChild(schedule.node);
 
   const buttons = el("div", "form-actions");
   const saveBtn = el("button", "primary", "Save");
@@ -4660,9 +4800,12 @@ function buildGoalEditor(goal) {
     }
     goal.name = newName;
     goal.amount = newAmount;
-    goal.repeat = repeatSelect.value === "monthly" ? "monthly" : "none";
-    goal.autoReset = goal.repeat === "monthly" && autoBox.checked;
-    if (goal.repeat === "monthly" && !goal.cycle) goal.cycle = monthOf(todayText());
+    const chosen = schedule.read();
+    goal.repeat = chosen.repeat;
+    goal.repeatDay = chosen.repeatDay;
+    goal.repeatMonth = chosen.repeatMonth;
+    goal.autoReset = chosen.autoReset;
+    goal.cycle = goal.repeat === "none" ? "" : periodStart(goal, todayText());
     editingGoal = null;
     save();
     render();
@@ -4685,8 +4828,8 @@ function buildActiveGoal(goal, rank, count, have, balance) {
     render();
   };
   row.appendChild(head);
-  if (goal.repeat === "monthly") {
-    row.appendChild(el("div", "goal-repeat", "Repeats every month" + (goal.autoReset ? " \u00B7 resets by itself" : " \u00B7 you reset it each month")));
+  if (goal.repeat !== "none") {
+    row.appendChild(el("div", "goal-repeat", repeatText(goal) + (goal.autoReset ? " \u00B7 resets by itself" : " \u00B7 you reset it yourself")));
   }
 
   const bar = document.createElement("progress");
@@ -4701,7 +4844,7 @@ function buildActiveGoal(goal, rank, count, have, balance) {
     buy.onclick = function () {
       const markIt = function () {
         goal.purchased = true;
-        if (goal.repeat === "monthly") goal.cycle = monthOf(todayText());
+        if (goal.repeat !== "none") goal.cycle = periodStart(goal, todayText());
         openGoal = null;
         save();
         render();
@@ -4759,15 +4902,16 @@ function renderGoals(balance) {
     if (!goal.purchased) return;
     doneCount++;
     const row = el("div", "done-row");
-    row.appendChild(el("span", "done-name", goal.name + " - " + money(goal.amount) + (goal.repeat === "monthly" && goal.cycle ? " (" + monthLabel(goal.cycle) + ")" : "")));
-    if (goal.repeat === "monthly") {
-      const again = el("button", "", "New month");
-      again.title = "Keeps this payment and makes the investment unpaid again for this month";
+    row.appendChild(el("span", "done-name", goal.name + " - " + money(goal.amount) + (goal.repeat !== "none" && goal.cycle ? " (" + periodLabel(goal, goal.cycle) + ")" : "")));
+    if (goal.repeat !== "none") {
+      const again = el("button", "", "Start new");
+      again.title = "Keeps this payment and makes the investment unpaid again for the current period";
       again.onclick = function () {
-        resetInvestment(goals, goal, monthOf(todayText()));
+        const key = periodStart(goal, todayText());
+        resetInvestment(goals, goal, key);
         save();
         render();
-        showToast(goal.name + " is unpaid again for " + monthLabel(monthOf(todayText())) + ".");
+        showToast(goal.name + " is unpaid again for " + periodLabel(goal, key) + ".");
       };
       row.appendChild(again);
     }
@@ -4791,6 +4935,95 @@ function renderGoals(balance) {
 
 const expandedSold = new Set();
 const openMenus = new Set();
+
+function askDeleteItem(item) {
+  askYesNo("Delete " + item.name + "?", "Delete", function () {
+    const at = items.indexOf(item);
+    if (at === -1) return;
+    if (item.status !== "Shipped") markFreed(item.bin, item.slot);
+    openMenus.delete(item);
+    openCards.delete(item);
+    items.splice(at, 1);
+    closeForm();
+    save();
+    render();
+  });
+}
+
+// ---- swipe on an item (like Gmail) ----
+let openSwipe = null;
+let swipeJustDragged = false;
+const SWIPE_BUTTON = 76;
+function attachSwipe(card, buttonCount, onSwipeRight) {
+  const openPx = buttonCount * SWIPE_BUTTON;
+  let startX = 0, startY = 0, base = 0, dx = 0, dragging = false, decided = false, pid = null;
+  function setX(x, animate) {
+    card.style.transition = animate ? "transform 0.18s ease" : "none";
+    card.style.transform = x === 0 ? "" : "translateX(" + x + "px)";
+  }
+  function closeIt() {
+    base = 0;
+    setX(0, true);
+    if (openSwipe && openSwipe.card === card) openSwipe = null;
+  }
+  card.addEventListener("pointerdown", function (event) {
+    if (event.pointerType === "mouse" && event.button !== 0) return;
+    if (event.target.closest("input, select, textarea")) return;
+    if (openSwipe && openSwipe.card !== card) openSwipe.close();
+    startX = event.clientX;
+    startY = event.clientY;
+    dx = 0;
+    dragging = false;
+    decided = false;
+    pid = event.pointerId;
+  });
+  card.addEventListener("pointermove", function (event) {
+    if (pid === null || event.pointerId !== pid) return;
+    const mx = event.clientX - startX;
+    const my = event.clientY - startY;
+    if (!decided) {
+      if (Math.abs(mx) < 8 && Math.abs(my) < 8) return;
+      decided = true;
+      if (Math.abs(mx) > Math.abs(my) * 1.4) {
+        dragging = true;
+        try { card.setPointerCapture(pid); } catch (e) {}
+      } else {
+        pid = null;
+        return;
+      }
+    }
+    if (!dragging) return;
+    dx = mx;
+    setX(Math.max(-openPx - 30, Math.min(150, base + dx)), false);
+  });
+  function end(event) {
+    if (pid === null || (event && event.pointerId !== pid)) return;
+    pid = null;
+    if (!dragging) return;
+    dragging = false;
+    swipeJustDragged = true;
+    setTimeout(function () { swipeJustDragged = false; }, 80);
+    const x = base + dx;
+    if (x > 100) {
+      base = 0;
+      setX(0, true);
+      onSwipeRight();
+    } else if (x < -openPx / 2) {
+      base = -openPx;
+      setX(base, true);
+      openSwipe = { card: card, close: closeIt };
+    } else {
+      closeIt();
+    }
+  }
+  card.addEventListener("pointerup", end);
+  card.addEventListener("pointercancel", end);
+  // A tap right after a swipe does nothing. A tap on an item that is swiped open closes it.
+  card.addEventListener("click", function (event) {
+    if (swipeJustDragged) { event.stopPropagation(); event.preventDefault(); return; }
+    if (base !== 0) { event.stopPropagation(); event.preventDefault(); closeIt(); }
+  }, true);
+}
 
 document.getElementById("shipped-toggle").addEventListener("click", function () {
   showShipped = !showShipped;
@@ -4853,7 +5086,7 @@ function render() {
     }
 
     // Shipped items shrink to one line (tap to open) unless you are filtering by Shipped.
-    // Sold items still need shipping, so they always show as full cards.
+    // Sold items still need shipping, so they always show as cards.
     const showSmall = item.status === "Shipped" && statusFilter !== "Shipped";
     if (showSmall && !expandedSold.has(item)) {
       const mini = el("button", "sold-mini shipped");
@@ -4861,7 +5094,7 @@ function render() {
       mini.appendChild(el("span", "sold-name", item.name));
       const days = daysToShip(item);
       const shippedText = days === null ? "Shipped" : (days === 0 ? "shipped same day" : "shipped in " + days + "d");
-      mini.appendChild(el("span", "sold-site", (item.site ? item.site + " · " : "") + shippedText));
+      mini.appendChild(el("span", "sold-site", (item.site ? item.site + " \u00B7 " : "") + shippedText));
       mini.appendChild(el("span", "sold-profit", money(profit)));
       mini.onclick = function () {
         expandedSold.add(item);
@@ -4873,7 +5106,13 @@ function render() {
 
     const ship = shipInfo(item);
     const shipAlerting = !!(ship && ship.late && !shipDismissed[shipKey(item)]);
-    const card = el("div", "card " + (STATUS_CLASS[item.status] || "") + (shipAlerting ? " row-overdue" : ""));
+    const nextLabel = NEXT_STEP[item.status];
+    // A closed item shows the picture, name, platform and status, plus any details you picked in Settings.
+    // An open item shows every detail that has been filled in.
+    const expanded = openCards.has(item) || showSmall;
+    const wants = function (key) { return expanded || !!cardFields[key]; };
+    const wrap = el("div", "swipe-wrap");
+    const card = el("div", "card " + (STATUS_CLASS[item.status] || "") + (shipAlerting ? " row-overdue" : "") + (expanded ? " open" : " closed"));
     card.dataset.idx = String(index);
     const top = el("div", "card-top");
 
@@ -4893,161 +5132,194 @@ function render() {
     const main = el("div", "card-main");
     main.appendChild(el("div", "card-title", item.name));
 
-    // Site, status, slot and the photo checklist
-    const meta = el("div", "card-meta", (item.site ? item.site + " · " : "") + item.status);
-    if (item.bin && item.slot > 0 && item.status !== "Shipped") {
+    // Platform and status, then the badges
+    const meta = el("div", "card-meta", (item.site ? item.site + " \u00B7 " : "") + item.status);
+    if (shipAlerting) meta.appendChild(el("span", "badge late", "Ship now"));
+    if (!done && isDue(item)) meta.appendChild(el("span", "badge due-badge", "Lower price?"));
+    if (wants("storage") && item.bin && item.slot > 0 && item.status !== "Shipped") {
       const slotBadge = el("span", "badge slot", slotLabel(item.bin, item.slot));
-      slotBadge.title = "Location " + item.bin + ", slot " + item.slot + " (tap to see it)";
+      slotBadge.title = "Storage " + item.bin + ", slot " + item.slot + " (tap to see it)";
       slotBadge.onclick = function () {
         const itemBin = findBin(item.bin);
         if (itemBin) openSlotView(itemBin, item.slot);
       };
       meta.appendChild(slotBadge);
     }
-    const count = photoCount(item);
-    if (photosComplete(item)) {
-      const badge = elWithIcon("span", "badge ok", "check", "Photos");
-      badge.title = "All photos taken";
-      meta.appendChild(badge);
-    } else {
-      const badge = el("span", "badge", "Photos " + count + "/" + photoTotal(item));
-      badge.title = "Photos taken";
-      meta.appendChild(badge);
+    if (wants("photos")) {
+      const count = photoCount(item);
+      if (photosComplete(item)) {
+        const badge = elWithIcon("span", "badge ok", "check", "Photos");
+        badge.title = "All photos taken";
+        meta.appendChild(badge);
+      } else {
+        const badge = el("span", "badge", "Photos " + count + "/" + photoTotal(item));
+        badge.title = "Photos taken";
+        meta.appendChild(badge);
+      }
     }
     main.appendChild(meta);
-    if (item.weight > 0) main.appendChild(el("div", "small", "Weight " + formatWeight(item.weight)));
-    if (item.cost > 0) main.appendChild(el("div", "small", "Cost " + money(item.cost)));
+    if (wants("weight") && item.weight > 0) main.appendChild(el("div", "small", "Weight " + formatWeight(item.weight)));
+    if (wants("cost") && item.cost > 0) main.appendChild(el("div", "small", "Cost " + money(item.cost)));
 
-    // Price, and what is next (lower the price, ship it, how fast it shipped)
+    // Price, profit, and what is next (lower the price, ship it, how fast it shipped)
     const priceBox = el("div", "card-price");
     if (done) {
-      priceBox.textContent = "Sold " + money(salePrice(item));
-      main.appendChild(priceBox);
-      if (item.original !== salePrice(item)) {
-        main.appendChild(el("div", "small", "listed at " + money(item.original)));
-      }
-      main.appendChild(el("div", "card-profit", "Profit " + money(profit)));
-      if (ship) {
-        if (ship.unknown) {
-          main.appendChild(el("div", "small", "No sold date. Add one to get ship reminders."));
-        } else if (ship.late && !shipAlerting) {
-          main.appendChild(elWithIcon("div", "ship-soon", "box", "Was due " + prettyDay(ship.by) + " (" + dayWord(ship.daysLate) + " late). Alert dismissed."));
-        } else if (ship.late) {
-          main.appendChild(elWithIcon("div", "ship-late", "alert", "SHIP NOW! Was due " + prettyDay(ship.by) + " (" + dayWord(ship.daysLate) + " late)"));
-          const dismissBtn = el("button", "small-btn", "Dismiss alert");
-          dismissBtn.type = "button";
-          dismissBtn.style.marginTop = "6px";
-          dismissBtn.onclick = function () { dismissShip([item]); };
-          main.appendChild(dismissBtn);
-        } else {
-          main.appendChild(elWithIcon("div", "ship-soon" + (ship.today ? " today" : ""), "box",
-            ship.today ? "Ship TODAY (due " + prettyDay(ship.by) + ")" : "Ship by " + prettyDay(ship.by)));
+      if (wants("price")) {
+        priceBox.textContent = "Sold " + money(salePrice(item));
+        main.appendChild(priceBox);
+        if (item.original !== salePrice(item)) {
+          main.appendChild(el("div", "small", "listed at " + money(item.original)));
         }
-      } else if (item.status === "Shipped") {
-        const taken = daysToShip(item);
-        if (taken === null) {
-          main.appendChild(el("div", "shipped-note", "Shipped (no date saved)"));
-        } else {
-          const late = shippedLate(item);
-          main.appendChild(el("div", "shipped-note" + (late ? " late" : ""),
-            (taken === 0 ? "Shipped the same day it sold" : "Shipped " + dayWord(taken) + " after it sold") + (late ? " (late)" : "")));
+      }
+      if (wants("profit")) main.appendChild(el("div", "card-profit", "Profit " + money(profit)));
+      if (wants("notes")) {
+        if (ship) {
+          if (ship.unknown) {
+            main.appendChild(el("div", "small", "No sold date. Add one to get ship reminders."));
+          } else if (ship.late && !shipAlerting) {
+            main.appendChild(elWithIcon("div", "ship-soon", "box", "Was due " + prettyDay(ship.by) + " (" + dayWord(ship.daysLate) + " late). Alert dismissed."));
+          } else if (ship.late) {
+            main.appendChild(elWithIcon("div", "ship-late", "alert", "SHIP NOW! Was due " + prettyDay(ship.by) + " (" + dayWord(ship.daysLate) + " late)"));
+            const dismissBtn = el("button", "small-btn", "Dismiss alert");
+            dismissBtn.type = "button";
+            dismissBtn.style.marginTop = "6px";
+            dismissBtn.onclick = function () { dismissShip([item]); };
+            main.appendChild(dismissBtn);
+          } else {
+            main.appendChild(elWithIcon("div", "ship-soon" + (ship.today ? " today" : ""), "box",
+              ship.today ? "Ship TODAY (due " + prettyDay(ship.by) + ")" : "Ship by " + prettyDay(ship.by)));
+          }
+        } else if (item.status === "Shipped") {
+          const taken = daysToShip(item);
+          if (taken === null) {
+            main.appendChild(el("div", "shipped-note", "Shipped (no date saved)"));
+          } else {
+            const late = shippedLate(item);
+            main.appendChild(el("div", "shipped-note" + (late ? " late" : ""),
+              (taken === 0 ? "Shipped the same day it sold" : "Shipped " + dayWord(taken) + " after it sold") + (late ? " (late)" : "")));
+          }
         }
       }
     } else {
-      priceBox.textContent = item.original !== item.current
-        ? money(item.original) + " → " + money(item.current)
-        : money(item.current);
-      main.appendChild(priceBox);
-      const d = daysAtPrice(item);
-      if (d !== null) {
-        const due = reminderDueDate(item);
-        if (isDue(item)) {
-          main.appendChild(elWithIcon("div", "due", "clock", (bumpRuleApplies(item) ? "Bump finished. Reduce price? (" : "Reduce price (") + dayWord(d) + ")"));
-        } else {
-          main.appendChild(el("div", "small", dayWord(d) + " at this price"));
-          if (item.noReduce) {
-            main.appendChild(el("div", "small", "No price-drop reminders for this item"));
-          } else if (due && bumpRuleApplies(item)) {
-            main.appendChild(el("div", "small bump-wait", "Vinted bump running. Reminder on " + prettyDay(due)));
+      if (wants("price")) {
+        priceBox.textContent = item.original !== item.current
+          ? money(item.original) + " \u2192 " + money(item.current)
+          : money(item.current);
+        main.appendChild(priceBox);
+      }
+      if (wants("notes")) {
+        const d = daysAtPrice(item);
+        if (d !== null) {
+          const due = reminderDueDate(item);
+          if (isDue(item)) {
+            main.appendChild(elWithIcon("div", "due", "clock", (bumpRuleApplies(item) ? "Bump finished. Reduce price? (" : "Reduce price (") + dayWord(d) + ")"));
+          } else {
+            main.appendChild(el("div", "small", dayWord(d) + " at this price"));
+            if (item.noReduce) {
+              main.appendChild(el("div", "small", "No price-drop reminders for this item"));
+            } else if (due && bumpRuleApplies(item)) {
+              main.appendChild(el("div", "small bump-wait", "Vinted bump running. Reminder on " + prettyDay(due)));
+            }
           }
         }
       }
     }
     top.appendChild(main);
+    if (!showSmall) top.appendChild(el("span", "card-chev", expanded ? "\u25B4" : "\u25BE"));
     card.appendChild(top);
 
-    // One main button, a quick Lower price when it is due, and a ... button for Edit, Lower price and Delete.
-    const actions = el("div", "card-actions");
-    const nextLabel = NEXT_STEP[item.status];
-    if (nextLabel) {
-      const next = el("button", "primary next-step" + (shipAlerting ? " late" : ""), nextLabel);
-      next.type = "button";
-      next.onclick = function () { nextStep(item); };
-      actions.appendChild(next);
-    } else {
-      const editFirst = el("button", "next-step", "Edit");
-      editFirst.type = "button";
-      editFirst.onclick = function () { startEdit(index); };
-      actions.appendChild(editFirst);
-    }
-    if (item.status === "Listed" && isDue(item)) {
-      const quick = el("button", "", "Lower price");
-      quick.type = "button";
-      quick.onclick = function () { lowerPrice(item); };
-      actions.appendChild(quick);
-    }
-    const menuOpen = openMenus.has(item);
-    const moreButton = el("button", "more-btn", menuOpen ? "\u00D7" : "\u22EF");
-    moreButton.type = "button";
-    moreButton.setAttribute("aria-label", menuOpen ? "Hide more actions" : "More actions");
-    moreButton.onclick = function () {
-      const wasOpen = openMenus.has(item);
-      openMenus.clear();
-      if (!wasOpen) openMenus.add(item);
-      render();
-    };
-    actions.appendChild(moreButton);
-    card.appendChild(actions);
-    if (showSmall) {
-      card.classList.add("has-collapse");
-      const closeButton = el("button", "card-collapse", "Collapse \u25B4");
-      closeButton.type = "button";
-      closeButton.onclick = function () {
-        expandedSold.delete(item);
+    // Tap an item to open or close it.
+    if (!showSmall) {
+      top.addEventListener("click", function (event) {
+        if (event.target.closest("button, .badge.slot")) return;
+        if (openCards.has(item)) openCards.delete(item); else openCards.add(item);
         render();
-      };
-      card.appendChild(closeButton);
+      });
     }
 
-    if (menuOpen) {
-      const more = el("div", "card-more");
+    if (expanded) {
+      // One main button, a quick Lower price when it is due, and a ... button for Edit, Lower price and Delete.
+      const actions = el("div", "card-actions");
       if (nextLabel) {
-        const editButton = el("button", "", "Edit");
-        editButton.onclick = function () { startEdit(index); };
-        more.appendChild(editButton);
+        const next = el("button", "primary next-step" + (shipAlerting ? " late" : ""), nextLabel);
+        next.type = "button";
+        next.onclick = function () { nextStep(item); };
+        actions.appendChild(next);
+      } else {
+        const editFirst = el("button", "next-step", "Edit");
+        editFirst.type = "button";
+        editFirst.onclick = function () { startEdit(index); };
+        actions.appendChild(editFirst);
       }
-      if (item.status === "Listed" && !isDue(item)) {
-        const lowerButton = el("button", "", "Lower price");
-        lowerButton.onclick = function () { lowerPrice(item); };
-        more.appendChild(lowerButton);
+      if (item.status === "Listed" && isDue(item)) {
+        const quick = el("button", "", "Lower price");
+        quick.type = "button";
+        quick.onclick = function () { lowerPrice(item); };
+        actions.appendChild(quick);
       }
-      const deleteButton = el("button", "quiet", "Delete");
-      deleteButton.onclick = function () {
-        askYesNo("Delete " + item.name + "?", "Delete", function () {
-          const at = items.indexOf(item);
-          if (at === -1) return;
-          if (item.status !== "Shipped") markFreed(item.bin, item.slot);
-          openMenus.delete(item);
-          items.splice(at, 1);
-          closeForm();
-          save();
-          render();
-        });
+      const menuOpen = openMenus.has(item);
+      const moreButton = el("button", "more-btn", menuOpen ? "\u00D7" : "\u22EF");
+      moreButton.type = "button";
+      moreButton.setAttribute("aria-label", menuOpen ? "Hide more actions" : "More actions");
+      moreButton.onclick = function () {
+        const wasOpen = openMenus.has(item);
+        openMenus.clear();
+        if (!wasOpen) openMenus.add(item);
+        render();
       };
-      more.appendChild(deleteButton);
-      card.appendChild(more);
+      actions.appendChild(moreButton);
+      card.appendChild(actions);
+      if (showSmall) {
+        card.classList.add("has-collapse");
+        const closeButton = el("button", "card-collapse", "Collapse \u25B4");
+        closeButton.type = "button";
+        closeButton.onclick = function () {
+          expandedSold.delete(item);
+          render();
+        };
+        card.appendChild(closeButton);
+      }
+
+      if (menuOpen) {
+        const more = el("div", "card-more");
+        if (nextLabel) {
+          const editButton = el("button", "", "Edit");
+          editButton.onclick = function () { startEdit(index); };
+          more.appendChild(editButton);
+        }
+        if (item.status === "Listed" && !isDue(item)) {
+          const lowerButton = el("button", "", "Lower price");
+          lowerButton.onclick = function () { lowerPrice(item); };
+          more.appendChild(lowerButton);
+        }
+        const deleteButton = el("button", "quiet", "Delete");
+        deleteButton.onclick = function () { askDeleteItem(item); };
+        more.appendChild(deleteButton);
+        card.appendChild(more);
+      }
     }
-    list.appendChild(card);
+
+    // Swipe right to do the next step. Swipe left for Edit, Lower price, Dismiss alert and Delete.
+    if (swipeOn) {
+      wrap.appendChild(el("div", "swipe-bg swipe-next", nextLabel || "Edit"));
+      const actionsBg = el("div", "swipe-bg swipe-actions");
+      const defs = [["Edit", "edit", function () { startEdit(index); }]];
+      if (item.status === "Listed") defs.push(["Lower price", "lower", function () { lowerPrice(item); }]);
+      if (shipAlerting) defs.push(["Dismiss alert", "dismiss", function () { dismissShip([item]); }]);
+      defs.push(["Delete", "delete", function () { askDeleteItem(item); }]);
+      defs.forEach(function (def) {
+        const b = el("button", "swipe-btn " + def[1], def[0]);
+        b.type = "button";
+        b.onclick = function (event) { event.stopPropagation(); def[2](); };
+        actionsBg.appendChild(b);
+      });
+      wrap.appendChild(actionsBg);
+      attachSwipe(card, defs.length, function () {
+        if (nextLabel) nextStep(item); else startEdit(index);
+      });
+    }
+    wrap.appendChild(card);
+    list.appendChild(wrap);
   });
 
   if (items.length === 0) {
@@ -5056,7 +5328,7 @@ function render() {
   const parts = [];
   if (filter !== "All") parts.push(filter);
   if (statusFilter !== "All") parts.push(statusFilter);
-  if (binFilter !== "All") parts.push(binFilter === "none" ? "No location" : "Location " + binFilter);
+  if (binFilter !== "All") parts.push(binFilter === "none" ? "No storage" : "Storage " + binFilter);
   document.getElementById("filters-summary").textContent = "Filters" + (parts.length ? ": " + parts.join(" \u00B7 ") : "");
   document.getElementById("filters-btn").textContent = "Filters" + (parts.length ? " (" + parts.length + ")" : "");
   document.getElementById("list-count").textContent =
@@ -5107,13 +5379,8 @@ function render() {
 
   let startTotal = 0;
   Object.keys(balances).forEach(function (name) { startTotal += Number(balances[name]) || 0; });
-  Object.keys(balanceRefs).forEach(function (name) {
-    const start = balances[name] || 0;
-    const refs = balanceRefs[name];
-    const made = itemByPlatform[name] || 0;
-    refs.item.textContent = money(made);
-    refs.sum.textContent = money(start + made);
-  });
+  lastItemByPlatform = itemByPlatform;
+  paintBalances();
 
   const total = itemTotal + startTotal;
   document.getElementById("start-all").textContent = money(startTotal);
@@ -5134,6 +5401,7 @@ function render() {
   renderBins();
   renderWeekly();
   renderPipelineBox();
+  updateSummaryBox();
   refreshBinOptions();
   refreshSlotOptions();
 }
@@ -5210,7 +5478,7 @@ form.addEventListener("submit", function (event) {
 
   const wantsSlot = status !== "Shipped" && binInput.value !== "";
   if (wantsSlot && (Number(slotInput.value) || 0) === 0) {
-    problems.push({ text: "Slot in location " + binInput.value + " (or tick \"Not put away in a slot yet\")", fields: [slotInput] });
+    problems.push({ text: "Slot in storage " + binInput.value + " (or tick \"Not put away in a slot yet\")", fields: [slotInput] });
   }
   if (problems.length > 0) {
     showFormProblems(problems, "Can't save yet. Still needed:");
@@ -5326,35 +5594,36 @@ function bumpRateForSave(bumped, config, site) {
   return config.bumpPercent;
 }
 
-const goalRepeat = document.getElementById("goal-repeat");
-const goalAutoRow = document.getElementById("goal-auto-row");
-goalRepeat.addEventListener("change", function () { goalAutoRow.hidden = goalRepeat.value !== "monthly"; });
 goalForm.addEventListener("submit", function (event) {
   event.preventDefault();
-  const repeat = goalRepeat.value === "monthly" ? "monthly" : "none";
-  goals.push({
+  const chosen = newGoalSchedule.read();
+  const fresh = {
     name: document.getElementById("goal-name").value.trim(),
     amount: Number(document.getElementById("goal-amount").value),
     purchased: false,
     settled: 0,
-    repeat: repeat,
-    autoReset: repeat === "monthly" && document.getElementById("goal-auto").checked,
-    cycle: repeat === "monthly" ? monthOf(todayText()) : ""
-  });
+    repeat: chosen.repeat,
+    repeatDay: chosen.repeatDay,
+    repeatMonth: chosen.repeatMonth,
+    autoReset: chosen.autoReset,
+    cycle: ""
+  };
+  fresh.cycle = fresh.repeat === "none" ? "" : periodStart(fresh, todayText());
+  goals.push(fresh);
   save();
   render();
   goalForm.reset();
-  goalAutoRow.hidden = true;
+  newGoalSchedule.reset();
   goalForm.style.display = "none";
   addGoalButton.textContent = "+ Add investment";
 });
 
-// A repeating investment that was paid in an earlier month and is set to reset by itself becomes unpaid again.
+// A repeating investment that was paid in an earlier period and is set to reset by itself becomes unpaid again.
 function checkMonthRollover() {
-  const names = rolloverInvestments(goals, monthOf(todayText()));
+  const names = rolloverInvestments(goals, todayText());
   if (names.length > 0) {
     save();
-    showToast("New month: " + names.join(", ") + (names.length === 1 ? " is" : " are") + " unpaid again.");
+    showToast("Due again: " + names.join(", ") + (names.length === 1 ? " is" : " are") + " unpaid again.");
   }
 }
 
@@ -5365,7 +5634,7 @@ function csvCell(value) {
 }
 
 document.getElementById("export-button").addEventListener("click", function () {
-  const header = ["Item", "Site", "Status", "Location", "Slot", "Weight (oz)"];
+  const header = ["Item", "Site", "Status", "Storage", "Slot", "Weight (oz)"];
   PHOTO_TYPES.forEach(function (type) { header.push("Photo: " + type.label); });
   header.push("Date posted", "Date sold", "Date shipped", "Days to sell", "Days sold to shipped", "Original price", "Current price", "Last price change", "Sold for", "Bumped", "Bump %", "Bump cost", "Platform fee", "Postage label", "Purchase cost", "Profit", "Cashed out");
   const rows = [header];
@@ -5460,7 +5729,9 @@ function markBackupSaved() {
 function backupData() {
   return JSON.stringify({
     app: "resale-tracker",
-    version: 5,
+    version: 6,
+    features: features,
+    cardFields: cardFields,
     appTitle: appTitle,
     photoTypes: PHOTO_TYPES,
     saved: new Date().toISOString(),
@@ -5545,7 +5816,7 @@ function restoreFromText(text) {
   const newBins = Array.isArray(data.bins) ? cleanBins(data.bins) : null;
 
   const message = "Replace everything in this app with the backup?\n\n" +
-    "The backup has " + newItems.length + " items and " + newGoals.length + " goals" + (newBins ? " and " + newBins.length + " locations" : "") + ".\n" +
+    "The backup has " + newItems.length + " items and " + newGoals.length + " investments" + (newBins ? " and " + newBins.length + " storage" : "") + ".\n" +
     "What is in this app now will be erased.";
   askYesNo(message, "Replace everything", function () {
     items = newItems;
@@ -5588,6 +5859,10 @@ function restoreFromText(text) {
       updatePhotoUI();
       renderPhotoTypeEditor();
     }
+    if (data.features && typeof data.features === "object") { features = cleanFeatures(data.features); saveSetting("features", features); }
+    if (data.cardFields && typeof data.cardFields === "object") { cardFields = cleanCardFields(data.cardFields); saveSetting("cardFields", cardFields); }
+    buildSettingsSwitches();
+    applyFeatures();
     filter = "All";
     draftFilter = "All";
     platformsChanged();
@@ -5596,7 +5871,7 @@ function restoreFromText(text) {
     closeForm();
     save();
     render();
-    showBackupNote("Restored " + newItems.length + " items and " + newGoals.length + " goals.", false);
+    showBackupNote("Restored " + newItems.length + " items and " + newGoals.length + " investments.", false);
   });
 }
 
@@ -5634,15 +5909,14 @@ document.getElementById("seg-bulk").addEventListener("click", function () { show
 
 // ---- Tools: platforms and bump costs ----
 const BUMP_TYPE_LABELS = {
-  percent: "A percent of the price (worked out for you)",
-  flat: "A fixed dollar amount each time (worked out for you)",
-  ask: "I type the cost each time"
+  percent: "A percent of the price",
+  flat: "A fixed dollar amount",
+  ask: "I type it each time"
 };
 function platformsChanged() {
   save();
   refreshPlatformFilter();
   refreshSiteOptions();
-  buildBalanceBlocks();
   renderPlatformEditor();
   render();
 }
@@ -5652,6 +5926,9 @@ function platformInUse(name) {
 function renderPlatformEditor() {
   const box = document.getElementById("platforms-list");
   box.innerHTML = "";
+  Object.keys(balanceRefs).forEach(function (k) { delete balanceRefs[k]; });
+  balanceSig = visiblePlatformsForBalance().map(function (pp) { return pp.name; }).join("|");
+  const balanceShown = visiblePlatformsForBalance();
   platforms.forEach(function (p) {
     const card = el("div", "plat-card");
     const head = el("div", "plat-head");
@@ -5689,11 +5966,13 @@ function renderPlatformEditor() {
       platformsChanged();
     });
     if (!p.enabled) {
+      if (balanceShown.indexOf(p) !== -1) addBalanceRow(card, p);
       box.appendChild(card);
       return;
     }
+    addBalanceRow(card, p);
 
-    const typeLabel = el("label", "field", "Bump or ad cost");
+    const typeLabel = el("label", "field", "Bump cost");
     const type = document.createElement("select");
     Object.keys(BUMP_TYPE_LABELS).forEach(function (k) {
       const o = document.createElement("option");
@@ -5710,7 +5989,7 @@ function renderPlatformEditor() {
     });
 
     if (p.bumpType !== "ask") {
-      const valLabel = el("label", "field", p.bumpType === "percent" ? "Percent of the current price (%)" : "Dollar amount ($)");
+      const valLabel = el("label", "field", p.bumpType === "percent" ? "Percent (%)" : "Amount ($)");
       const val = document.createElement("input");
       val.type = "number";
       val.inputMode = "decimal";
@@ -5728,7 +6007,6 @@ function renderPlatformEditor() {
         render();
         renderPlatformEditor();
       });
-      card.appendChild(el("div", "small", "Only applies to items you tick as bumped from now on. Items you already saved keep the cost they had."));
     }
 
     const feeRow = el("div", "plat-fees");
@@ -5755,14 +6033,13 @@ function renderPlatformEditor() {
       });
     });
     card.appendChild(feeRow);
-    card.appendChild(el("div", "small", "Taken off your profit when something sells. Fees change, so check " + p.name + "'s current rates. 0 means not counted. Past sales keep their profit."));
 
     const daysLabel = el("label", "check", "");
     const days = document.createElement("input");
     days.type = "checkbox";
     days.checked = p.bumpDays;
     daysLabel.appendChild(days);
-    daysLabel.appendChild(document.createTextNode(" A bump runs for 3 or 7 days (the lower-price reminder waits for it)"));
+    daysLabel.appendChild(document.createTextNode(" Bump lasts 3 or 7 days"));
     card.appendChild(daysLabel);
     days.addEventListener("change", function () {
       p.bumpDays = days.checked;
@@ -5772,6 +6049,7 @@ function renderPlatformEditor() {
 
     box.appendChild(card);
   });
+  paintBalances();
 }
 document.getElementById("add-platform-button").addEventListener("click", function () {
   const input = document.getElementById("new-platform-name");
@@ -6595,96 +6873,115 @@ document.addEventListener("keydown", function (event) {
   if (event.key === "Escape" && !toolsModal.hidden && msgModal.hidden) toolsModal.hidden = true;
 });
 
-// One of Balances or Goals can be pinned (frozen) in the top grey box. Both still show at the top; the other one just scrolls away.
-const pins = { choice: "goals" };
-try {
-  const savedChoice = localStorage.getItem("pinChoice");
-  if (savedChoice === "goals" || savedChoice === "pipeline" || savedChoice === "none") pins.choice = savedChoice;
-  else if (savedChoice === "balances" || localStorage.getItem("pinGoals") !== "0") pins.choice = "goals";
-  else pins.choice = "none";
-} catch (e) {}
-function applyPins() {
-  const top = document.getElementById("tabs-pinned");
-  const loose = document.getElementById("tabs-loose");
-  const balancesBox = document.getElementById("balances");
-  const goalsBox = document.getElementById("goals-box");
-  (pins.choice === "goals" ? top : loose).appendChild(goalsBox);
-  const pipeBox = document.getElementById("pipeline-box");
-  (pins.choice === "pipeline" ? top : loose).appendChild(pipeBox);
-  pipeBox.hidden = false;
-  pipeBox.classList.toggle("inline", pins.choice === "pipeline");
-  pipeBox.open = pins.choice === "pipeline";
-  loose.appendChild(document.getElementById("bins-drop"));
-  [goalsBox, pipeBox].forEach(function (box) { box.parentNode.appendChild(box); });
-  loose.appendChild(document.getElementById("planner-button"));
-  loose.appendChild(document.getElementById("tools-button"));
-  document.body.classList.toggle("summary-loose", pins.choice === "none");
-  top.hidden = top.querySelectorAll("details:not([hidden])").length === 0;
-  loose.hidden = loose.querySelectorAll("details:not([hidden])").length === 0;
-  document.body.classList.toggle("goals-unpinned", pins.choice !== "goals");
-  document.getElementById("pin-choice").value = pins.choice;
-}
-document.getElementById("pin-choice").addEventListener("change", function () {
-  pins.choice = this.value;
-  try { localStorage.setItem("pinChoice", pins.choice); } catch (e) {}
-  applyPins();
+// ---- Sales report window ----
+const salesModal = document.getElementById("sales-modal");
+document.getElementById("sales-button").addEventListener("click", function () {
+  renderBulkHistory();
+  salesModal.hidden = false;
+  salesModal.querySelector(".tools-panel").scrollTop = 0;
 });
-applyPins();
+document.getElementById("sales-close").addEventListener("click", function () { salesModal.hidden = true; });
+salesModal.addEventListener("click", function (event) { if (event.target === salesModal) salesModal.hidden = true; });
+document.addEventListener("keydown", function (event) {
+  if (event.key === "Escape" && !salesModal.hidden && msgModal.hidden) salesModal.hidden = true;
+});
 
-// The top box can be collapsed to just the available balance. Tap the arrow or the balance.
+// ---- Tools you can turn on or off (chosen in Settings) ----
 const summaryBox = document.getElementById("summary-box");
-const summaryToggle = document.getElementById("summary-toggle");
-function setSummaryCollapsed(on) {
-  summaryBox.classList.toggle("collapsed", on);
-  summaryToggle.textContent = "";
-  summaryToggle.appendChild(icon(on ? "down" : "up"));
-  summaryToggle.setAttribute("aria-expanded", on ? "false" : "true");
-  summaryToggle.setAttribute("aria-label", on ? "Expand the top box" : "Collapse the top box");
-  try { localStorage.setItem("summaryCollapsed", on ? "1" : "0"); } catch (e) {}
+function updateSummaryBox() {
+  const alertShown = document.getElementById("ship-alert-row").style.display === "flex";
+  const miniShown = features.investments && document.getElementById("goals-mini").style.display === "block";
+  summaryBox.classList.toggle("empty", !features.summary && !alertShown && !miniShown);
 }
-summaryToggle.addEventListener("click", function () { setSummaryCollapsed(!summaryBox.classList.contains("collapsed")); });
-document.querySelectorAll(".stat.main .stat-label, .stat.main .stat-value").forEach(function (node) {
-  node.addEventListener("click", function () { setSummaryCollapsed(!summaryBox.classList.contains("collapsed")); });
-});
-// Starts compact (balance, profit and the late-shipping alert). Tap the arrow to open goals and the timeline;
-// the choice is remembered.
-let startCollapsed = true;
-try { if (localStorage.getItem("summaryCollapsed") === "0") startCollapsed = false; } catch (e) {}
-setSummaryCollapsed(startCollapsed);
-
-// ---- rename the app title ----
-const appTitleEl = document.getElementById("app-title");
-const titleEditBtn = document.getElementById("title-edit");
-titleEditBtn.appendChild(icon("pencil"));
-function applyTitle() { appTitleEl.textContent = appTitle; }
-function openTitleSheet() {
-  scanBody.innerHTML = "";
-  scanBody.appendChild(el("h3", "", "Rename your app"));
-  scanBody.appendChild(el("div", "small", "This is the title at the top of the page. Leave it empty to go back to \"" + DEFAULT_TITLE + "\"."));
-  const label = el("label", "field", "Title");
+function applyFeatures() {
+  summaryBox.querySelector(".stats").hidden = !features.summary;
+  document.getElementById("pipeline-box").hidden = !features.timeline;
+  document.getElementById("goals-box").hidden = !features.investments;
+  document.getElementById("planner-button").hidden = !features.planner;
+  document.getElementById("sales-button").hidden = !features.sales;
+  document.body.classList.toggle("no-invest", !features.investments);
+  updateSummaryBox();
+}
+function saveSetting(key, value) {
+  try { localStorage.setItem(key, JSON.stringify(value)); } catch (e) {}
+}
+// A row with a switch on the right.
+function switchRow(title, desc, checked, onChange) {
+  const row = el("div", "switch-row");
+  const text = el("div", "switch-text");
+  text.appendChild(el("b", "", title));
+  if (desc) text.appendChild(el("span", "", desc));
+  row.appendChild(text);
+  const sw = el("span", "switch");
   const input = document.createElement("input");
-  input.maxLength = 30;
-  input.value = appTitle;
-  label.appendChild(input);
-  scanBody.appendChild(label);
-  function saveTitle() {
-    appTitle = input.value.trim().replace(/\s+/g, " ") || DEFAULT_TITLE;
-    try { localStorage.setItem("appTitle", appTitle); } catch (e) {}
-    applyTitle();
-    render();
-    closeScanModal();
-  }
-  input.addEventListener("keydown", function (event) {
-    if (event.key === "Enter") { event.preventDefault(); saveTitle(); }
-  });
-  scanBody.appendChild(modalButton("Save title", "primary", saveTitle));
-  scanBody.appendChild(modalButton("Cancel", "", closeScanModal));
-  scanModal.hidden = false;
-  input.focus();
-  input.select();
+  input.type = "checkbox";
+  input.checked = checked;
+  input.setAttribute("aria-label", title);
+  sw.appendChild(input);
+  sw.appendChild(el("span", "track"));
+  row.appendChild(sw);
+  input.addEventListener("change", function () { onChange(input.checked); });
+  return row;
 }
-titleEditBtn.addEventListener("click", openTitleSheet);
-appTitleEl.addEventListener("click", openTitleSheet);
+const FEATURE_TEXT = {
+  summary: ["Balance and profit", "Available balance, total profit and the Withdraw button at the top."],
+  timeline: ["Timeline", "Where your items are in the process, from photos to shipped."],
+  investments: ["Investments", "Things you save for or pay, like a printer or rent, with a progress bar."],
+  planner: ["Planner", "Your plan for the day, a to-do list and a work timer."],
+  sales: ["Sales report", "Sales by week and by lot, plus the spreadsheet download."]
+};
+const CARD_TEXT = {
+  price: "Price", profit: "Profit (sold items)", weight: "Weight", cost: "What you paid",
+  storage: "Storage spot", photos: "Photo progress", notes: "Dates and reminders"
+};
+function buildSettingsSwitches() {
+  const featureBox = document.getElementById("feature-switches");
+  featureBox.innerHTML = "";
+  FEATURE_KEYS.forEach(function (key) {
+    featureBox.appendChild(switchRow(FEATURE_TEXT[key][0], FEATURE_TEXT[key][1], !!features[key], function (on) {
+      features[key] = on;
+      saveSetting("features", features);
+      applyFeatures();
+    }));
+  });
+  const cardBox = document.getElementById("card-switches");
+  cardBox.innerHTML = "";
+  CARD_KEYS.forEach(function (key) {
+    cardBox.appendChild(switchRow(CARD_TEXT[key], "", !!cardFields[key], function (on) {
+      cardFields[key] = on;
+      saveSetting("cardFields", cardFields);
+      render();
+    }));
+  });
+  const swipeBox = document.getElementById("swipe-switch");
+  swipeBox.innerHTML = "";
+  swipeBox.appendChild(switchRow("Swipe on items", "Swipe right to do the next step. Swipe left for Edit, Lower price and Delete.", swipeOn, function (on) {
+    swipeOn = on;
+    try { localStorage.setItem("swipeOn", on ? "1" : "0"); } catch (e) {}
+    render();
+  }));
+}
+buildSettingsSwitches();
+applyFeatures();
+
+// ---- app title (changed in Settings, under Appearance) ----
+const appTitleEl = document.getElementById("app-title");
+const titleInput = document.getElementById("title-input");
+function applyTitle() {
+  appTitleEl.textContent = appTitle;
+  titleInput.value = appTitle;
+}
+function saveTitle() {
+  appTitle = titleInput.value.trim().replace(/\s+/g, " ") || DEFAULT_TITLE;
+  try { localStorage.setItem("appTitle", appTitle); } catch (e) {}
+  applyTitle();
+  render();
+  showToast("Title saved.");
+}
+document.getElementById("title-save").addEventListener("click", saveTitle);
+titleInput.addEventListener("keydown", function (event) {
+  if (event.key === "Enter") { event.preventDefault(); saveTitle(); }
+});
 
 // ---- Tools: the photo checklist (add, rename, remove) ----
 function savePhotoTypes() {
@@ -6767,8 +7064,8 @@ function exampleBackupData() {
       ex({ name: "Example vintage vest", site: "eBay", status: "Listed", bin: "A", slot: 4, photos: vestPhotos, photosNA: vestNA, posted: day(-3), original: 25, current: 25, soldFor: null })
     ],
     goals: [
-      { name: "Printer", amount: 89, purchased: false, settled: 0, repeat: "none", autoReset: false, cycle: "" },
-      { name: "Rent", amount: 900, purchased: false, settled: 0, repeat: "monthly", autoReset: true, cycle: monthOf(today) }
+      { name: "Printer", amount: 89, purchased: false, settled: 0, repeat: "none", repeatDay: 1, repeatMonth: 1, autoReset: false, cycle: "" },
+      { name: "Rent", amount: 900, purchased: false, settled: 0, repeat: "monthly", repeatDay: 1, repeatMonth: 1, autoReset: true, cycle: periodStart({ repeat: "monthly", repeatDay: 1 }, today) }
     ],
     balances: {},
     bins: [{ name: "A", slots: 12 }],
@@ -6797,7 +7094,7 @@ document.getElementById("example-backup").addEventListener("click", function () 
 const APP_STORAGE_KEYS = ["items", "goals", "balances", "bins", "freed", "filter", "statusFilter", "remindDays", "withdrawals",
   "shipAlerts", "showShipped", "remindersOn", "platforms", "bulks", "planSettings", "timeLog", "todos", "lowerPercents",
   "shipPulse", "theme", "dueDismissed", "shipDismissed", "qrUsed", "shipIntro", "lastBackup", "backupSnooze", "pinChoice",
-  "pinGoals", "summaryCollapsed", "planTimer", "appTitle", "photoTypes"];
+  "pinGoals", "summaryCollapsed", "planTimer", "appTitle", "photoTypes", "features", "cardFields", "swipeOn"];
 function wipeEverything() {
   APP_STORAGE_KEYS.forEach(function (key) { try { localStorage.removeItem(key); } catch (e) {} });
   location.reload();
@@ -6806,7 +7103,7 @@ function openWipeSheet() {
   toolsModal.hidden = true;
   scanBody.innerHTML = "";
   scanBody.appendChild(el("h3", "", "Start from zero?"));
-  scanBody.appendChild(el("p", "", "This deletes all your items, investments, balances, locations, planner data and settings from this copy of the app, and it can't be undone. Save a backup first if you might want anything back."));
+  scanBody.appendChild(el("p", "", "This deletes all your items, investments, balances, storage, planner data and settings from this copy of the app, and it can't be undone. Save a backup first if you might want anything back."));
   scanBody.appendChild(modalButton("Save a backup first", "primary", function () {
     document.getElementById("backup-save").click();
     closeScanModal();
