@@ -267,4 +267,32 @@ test("a repeating investment is due on the day its period starts", () => {
   assert.strictEqual(L.isDueOn({ repeat: "none" }, "2026-10-05"), false);
   assert.strictEqual(L.isDueOn({ repeat: "monthly", repeatDay: 31 }, "2026-02-28"), true);
 });
+test("backup age says Today, Yesterday, days ago, or Not yet", () => {
+  assert.deepStrictEqual(L.backupAge("", "2026-10-07"), { text: "Not yet", level: "none" });
+  assert.deepStrictEqual(L.backupAge("2026-10-07", "2026-10-07"), { text: "Today", level: "good" });
+  assert.deepStrictEqual(L.backupAge("2026-10-06", "2026-10-07"), { text: "Yesterday", level: "good" });
+  assert.deepStrictEqual(L.backupAge("2026-10-01", "2026-10-07"), { text: "6 days ago", level: "good" });
+  assert.deepStrictEqual(L.backupAge("2026-09-20", "2026-10-07"), { text: "17 days ago", level: "old" });
+});
+test("theme choice splits into mode and theme", () => {
+  assert.deepStrictEqual(L.themeParts("auto"), { mode: "auto", look: "auto" });
+  assert.deepStrictEqual(L.themeParts("light"), { mode: "light", look: "classic" });
+  assert.deepStrictEqual(L.themeParts("light-rose"), { mode: "light", look: "rose" });
+  assert.deepStrictEqual(L.themeParts("dark"), { mode: "dark", look: "classic" });
+  assert.deepStrictEqual(L.themeParts("nonsense"), { mode: "auto", look: "auto" });
+});
+test("tapping a mode keeps a theme that fits it and drops one that does not", () => {
+  assert.strictEqual(L.themeForMode("light-rose", "light"), "light-rose");
+  assert.strictEqual(L.themeForMode("light-rose", "dark"), "dark");
+  assert.strictEqual(L.themeForMode("dark-plum", "light"), "light");
+  assert.strictEqual(L.themeForMode("dark-plum", "auto"), "auto");
+  assert.strictEqual(L.themeForMode("auto", "dark"), "dark");
+});
+test("tapping a theme switches to the mode it belongs to, and Classic is Dark on Dark and Light otherwise", () => {
+  assert.strictEqual(L.themeForLook("auto", "sage"), "light-sage");
+  assert.strictEqual(L.themeForLook("light", "midnight"), "dark-midnight");
+  assert.strictEqual(L.themeForLook("dark-plum", "classic"), "dark");
+  assert.strictEqual(L.themeForLook("light-rose", "classic"), "light");
+  assert.strictEqual(L.themeForLook("auto", "classic"), "light");
+});
 console.log(passed + " tests passed" + (process.exitCode ? " (some failed)" : ""));
