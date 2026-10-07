@@ -541,9 +541,6 @@ label.has-error { color: var(--danger); font-weight: 700; }
 .bulk-line { display: flex; justify-content: space-between; gap: 10px; font-size: 14px; padding: 2px 0; }
 .net-pos { color: var(--profit); font-weight: 800; }
 .net-neg { color: var(--danger); font-weight: 800; }
-.plat-card { border: 1px solid var(--line); border-radius: 10px; padding: 10px; margin-top: 10px; background: var(--surface); }
-.plat-head { display: flex; justify-content: space-between; align-items: center; gap: 8px; }
-.plat-name { font-weight: 800; font-size: 16px; }
 .plat-add { display: flex; gap: 8px; margin-top: 12px; }
 .plat-add input { flex: 1; min-width: 0; }
 .need-total { display: flex; justify-content: space-between; align-items: center; background: var(--tint); border-radius: 10px; padding: 10px 12px; margin-top: 8px; font-size: 15px; }
@@ -578,7 +575,6 @@ label.has-error { color: var(--danger); font-weight: 700; }
 .seg button:last-child { border-radius: 0 10px 10px 0; }
 .seg button.on { background: var(--primary); border-color: var(--accent-line); color: #ffffff; font-weight: 700; }
 .pane-title { font-weight: 800; font-size: 15px; margin: 4px 0 8px; color: var(--text); }
-.plat-head .small-btn { min-height: 34px; font-size: 13px; }
 .tools-group { margin: 18px 2px 2px; font-size: 13px; font-weight: 800; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); }
 .tools-group:first-of-type { margin-top: 8px; }
 #lower-options { margin-top: 10px; }
@@ -682,7 +678,6 @@ body.no-invest #goals-mini { display: none !important; }
 .swipe-btn.dismiss { background: #5b6770; }
 .swipe-btn.delete { background: #b42318; }
 #menu-qr[hidden] { display: none; }
-.plat-card .bal-line { font-size: 13px; }
 .look-note { margin-top: 6px; }
 /* Color styles: two extra light looks and two extra dark looks */
 :root[data-theme="light"][data-look="rose"] { --bg: #fff8fa; --surface-2: #fceef2; --summary-bg: #f8e3ea; --tint: #fdeaf0; --text: #2a1a20; --muted: #5e464f; --line: #9d7f8b; --line-soft: #ecd0d9; --accent-text: #a3154f; --accent-line: #a3154f; --primary: #a3154f; --info-bg: #fde6ee; --info-text: #6e0e36; --listed-bg: #fde3ec; --listed-edge: #c0336f; --thumb-bg: #ecd9df; --track: #9d7f8b; }
@@ -1050,6 +1045,59 @@ progress::-moz-progress-bar { background: var(--primary); border-radius: 5px; }
 .sgroup > .msec-title { margin: 0 4px 6px; }
 .set-card { background: var(--surface); border: 1px solid var(--line-soft); border-radius: 14px; overflow: hidden; }
 .set-card.pad { padding: 12px; }
+
+/* Platforms and fees: the picker bar, the example sale, and the bottom sheet that picks or adds a platform */
+.plat-block { margin-top: 12px; }
+.plat-block .bal-line { font-size: 13px; }
+.plat-block .sub-title.first { margin-top: 0; }
+.plat-block .plat-ask { margin-top: 8px; }
+.plat-block .seg { margin-top: 0; }
+.plat-picker { width: 100%; min-height: 68px; margin: 10px 0 0; padding: 10px 14px; display: flex; align-items: center; gap: 12px; text-align: left; background: var(--surface); border: 1px solid var(--line-soft); border-radius: 14px; color: var(--text); }
+.plat-picker[aria-expanded="true"] .chev { transform: rotate(-90deg); }
+.plat-picker .chev { flex: none; width: 18px; height: 18px; fill: none; stroke: var(--muted); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; transform: rotate(90deg); }
+.plat-picker-text { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 1px; }
+.plat-picker-text small { font-size: 13px; color: var(--muted); }
+.plat-picker-text b { font-size: 17px; }
+.plat-badge { flex: none; width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; background: var(--surface-2); border: 1px solid var(--line-soft); font-size: 17px; font-weight: 800; color: var(--text); }
+.ex-head { display: flex; align-items: flex-end; justify-content: space-between; gap: 12px; }
+.ex-head h4 { margin: 0; font-size: 16px; font-weight: 800; }
+.ex-price { flex: none; width: 110px; margin: 0; font-size: 13px; color: var(--muted); }
+.ex-lines { display: flex; flex-direction: column; gap: 10px; margin-top: 14px; font-size: 15px; }
+.ex-line { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; }
+.ex-line .dim { color: var(--muted); }
+.ex-total { padding-top: 10px; border-top: 1px solid var(--line-soft); }
+.ex-total b:first-child { font-size: 17px; }
+.ex-keep { font-size: 22px; color: var(--profit); }
+.ex-keep.neg { color: var(--danger); }
+.ex-bump { margin-top: 14px; padding: 10px 12px; display: flex; justify-content: space-between; align-items: baseline; gap: 12px; border-radius: 12px; background: var(--warn-bg); color: var(--warn-text); font-size: 14px; line-height: 1.4; }
+.ex-note { margin-top: 10px; font-size: 13px; line-height: 1.4; color: var(--muted); }
+.plat-remove { margin-top: 12px; }
+#plat-sheet { position: fixed; top: 0; right: 0; bottom: 0; left: 0; z-index: 70; background: rgba(0, 0, 0, 0.45); display: flex; align-items: flex-end; justify-content: center; }
+.psheet { width: 100%; max-width: 760px; max-height: 88vh; overflow: auto; background: var(--surface); border-radius: 20px 20px 0 0; box-shadow: 0 -4px 24px rgba(0, 0, 0, 0.18); }
+.psheet-grab { width: 36px; height: 5px; margin: 8px auto 0; border-radius: 3px; background: var(--line-soft); }
+.psheet-head { padding: 12px 16px; }
+.psheet-head h3 { margin: 0; font-size: 18px; }
+.psheet-head p { margin: 4px 0 0; font-size: 14px; line-height: 1.4; color: var(--muted); }
+.psheet-row { display: flex; align-items: center; gap: 12px; min-height: 68px; padding: 0 16px; border-top: 1px solid var(--line-soft); }
+.psheet-row.on-edit { background: var(--tint); }
+.psheet-pick { flex: 1; min-width: 0; min-height: 68px; margin: 0; padding: 0; display: flex; align-items: center; gap: 12px; text-align: left; background: transparent; border: 0; border-radius: 0; color: var(--text); }
+.psheet-text { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px; }
+.psheet-name { display: flex; align-items: center; gap: 8px; font-size: 17px; font-weight: 800; }
+.psheet-chip { font-size: 12px; font-weight: 800; padding: 2px 8px; border-radius: 8px; background: var(--info-bg); color: var(--info-text); }
+.psheet-sub { display: block; font-size: 13px; font-weight: 400; color: var(--muted); }
+.psheet-add { width: 100%; min-height: 56px; margin: 0; padding: 0 16px; display: flex; align-items: center; gap: 10px; text-align: left; background: transparent; border: 0; border-top: 1px solid var(--line-soft); border-radius: 0; color: var(--accent-text); font-size: 17px; font-weight: 800; }
+.psheet-add svg, .psheet-back svg { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round; }
+.psheet-pad { height: calc(20px + env(safe-area-inset-bottom)); }
+.psheet-top { display: grid; grid-template-columns: 120px minmax(0, 1fr) 120px; align-items: center; min-height: 52px; padding: 0 8px; }
+.psheet-top h3 { margin: 0; font-size: 17px; text-align: center; }
+.psheet-back { justify-self: start; min-height: 44px; margin: 0; padding: 0 8px; display: flex; align-items: center; gap: 2px; background: transparent; border: 0; color: var(--accent-text); font-size: 17px; font-weight: 600; }
+.psheet-act { flex: none; min-height: 44px; padding: 0 18px; border-radius: 22px; background: var(--surface); border: 1px solid var(--accent-line); color: var(--accent-text); font-size: 15px; font-weight: 800; }
+.psheet-other { border-top: 1px solid var(--line-soft); background: var(--surface-2); }
+.psheet-other .psheet-row { border-top: 0; }
+.psheet-form { display: flex; align-items: flex-end; gap: 12px; padding: 0 16px 16px; }
+.psheet-form .field { flex: 1; min-width: 0; margin: 0; }
+.psheet-form button { flex: none; min-height: 44px; padding: 0 22px; margin: 0; }
+.psheet-note { margin: 0; padding: 12px 16px calc(20px + env(safe-area-inset-bottom)); border-top: 1px solid var(--line-soft); font-size: 13px; line-height: 1.4; color: var(--muted); }
 .set-hint { margin: 10px 2px 0; font-size: 13px; line-height: 1.4; color: var(--muted); }
 .srow2 { width: 100%; min-height: 52px; margin: 0; padding: 0 14px; display: flex; align-items: center; gap: 12px; text-align: left; background: transparent; border: 0; border-top: 1px solid var(--line-soft); border-radius: 0; color: var(--text); }
 .srow2:first-child { border-top: 0; }
@@ -1491,12 +1539,9 @@ progress::-moz-progress-bar { background: var(--primary); border-radius: 5px; }
   <details class="filters-box" id="platforms-box">
     <summary>Platforms, fees and balances</summary>
     <div class="filters-panel">
-      <div class="small">Turn off a platform you don't sell on. Bump costs and fees come off your profit.</div>
+      <div class="small">Pick a platform to change its fees. Fees and bump costs come off your profit.</div>
+      <button type="button" id="plat-picker" class="plat-picker" aria-haspopup="dialog" aria-expanded="false"></button>
       <div id="platforms-list"></div>
-      <div class="plat-add">
-        <input id="new-platform-name" maxlength="20" placeholder="New platform name">
-        <button type="button" id="add-platform-button" class="small-btn primary">Add platform</button>
-      </div>
       <div class="bal-block">
         <div class="bal-name">All platforms</div>
         <div class="bal-line"><span>Starting balances</span><span id="start-all">$0.00</span></div>
@@ -1703,6 +1748,13 @@ progress::-moz-progress-bar { background: var(--primary); border-radius: 5px; }
     <div class="modal-panel" id="scan-body"></div>
   </div>
 
+  <div id="plat-sheet" hidden>
+    <div class="psheet" role="dialog" aria-modal="true" aria-label="Platforms">
+      <div class="psheet-grab" aria-hidden="true"></div>
+      <div id="plat-sheet-body"></div>
+    </div>
+  </div>
+
   <div id="camera-overlay" hidden>
     <video id="camera-video" playsinline muted></video>
     <div class="camera-bar">
@@ -1760,7 +1812,7 @@ progress::-moz-progress-bar { background: var(--primary); border-radius: 5px; }
 })();
 
 // The money and date rules live in js/logic.js (tested with: node tests/logic.test.js).
-const { money, salePrice, isDone, feeTotal, platformFee, shipCostOf, costsTotal, profitOf, bulkCosts,
+const { money, salePrice, isDone, feeTotal, platformFee, shipCostOf, costsTotal, profitOf, bulkCosts, feeText, bumpText, feeExample,
   parseDate, formatDate, dayDiff, addDays, isWeekend, shipByDate, capWords, wordCount, isQuickNameOk, backupDue, backupAge, themeParts, themeForMode, themeForLook,
   withdrawPlan, applyWithdrawal, undoWithdrawal, monthOf, monthLabel, periodStart, isDueOn, periodLabel, repeatText, resetInvestment, rolloverInvestments } = window.ResaleLogic;
 
@@ -4306,11 +4358,11 @@ const scanModal = document.getElementById("scan-modal");
 const scanBody = document.getElementById("scan-body");
 
 function syncModalLock() {
-  const open = ["scan-modal", "price-modal", "add-menu", "tools-modal", "planner-modal", "sales-modal", "msg-modal"].some(function (id) { return !document.getElementById(id).hidden; });
+  const open = ["scan-modal", "price-modal", "add-menu", "tools-modal", "planner-modal", "sales-modal", "plat-sheet", "msg-modal"].some(function (id) { return !document.getElementById(id).hidden; });
   document.body.classList.toggle("modal-open", open);
 }
 new MutationObserver(syncModalLock).observe(scanModal, { attributes: true, attributeFilter: ["hidden"] });
-["price-modal", "tools-modal", "planner-modal", "sales-modal", "msg-modal", "add-menu"].forEach(function (id) {
+["price-modal", "tools-modal", "planner-modal", "sales-modal", "plat-sheet", "msg-modal", "add-menu"].forEach(function (id) {
   new MutationObserver(syncModalLock).observe(document.getElementById(id), { attributes: true, attributeFilter: ["hidden"] });
 });
 
@@ -6577,12 +6629,14 @@ function showSalesPane(which) {
 document.getElementById("seg-weekly").addEventListener("click", function () { showSalesPane("weekly"); });
 document.getElementById("seg-bulk").addEventListener("click", function () { showSalesPane("bulk"); });
 
-// ---- Tools: platforms and bump costs ----
-const BUMP_TYPE_LABELS = {
-  percent: "A percent of the price",
-  flat: "A fixed dollar amount",
-  ask: "I type it each time"
-};
+// ---- Tools: platforms and fees ----
+// One platform is shown at a time. The bar at the top says which one. A bottom sheet picks which platform to edit,
+// switches platforms on or off, and adds new ones (Facebook, Mercari, Poshmark, Etsy, or one you name yourself).
+const SUGGESTED_PLATFORMS = ["Facebook", "Mercari", "Poshmark", "Etsy"];
+const BUMP_SEG = [["percent", "% of price"], ["flat", "Fixed $"], ["ask", "I type it"]];
+let platformEditing = "";
+let exampleSale = 40;
+let examplePaint = null;
 function platformsChanged() {
   save();
   refreshPlatformFilter();
@@ -6593,157 +6647,423 @@ function platformsChanged() {
 function platformInUse(name) {
   return items.some(function (it) { return it.site === name; }) || (balances[name] || 0) !== 0;
 }
+function newPlatform(name) {
+  return { name: name, enabled: true, bumpType: "ask", bumpValue: 0, bumpDays: false, feePercent: 0, feeFlat: 0 };
+}
+// The platform being edited. If it is gone, fall back to the first one that is on.
+function editingPlatform() {
+  let p = findPlatform(platformEditing);
+  if (!p) p = platforms.filter(function (x) { return x.enabled; })[0] || platforms[0] || null;
+  platformEditing = p ? p.name : "";
+  return p;
+}
+function platformSummary(p) {
+  if (!p.enabled) return "Off · hidden in the app";
+  const fee = feeText(p);
+  return (fee ? fee + " fee" : "No fee set") + " · " + bumpText(p);
+}
+function platformBadge(text) {
+  const b = el("span", "plat-badge", text);
+  b.setAttribute("aria-hidden", "true");
+  return b;
+}
+function cleanNumber(raw, max) {
+  let n = Number(raw);
+  n = n > 0 ? n : 0;
+  if (max && n > max) n = max;
+  return n;
+}
+// A number box. onInput runs while you type (so the example updates), onChange when you finish (so it is saved).
+// getValue gives the saved number back, so the box can show the cleaned-up value (like 3.30 as 3.3, or 150% as 100%).
+// The box itself is not rebuilt, so tapping from one box to the next keeps the keyboard open.
+function numberField(labelText, getValue, max, onInput, onChange) {
+  const lab = el("label", "field", labelText);
+  const inp = document.createElement("input");
+  inp.type = "number";
+  inp.inputMode = "decimal";
+  inp.step = "0.01";
+  inp.min = "0";
+  if (max) inp.max = max;
+  inp.value = getValue() ? getValue() : "";
+  inp.placeholder = "0";
+  lab.appendChild(inp);
+  inp.addEventListener("input", function () { onInput(inp.value); });
+  inp.addEventListener("change", function () {
+    onChange(inp.value);
+    inp.value = getValue() ? getValue() : "";
+  });
+  return lab;
+}
+
+// The bar at the top: which platform you are editing. Tapping it opens the sheet.
+function renderPlatformPicker(p) {
+  const btn = document.getElementById("plat-picker");
+  btn.innerHTML = "";
+  if (!p) return;
+  btn.appendChild(platformBadge(p.name.charAt(0).toUpperCase()));
+  const text = el("span", "plat-picker-text");
+  text.appendChild(el("small", "", "Editing"));
+  text.appendChild(el("b", "", p.name));
+  btn.appendChild(text);
+  btn.insertAdjacentHTML("beforeend", '<svg class="chev" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg>');
+}
+
+// The example sale: what a sale at this price costs in fees and what you keep.
+function buildExampleCard(p) {
+  const card = el("div", "set-card pad plat-block");
+  const head = el("div", "ex-head");
+  head.appendChild(el("h4", "", "Example sale on " + p.name));
+  const priceLabel = el("label", "field ex-price", "Price ($)");
+  const price = document.createElement("input");
+  price.type = "number";
+  price.inputMode = "decimal";
+  price.step = "0.01";
+  price.min = "0";
+  price.value = exampleSale;
+  priceLabel.appendChild(price);
+  head.appendChild(priceLabel);
+  card.appendChild(head);
+  const body = el("div", "ex-body");
+  card.appendChild(body);
+  function paint() {
+    body.innerHTML = "";
+    const ex = feeExample(p, price.value);
+    const lines = el("div", "ex-lines");
+    const sold = el("div", "ex-line");
+    sold.appendChild(el("span", "", "Sold for"));
+    sold.appendChild(el("span", "", money(ex.price)));
+    lines.appendChild(sold);
+    const feeLine = el("div", "ex-line");
+    const feeLabel = el("span", "", "Selling fee ");
+    feeLabel.appendChild(el("span", "dim", feeText(p) ? "(" + feeText(p) + ")" : "(none set)"));
+    feeLine.appendChild(feeLabel);
+    feeLine.appendChild(el("span", "", ex.fee === 0 ? money(0) : "-" + money(ex.fee)));
+    lines.appendChild(feeLine);
+    const keepLine = el("div", "ex-line ex-total");
+    keepLine.appendChild(el("b", "", "You keep"));
+    keepLine.appendChild(el("b", "ex-keep" + (ex.keep < 0 ? " neg" : ""), money(ex.keep)));
+    lines.appendChild(keepLine);
+    body.appendChild(lines);
+    if (ex.bump !== null && ex.bump > 0) {
+      const strip = el("div", "ex-bump");
+      strip.appendChild(el("span", "", "If you also bump (" + (p.bumpType === "percent" ? String(Number(p.bumpValue)) + "% = " : "") + money(ex.bump) + ")"));
+      strip.appendChild(el("b", "", "You keep " + money(ex.keepWithBump)));
+      body.appendChild(strip);
+    } else if (p.bumpType === "ask") {
+      body.appendChild(el("div", "ex-note", "You type the bump cost each time, so it isn't counted here."));
+    }
+    body.appendChild(el("div", "ex-note", "Before postage and what you paid for the item."));
+  }
+  price.addEventListener("input", function () { exampleSale = price.value; paint(); });
+  paint();
+  examplePaint = paint;
+  return card;
+}
+
+// Selling fee, bump cost, bump length, link and starting balance for one platform that is on.
+function buildPlatformSettings(p) {
+  const card = el("div", "set-card pad plat-block");
+
+  card.appendChild(el("div", "sub-title first", "Selling fee"));
+  const feeRow = el("div", "plat-fees");
+  [["feePercent", "Percent (%)", 100], ["feeFlat", "Per sale ($)", 0]].forEach(function (def) {
+    feeRow.appendChild(numberField(def[1], function () { return p[def[0]]; }, def[2], function (raw) {
+      p[def[0]] = cleanNumber(raw, def[2]);
+      if (examplePaint) examplePaint();
+    }, function (raw) {
+      p[def[0]] = cleanNumber(raw, def[2]);
+      save();
+      render();
+      if (examplePaint) examplePaint();
+    }));
+  });
+  card.appendChild(feeRow);
+
+  card.appendChild(el("div", "sub-title", "Bump cost"));
+  const seg = el("div", "seg");
+  seg.setAttribute("role", "group");
+  seg.setAttribute("aria-label", "Bump cost");
+  BUMP_SEG.forEach(function (def) {
+    const b = el("button", p.bumpType === def[0] ? "on" : "", def[1]);
+    b.type = "button";
+    b.setAttribute("aria-pressed", p.bumpType === def[0] ? "true" : "false");
+    b.addEventListener("click", function () {
+      p.bumpType = def[0];
+      platformsChanged();
+    });
+    seg.appendChild(b);
+  });
+  card.appendChild(seg);
+  if (p.bumpType !== "ask") {
+    const isPercent = p.bumpType === "percent";
+    const max = isPercent ? 100 : 0;
+    card.appendChild(numberField(isPercent ? "Percent of the price (%)" : "Amount ($)", function () { return p.bumpValue; }, max, function (raw) {
+      p.bumpValue = cleanNumber(raw, max);
+      if (examplePaint) examplePaint();
+    }, function (raw) {
+      p.bumpValue = cleanNumber(raw, max);
+      save();
+      render();
+      if (examplePaint) examplePaint();
+    }));
+  } else {
+    card.appendChild(el("div", "small plat-ask", "You type the cost each time you bump an item."));
+  }
+  card.appendChild(switchRow("Bump lasts 3 or 7 days", "", p.bumpDays, function (checked) {
+    p.bumpDays = checked;
+    save();
+    render();
+  }));
+
+  const urlLabel = el("label", "field", "App or website link");
+  const urlInput = document.createElement("input");
+  urlInput.type = "url";
+  urlInput.placeholder = DEFAULT_PLATFORM_URLS[p.name.toLowerCase()] || "https://";
+  urlInput.value = p.url || "";
+  urlLabel.appendChild(urlInput);
+  card.appendChild(urlLabel);
+  urlInput.addEventListener("change", function () {
+    let v = urlInput.value.trim();
+    if (v !== "" && !/^https?:\/\//i.test(v)) v = "https://" + v;
+    p.url = v;
+    save();
+    renderPlatformLinks();
+  });
+
+  addBalanceRow(card, p);
+  return card;
+}
+
+function buildRemoveButton(p) {
+  const remove = el("button", "block danger plat-remove", "Remove " + p.name);
+  remove.type = "button";
+  remove.addEventListener("click", function () {
+    if (platforms.length <= 1) { alert("Keep at least one platform."); return; }
+    if (platformInUse(p.name)) {
+      alert(p.name + " still has items or a starting balance, so it can't be removed. Turn it off instead. It will stay hidden from the lists but your old sales keep counting.");
+      return;
+    }
+    if (p.enabled && enabledPlatformNames().length <= 1) { alert("Keep at least one platform turned on."); return; }
+    askYesNo("Remove " + p.name + "?", "Remove", function () {
+      platforms = platforms.filter(function (x) { return x !== p; });
+      platformEditing = "";
+      platformsChanged();
+    });
+  });
+  return remove;
+}
+
 function renderPlatformEditor() {
   const box = document.getElementById("platforms-list");
   box.innerHTML = "";
   Object.keys(balanceRefs).forEach(function (k) { delete balanceRefs[k]; });
   balanceSig = visiblePlatformsForBalance().map(function (pp) { return pp.name; }).join("|");
   const balanceShown = visiblePlatformsForBalance();
-  platforms.forEach(function (p) {
-    const card = el("div", "plat-card");
-    const head = el("div", "plat-head");
-    head.appendChild(el("span", "plat-name", p.name));
-    const onLabel = el("label", "check", "");
-    const on = document.createElement("input");
-    on.type = "checkbox";
-    on.checked = p.enabled;
-    onLabel.appendChild(on);
-    onLabel.appendChild(document.createTextNode(" On"));
-    head.appendChild(onLabel);
-    const remove = el("button", "small-btn", "Remove");
-    remove.type = "button";
-    remove.addEventListener("click", function () {
-      if (platforms.length <= 1) { alert("Keep at least one platform."); return; }
-      if (platformInUse(p.name)) {
-        alert(p.name + " still has items or a starting balance, so it can't be removed. Turn it off instead. It will stay hidden from the lists but your old sales keep counting.");
-        return;
-      }
-      if (p.enabled && enabledPlatformNames().length <= 1) { alert("Keep at least one platform turned on."); return; }
-      askYesNo("Remove" + "?", "Remove", function () {
-        platforms = platforms.filter(function (x) { return x !== p; });
-        platformsChanged();
-      });
+  examplePaint = null;
+  const p = editingPlatform();
+  renderPlatformPicker(p);
+  if (!p) { paintBalances(); return; }
+  if (!p.enabled) {
+    const off = el("div", "set-card pad plat-block");
+    off.appendChild(el("div", "small", p.name + " is off, so it is hidden in the app. Your old sales still count."));
+    const turnOn = el("button", "block primary", "Turn on " + p.name);
+    turnOn.type = "button";
+    turnOn.addEventListener("click", function () {
+      p.enabled = true;
+      platformsChanged();
     });
-    head.appendChild(remove);
-    card.appendChild(head);
-    on.addEventListener("change", function () {
-      if (!on.checked && enabledPlatformNames().length <= 1) {
-        on.checked = true;
+    off.appendChild(turnOn);
+    if (balanceShown.indexOf(p) !== -1) addBalanceRow(off, p);
+    box.appendChild(off);
+    box.appendChild(buildRemoveButton(p));
+    paintBalances();
+    return;
+  }
+  box.appendChild(buildExampleCard(p));
+  box.appendChild(buildPlatformSettings(p));
+  box.appendChild(buildRemoveButton(p));
+  paintBalances();
+}
+
+// ---- the bottom sheet: pick a platform, switch platforms on or off, add a platform ----
+const platSheet = document.getElementById("plat-sheet");
+const platSheetBody = document.getElementById("plat-sheet-body");
+let platSheetView = "list";
+function openPlatformSheet(view) {
+  platSheetView = view || "list";
+  renderPlatformSheet();
+  platSheet.hidden = false;
+  document.getElementById("plat-picker").setAttribute("aria-expanded", "true");
+  const first = platSheetBody.querySelector("button, input");
+  if (first) first.focus();
+}
+function closePlatformSheet() {
+  platSheet.hidden = true;
+  platSheetBody.innerHTML = "";
+  const picker = document.getElementById("plat-picker");
+  picker.setAttribute("aria-expanded", "false");
+  picker.focus();
+}
+function renderPlatformSheet() {
+  platSheet.querySelector(".psheet").setAttribute("aria-label", platSheetView === "add" ? "Add a platform" : "Platforms in your shop");
+  if (platSheetView === "add") renderPlatformSheetAdd(); else renderPlatformSheetList();
+}
+function renderPlatformSheetList() {
+  const body = platSheetBody;
+  body.innerHTML = "";
+  const head = el("div", "psheet-head");
+  head.appendChild(el("h3", "", "Platforms in your shop"));
+  head.appendChild(el("p", "", "Switch on the ones you sell on. Tap a name to edit its fees."));
+  body.appendChild(head);
+  const current = editingPlatform();
+  platforms.forEach(function (p) {
+    const row = el("div", "psheet-row" + (current === p ? " on-edit" : ""));
+    const pick = el("button", "psheet-pick");
+    pick.type = "button";
+    pick.setAttribute("aria-pressed", current === p ? "true" : "false");
+    pick.appendChild(platformBadge(p.name.charAt(0).toUpperCase()));
+    const text = el("span", "psheet-text");
+    const nameLine = el("span", "psheet-name", p.name);
+    if (current === p) nameLine.appendChild(el("span", "psheet-chip", "Editing"));
+    text.appendChild(nameLine);
+    text.appendChild(el("span", "psheet-sub", platformSummary(p)));
+    pick.appendChild(text);
+    pick.addEventListener("click", function () {
+      platformEditing = p.name;
+      closePlatformSheet();
+      renderPlatformEditor();
+    });
+    row.appendChild(pick);
+    const sw = el("span", "switch");
+    const input = document.createElement("input");
+    input.type = "checkbox";
+    input.checked = p.enabled;
+    const switchLabel = p.name + " on or off";
+    input.setAttribute("aria-label", switchLabel);
+    sw.appendChild(input);
+    sw.appendChild(el("span", "track"));
+    input.addEventListener("change", function () {
+      if (!input.checked && enabledPlatformNames().length <= 1) {
+        input.checked = true;
         alert("Keep at least one platform turned on.");
         return;
       }
-      p.enabled = on.checked;
+      p.enabled = input.checked;
       platformsChanged();
+      renderPlatformSheet();
+      const again = Array.prototype.filter.call(platSheetBody.querySelectorAll("input"), function (i) { return i.getAttribute("aria-label") === switchLabel; })[0];
+      if (again) again.focus();
     });
-    if (!p.enabled) {
-      if (balanceShown.indexOf(p) !== -1) addBalanceRow(card, p);
-      box.appendChild(card);
-      return;
-    }
-    addBalanceRow(card, p);
-
-    const urlLabel = el("label", "field", "App or website link");
-    const urlInput = document.createElement("input");
-    urlInput.type = "url";
-    urlInput.placeholder = DEFAULT_PLATFORM_URLS[p.name.toLowerCase()] || "https://";
-    urlInput.value = p.url || "";
-    urlLabel.appendChild(urlInput);
-    card.appendChild(urlLabel);
-    urlInput.addEventListener("change", function () {
-      let v = urlInput.value.trim();
-      if (v !== "" && !/^https?:\/\//i.test(v)) v = "https://" + v;
-      p.url = v;
-      save();
-      renderPlatformLinks();
-    });
-
-    const typeLabel = el("label", "field", "Bump cost");
-    const type = document.createElement("select");
-    Object.keys(BUMP_TYPE_LABELS).forEach(function (k) {
-      const o = document.createElement("option");
-      o.value = k;
-      o.textContent = BUMP_TYPE_LABELS[k];
-      type.appendChild(o);
-    });
-    type.value = p.bumpType;
-    typeLabel.appendChild(type);
-    card.appendChild(typeLabel);
-    type.addEventListener("change", function () {
-      p.bumpType = type.value;
-      platformsChanged();
-    });
-
-    if (p.bumpType !== "ask") {
-      const valLabel = el("label", "field", p.bumpType === "percent" ? "Percent (%)" : "Amount ($)");
-      const val = document.createElement("input");
-      val.type = "number";
-      val.inputMode = "decimal";
-      val.step = "0.01";
-      val.min = "0";
-      val.value = p.bumpValue ? p.bumpValue : "";
-      val.placeholder = "0";
-      valLabel.appendChild(val);
-      card.appendChild(valLabel);
-      val.addEventListener("change", function () {
-        const n = Number(val.value);
-        p.bumpValue = n > 0 ? n : 0;
-        if (p.bumpType === "percent" && p.bumpValue > 100) p.bumpValue = 100;
-        save();
-        render();
-        renderPlatformEditor();
-      });
-    }
-
-    const feeRow = el("div", "plat-fees");
-    [["feePercent", "Selling fee (%)", "100"], ["feeFlat", "Fee per sale ($)", ""]].forEach(function (def) {
-      const lab = el("label", "field", def[1]);
-      const inp = document.createElement("input");
-      inp.type = "number";
-      inp.inputMode = "decimal";
-      inp.step = "0.01";
-      inp.min = "0";
-      if (def[2]) inp.max = def[2];
-      inp.value = p[def[0]] ? p[def[0]] : "";
-      inp.placeholder = "0";
-      lab.appendChild(inp);
-      feeRow.appendChild(lab);
-      inp.addEventListener("change", function () {
-        let n = Number(inp.value);
-        n = n > 0 ? n : 0;
-        if (def[0] === "feePercent" && n > 100) n = 100;
-        p[def[0]] = n;
-        save();
-        render();
-        renderPlatformEditor();
-      });
-    });
-    card.appendChild(feeRow);
-
-    const daysLabel = el("label", "check", "");
-    const days = document.createElement("input");
-    days.type = "checkbox";
-    days.checked = p.bumpDays;
-    daysLabel.appendChild(days);
-    daysLabel.appendChild(document.createTextNode(" Bump lasts 3 or 7 days"));
-    card.appendChild(daysLabel);
-    days.addEventListener("change", function () {
-      p.bumpDays = days.checked;
-      save();
-      render();
-    });
-
-    box.appendChild(card);
+    row.appendChild(sw);
+    body.appendChild(row);
   });
-  paintBalances();
+  const add = el("button", "psheet-add");
+  add.type = "button";
+  add.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>';
+  add.appendChild(document.createTextNode("Add a platform"));
+  add.addEventListener("click", function () {
+    platSheetView = "add";
+    renderPlatformSheet();
+    const first = platSheetBody.querySelector("button, input");
+    if (first) first.focus();
+  });
+  body.appendChild(add);
+  body.appendChild(el("div", "psheet-pad"));
 }
-document.getElementById("add-platform-button").addEventListener("click", function () {
-  const input = document.getElementById("new-platform-name");
-  const name = input.value.trim().slice(0, 20);
-  if (name === "") { alert("Type the platform's name first."); return; }
-  if (findPlatform(name)) { alert("You already have a platform called " + findPlatform(name).name + ". Turn it on instead if it is off."); return; }
-  platforms.push({ name: name, enabled: true, bumpType: "ask", bumpValue: 0, bumpDays: false, feePercent: 0, feeFlat: 0 });
-  input.value = "";
+function renderPlatformSheetAdd() {
+  const body = platSheetBody;
+  body.innerHTML = "";
+  const top = el("div", "psheet-top");
+  const back = el("button", "psheet-back");
+  back.type = "button";
+  back.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 6l-6 6 6 6"/></svg>';
+  back.appendChild(document.createTextNode("Platforms"));
+  back.addEventListener("click", function () {
+    platSheetView = "list";
+    renderPlatformSheet();
+    const first = platSheetBody.querySelector("button, input");
+    if (first) first.focus();
+  });
+  top.appendChild(back);
+  top.appendChild(el("h3", "", "Add a platform"));
+  top.appendChild(el("span", ""));
+  body.appendChild(top);
+
+  SUGGESTED_PLATFORMS.forEach(function (name) {
+    const have = findPlatform(name);
+    if (have && have.enabled) return;
+    const row = el("div", "psheet-row");
+    row.appendChild(platformBadge(name.charAt(0)));
+    const text = el("span", "psheet-text");
+    text.appendChild(el("span", "psheet-name", name));
+    text.appendChild(el("span", "psheet-sub", have ? "In your list, switched off" : "Not in your list yet"));
+    row.appendChild(text);
+    const act = el("button", "psheet-act", have ? "Turn on" : "Add");
+    act.type = "button";
+    act.setAttribute("aria-label", (have ? "Turn on " : "Add ") + name);
+    act.addEventListener("click", function () {
+      if (have) have.enabled = true; else platforms.push(newPlatform(name));
+      finishAddingPlatform(have ? have.name : name, have ? " is on." : " added.");
+    });
+    row.appendChild(act);
+    body.appendChild(row);
+  });
+
+  const other = el("div", "psheet-other");
+  const orow = el("div", "psheet-row");
+  const plus = platformBadge("+");
+  orow.appendChild(plus);
+  const otext = el("span", "psheet-text");
+  otext.appendChild(el("span", "psheet-name", "Other"));
+  otext.appendChild(el("span", "psheet-sub", "Type the name of your own platform"));
+  orow.appendChild(otext);
+  other.appendChild(orow);
+  const form = el("div", "psheet-form");
+  const lab = el("label", "field", "Platform name");
+  const input = document.createElement("input");
+  input.maxLength = 20;
+  input.placeholder = "For example, Grailed";
+  input.autocomplete = "off";
+  lab.appendChild(input);
+  form.appendChild(lab);
+  const addButton = el("button", "primary", "Add");
+  addButton.type = "button";
+  const addOther = function () {
+    const name = input.value.trim().slice(0, 20);
+    if (name === "") { alert("Type the platform's name first."); return; }
+    const dupe = findPlatform(name);
+    if (dupe) { alert("You already have a platform called " + dupe.name + ". Turn it on instead if it is off."); return; }
+    platforms.push(newPlatform(name));
+    finishAddingPlatform(name, " added.");
+  };
+  addButton.addEventListener("click", addOther);
+  input.addEventListener("keydown", function (event) {
+    if (event.key === "Enter") { event.preventDefault(); addOther(); }
+  });
+  form.appendChild(addButton);
+  other.appendChild(form);
+  body.appendChild(other);
+  body.appendChild(el("p", "psheet-note", "After you add one, you go straight to its fee settings."));
+}
+// After adding (or turning on) a platform: close the sheet and show that platform's fee settings.
+function finishAddingPlatform(name, doneText) {
+  platformEditing = name;
+  closePlatformSheet();
   platformsChanged();
+  const panel = document.querySelector("#tools-modal .tools-panel");
+  if (panel) panel.scrollTop = 0;
+  showToast(name + doneText);
+}
+document.getElementById("plat-picker").addEventListener("click", function () { openPlatformSheet("list"); });
+platSheet.addEventListener("click", function (event) {
+  if (event.target === platSheet) closePlatformSheet();
+});
+// Escape closes just the sheet, not the Settings page behind it.
+document.addEventListener("keydown", function (event) {
+  if (event.key === "Escape" && !platSheet.hidden && msgModal.hidden) {
+    event.stopImmediatePropagation();
+    closePlatformSheet();
+  }
 });
 
 // ---- Tools: lower price options ----
@@ -7734,7 +8054,7 @@ document.getElementById("tools-button").addEventListener("click", openSettings);
 document.getElementById("manage-storage-btn").addEventListener("click", function () { openSettings(); openSettingsPage("storage"); });
 document.getElementById("tools-close").addEventListener("click", function () { settingsBack(); });
 document.addEventListener("keydown", function (event) {
-  if (event.key === "Escape" && !toolsModal.hidden && msgModal.hidden) settingsBack();
+  if (event.key === "Escape" && !toolsModal.hidden && msgModal.hidden && $("plat-sheet").hidden) settingsBack();
 });
 
 // ---- Sales report window ----

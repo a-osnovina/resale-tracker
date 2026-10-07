@@ -311,7 +311,50 @@
     return names;
   }
 
+  // ---- Platforms and fees page ----
+  // The selling fee written in words, like "3.3% + $0.45". Empty when no fee is set.
+  function feeText(p) {
+    const pct = Number(p.feePercent) > 0 ? Number(p.feePercent) : 0;
+    const flat = Number(p.feeFlat) > 0 ? Number(p.feeFlat) : 0;
+    const parts = [];
+    if (pct > 0) parts.push(String(pct) + "%");
+    if (flat > 0) parts.push(money(flat));
+    return parts.join(" + ");
+  }
+
+  // The bump cost written in words, like "bump 12%".
+  function bumpText(p) {
+    const v = Number(p.bumpValue) > 0 ? Number(p.bumpValue) : 0;
+    if (p.bumpType === "percent" && v > 0) return "bump " + v + "%";
+    if (p.bumpType === "flat" && v > 0) return "bump " + money(v);
+    if (p.bumpType === "ask") return "you type the bump cost";
+    return "no bump cost set";
+  }
+
+  // The example sale: what one sale at this price costs in fees and what you keep.
+  // Uses the same math as a real sale (a percent of the price plus a flat amount, in whole cents).
+  // bump and keepWithBump are null when the bump cost is typed each time, because it is not known.
+  function feeExample(p, price) {
+    const priceCents = Math.max(0, toCents(price));
+    const pct = Number(p.feePercent) > 0 ? Number(p.feePercent) : 0;
+    const flat = Number(p.feeFlat) > 0 ? Number(p.feeFlat) : 0;
+    const feeCents = pct === 0 && flat === 0 ? 0 : Math.round(priceCents * pct / 100) + toCents(flat);
+    const keepCents = priceCents - feeCents;
+    const v = Number(p.bumpValue) > 0 ? Number(p.bumpValue) : 0;
+    let bumpCents = null;
+    if (p.bumpType === "percent") bumpCents = Math.round(priceCents * v / 100);
+    else if (p.bumpType === "flat") bumpCents = toCents(v);
+    return {
+      price: fromCents(priceCents),
+      fee: fromCents(feeCents),
+      keep: fromCents(keepCents),
+      bump: bumpCents === null ? null : fromCents(bumpCents),
+      keepWithBump: bumpCents === null ? null : fromCents(keepCents - bumpCents)
+    };
+  }
+
   return {
+    feeText: feeText, bumpText: bumpText, feeExample: feeExample,
     toCents: toCents, money: money, salePrice: salePrice, isDone: isDone, feeTotal: feeTotal,
     platformFee: platformFee, shipCostOf: shipCostOf, costsTotal: costsTotal, profitOf: profitOf,
     bulkCosts: bulkCosts, parseDate: parseDate, formatDate: formatDate, dayDiff: dayDiff, addDays: addDays,
