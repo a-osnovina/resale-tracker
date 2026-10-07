@@ -1033,30 +1033,71 @@ progress::-moz-progress-bar { background: var(--primary); border-radius: 5px; }
 #plan-more .planner-sec > summary { min-height: 48px; display: flex; align-items: center; padding: 0 14px; font-weight: 800; color: var(--accent-text); }
 .clear-done { margin-top: 10px; }
 
-/* ---- Settings (full screen, a list of pages) ---- */
-#tools-modal { top: 0; bottom: 0; z-index: 60; background: var(--bg); align-items: stretch; }
-#tools-modal .modal-panel.tools-panel { max-height: none; height: 100%; min-height: 0; max-width: 760px; margin: 0 auto; border-radius: 0; background: var(--bg); padding: calc(12px + env(safe-area-inset-top)) 16px calc(28px + env(safe-area-inset-bottom)); }
-#tools-modal .tools-head { position: static; margin: 0 0 12px; padding: 0; background: transparent; border: 0; justify-content: flex-start; gap: 12px; }
-#tools-modal .tools-titles { display: flex; flex-direction: column; gap: 0; min-width: 0; }
-#tools-modal .tools-head h3 { font-size: 24px; font-weight: 800; letter-spacing: -0.01em; }
+/* ---- Settings (full screen: grey page, white title bar, grouped cards, Done button) ---- */
+#tools-modal { top: 0; bottom: 0; z-index: 60; background: var(--summary-bg); align-items: stretch; }
+#tools-modal .modal-panel.tools-panel { max-height: none; height: 100%; min-height: 0; max-width: 760px; margin: 0 auto; border-radius: 0; background: var(--summary-bg); padding: 0; display: flex; flex-direction: column; }
+#tools-modal .tools-head { position: sticky; top: 0; z-index: 3; flex: none; display: grid; grid-template-columns: 44px 1fr 44px; align-items: center; gap: 8px; margin: 0; padding: calc(10px + env(safe-area-inset-top)) 16px 10px; background: var(--surface); border-bottom: 1px solid var(--line-soft); }
+#tools-modal #tools-close { width: 44px; margin-left: -8px; border: 0; background: transparent; }
+#tools-modal .tools-titles { display: flex; flex-direction: column; align-items: center; text-align: center; gap: 0; min-width: 0; }
+#tools-modal .tools-head h3 { margin: 0; font-size: 18px; font-weight: 800; }
+#tools-modal .tools-body { flex: 1 0 auto; padding: 16px 16px 28px; }
 #tools-modal .tools-group { display: none; }
 #tools-modal .filters-box { margin-top: 0; background: transparent; }
 #tools-modal .filters-box > summary { display: none; }
 #tools-modal .filters-box > .filters-panel, #tools-modal #alerts-details > .switch-card { margin-top: 0; padding: 0; }
-.sgroup { margin: 18px 0 0; }
-.srow2 { width: 100%; min-height: 64px; margin-top: 8px; padding: 10px 14px; display: flex; align-items: center; gap: 12px; text-align: left; background: var(--surface); border: 1px solid var(--line-soft); border-radius: 14px; color: var(--text); }
-.srow2-ico { flex: none; width: 40px; height: 40px; border-radius: 10px; background: var(--tint); color: var(--accent-text); display: grid; place-items: center; }
+#tools-modal .filters-box > .filters-panel { border: 0; border-radius: 0; background: transparent; }
+#settings-done-bar { position: sticky; bottom: 0; z-index: 3; flex: none; padding: 14px 16px calc(14px + env(safe-area-inset-bottom)); background: var(--surface); border-top: 1px solid var(--line-soft); }
+#settings-done { display: block; width: 100%; min-height: 52px; border-radius: 14px; font-size: 17px; font-weight: 700; }
+.sgroup { margin: 0 0 16px; }
+.sgroup > .msec-title { margin: 0 4px 6px; }
+.set-card { background: var(--surface); border: 1px solid var(--line-soft); border-radius: 14px; overflow: hidden; }
+.set-card.pad { padding: 12px; }
+.set-hint { margin: 10px 2px 0; font-size: 13px; line-height: 1.4; color: var(--muted); }
+.srow2 { width: 100%; min-height: 52px; margin: 0; padding: 0 14px; display: flex; align-items: center; gap: 12px; text-align: left; background: transparent; border: 0; border-top: 1px solid var(--line-soft); border-radius: 0; color: var(--text); }
+.srow2:first-child { border-top: 0; }
+.srow2-ico { flex: none; width: 34px; height: 34px; border-radius: 10px; background: var(--tint); color: var(--accent-text); display: grid; place-items: center; }
+.srow2-ico.shop { background: var(--listed-bg); }
+.srow2-ico.help { background: var(--warn-bg); color: var(--warn-text); }
+.srow2-ico.data { background: var(--sold-bg); color: var(--profit); }
 .srow2-ico svg { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
-.srow2-text { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 1px; }
-.srow2-text b { font-size: 16px; }
-.srow2-text span { font-size: 13px; color: var(--muted); }
+.srow2-text { flex: 0 0 auto; font-size: 16px; font-weight: 600; white-space: nowrap; }
+.srow2-text small { display: block; margin-top: 1px; font-size: 13px; font-weight: 400; color: var(--muted); }
+.srow2-val { flex: 0 1 auto; min-width: 0; margin-left: auto; text-align: right; font-size: 14px; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.srow2-val.good { color: var(--profit); font-weight: 600; }
+.srow2-val.old, .srow2-val.none { color: var(--warn-text); font-weight: 600; }
 .srow2 .chev { flex: none; width: 18px; height: 18px; fill: none; stroke: var(--muted); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
-.swatches { flex: none; display: flex; gap: 6px; }
-.swatches i { display: block; width: 20px; height: 20px; border-radius: 50%; border: 2px solid transparent; }
-.swatches i.on { border-color: var(--text); }
-.swatch-row { display: flex; gap: 12px; margin: 4px 0 12px; }
-.swatch-row button { width: 40px; height: 40px; min-height: 40px; padding: 0; border-radius: 50%; border: 3px solid transparent; }
-.swatch-row button.on { border-color: var(--text); }
+.mode-seg { display: flex; gap: 4px; padding: 4px; background: var(--surface-2); border: 1px solid var(--line-soft); border-radius: 12px; }
+.mode-seg button { flex: 1; min-height: 44px; padding: 0; border: 0; border-radius: 9px; background: transparent; color: var(--text); font-size: 15px; font-weight: 600; }
+.mode-seg button.on { background: var(--primary); color: #ffffff; font-weight: 700; }
+.theme-row { display: flex; justify-content: space-between; }
+.theme-row button { width: 62px; min-height: 0; padding: 0; border: 0; background: none; display: flex; flex-direction: column; align-items: center; gap: 6px; font-size: 12px; font-weight: 600; color: var(--muted); }
+.theme-row button.on { color: var(--text); font-weight: 700; }
+.theme-row .dot { width: 44px; height: 44px; border-radius: 50%; background: var(--dot); border: 3px solid var(--surface); box-shadow: 0 0 0 1px var(--line); display: grid; place-items: center; color: #ffffff; }
+.theme-row button.on .dot { box-shadow: 0 0 0 2px var(--dot); }
+.theme-row .dot svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; }
+.pv { display: flex; align-items: center; gap: 12px; padding: 12px; background: var(--tint); border: 1px solid var(--line-soft); border-radius: 14px; }
+.pv-pic { flex: none; width: 48px; height: 48px; border-radius: 10px; background: var(--thumb-bg); }
+.pv-text { flex: 1; min-width: 0; }
+.pv-text b { display: block; font-size: 15px; }
+.pv-text span { font-size: 13px; color: var(--muted); }
+.pv-text i { font-style: normal; font-weight: 700; color: var(--profit); }
+.pv-pill { flex: none; font-size: 12px; font-weight: 700; padding: 5px 10px; border-radius: 999px; background: var(--listed-bg); color: var(--info-text); border: 1px solid var(--listed-edge); }
+.bk-top { display: flex; align-items: center; gap: 12px; }
+.bk-ico { flex: none; width: 44px; height: 44px; border-radius: 12px; background: var(--sold-bg); color: var(--profit); display: grid; place-items: center; }
+.bk-ico svg { width: 24px; height: 24px; }
+.bk-ico.old, .bk-ico.none { background: var(--warn-bg); color: var(--warn-text); }
+.bk-when { font-size: 20px; font-weight: 800; letter-spacing: -0.01em; color: var(--profit); }
+.bk-when.old, .bk-when.none { color: var(--warn-text); }
+#backup-section #backup-save.bk-main { display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%; min-height: 52px; margin-top: 14px; border-radius: 14px; font-size: 17px; font-weight: 700; }
+.bk-main svg { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+#backup-section #backup-info { margin-top: 10px; }
+#backup-section .set-card .export-card { margin: 0; padding: 0; background: transparent; border: 0; }
+#backup-section button.srow2 { min-height: 60px; font-size: 16px; }
+#backup-section .srow2-text { flex: 1 1 auto; white-space: normal; }
+#backup-section .set-card > #backup-text-box { margin: 0; padding: 0 14px; border-top: 1px solid var(--line-soft); }
+#backup-section .set-card .switch-row { padding: 0; border: 0; }
+#backup-section .danger-zone { margin-top: 10px; }
+#backup-section .sgroup > #backup-note { margin-top: 10px; }
 #feature-switches.switch-card { background: transparent; border: 0; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 8px; }
 #feature-switches .switch-row { padding: 12px 14px; background: var(--surface); border: 1px solid var(--line-soft); border-radius: 14px; }
 #feature-switches .switch-row:first-child { border-top: 1px solid var(--line-soft); }
@@ -1414,7 +1455,8 @@ progress::-moz-progress-bar { background: var(--primary); border-radius: 5px; }
 
   <div id="tools-modal" hidden>
     <div class="modal-panel tools-panel">
-      <div class="tools-head"><button type="button" id="tools-close" class="icon-btn" aria-label="Back"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg></button><div class="tools-titles"><h3 id="tools-title">Settings</h3><span id="tools-sub" class="small" hidden></span></div></div>
+      <div class="tools-head"><button type="button" id="tools-close" class="icon-btn" aria-label="Back"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg></button><div class="tools-titles"><h3 id="tools-title">Settings</h3><span id="tools-sub" class="small" hidden></span></div><span aria-hidden="true"></span></div>
+      <div class="tools-body">
       <div id="settings-home"></div>
   <div id="tools-box" class="filters-box"><div class="switch-card" id="feature-switches"></div></div>
   <div class="tools-group" id="storage-group">Storage</div>
@@ -1506,23 +1548,44 @@ progress::-moz-progress-bar { background: var(--primary); border-radius: 5px; }
   <details class="filters-box" id="look-box">
     <summary>Title and colors</summary>
     <div class="filters-panel">
-      <label class="field">App title <input id="title-input" maxlength="30" autocomplete="off"></label>
-      <div class="form-actions"><button type="button" id="title-save" class="primary">Save title</button></div>
-      <label class="field">Colors
-        <select id="theme-select" aria-label="Colors">
-          <option value="auto">Automatic (follows your phone)</option>
-          <optgroup label="Light">
-            <option value="light">Light: Classic</option>
-            <option value="light-rose">Light: Rose</option>
-            <option value="light-sage">Light: Sage</option>
-          </optgroup>
-          <optgroup label="Dark">
-            <option value="dark">Dark: Classic</option>
-            <option value="dark-midnight">Dark: Midnight</option>
-            <option value="dark-plum">Dark: Plum</option>
-          </optgroup>
-        </select>
-      </label>
+      <div class="sgroup">
+        <h2 class="msec-title">Mode</h2>
+        <div class="set-card pad">
+          <div class="mode-seg" id="mode-seg" role="group" aria-label="Mode"></div>
+          <p class="set-hint" id="mode-hint"></p>
+        </div>
+      </div>
+      <div class="sgroup">
+        <h2 class="msec-title">Theme</h2>
+        <div class="set-card pad">
+          <div class="theme-row" id="theme-row" role="group" aria-label="Theme"></div>
+          <p class="set-hint">Rose and Sage are light themes. Midnight and Plum are dark themes. Picking one switches the mode to match.</p>
+        </div>
+      </div>
+      <div class="sgroup">
+        <h2 class="msec-title">Preview</h2>
+        <div class="pv">
+          <div class="pv-pic"></div>
+          <div class="pv-text"><b>Sample item</b><span>$24.00 &middot; profit <i>$24.00</i></span></div>
+          <span class="pv-pill">Listed</span>
+        </div>
+      </div>
+      <div class="sgroup">
+        <h2 class="msec-title">App name</h2>
+        <div class="set-card pad">
+          <label class="field" style="margin-top: 0">App title <input id="title-input" maxlength="30" autocomplete="off"></label>
+          <div class="form-actions"><button type="button" id="title-save" class="primary">Save title</button></div>
+        </div>
+      </div>
+      <select id="theme-select" hidden aria-hidden="true" tabindex="-1">
+        <option value="auto">Automatic</option>
+        <option value="light">Light</option>
+        <option value="light-rose">Light: Rose</option>
+        <option value="light-sage">Light: Sage</option>
+        <option value="dark">Dark</option>
+        <option value="dark-midnight">Dark: Midnight</option>
+        <option value="dark-plum">Dark: Plum</option>
+      </select>
     </div>
   </details>
   <div class="tools-group">Your data</div>
@@ -1530,45 +1593,77 @@ progress::-moz-progress-bar { background: var(--primary); border-radius: 5px; }
     <summary>Backup and restore (do this often)</summary>
     <div class="filters-panel">
   <div id="backup-section">
-    <div id="backup-info" class="small"></div>
-      <div class="export-card">
-        <div class="export-text"><b>Download your items</b><span>Saves a spreadsheet you can open in Excel, Numbers or Google Sheets. Handy for taxes and keeping your own records.</span></div>
-        <div class="export-row">
-          <select id="export-scope" aria-label="What to download">
-            <option value="all">All items</option>
-            <option value="sold">Sold and shipped only</option>
-          </select>
-          <button type="button" id="export-button" class="small-btn"><span class="ico" aria-hidden="true"><svg viewBox="0 0 24 24" focusable="false"><path d="M12 4v11M7 11l5 5 5-5M5 20h14"/></svg></span> Download</button>
+    <div class="sgroup">
+      <div class="set-card pad">
+        <div class="bk-top">
+          <span class="bk-ico" id="backup-ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5 9-10"/></svg></span>
+          <div><div class="small">Last backup</div><div class="bk-when" id="backup-when">Not yet</div></div>
         </div>
-        <div id="export-note" class="small" hidden></div>
+        <button type="button" id="backup-save" class="primary bk-main"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12M8 11l4 4 4-4M4 19h16"/></svg>Back up now</button>
+        <div id="backup-info" class="small"></div>
       </div>
+    </div>
 
-    <div class="toolbar">
-      <button type="button" id="backup-save" class="primary">Save backup</button>
-      <button type="button" id="restore-button">Restore from file</button>
-      <input type="file" id="restore-file" accept=".json,application/json" hidden>
-    </div>
-    <details id="backup-text-box">
-      <summary>Copy and paste instead</summary>
-      <textarea id="backup-text" rows="3" placeholder="Your backup text shows up here. To restore, paste a backup in this box."></textarea>
-      <div class="toolbar">
-        <button type="button" id="backup-copy">Copy backup text</button>
-        <button type="button" id="restore-text">Restore from text</button>
+    <div class="sgroup">
+      <h2 class="msec-title">Export as a spreadsheet</h2>
+      <div class="set-card pad">
+        <div class="export-card">
+          <div class="export-text"><b>Download your items</b><span>Saves a spreadsheet you can open in Excel, Numbers or Google Sheets. Handy for taxes and keeping your own records.</span></div>
+          <div class="export-row">
+            <select id="export-scope" aria-label="What to download">
+              <option value="all">All items</option>
+              <option value="sold">Sold and shipped only</option>
+            </select>
+            <button type="button" id="export-button" class="small-btn"><span class="ico" aria-hidden="true"><svg viewBox="0 0 24 24" focusable="false"><path d="M12 4v11M7 11l5 5 5-5M5 20h14"/></svg></span> Download</button>
+          </div>
+          <div id="export-note" class="small" hidden></div>
+        </div>
       </div>
-    </details>
-    <div id="backup-note"></div>
-    <div class="export-card">
-      <div class="export-text"><b>Example backup</b><span>A sample file with a few made-up items, an investment and a storage, so you can see how a backup looks or try the app with data. Restoring it replaces what is in the app, so save your own backup first.</span></div>
-      <div class="toolbar"><button type="button" id="example-backup" class="small-btn">Download example backup</button></div>
     </div>
-    <div class="danger-zone">
-      <div class="export-text"><b>Start from zero</b><span>Deletes all your items, investments, balances, storage, planner data and settings from this copy of the app. Save a backup first if you might want anything back.</span></div>
-      <div class="toolbar"><button type="button" id="wipe-button" class="danger">Delete everything and start over</button></div>
+
+    <div class="sgroup">
+      <h2 class="msec-title">Restore</h2>
+      <div class="set-card">
+        <button type="button" id="restore-button" class="srow2"><span class="srow2-ico help"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21V9M8 13l4-4 4 4M4 5h16"/></svg></span><span class="srow2-text">Restore from a backup file<small>Replaces what's in the app right now</small></span><svg class="chev" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg></button>
+        <input type="file" id="restore-file" accept=".json,application/json" hidden>
+        <details id="backup-text-box">
+          <summary>Copy and paste instead</summary>
+          <textarea id="backup-text" rows="3" placeholder="Your backup text shows up here. To restore, paste a backup in this box."></textarea>
+          <div class="toolbar">
+            <button type="button" id="backup-copy">Copy backup text</button>
+            <button type="button" id="restore-text">Restore from text</button>
+          </div>
+        </details>
+      </div>
+      <div id="backup-note"></div>
+    </div>
+
+    <div class="sgroup">
+      <h2 class="msec-title">Reminder</h2>
+      <div class="set-card pad">
+        <div class="switch-row">
+          <div class="switch-text"><b>Remind me to back up</b><span>Shows a note on Home when it has been a week since your last backup.</span></div>
+          <span class="switch"><input type="checkbox" id="backup-remind-on" aria-label="Remind me to back up"><span class="track"></span></span>
+        </div>
+      </div>
+    </div>
+
+    <div class="sgroup">
+      <h2 class="msec-title">More</h2>
+      <div class="export-card" style="margin-top: 0">
+        <div class="export-text"><b>Example backup</b><span>A sample file with a few made-up items, an investment and a storage, so you can see how a backup looks or try the app with data. Restoring it replaces what is in the app, so save your own backup first.</span></div>
+        <div class="toolbar"><button type="button" id="example-backup" class="small-btn">Download example backup</button></div>
+      </div>
+      <div class="danger-zone">
+        <div class="export-text"><b>Start from zero</b><span>Deletes all your items, investments, balances, storage, planner data and settings from this copy of the app. Save a backup first if you might want anything back.</span></div>
+        <div class="toolbar"><button type="button" id="wipe-button" class="danger">Delete everything and start over</button></div>
+      </div>
     </div>
   </div>
-
     </div>
   </details>
+      </div>
+      <div id="settings-done-bar" hidden><button type="button" id="settings-done" class="primary">Done</button></div>
     </div>
   </div>
 
@@ -1685,7 +1780,7 @@ progress::-moz-progress-bar { background: var(--primary); border-radius: 5px; }
 
 // The money and date rules live in js/logic.js (tested with: node tests/logic.test.js).
 const { money, salePrice, isDone, feeTotal, platformFee, shipCostOf, costsTotal, profitOf, bulkCosts,
-  parseDate, formatDate, dayDiff, addDays, isWeekend, shipByDate, capWords, wordCount, isQuickNameOk, backupDue,
+  parseDate, formatDate, dayDiff, addDays, isWeekend, shipByDate, capWords, wordCount, isQuickNameOk, backupDue, backupAge, themeParts, themeForMode, themeForLook,
   withdrawPlan, applyWithdrawal, undoWithdrawal, monthOf, monthLabel, periodStart, isDueOn, periodLabel, repeatText, resetInvestment, rolloverInvestments } = window.ResaleLogic;
 
 // The browser's own alert and confirm pop-ups are blocked in some browsers, so the app shows its own.
@@ -6294,11 +6389,24 @@ function updateBackupInfo() {
   let last = "";
   try { last = localStorage.getItem("lastBackup") || ""; } catch (e) {}
   backupInfo.textContent = last ? "Last backup saved on " + last + "." : "You haven't saved a backup from this app yet.";
+  const age = backupAge(last, todayText());
+  const when = document.getElementById("backup-when");
+  when.textContent = age.text;
+  when.className = "bk-when " + age.level;
+  const ico = document.getElementById("backup-ico");
+  ico.className = "bk-ico " + age.level;
+  ico.innerHTML = age.level === "good"
+    ? '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5 9-10"/></svg>'
+    : '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16.5h.01"/></svg>';
 }
 
 // A gentle reminder: your items live only in this browser, so ask for a backup when it has been a week.
+// The reminder switch on the Back up and export page (on by default). var, so it is safe to read before this line runs.
+var backupRemindOn = true;
+try { backupRemindOn = localStorage.getItem("backupRemind") !== "0"; } catch (e) {}
 function updateBackupBanner() {
   const backupBanner = document.getElementById("backup-banner");
+  if (backupRemindOn === false) { backupBanner.hidden = true; return; }
   let last = "", snooze = "";
   try { last = localStorage.getItem("lastBackup") || ""; snooze = localStorage.getItem("backupSnooze") || ""; } catch (e) {}
   // With no backup yet, wait until there are at least 3 items before asking.
@@ -6317,6 +6425,14 @@ document.getElementById("backup-banner-save").addEventListener("click", function
 });
 document.getElementById("backup-banner-later").addEventListener("click", function () {
   try { localStorage.setItem("backupSnooze", todayText()); } catch (e) {}
+  updateBackupBanner();
+});
+
+const backupRemindBox = document.getElementById("backup-remind-on");
+backupRemindBox.checked = backupRemindOn;
+backupRemindBox.addEventListener("change", function () {
+  backupRemindOn = backupRemindBox.checked;
+  try { localStorage.setItem("backupRemind", backupRemindOn ? "1" : "0"); } catch (e) {}
   updateBackupBanner();
 });
 
@@ -8819,7 +8935,7 @@ function renderPlanner() { renderPlanView(); }
 // ---- Settings: a list of pages ----
 var settingsPage = "home";
 var SETTINGS_PAGES = {
-  look: { box: "look-box", title: "Look" },
+  look: { box: "look-box", title: "Appearance" },
   features: { box: "tools-box", title: "Features you use", sub: "Turn off what you don't need" },
   reminders: { box: "alerts-details", title: "Reminders" },
   time: { box: "plan-box", title: "Time estimates" },
@@ -8828,12 +8944,24 @@ var SETTINGS_PAGES = {
   platforms: { box: "platforms-box", title: "Platforms and fees" },
   backup: { box: "backup-box", title: "Back up and export" }
 };
-var THEME_SWATCHES = [["light", "#0b5cad", "Classic"], ["light-rose", "#d6457a", "Rose"], ["light-sage", "#2f6b4f", "Sage"], ["dark-midnight", "#1b2238", "Midnight"], ["dark-plum", "#8a3fc0", "Plum"]];
-var THEME_NAMES = { auto: "Automatic", light: "Classic", "light-rose": "Rose", "light-sage": "Sage", dark: "Dark", "dark-midnight": "Midnight", "dark-plum": "Plum" };
+var THEME_SWATCHES = [["classic", "#0b5cad", "Classic"], ["rose", "#d6457a", "Rose"], ["sage", "#2f6b4f", "Sage"], ["midnight", "#1b2238", "Midnight"], ["plum", "#8a3fc0", "Plum"]];
+var MODE_LIST = [["auto", "Automatic"], ["light", "Light"], ["dark", "Dark"]];
+var MODE_HINTS = {
+  auto: "Automatic follows your phone (light by day, dark when your phone is in dark mode) and uses the app's standard colors.",
+  light: "Always light, whatever your phone is set to.",
+  dark: "Always dark, whatever your phone is set to."
+};
+function themeLabel() {
+  const t = themeParts(themeChoice);
+  const mode = MODE_LIST.filter(function (m) { return m[0] === t.mode; })[0][1];
+  const look = THEME_SWATCHES.filter(function (s) { return s[0] === t.look; })[0];
+  return look ? mode + " · " + look[2] : mode;
+}
 function openSettingsPage(key) {
   if (key !== "home" && !SETTINGS_PAGES[key]) key = "home";
   settingsPage = key;
   $("settings-home").hidden = key !== "home";
+  $("settings-done-bar").hidden = key !== "home";
   Object.keys(SETTINGS_PAGES).forEach(function (k) {
     const b = $(SETTINGS_PAGES[k].box);
     b.hidden = k !== key;
@@ -8844,22 +8972,21 @@ function openSettingsPage(key) {
   sub.hidden = key === "home" || !SETTINGS_PAGES[key].sub;
   sub.textContent = key === "home" ? "" : (SETTINGS_PAGES[key].sub || "");
   if (key === "home") renderSettingsHome();
-  if (key === "look") renderSwatches();
+  if (key === "look") renderAppearance();
+  if (key === "backup") updateBackupInfo();
   toolsModal.querySelector(".tools-panel").scrollTop = 0;
 }
 function settingsBack() {
   if (settingsPage === "home") toolsModal.hidden = true; else openSettingsPage("home");
 }
 var CHEV = '<svg class="chev" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg>';
-function settingsRow(iconPath, title, sub, onClick, extra) {
+// One row: a colored icon, the name, a short value on the right, and an arrow. tone: "", "shop", "help" or "data".
+function settingsRow(iconPath, title, value, onClick, tone, valueClass) {
   const b = el("button", "srow2");
   b.type = "button";
-  b.appendChild(svgEl(iconPath, "srow2-ico"));
-  const t = el("div", "srow2-text");
-  t.appendChild(el("b", "", title));
-  t.appendChild(el("span", "", sub));
-  b.appendChild(t);
-  if (extra) b.appendChild(extra);
+  b.appendChild(svgEl(iconPath, "srow2-ico" + (tone ? " " + tone : "")));
+  b.appendChild(el("span", "srow2-text", title));
+  b.appendChild(el("span", "srow2-val" + (valueClass ? " " + valueClass : ""), value));
   b.insertAdjacentHTML("beforeend", CHEV);
   b.onclick = onClick;
   return b;
@@ -8867,61 +8994,87 @@ function settingsRow(iconPath, title, sub, onClick, extra) {
 function settingsGroup(box, title, rows) {
   const g = el("div", "sgroup");
   g.appendChild(el("h2", "msec-title", title));
-  rows.forEach(function (r) { g.appendChild(r); });
+  const card = el("div", "set-card");
+  rows.forEach(function (r) { card.appendChild(r); });
+  g.appendChild(card);
   box.appendChild(g);
 }
 function renderSettingsHome() {
   const box = $("settings-home");
   box.innerHTML = "";
-  const sw = el("span", "swatches");
-  THEME_SWATCHES.forEach(function (t) {
-    const i = document.createElement("i");
-    i.style.background = t[1];
-    if (themeChoice === t[0]) i.className = "on";
-    sw.appendChild(i);
-  });
   const on = FEATURE_KEYS.filter(function (k) { return features[k]; }).length;
-  settingsGroup(box, "Make it yours", [
-    settingsRow('<circle cx="12" cy="12" r="8"/><path d="M12 4v16"/>', "Look", (themeChoice === "auto" ? "Follows your phone" : (THEME_NAMES[themeChoice] || "Automatic") + " theme"), function () { openSettingsPage("look"); }, sw),
-    settingsRow('<rect x="4" y="4" width="6.5" height="6.5" rx="1.5"/><rect x="13.5" y="4" width="6.5" height="6.5" rx="1.5"/><rect x="4" y="13.5" width="6.5" height="6.5" rx="1.5"/><rect x="13.5" y="13.5" width="6.5" height="6.5" rx="1.5"/>', "Features you use", on + " of " + FEATURE_KEYS.length + " turned on", function () { openSettingsPage("features"); })
-  ]);
-  settingsGroup(box, "How the app helps", [
-    settingsRow('<path d="M6 16V11a6 6 0 0 1 12 0v5l1.5 2h-15z"/><path d="M10 21h4"/>', "Reminders", remindersOn ? "Lower-price reminders are on" : "Lower-price reminders are off", function () { openSettingsPage("reminders"); }),
-    settingsRow('<circle cx="12" cy="13" r="7.5"/><path d="M12 9v4l2.5 2M9.5 2.5h5"/>', "Time estimates", "How long photos, writing and shipping take", function () { openSettingsPage("time"); })
+  settingsGroup(box, "Your app", [
+    settingsRow('<circle cx="12" cy="12" r="9"/><circle cx="8.5" cy="11" r="1"/><circle cx="12" cy="7.5" r="1"/><circle cx="15.5" cy="11" r="1"/>', "Appearance", themeLabel(), function () { openSettingsPage("look"); }),
+    settingsRow('<path d="M4 7h9M17 7h3M4 17h3M11 17h9"/><circle cx="15" cy="7" r="2"/><circle cx="9" cy="17" r="2"/>', "Features you use", on + " on", function () { openSettingsPage("features"); })
   ]);
   const shop = [];
-  if (features.storage) shop.push(settingsRow('<path d="M21 8 12 3 3 8v8l9 5 9-5V8z"/><path d="M3 8l9 5 9-5M12 13v8"/>', "Storage", bins.length + (bins.length === 1 ? " shelf or bin" : " shelves and bins") + " · labels", function () { openSettingsPage("storage"); }));
-  shop.push(settingsRow('<rect x="4" y="5" width="16" height="14" rx="2"/><path d="M4 10h16"/>', "What each item shows", "Extra details and the photo checklist", function () { openSettingsPage("cards"); }));
-  shop.push(settingsRow('<path d="M4 9l1-5h14l1 5"/><path d="M5 9v11h14V9"/>', "Platforms and fees", "Which platforms you sell on, and their fees", function () { openSettingsPage("platforms"); }));
+  shop.push(settingsRow('<path d="M3 12V4h8l10 10-8 8z"/><circle cx="7.5" cy="8.5" r="1"/>', "Platforms and fees", (function (names) { return names.length > 2 ? names.length + " platforms" : names.join(", "); })(enabledPlatformNames()), function () { openSettingsPage("platforms"); }, "shop"));
+  shop.push(settingsRow('<rect x="3" y="5" width="18" height="14" rx="2"/><path d="M7 10h10M7 14h6"/>', "What each item shows", (function (n) { return n === 0 ? "Basics" : n + " extra"; })(CARD_KEYS.filter(function (k) { return cardFields[k]; }).length), function () { openSettingsPage("cards"); }, "shop"));
+  if (features.storage) {
+    const slots = bins.reduce(function (sum, b) { return sum + (Number(b.slots) || 0); }, 0);
+    shop.push(settingsRow('<path d="M3 8l9-5 9 5v9l-9 5-9-5z"/><path d="M3 8l9 5 9-5M12 13v9"/>', "Storage bins and slots", slots + (slots === 1 ? " slot" : " slots"), function () { openSettingsPage("storage"); }, "shop"));
+  }
+  const archived = items.filter(function (it) { return it.status === "Archived"; }).length;
+  shop.push(settingsRow('<rect x="3" y="4" width="18" height="5" rx="1"/><path d="M5 9v10h14V9M10 13h4"/>', "Archive", archived === 0 ? "Nothing yet" : archived + (archived === 1 ? " item" : " items"), function () {
+    toolsModal.hidden = true;
+    showView("stock");
+    showStockPane("items");
+    stockTab = "archive";
+    render();
+  }, "shop"));
   settingsGroup(box, "Your shop", shop);
+  const alertsOn = (remindersOn ? 1 : 0) + (shipAlertsOn ? 1 : 0);
+  settingsGroup(box, "Plan and alerts", [
+    settingsRow('<path d="M6 16v-5a6 6 0 0 1 12 0v5l1.5 2h-15z"/><path d="M10 21a2 2 0 0 0 4 0"/>', "Reminders", alertsOn === 0 ? "All off" : alertsOn + (alertsOn === 1 ? " alert on" : " alerts on"), function () { openSettingsPage("reminders"); }, "help"),
+    settingsRow('<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>', "Time estimates", "Per step", function () { openSettingsPage("time"); }, "help")
+  ]);
+  let last = "";
+  try { last = localStorage.getItem("lastBackup") || ""; } catch (e) {}
+  const age = backupAge(last, todayText());
   settingsGroup(box, "Your data", [
-    settingsRow('<path d="M12 4v11M7 11l5 5 5-5M5 20h14"/>', "Back up and export", "Save a backup or a spreadsheet file", function () { openSettingsPage("backup"); }),
-    settingsRow('<path d="M12 20V9M7 13l5-5 5 5M5 4h14"/>', "Restore", "Load a backup you saved before", function () { openSettingsPage("backup"); $("restore-button").scrollIntoView({ block: "center" }); })
+    settingsRow('<path d="M12 3v12M8 11l4 4 4-4M4 19h16"/>', "Back up and export", age.text, function () { openSettingsPage("backup"); }, "data", age.level)
   ]);
 }
-function renderSwatches() {
-  let row = $("swatch-row");
-  const panel = $("look-box").querySelector(".filters-panel");
-  if (!row) {
-    row = el("div", "swatch-row");
-    row.id = "swatch-row";
-    panel.insertBefore(row, panel.firstChild);
-  }
-  row.innerHTML = "";
-  THEME_SWATCHES.forEach(function (t) {
+// Appearance page: Mode (Automatic, Light, Dark) and Theme (the five color circles).
+function setThemeChoice(choice) {
+  themeSelect.value = choice;
+  themeSelect.dispatchEvent(new Event("change"));
+  renderAppearance();
+}
+function renderAppearance() {
+  const t = themeParts(themeChoice);
+  const seg = $("mode-seg");
+  seg.innerHTML = "";
+  MODE_LIST.forEach(function (m) {
     const b = document.createElement("button");
     b.type = "button";
-    b.style.background = t[1];
-    b.setAttribute("aria-label", t[2] + " theme");
-    if (themeChoice === t[0]) b.className = "on";
-    b.onclick = function () {
-      themeSelect.value = t[0];
-      themeSelect.dispatchEvent(new Event("change"));
-      renderSwatches();
-    };
+    b.textContent = m[1];
+    b.setAttribute("aria-pressed", t.mode === m[0] ? "true" : "false");
+    if (t.mode === m[0]) b.className = "on";
+    b.onclick = function () { setThemeChoice(themeForMode(themeChoice, m[0])); };
+    seg.appendChild(b);
+  });
+  $("mode-hint").textContent = MODE_HINTS[t.mode];
+  const row = $("theme-row");
+  row.innerHTML = "";
+  THEME_SWATCHES.forEach(function (s) {
+    const b = document.createElement("button");
+    b.type = "button";
+    const dot = el("span", "dot");
+    dot.style.setProperty("--dot", s[1]);
+    const picked = t.look === s[0];
+    if (picked) {
+      b.className = "on";
+      dot.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12l5 5 9-10"/></svg>';
+    }
+    b.setAttribute("aria-pressed", picked ? "true" : "false");
+    b.appendChild(dot);
+    b.appendChild(el("span", "", s[2]));
+    b.onclick = function () { setThemeChoice(themeForLook(themeChoice, s[0])); };
     row.appendChild(b);
   });
 }
+$("settings-done").addEventListener("click", function () { toolsModal.hidden = true; });
 
 // ---- everything that is painted after render() ----
 function renderViews() {

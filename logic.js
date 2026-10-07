@@ -102,6 +102,39 @@
   }
 
 
+  // How old the last backup is, for the Settings row and the Back up page.
+  // lastText is the saved day ("2026-10-07") or "" when there is none. level: "good" (within a week), "old", or "none".
+  function backupAge(lastText, todayText) {
+    if (!lastText) return { text: "Not yet", level: "none" };
+    const d = dayDiff(lastText, todayText);
+    if (d <= 0) return { text: "Today", level: "good" };
+    if (d === 1) return { text: "Yesterday", level: "good" };
+    return { text: d + " days ago", level: d <= 7 ? "good" : "old" };
+  }
+
+  // ---- colors: Mode (Automatic, Light, Dark) and Theme (Classic, Rose, Sage, Midnight, Plum) ----
+  // The app saves one choice: "auto", "light", "dark", "light-rose", "light-sage", "dark-midnight" or "dark-plum".
+  // "auto" follows your phone and uses the app's standard colors, so it has no theme circle of its own (look "auto").
+  // "light" and "dark" on their own are Classic. Rose and Sage only exist as light themes, and Midnight and Plum only as dark ones.
+  function themeParts(choice) {
+    const p = String(choice || "auto").split("-");
+    if (p[0] !== "light" && p[0] !== "dark") return { mode: "auto", look: "auto" };
+    return { mode: p[0], look: p[1] || "classic" };
+  }
+  // Tapping a Mode button keeps your theme when it fits that mode, otherwise falls back to Classic.
+  function themeForMode(choice, mode) {
+    const look = themeParts(choice).look;
+    if (mode === "light") return look === "rose" || look === "sage" ? "light-" + look : "light";
+    if (mode === "dark") return look === "midnight" || look === "plum" ? "dark-" + look : "dark";
+    return "auto";
+  }
+  // Tapping a theme circle: the others switch to the mode they belong to. Classic keeps Dark if you are on Dark, otherwise it is Light.
+  function themeForLook(choice, look) {
+    if (look === "rose" || look === "sage") return "light-" + look;
+    if (look === "midnight" || look === "plum") return "dark-" + look;
+    return themeParts(choice).mode === "dark" ? "dark" : "light";
+  }
+
   // ---- withdrawals ----
   // Money you can cash out = starting balance + profit from sold items not yet withdrawn.
   function itemMoney(items, site) {
@@ -283,7 +316,8 @@
     platformFee: platformFee, shipCostOf: shipCostOf, costsTotal: costsTotal, profitOf: profitOf,
     bulkCosts: bulkCosts, parseDate: parseDate, formatDate: formatDate, dayDiff: dayDiff, addDays: addDays,
     isWeekend: isWeekend, shipByDate: shipByDate, wordCount: wordCount, isQuickNameOk: isQuickNameOk,
-    capWords: capWords, backupDue: backupDue,
+    capWords: capWords, backupDue: backupDue, backupAge: backupAge,
+    themeParts: themeParts, themeForMode: themeForMode, themeForLook: themeForLook,
     withdrawPlan: withdrawPlan, applyWithdrawal: applyWithdrawal, undoWithdrawal: undoWithdrawal,
     monthOf: monthOf, monthLabel: monthLabel, periodStart: periodStart, isDueOn: isDueOn, periodLabel: periodLabel, repeatText: repeatText,
     resetInvestment: resetInvestment, rolloverInvestments: rolloverInvestments
