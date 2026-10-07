@@ -218,7 +218,7 @@ details summary { cursor: pointer; }
 .done-row button { min-height: 36px; font-size: 13px; padding: 0 10px; }
 
 /* Header and buttons above the list */
-.top { display: flex; justify-content: space-between; align-items: center; gap: 12px; padding-top: calc(10px + env(safe-area-inset-top)); }
+.top { display: flex; justify-content: flex-start; align-items: center; gap: 8px; padding-top: calc(10px + env(safe-area-inset-top)); }
 .toolbar { display: flex; gap: 8px; margin: 12px 0 0; }
 .toolbar button { flex: 1; }
 #import-note { display: none; background: var(--info-bg); color: var(--info-text); border-radius: 10px; padding: 10px 12px; margin-top: 10px; }
@@ -255,7 +255,7 @@ details summary { cursor: pointer; }
 #slot-fields { display: grid; grid-template-columns: 1fr 1fr; column-gap: 8px; }
 fieldset { margin: 16px 0 0; border: 1px solid var(--line-soft); border-radius: 10px; padding: 4px 12px 10px; }
 legend { font-size: 14px; font-weight: 600; padding: 0 6px; }
-#photo-boxes { display: grid; grid-template-columns: 1fr 1fr; column-gap: 8px; }
+#photo-boxes { display: grid; grid-template-columns: 1fr; }
 #pic-preview { display: none; width: 96px; height: 96px; object-fit: cover; object-position: top; border-radius: 10px; margin: 8px 0; }
 .pic-buttons { display: flex; gap: 8px; margin-top: 6px; }
 .pic-buttons button { flex: 1; }
@@ -298,7 +298,7 @@ body.pulse-alerts .row-overdue, body.pulse-alerts #ship-alert { animation: ship-
 .card-collapse { position: absolute; top: 8px; right: 8px; min-height: 32px; padding: 0 10px; font-size: 13px; }
 .card.has-collapse .card-title { padding-right: 96px; }
 .field-hint { margin-top: 12px; font-size: 14px; color: var(--muted); overflow-wrap: anywhere; }
-#ship-alert { display: none; width: 100%; margin-top: 8px; min-height: 36px; padding: 6px 10px; border: 0; border-radius: 10px; background: var(--alert-bg); color: #ffffff; font-weight: 700; font-size: 14px; text-align: left; line-height: 1.3; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+#ship-alert { display: block; flex: 1; min-width: 0; margin: 0; min-height: 36px; padding: 6px 10px; border: 0; border-radius: 10px; background: var(--alert-bg); color: #ffffff; font-weight: 700; font-size: 14px; text-align: left; line-height: 1.3; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .card-top { display: flex; gap: 12px; }
 .thumb { flex: none; display: block; width: 84px; height: 84px; object-fit: cover; object-position: top; border-radius: 10px; background: var(--thumb-bg); }
 .thumb.empty { display: flex; align-items: center; justify-content: center; font-size: 28px; color: var(--muted); background: var(--thumb-bg); }
@@ -622,15 +622,41 @@ label.has-error { color: var(--danger); font-weight: 700; }
 .wd-platform-name { font-weight: 700; }
 .wd-platform-amount { font-weight: 700; font-variant-numeric: tabular-nums; }
 .wd-platform-why { grid-column: 1 / -1; }
+
+/* Title, scrolling, and the other new pieces */
+#app-title { cursor: pointer; min-width: 0; overflow-wrap: anywhere; }
+.icon-btn { flex: none; width: 40px; min-height: 40px; padding: 0; display: inline-flex; align-items: center; justify-content: center; }
+.icon-btn .ico { width: 18px; height: 18px; }
+/* Planner and Tools look and act like the Locations and Investments buttons */
+.tabs .tab-btn { flex: 1 1 72px; min-width: 0; display: flex; align-items: center; justify-content: center; gap: 6px; min-height: 44px; padding: 0 8px; background: var(--surface); border: 1px solid var(--line); border-radius: 10px; color: var(--accent-text); font-size: 14px; font-weight: 700; text-align: center; white-space: nowrap; cursor: pointer; touch-action: manipulation; }
+#tabs-loose { flex-wrap: wrap; }
+#tabs-loose > details { flex: 1 1 72px; min-width: 0; }
+.summary { transition: transform 0.22s ease; }
+.summary.scroll-hidden { transform: translateY(calc(-100% - 24px)); }
+@media (prefers-reduced-motion: reduce) { .summary { transition: none; } }
+#scroll-top { position: fixed; right: max(16px, calc(50% - 380px + 16px)); bottom: calc(86px + env(safe-area-inset-bottom)); z-index: 30; width: 48px; height: 48px; min-height: 0; padding: 0; border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3); opacity: 0; pointer-events: none; transition: opacity 0.2s; }
+#scroll-top.show { opacity: 1; pointer-events: auto; }
+#scroll-top .ico { width: 24px; height: 24px; }
+#ship-alert-row { display: none; gap: 6px; margin-top: 8px; align-items: stretch; }
+#ship-alert-x { flex: none; min-height: 36px; padding: 0 12px; font-size: 13px; font-weight: 700; background: var(--surface); border: 1px solid var(--alert-bg); color: var(--danger); border-radius: 10px; }
+.photo-row { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+.photo-row .check { flex: 1; min-width: 0; }
+.photo-row.is-na .check { opacity: 0.45; }
+.photo-na { display: flex; align-items: center; gap: 6px; flex: none; min-height: 44px; font-size: 13px; font-weight: 600; color: var(--muted); }
+.photo-na input { width: 20px; height: 20px; min-height: 0; }
+.photo-type-row { display: flex; gap: 8px; margin-top: 8px; }
+.photo-type-row input { flex: 1; min-width: 0; }
+.goal-repeat { font-size: 12px; font-weight: 700; color: var(--accent-text); margin: -2px 0 6px 30px; }
+.filter-actions { display: grid; grid-template-columns: 2fr 1fr; gap: 8px; margin-top: 12px; }
+#filters-dirty { margin-top: 10px; color: var(--warn-text); font-weight: 600; }
+.danger-zone { margin-top: 14px; padding: 12px; background: var(--error-bg); border: 1px solid var(--error-edge); border-radius: 12px; }
+.danger-zone .toolbar button { flex: 1; }
 </style>
 </head>
 <body>
   <div class="top">
-    <h1>Resale Tracker</h1>
-    <div class="top-buttons">
-      <button type="button" id="planner-button" class="small-btn">Planner</button>
-      <button type="button" id="tools-button" class="small-btn">Tools</button>
-    </div>
+    <h1 id="app-title">Resale Tracker</h1>
+    <button type="button" id="title-edit" class="small-btn icon-btn" aria-label="Rename the app"></button>
   </div>
 
   <div class="summary collapsed" id="summary-box">
@@ -656,27 +682,34 @@ label.has-error { color: var(--danger); font-weight: 700; }
       </details>
 
       <details id="goals-box">
-        <summary>Goals</summary>
+        <summary>Investments</summary>
         <div class="dropdown-panel">
           <div class="goals-head">
-            <div id="overall-text">No goals in progress</div>
-            <button type="button" id="add-goal-button" class="small-btn">+ Add goal</button>
+            <div id="overall-text">No investments in progress</div>
+            <button type="button" id="add-goal-button" class="small-btn">+ Add investment</button>
           </div>
           <div id="overall-box">
             <progress id="overall-bar" value="0" max="1"></progress>
           </div>
-          <div id="priority-hint" class="small">Your balance fills goals from the top. Tap a goal to change its order.</div>
+          <div id="priority-hint" class="small">Your balance fills investments from the top. Tap one to change its order.</div>
 
           <form id="goal-form">
-            <label class="field">Goal name <input id="goal-name" required></label>
+            <label class="field">Investment name <input id="goal-name" required placeholder="e.g. Printer or Rent"></label>
             <label class="field">Amount ($) <input id="goal-amount" type="number" inputmode="decimal" step="0.01" min="0.01" required></label>
-            <div class="form-actions"><button type="submit" class="primary">Save goal</button></div>
+            <label class="field">Repeats
+              <select id="goal-repeat">
+                <option value="none">Doesn't repeat</option>
+                <option value="monthly">Every month (like rent)</option>
+              </select>
+            </label>
+            <label class="check" id="goal-auto-row" hidden><input type="checkbox" id="goal-auto"> Reset automatically at the start of each month</label>
+            <div class="form-actions"><button type="submit" class="primary">Save investment</button></div>
           </form>
 
           <div id="goal-list"></div>
 
           <details id="purchased-goals">
-            <summary id="purchased-summary">Purchased goals (0)</summary>
+            <summary id="purchased-summary">Paid investments (0)</summary>
             <div id="purchased-list"></div>
           </details>
         </div>
@@ -687,7 +720,7 @@ label.has-error { color: var(--danger); font-weight: 700; }
       <progress id="mini-bar" value="0" max="1"></progress>
       <div id="mini-text" class="small"></div>
     </div>
-    <button type="button" id="ship-alert"></button>
+    <div id="ship-alert-row"><button type="button" id="ship-alert"></button><button type="button" id="ship-alert-x" aria-label="Dismiss the shipping alert">Dismiss</button></div>
   </div>
 
   <div id="backup-banner" class="banner" hidden>
@@ -699,24 +732,26 @@ label.has-error { color: var(--danger); font-weight: 700; }
   </div>
   <div class="tabs" id="tabs-loose">
     <details id="bins-drop">
-      <summary>Bins</summary>
+      <summary>Locations</summary>
       <div class="dropdown-panel" id="bins-drop-panel">
   <div id="bin-chips"></div>
   <details class="filters-box" id="bins-box">
-    <summary id="bins-summary">Manage bins and labels</summary>
+    <summary id="bins-summary">Manage locations and labels</summary>
     <div class="filters-panel">
       <div id="bins-list"></div>
       <form id="bin-form">
-        <label class="field">Bin name (a short letter or word, like A) <input id="bin-name" maxlength="12" required></label>
+        <label class="field">Location name (a short letter or word, like A) <input id="bin-name" maxlength="12" required></label>
         <label class="field">Number of slots <input id="bin-slots" type="number" inputmode="numeric" step="1" min="1" max="100" value="12" required></label>
-        <div class="form-actions"><button type="submit" class="primary">Save bin</button></div>
+        <div class="form-actions"><button type="submit" class="primary">Save location</button></div>
       </form>
-      <button type="button" id="add-bin-button">+ Add bin</button>
+      <button type="button" id="add-bin-button">+ Add location</button>
     </div>
   </details>
 
       </div>
     </details>
+    <button type="button" id="planner-button" class="tab-btn">Planner</button>
+    <button type="button" id="tools-button" class="tab-btn">Tools</button>
   </div>
 
   <!-- ITEM LIST -->
@@ -743,9 +778,14 @@ label.has-error { color: var(--danger); font-weight: 700; }
         <option>Shipped</option>
       </select>
     </label>
-    <label class="field">Location (bin)
+    <label class="field">Location
       <select id="filter-bin"></select>
     </label>
+  </div>
+  <div class="small" id="filters-dirty" hidden>You changed a filter. Tap Search to apply it.</div>
+  <div class="filter-actions">
+    <button type="button" id="filters-search" class="primary">Search</button>
+    <button type="button" id="filters-clear">Clear</button>
   </div>
     </div>
   </details>
@@ -801,8 +841,8 @@ label.has-error { color: var(--danger); font-weight: 700; }
         <div class="form-section">Where it is stored</div>
         <div id="slot-fields">
           <label class="check-line" style="grid-column: 1 / -1; margin-top: 4px;"><input type="checkbox" id="no-slot"> Not put away in a slot yet</label>
-          <label class="field" id="bin-label">Bin
-            <select id="bin"><option value="">No bin</option></select>
+          <label class="field" id="bin-label">Location
+            <select id="bin"><option value="">No location</option></select>
           </label>
           <label class="field" id="slot-label">Slot
             <select id="slot"><option value="">No slot</option></select>
@@ -811,12 +851,12 @@ label.has-error { color: var(--danger); font-weight: 700; }
             <div id="slot-full-text"></div>
             <div class="slot-full-buttons">
               <button type="button" id="add-slot-btn" class="small-btn"></button>
-              <button type="button" id="new-bin-btn" class="small-btn">Create a new bin</button>
+              <button type="button" id="new-bin-btn" class="small-btn">Create a new location</button>
             </div>
             <div id="new-bin-box" hidden>
-              <label class="field">New bin name <input id="nb-name" maxlength="12" autocapitalize="characters"></label>
+              <label class="field">New location name <input id="nb-name" maxlength="12" autocapitalize="characters"></label>
               <label class="field">Number of slots <input id="nb-slots" type="number" inputmode="numeric" min="1" max="100" value="12"></label>
-              <button type="button" id="nb-create" class="small-btn primary">Create bin and use it</button>
+              <button type="button" id="nb-create" class="small-btn primary">Create location and use it</button>
             </div>
           </div>
           <div id="slot-suggest" class="small" style="grid-column: 1 / -1; margin-top: 6px;"></div>
@@ -838,7 +878,7 @@ label.has-error { color: var(--danger); font-weight: 700; }
 
           <label class="check" style="margin-top:14px"><input type="checkbox" id="photos-all"> All photos taken</label>
           <fieldset id="photo-details">
-            <legend>Tick the photos you have taken</legend>
+            <legend>Tick the photos you have taken. Tick N/A if this item doesn't need one.</legend>
             <div id="photo-boxes"></div>
           </fieldset>
 
@@ -883,6 +923,7 @@ label.has-error { color: var(--danger); font-weight: 700; }
   <div id="shipped-row"><button type="button" id="shipped-toggle" class="small-btn" hidden></button></div>
 
   <button type="button" id="add-item-button" class="fab primary" aria-label="Add item"><span class="ico" aria-hidden="true"><svg viewBox="0 0 24 24" focusable="false"><path d="M12 5v14M5 12h14"/></svg></span><span class="fab-text">Add item</span></button>
+  <button type="button" id="scroll-top" class="primary" aria-label="Back to top"></button>
 
   <div id="add-menu" hidden>
     <div class="modal-panel">
@@ -955,6 +996,19 @@ label.has-error { color: var(--danger); font-weight: 700; }
     </div>
   </details>
 
+  <div class="tools-group">Items</div>
+  <details class="filters-box" id="photos-box">
+    <summary>Photo checklist</summary>
+    <div class="filters-panel">
+      <div class="small">These are the photos you tick off for each item. Add your own, rename them, or remove ones you never take. When one item doesn't need a photo (like sleeves on a vest), tick N/A for it on that item.</div>
+      <div id="photo-types-list"></div>
+      <div class="plat-add">
+        <input id="new-photo-type" maxlength="24" placeholder="New photo name">
+        <button type="button" id="add-photo-type" class="small-btn primary">Add photo</button>
+      </div>
+    </div>
+  </details>
+
   <div class="tools-group">Reminders and display</div>
   <details class="filters-box" id="alerts-box">
     <summary>Reminders and alerts</summary>
@@ -994,7 +1048,7 @@ label.has-error { color: var(--danger); font-weight: 700; }
       <div class="small">Pinned things stay in the grey box at the top while you scroll. Unpinned ones sit under the title and scroll away.</div>
       <label class="field">Pin at the top
         <select id="pin-choice">
-                    <option value="goals">Progress bar (goals)</option>
+                    <option value="goals">Progress bar (investments)</option>
           <option value="pipeline">Planner timeline</option>
           <option value="none">Nothing (the whole top box scrolls away with the page)</option>
         </select>
@@ -1021,6 +1075,14 @@ label.has-error { color: var(--danger); font-weight: 700; }
       </div>
     </details>
     <div id="backup-note"></div>
+    <div class="export-card">
+      <div class="export-text"><b>Example backup</b><span>A sample file with a few made-up items, an investment and a location, so you can see how a backup looks or try the app with data. Restoring it replaces what is in the app, so save your own backup first.</span></div>
+      <div class="toolbar"><button type="button" id="example-backup" class="small-btn">Download example backup</button></div>
+    </div>
+    <div class="danger-zone">
+      <div class="export-text"><b>Start from zero</b><span>Deletes all your items, investments, balances, locations, planner data and settings from this copy of the app. Save a backup first if you might want anything back.</span></div>
+      <div class="toolbar"><button type="button" id="wipe-button" class="danger">Delete everything and start over</button></div>
+    </div>
   </div>
 
     </div>
@@ -1099,7 +1161,8 @@ label.has-error { color: var(--danger); font-weight: 700; }
     download: '<path d="M12 4v11M7 11l5 5 5-5M5 20h14"/>',
     plus: '<path d="M12 5v14M5 12h14"/>',
     up: '<path d="M6 14.5l6-6 6 6"/>',
-    down: '<path d="M6 9.5l6 6 6-6"/>'
+    down: '<path d="M6 9.5l6 6 6-6"/>',
+    pencil: '<path d="M4 20h4L18.5 9.5a2.1 2.1 0 0 0-3-3L5 17v3z"/><path d="M13.5 6.5l3 3"/>'
   };
   // Returns a small <span> holding the icon. Usage: node.appendChild(icon("alert")).
   window.icon = function (name) {
@@ -1122,7 +1185,7 @@ label.has-error { color: var(--danger); font-weight: 700; }
 // The money and date rules live in js/logic.js (tested with: node tests/logic.test.js).
 const { money, salePrice, isDone, feeTotal, platformFee, shipCostOf, costsTotal, profitOf, bulkCosts,
   parseDate, formatDate, dayDiff, addDays, isWeekend, shipByDate, capWords, wordCount, isQuickNameOk, backupDue,
-  withdrawPlan, applyWithdrawal, undoWithdrawal } = window.ResaleLogic;
+  withdrawPlan, applyWithdrawal, undoWithdrawal, monthOf, monthLabel, resetInvestment, rolloverInvestments } = window.ResaleLogic;
 
 // The browser's own alert and confirm pop-ups are blocked in some browsers, so the app shows its own.
 const msgModal = document.getElementById("msg-modal");
@@ -1203,14 +1266,34 @@ const MAX_SLOTS = 100;
 // The most items one bulk upload can hold (each picture is saved in your browser, so this keeps it light).
 const BULK_MAX = 100;
 
-// Add or rename photo types here.
-const PHOTO_TYPES = [
+// The photos you tick off for each item. You can add, rename and remove them in Tools (they are saved on this phone).
+const DEFAULT_PHOTO_TYPES = [
   { key: "tag", label: "Tag" },
   { key: "front", label: "Front" },
   { key: "back", label: "Back" },
   { key: "sleeves", label: "Sleeves" },
   { key: "care", label: "Care instructions" }
 ];
+function cleanPhotoTypes(list) {
+  const result = [];
+  if (Array.isArray(list)) {
+    list.forEach(function (t) {
+      if (!t || typeof t !== "object") return;
+      const label = String(t.label || "").trim().slice(0, 24);
+      let key = String(t.key || "").replace(/[^a-z0-9]/gi, "").slice(0, 20);
+      if (label === "") return;
+      if (key === "") key = "p" + Date.now().toString(36) + result.length;
+      if (result.some(function (x) { return x.key === key || x.label.toLowerCase() === label.toLowerCase(); })) return;
+      result.push({ key: key, label: label });
+    });
+  }
+  return result.length ? result : DEFAULT_PHOTO_TYPES.map(function (t) { return { key: t.key, label: t.label }; });
+}
+let PHOTO_TYPES = cleanPhotoTypes(null);
+try {
+  const rawPhotoTypes = localStorage.getItem("photoTypes");
+  if (rawPhotoTypes !== null) PHOTO_TYPES = cleanPhotoTypes(JSON.parse(rawPhotoTypes));
+} catch (e) {}
 
 // The screenshot reader (Tesseract.js) is only downloaded when you first import a screenshot.
 const OCR_SCRIPT = ["https://cdn.jsdelivr.net/npm/tesseract.js@5.1.1/dist/tesseract.min.js"];
@@ -1247,6 +1330,9 @@ let todos = [];      // your own to-dos: { id, text, day (-1 = any, 0 = Monday .
 let showShipped = false;   // shipped items are hidden from the list unless you ask
 let showAllWeeks = false;  // the weekly sales table shows the last 12 weeks unless you ask for all
 let formPhoto = "";
+const DEFAULT_TITLE = "Resale Tracker";
+let appTitle = DEFAULT_TITLE;
+try { appTitle = (localStorage.getItem("appTitle") || "").trim().slice(0, 30) || DEFAULT_TITLE; } catch (e) {}
 
 try {
   items = JSON.parse(localStorage.getItem("items")) || [];
@@ -1254,7 +1340,7 @@ try {
   items = [];
 }
 try {
-  goals = JSON.parse(localStorage.getItem("goals")) || [];
+  goals = cleanGoals(JSON.parse(localStorage.getItem("goals")));
 } catch (e) {
   goals = [];
 }
@@ -1286,6 +1372,22 @@ try {
   freed = cleanFreed(JSON.parse(localStorage.getItem("freed")));
 } catch (e) {
   freed = {};
+}
+// Cleans the list of investments (from storage or a backup). Older saves have no repeat settings, which is fine.
+function cleanGoals(list) {
+  if (!Array.isArray(list)) return [];
+  return list.filter(function (g) { return g && typeof g === "object"; }).map(function (g) {
+    const repeat = g.repeat === "monthly" ? "monthly" : "none";
+    return {
+      name: String(g.name || ""),
+      amount: Number(g.amount) || 0,
+      purchased: !!g.purchased,
+      settled: Number(g.settled) || 0,
+      repeat: repeat,
+      autoReset: repeat === "monthly" && !!g.autoReset,
+      cycle: /^\d{4}-\d{2}$/.test(String(g.cycle || "")) ? String(g.cycle) : ""
+    };
+  });
 }
 // Cleans the list of platforms (from storage or a backup): no repeats, a name of up to 20 letters, a valid bump type.
 function cleanPlatforms(list) {
@@ -1422,6 +1524,10 @@ try {
   if (remindDays < 1) remindDays = 7;
   showShipped = localStorage.getItem("showShipped") === "1";
 } catch (e) {}
+// The filter boxes change these "draft" values. They only become the real filters when you tap Search.
+let draftFilter = filter;
+let draftStatus = statusFilter;
+let draftBin = binFilter;
 
 // Cleans a list of bins (from storage or a backup): upper-case names, no repeats, 1 to 100 slots.
 function cleanBins(list) {
@@ -1476,6 +1582,8 @@ function migrateItem(item) {
   item.current = Number(item.current) || 0;
   if (item.soldFor !== null && item.soldFor !== undefined) item.soldFor = Number(item.soldFor) || 0;
   if (typeof item.photos !== "object" || item.photos === null) item.photos = {};
+  // Photos this item doesn't need (like sleeves on a vest). They don't count against "all photos taken".
+  if (typeof item.photosNA !== "object" || item.photosNA === null || Array.isArray(item.photosNA)) item.photosNA = {};
   if (typeof item.picture !== "string" || item.picture.indexOf("data:image/") !== 0) item.picture = "";
   // Bin, slot and weight are new. Items without them simply have no slot.
   item.bin = typeof item.bin === "string" ? item.bin : "";
@@ -1603,43 +1711,85 @@ function el(tag, className, text) {
 }
 
 // ---- photo checklist ----
+// Each photo has a tick (taken) and an N/A tick (this item doesn't need it, like sleeves on a vest).
 const photoBoxes = document.getElementById("photo-boxes");
-PHOTO_TYPES.forEach(function (type) {
-  const label = document.createElement("label");
-  label.className = "check";
-  const box = document.createElement("input");
-  box.type = "checkbox";
-  box.id = "photo-" + type.key;
-  label.appendChild(box);
-  label.appendChild(document.createTextNode(type.label));
-  photoBoxes.appendChild(label);
-});
-
 const photosAll = document.getElementById("photos-all");
 const photoDetails = document.getElementById("photo-details");
 
-function setAllPhotoBoxes(value) {
+function photoBox(type) { return document.getElementById("photo-" + type.key); }
+function photoNaBox(type) { return document.getElementById("na-" + type.key); }
+
+function buildPhotoBoxes() {
+  photoBoxes.innerHTML = "";
   PHOTO_TYPES.forEach(function (type) {
-    document.getElementById("photo-" + type.key).checked = value;
+    const row = el("div", "photo-row");
+    row.id = "photo-row-" + type.key;
+    const label = document.createElement("label");
+    label.className = "check";
+    const box = document.createElement("input");
+    box.type = "checkbox";
+    box.id = "photo-" + type.key;
+    label.appendChild(box);
+    label.appendChild(document.createTextNode(type.label));
+    row.appendChild(label);
+    const naLabel = document.createElement("label");
+    naLabel.className = "photo-na";
+    const na = document.createElement("input");
+    na.type = "checkbox";
+    na.id = "na-" + type.key;
+    naLabel.appendChild(na);
+    naLabel.appendChild(document.createTextNode("N/A"));
+    row.appendChild(naLabel);
+    na.addEventListener("change", function () {
+      if (na.checked) box.checked = false;
+      updatePhotoUI();
+    });
+    photoBoxes.appendChild(row);
   });
 }
 
-// One tick means every photo is done. Leave it unticked to choose which ones are taken.
+// Ticks (or unticks) every photo this item needs. Photos marked N/A are left alone.
+function setAllPhotoBoxes(value) {
+  PHOTO_TYPES.forEach(function (type) {
+    const na = photoNaBox(type);
+    photoBox(type).checked = value && !(na && na.checked);
+  });
+}
+
+// One tick means every photo is done. Leave it unticked to choose which ones are taken or not needed.
 function updatePhotoUI() {
   photoDetails.style.display = photosAll.checked ? "none" : "block";
+  PHOTO_TYPES.forEach(function (type) {
+    const na = photoNaBox(type);
+    const box = photoBox(type);
+    if (!na || !box) return;
+    box.disabled = na.checked;
+    document.getElementById("photo-row-" + type.key).classList.toggle("is-na", na.checked);
+  });
 }
 
 photosAll.addEventListener("change", function () {
   setAllPhotoBoxes(photosAll.checked);
   updatePhotoUI();
 });
+buildPhotoBoxes();
 
+function photoNeeded(item, type) {
+  return !(item.photosNA && item.photosNA[type.key]);
+}
+// How many photos this item needs (the photo list minus the ones marked N/A).
+function photoTotal(item) {
+  return PHOTO_TYPES.filter(function (type) { return photoNeeded(item, type); }).length;
+}
 function photoCount(item) {
   let count = 0;
   PHOTO_TYPES.forEach(function (type) {
-    if (item.photos && item.photos[type.key]) count++;
+    if (photoNeeded(item, type) && item.photos && item.photos[type.key]) count++;
   });
   return count;
+}
+function photosComplete(item) {
+  return photoCount(item) >= photoTotal(item);
 }
 
 // ---- prices and profit ----
@@ -1731,7 +1881,7 @@ function fillOptions(select, options) {
 }
 
 function refreshBinOptions() {
-  const options = [{ value: "", text: "No bin" }];
+  const options = [{ value: "", text: "No location" }];
   bins.forEach(function (b) { options.push({ value: b.name, text: b.name }); });
   fillOptions(binInput, options);
 }
@@ -1776,7 +1926,7 @@ function applySuggestedSlot() {
   if (bins.length === 0) return;
   const pick = suggestSlot();
   if (!pick) {
-    // Everything is full: show the newest bin so the panel can offer "Add a slot" or "Create a new bin".
+    // Everything is full: show the newest bin so the panel can offer "Add a slot" or "Create a new location".
     binInput.value = bins[bins.length - 1].name;
     refreshSlotOptions();
     return;
@@ -1866,10 +2016,10 @@ function syncSlotUI() {
   if (!none) needHelp = bin ? freeSlotCount(bin) === 0 : (bins.length === 0 || suggestSlot() === null);
   panel.hidden = !needHelp;
   if (needHelp) {
-    document.getElementById("slot-full-text").textContent = bin ? "Bin " + bin.name + " has no empty slots." : (bins.length === 0 ? "No bins yet." : "Every slot is full.");
+    document.getElementById("slot-full-text").textContent = bin ? "Location " + bin.name + " has no empty slots." : (bins.length === 0 ? "No locations yet." : "Every slot is full.");
     const addBtn = document.getElementById("add-slot-btn");
     addBtn.hidden = !bin || bin.slots >= MAX_SLOTS;
-    addBtn.textContent = bin ? "Add a slot to bin " + bin.name : "";
+    addBtn.textContent = bin ? "Add a slot to location " + bin.name : "";
   } else {
     document.getElementById("new-bin-box").hidden = true;
   }
@@ -1900,7 +2050,7 @@ document.getElementById("add-slot-btn").addEventListener("click", function () {
   render();
   refreshSlotOptions();
   slotInput.value = String(bin.slots);
-  document.getElementById("slot-suggest").textContent = "Added slot " + slotLabel(bin.name, bin.slots) + ". Print its label under Manage bins and labels.";
+  document.getElementById("slot-suggest").textContent = "Added slot " + slotLabel(bin.name, bin.slots) + ". Print its label under Manage locations and labels.";
   syncSlotUI();
 });
 document.getElementById("new-bin-btn").addEventListener("click", function () {
@@ -1914,8 +2064,8 @@ document.getElementById("new-bin-btn").addEventListener("click", function () {
 document.getElementById("nb-create").addEventListener("click", function () {
   const name = document.getElementById("nb-name").value.trim().toUpperCase();
   const slots = Math.floor(Number(document.getElementById("nb-slots").value));
-  if (name === "") { alert("Please give the bin a name."); return; }
-  if (findBin(name)) { alert("You already have a bin named " + name + "."); return; }
+  if (name === "") { alert("Please give the location a name."); return; }
+  if (findBin(name)) { alert("You already have a location named " + name + "."); return; }
   if (!(slots >= 1 && slots <= MAX_SLOTS)) { alert("Slots must be a number from 1 to " + MAX_SLOTS + "."); return; }
   bins.push({ name: name, slots: slots });
   save();
@@ -1924,7 +2074,7 @@ document.getElementById("nb-create").addEventListener("click", function () {
   binInput.value = name;
   refreshSlotOptions();
   slotInput.value = "1";
-  document.getElementById("slot-suggest").textContent = "Created bin " + name + " with " + slots + " slots. Print its labels under Manage bins and labels.";
+  document.getElementById("slot-suggest").textContent = "Created location " + name + " with " + slots + " slots. Print its labels under Manage locations and labels.";
   syncSlotUI();
 });
 
@@ -2268,7 +2418,7 @@ function openAddMenu() {
   if (!ready) {
     warn.appendChild(document.createTextNode("To start using QR codes:"));
     const ol = document.createElement("ol");
-    ["Open \"Manage bins and labels\" on the main page and tap Print labels for a bin.", "Print them and stick one on each slot.", "Come back here. This option turns on after you have opened the labels."].forEach(function (t) {
+    ["Open \"Manage locations and labels\" on the main page and tap Print labels for a location.", "Print them and stick one on each slot.", "Come back here. This option turns on after you have opened the labels."].forEach(function (t) {
       const li = document.createElement("li");
       li.textContent = t;
       ol.appendChild(li);
@@ -2313,9 +2463,10 @@ function startEdit(index) {
   weightInput.value = item.weight ? item.weight : "";
   costInput.value = item.cost ? item.cost : "";
   PHOTO_TYPES.forEach(function (type) {
-    document.getElementById("photo-" + type.key).checked = !!(item.photos && item.photos[type.key]);
+    photoBox(type).checked = !!(item.photos && item.photos[type.key]);
+    photoNaBox(type).checked = !photoNeeded(item, type);
   });
-  photosAll.checked = photoCount(item) === PHOTO_TYPES.length;
+  photosAll.checked = photosComplete(item);
   updatePhotoUI();
   setFormPhoto(item.picture || "");
   postedInput.value = item.posted || "";
@@ -2792,7 +2943,8 @@ function refreshPlatformFilter() {
     filterInput.appendChild(option);
   });
   if (names.indexOf(filter) === -1) filter = "All";
-  filterInput.value = filter;
+  if (names.indexOf(draftFilter) === -1) draftFilter = "All";
+  filterInput.value = draftFilter;
 }
 // The "Listed on" list offers the platforms that are turned on, plus the one this item already uses.
 function refreshSiteOptions(extra) {
@@ -2816,9 +2968,8 @@ function refreshSiteOptions(extra) {
 refreshPlatformFilter();
 refreshSiteOptions();
 filterInput.addEventListener("change", function () {
-  filter = filterInput.value;
-  save();
-  render();
+  draftFilter = filterInput.value;
+  markFiltersDirty();
 });
 
 // Location, type and brand lists are built from your items, so they only offer what exists.
@@ -2848,17 +2999,52 @@ function distinctSorted(getter) {
 }
 function refreshFilterOptions() {
   const binNames = bins.map(function (b) { return b.name; });
-  binFilter = fillFilterSelect(binFilterInput, binFilter, binNames, [["none", "No bin / not in a slot"]]);
+  draftBin = fillFilterSelect(binFilterInput, draftBin, binNames, [["none", "No location / not in a slot"]]);
+  if (binFilter !== "All" && binFilter !== "none" && binNames.indexOf(binFilter) === -1) binFilter = "All";
 }
-[[binFilterInput, function (v) { binFilter = v; }]].forEach(function (pair) {
-  pair[0].addEventListener("change", function () { pair[1](pair[0].value); render(); });
+binFilterInput.addEventListener("change", function () {
+  draftBin = binFilterInput.value;
+  markFiltersDirty();
 });
 
-statusFilterInput.value = statusFilter;
+statusFilterInput.value = draftStatus;
 statusFilterInput.addEventListener("change", function () {
-  statusFilter = statusFilterInput.value;
+  draftStatus = statusFilterInput.value;
+  markFiltersDirty();
+});
+
+// The filter boxes only choose. Tapping Search applies all of them together.
+function filtersDirty() {
+  return draftFilter !== filter || draftStatus !== statusFilter || draftBin !== binFilter;
+}
+function markFiltersDirty() {
+  document.getElementById("filters-dirty").hidden = !filtersDirty();
+}
+function applyFilters() {
+  filter = draftFilter;
+  statusFilter = draftStatus;
+  binFilter = draftBin;
   save();
   render();
+  markFiltersDirty();
+}
+// Sets the real filters and the boxes together (used when the app clears the filters for you).
+function setFilters(platform, status, bin) {
+  filter = draftFilter = platform;
+  statusFilter = draftStatus = status;
+  binFilter = draftBin = bin;
+  filterInput.value = platform;
+  statusFilterInput.value = status;
+  binFilterInput.value = bin;
+  markFiltersDirty();
+}
+document.getElementById("filters-search").addEventListener("click", function () {
+  applyFilters();
+  document.getElementById("filters-box").open = false;
+});
+document.getElementById("filters-clear").addEventListener("click", function () {
+  setFilters("All", "All", "All");
+  applyFilters();
 });
 
 // The lower-price reminder: a switch, and the number of days. A saved number that isn't in the list is kept as a choice.
@@ -2939,12 +3125,7 @@ document.getElementById("ship-alert").addEventListener("click", function () {
   if (filter !== "All" || statusFilter !== "All" || binFilter !== "All" || searchText !== "") {
     searchText = "";
     document.getElementById("search").value = "";
-    filter = "All";
-    statusFilter = "All";
-    binFilter = "All";
-    refreshFilterOptions();
-    filterInput.value = "All";
-    statusFilterInput.value = "All";
+    setFilters("All", "All", "All");
     save();
     render();
   }
@@ -3074,6 +3255,17 @@ document.getElementById("withdraw-button").addEventListener("click", openWithdra
 let dueDismissed = {};
 try { dueDismissed = JSON.parse(localStorage.getItem("dueDismissed") || "{}") || {}; } catch (e) { dueDismissed = {}; }
 let currentDue = [];
+// Late-shipping alerts you dismissed (one entry per sold item), so they stay quiet.
+let shipDismissed = {};
+try { shipDismissed = JSON.parse(localStorage.getItem("shipDismissed") || "{}") || {}; } catch (e) { shipDismissed = {}; }
+let currentOverdue = [];
+function shipKey(item) { return item.name + "|" + (item.sold || ""); }
+function dismissShip(list) {
+  list.forEach(function (it) { shipDismissed[shipKey(it)] = 1; });
+  try { localStorage.setItem("shipDismissed", JSON.stringify(shipDismissed)); } catch (e) {}
+  render();
+}
+document.getElementById("ship-alert-x").addEventListener("click", function () { dismissShip(currentOverdue.slice()); });
 function dueKey(item) { return item.name + "|" + reminderDueDate(item); }
 function dismissDue(list) {
   list.forEach(function (it) { dueDismissed[dueKey(it)] = 1; });
@@ -3084,8 +3276,7 @@ function showCard(item) {
   closeScanModal();
   if (filter !== "All" || statusFilter !== "All" || binFilter !== "All" || searchText !== "") {
     searchText = ""; document.getElementById("search").value = "";
-    filter = "All"; statusFilter = "All"; binFilter = "All";
-    filterInput.value = "All"; statusFilterInput.value = "All";
+    setFilters("All", "All", "All");
     save();
     render();
   }
@@ -3205,7 +3396,7 @@ new MutationObserver(syncModalLock).observe(scanModal, { attributes: true, attri
 // Each kind of pop-up gets its own color so you can tell at a glance what you are doing:
 // the pop-up's data-kind is picked from its title.
 const SHEET_KINDS = [[/^List /, "list"], [/^Sold/, "sold"], [/ship/i, "ship"], [/lower the price/i, "price"],
-  [/^Withdraw/, "money"], [/^Bulk|^Where do|^Item \d/, "bulk"], [/^Slot|^Bin /, "slot"]];
+  [/^Withdraw/, "money"], [/^Bulk|^Where do|^Item \d/, "bulk"], [/^Slot|^Location /, "slot"]];
 new MutationObserver(function () {
   const heading = scanBody.querySelector("h3");
   const text = heading ? heading.textContent : "";
@@ -3245,7 +3436,7 @@ document.addEventListener("keydown", function (event) {
 function openSlotView(bin, n) {
   scanBody.innerHTML = "";
   scanBody.appendChild(el("h3", "", "Slot " + slotLabel(bin.name, n)));
-  scanBody.appendChild(el("div", "small", "Bin " + bin.name + " \u00B7 slot " + n + " of " + bin.slots));
+  scanBody.appendChild(el("div", "small", "Location " + bin.name + " \u00B7 slot " + n + " of " + bin.slots));
 
   const index = itemInSlot(bin.name, n);
   if (index === -1) {
@@ -3278,7 +3469,7 @@ function openSlotView(bin, n) {
       startEdit(index);
     }));
   }
-  scanBody.appendChild(modalButton("See all of bin " + bin.name, "", function () { openBinView(bin); }));
+  scanBody.appendChild(modalButton("See all of location " + bin.name, "", function () { openBinView(bin); }));
   scanBody.appendChild(modalButton("Close", "", closeScanModal));
   scanModal.hidden = false;
 }
@@ -3286,7 +3477,7 @@ function openSlotView(bin, n) {
 // One bin: every slot with what is in it.
 function openBinView(bin) {
   scanBody.innerHTML = "";
-  scanBody.appendChild(el("h3", "", "Bin " + bin.name));
+  scanBody.appendChild(el("h3", "", "Location " + bin.name));
   const used = binUsed(bin);
   const waiting = items.filter(function (it) { return it.bin === bin.name && it.status === "Sold"; }).length;
   let summary = used + "/" + bin.slots + " slots used";
@@ -3341,8 +3532,8 @@ function openScanTarget(binParam, slotParam) {
   markQrUsed();
   const bin = findBin(binParam);
   if (!bin) {
-    openScanMessage("Bin " + String(binParam).toUpperCase() + " isn't set up here",
-      "Add it under Manage bins and labels. If you expected to see items, this may be a different browser or device than the one that holds your data.");
+    openScanMessage("Location " + String(binParam).toUpperCase() + " isn't set up here",
+      "Add it under Manage locations and labels. If you expected to see items, this may be a different browser or device than the one that holds your data.");
     return;
   }
   if (slotParam === null || slotParam === undefined || slotParam === "") {
@@ -3351,7 +3542,7 @@ function openScanTarget(binParam, slotParam) {
   }
   const n = Number(slotParam);
   if (!(n >= 1 && n <= bin.slots && Math.floor(n) === n)) {
-    openScanMessage("Slot " + slotParam + " doesn't exist", "Bin " + bin.name + " has " + bin.slots + " slots. You can change that under Manage bins and labels.");
+    openScanMessage("Slot " + slotParam + " doesn't exist", "Location " + bin.name + " has " + bin.slots + " slots. You can change that under Manage locations and labels.");
     return;
   }
   openSlotView(bin, n);
@@ -3485,7 +3676,7 @@ function startCamera() {
     })
     .then(function () {
       if (!cameraStream) return;
-      cameraMsg.textContent = "Point the camera at a slot or bin label";
+      cameraMsg.textContent = "Point the camera at a slot or location label";
       scanLoop();
     })
     .catch(function (err) {
@@ -3735,7 +3926,7 @@ function renderBulkItem() {
     return true;
   }
 
-  const next = modalButton(last ? "Add item and choose a bin" : "Next item", "primary", function () {
+  const next = modalButton(last ? "Add item and choose a location" : "Next item", "primary", function () {
     if (!takeDraft()) return;
     if (last) openBulkPlace();
     else renderBulkItem();
@@ -3806,23 +3997,23 @@ function openBulkPlace() {
     const free = freeSlotList(bin);
     if (free.length < n) return;
     anyFits = true;
-    scanBody.appendChild(modalButton("Bin " + bin.name + " (" + free.length + " open slots)", "primary", function () {
+    scanBody.appendChild(modalButton("Location " + bin.name + " (" + free.length + " open slots)", "primary", function () {
       bulkFinish(free.slice(0, n), "");
     }));
   });
   if (!anyFits && open.length >= n) {
-    scanBody.appendChild(modalButton("Spread across open slots in all bins (" + open.length + " open)", "primary", function () {
+    scanBody.appendChild(modalButton("Spread across open slots in all locations (" + open.length + " open)", "primary", function () {
       bulkFinish(open.slice(0, n), "");
     }));
   }
   if (!anyFits && open.length < n) {
     scanBody.appendChild(el("div", "small", bins.length === 0
-      ? "You have no bins yet. Create one below."
-      : "Your bins have only " + open.length + " open " + (open.length === 1 ? "slot" : "slots") + " in total, fewer than " + n + ". Create a new bin below."));
+      ? "You have no locations yet. Create one below."
+      : "Your locations have only " + open.length + " open " + (open.length === 1 ? "slot" : "slots") + " in total, fewer than " + n + ". Create a new location below."));
   }
 
-  scanBody.appendChild(el("div", "slot-item-name", "Or create a new bin"));
-  const nbNameLabel = el("label", "field", "New bin name");
+  scanBody.appendChild(el("div", "slot-item-name", "Or create a new location"));
+  const nbNameLabel = el("label", "field", "New location name");
   const nbName = document.createElement("input");
   nbName.maxLength = 12;
   nbName.value = nextBinName();
@@ -3839,19 +4030,19 @@ function openBulkPlace() {
   nbSlotsLabel.appendChild(nbSlots);
   scanBody.appendChild(nbSlotsLabel);
   scanBody.appendChild(el("div", "small", "The slots start at the number of items you added. You can change it."));
-  scanBody.appendChild(modalButton("Create bin and place items", "primary", function () {
+  scanBody.appendChild(modalButton("Create location and place items", "primary", function () {
     const name = nbName.value.trim().toUpperCase();
     const slots = Math.floor(Number(nbSlots.value));
-    if (name === "") { alert("Please give the bin a name."); return; }
-    if (findBin(name)) { alert("You already have a bin named " + name + "."); return; }
+    if (name === "") { alert("Please give the location a name."); return; }
+    if (findBin(name)) { alert("You already have a location named " + name + "."); return; }
     if (!(slots >= 1 && slots <= MAX_SLOTS)) { alert("Slots must be a number from 1 to " + MAX_SLOTS + "."); return; }
     bins.push({ name: name, slots: slots });
     const spots = [];
     for (let s = 1; s <= Math.min(n, slots); s++) spots.push({ bin: name, slot: s });
-    bulkFinish(spots, "Created bin " + name + " with " + slots + " slots.");
+    bulkFinish(spots, "Created location " + name + " with " + slots + " slots.");
   }));
 
-  scanBody.appendChild(modalButton("Don't put them in a bin yet", "", function () { bulkFinish(null, ""); }));
+  scanBody.appendChild(modalButton("Don't put them in a location yet", "", function () { bulkFinish(null, ""); }));
   scanBody.appendChild(modalButton("Go back to the last item", "", function () {
     bulkUndo();
     renderBulkItem();
@@ -4074,7 +4265,7 @@ addBinButton.addEventListener("click", function () {
   if (binForm.style.display === "block") {
     binForm.style.display = "none";
     binForm.reset();
-    addBinButton.textContent = "+ Add bin";
+    addBinButton.textContent = "+ Add location";
   } else {
     binForm.style.display = "block";
     addBinButton.textContent = "Close form";
@@ -4087,11 +4278,11 @@ binForm.addEventListener("submit", function (event) {
   const name = document.getElementById("bin-name").value.trim().toUpperCase();
   const slots = Math.floor(Number(document.getElementById("bin-slots").value));
   if (name === "") {
-    alert("Please give the bin a name.");
+    alert("Please give the location a name.");
     return;
   }
   if (findBin(name)) {
-    alert("You already have a bin named " + name + ".");
+    alert("You already have a location named " + name + ".");
     return;
   }
   if (!(slots >= 1 && slots <= MAX_SLOTS)) {
@@ -4103,12 +4294,12 @@ binForm.addEventListener("submit", function (event) {
   render();
   binForm.reset();
   binForm.style.display = "none";
-  addBinButton.textContent = "+ Add bin";
+  addBinButton.textContent = "+ Add location";
 });
 
 function buildBinEditor(bin, used) {
   const editor = el("form", "goal-row editing");
-  editor.appendChild(el("div", "bin-name", "Bin " + bin.name));
+  editor.appendChild(el("div", "bin-name", "Location " + bin.name));
 
   const label = el("label", "field", "Number of slots");
   const input = document.createElement("input");
@@ -4121,7 +4312,7 @@ function buildBinEditor(bin, used) {
   input.required = true;
   label.appendChild(input);
   editor.appendChild(label);
-  editor.appendChild(el("div", "small", "Adding slots keeps your existing labels working. Print labels for the new ones. A bin can't shrink while the slots you'd remove still hold items."));
+  editor.appendChild(el("div", "small", "Adding slots keeps your existing labels working. Print labels for the new ones. A location can't shrink while the slots you'd remove still hold items."));
 
   const buttons = el("div", "form-actions");
   const saveBtn = el("button", "primary", "Save");
@@ -4136,16 +4327,16 @@ function buildBinEditor(bin, used) {
   buttons.appendChild(cancel);
   editor.appendChild(buttons);
 
-  const remove = el("button", "danger block", "Delete bin");
+  const remove = el("button", "danger block", "Delete location");
   remove.type = "button";
   remove.style.width = "100%";
   remove.style.marginTop = "10px";
   remove.onclick = function () {
     if (used > 0) {
-      alert("Bin " + bin.name + " still holds " + used + (used === 1 ? " item" : " items") + ". Ship or move them first.");
+      alert("Location " + bin.name + " still holds " + used + (used === 1 ? " item" : " items") + ". Ship or move them first.");
       return;
     }
-    askYesNo("Delete bin " + bin.name + "? Its printed labels will stop working.", "Delete bin", function () {
+    askYesNo("Delete location " + bin.name + "? Its printed labels will stop working.", "Delete location", function () {
       bins.splice(bins.indexOf(bin), 1);
       Object.keys(freed).forEach(function (key) {
         if (key.indexOf(bin.name + "|") === 0) delete freed[key];
@@ -4168,7 +4359,7 @@ function buildBinEditor(bin, used) {
       for (let s = n + 1; s <= bin.slots; s++) {
         const idx = itemInSlot(bin.name, s);
         if (idx !== -1) {
-          alert("Slot " + slotLabel(bin.name, s) + " still holds " + items[idx].name + ". Ship or move it first, then shrink the bin.");
+          alert("Slot " + slotLabel(bin.name, s) + " still holds " + items[idx].name + ". Ship or move it first, then shrink the location.");
           return;
         }
       }
@@ -4199,7 +4390,7 @@ function renderBins() {
 
     const row = el("div", "bin-row");
     const head = el("div", "bin-head");
-    head.appendChild(el("span", "bin-name", "Bin " + bin.name));
+    head.appendChild(el("span", "bin-name", "Location " + bin.name));
     head.appendChild(el("span", "bin-count", used + "/" + bin.slots + " slots used"));
     row.appendChild(head);
 
@@ -4228,7 +4419,7 @@ function renderBins() {
     box.appendChild(row);
   });
 
-  if (bins.length === 0) box.appendChild(el("div", "small", "No bins yet. Add one below."));
+  if (bins.length === 0) box.appendChild(el("div", "small", "No locations yet. Add one below."));
 
   // One button per bin on the main page: tap it to see what is inside, with pictures.
   const chips = document.getElementById("bin-chips");
@@ -4236,12 +4427,12 @@ function renderBins() {
   bins.forEach(function (bin) {
     const chip = el("button", "chip");
     chip.type = "button";
-    chip.appendChild(el("span", "chip-name", "Bin " + bin.name));
+    chip.appendChild(el("span", "chip-name", "Location " + bin.name));
     chip.appendChild(el("span", "chip-count", binUsed(bin) + "/" + bin.slots + " slots used"));
     chip.onclick = function () { openBinView(bin); };
     chips.appendChild(chip);
   });
-  document.getElementById("bins-summary").textContent = "Manage bins and labels";
+  document.getElementById("bins-summary").textContent = "Manage locations and labels";
 }
 
 // ---- printable labels: a QR code plus big readable text, one per slot ----
@@ -4294,7 +4485,7 @@ function buildLabel(url, code, sub) {
 
 function openLabels(bin) {
   markQrUsed();
-  document.getElementById("labels-title").textContent = "Labels for bin " + bin.name;
+  document.getElementById("labels-title").textContent = "Labels for location " + bin.name;
   const address = appAddress();
   const live = /^https?:$/.test(window.location.protocol);
   labelsNote.textContent = live
@@ -4309,9 +4500,9 @@ function openLabels(bin) {
     .then(function () {
       labelsGrid.innerHTML = "";
       const base = address + "?bin=" + encodeURIComponent(bin.name);
-      labelsGrid.appendChild(buildLabel(base, "BIN " + bin.name, "Scan to see what's inside"));
+      labelsGrid.appendChild(buildLabel(base, "LOC " + bin.name, "Scan to see what's inside"));
       for (let n = 1; n <= bin.slots; n++) {
-        labelsGrid.appendChild(buildLabel(base + "&slot=" + n, slotLabel(bin.name, n), "Bin " + bin.name + " \u00B7 slot " + n));
+        labelsGrid.appendChild(buildLabel(base + "&slot=" + n, slotLabel(bin.name, n), "Location " + bin.name + " \u00B7 slot " + n));
       }
     }, function () {
       labelsGrid.textContent = "Sorry, the label maker could not be loaded. Check your internet connection and try again.";
@@ -4339,7 +4530,7 @@ addGoalButton.addEventListener("click", function () {
   if (goalForm.style.display === "block") {
     goalForm.style.display = "none";
     goalForm.reset();
-    addGoalButton.textContent = "+ Add goal";
+    addGoalButton.textContent = "+ Add investment";
   } else {
     goalForm.style.display = "block";
     addGoalButton.textContent = "Close form";
@@ -4358,12 +4549,12 @@ function renderOverall(balance, activeTotal, activeCount) {
     mini.style.display = "none";
     overall.style.display = "none";
     hint.style.display = "none";
-    text.textContent = "No goals in progress";
+    text.textContent = "No investments in progress";
     return;
   }
 
   const have = Math.max(0, Math.min(balance, activeTotal));
-  const goalWord = activeCount === 1 ? "goal" : "goals";
+  const goalWord = activeCount === 1 ? "investment" : "investments";
 
   mini.style.display = "block";
   document.getElementById("mini-bar").max = activeTotal;
@@ -4374,7 +4565,7 @@ function renderOverall(balance, activeTotal, activeCount) {
   overall.style.display = "block";
   document.getElementById("overall-bar").max = activeTotal;
   document.getElementById("overall-bar").value = have;
-  text.textContent = "All goals: " + money(have) + " of " + money(activeTotal);
+  text.textContent = "All investments: " + money(have) + " of " + money(activeTotal);
   hint.style.display = activeCount > 1 ? "block" : "none";
 }
 
@@ -4395,7 +4586,7 @@ function moveGoal(goal, step) {
 }
 
 function removeGoal(goal) {
-  askYesNo("Delete goal " + goal.name + "?", "Delete goal", function () {
+  askYesNo("Delete investment " + goal.name + "?", "Delete investment", function () {
     goals.splice(goals.indexOf(goal), 1);
     if (openGoal === goal) openGoal = null;
     if (editingGoal === goal) editingGoal = null;
@@ -4407,7 +4598,7 @@ function removeGoal(goal) {
 function buildGoalEditor(goal) {
   const form = el("form", "goal-row editing");
 
-  const nameLabel = el("label", "field", "Goal name");
+  const nameLabel = el("label", "field", "Investment name");
   const nameInput = document.createElement("input");
   nameInput.value = goal.name;
   nameInput.required = true;
@@ -4424,6 +4615,27 @@ function buildGoalEditor(goal) {
   amountInput.required = true;
   amountLabel.appendChild(amountInput);
   form.appendChild(amountLabel);
+
+  const repeatLabel = el("label", "field", "Repeats");
+  const repeatSelect = document.createElement("select");
+  [["none", "Doesn't repeat"], ["monthly", "Every month (like rent)"]].forEach(function (p) {
+    const o = document.createElement("option");
+    o.value = p[0];
+    o.textContent = p[1];
+    repeatSelect.appendChild(o);
+  });
+  repeatSelect.value = goal.repeat === "monthly" ? "monthly" : "none";
+  repeatLabel.appendChild(repeatSelect);
+  form.appendChild(repeatLabel);
+  const autoLabel = el("label", "check", "");
+  const autoBox = document.createElement("input");
+  autoBox.type = "checkbox";
+  autoBox.checked = !!goal.autoReset;
+  autoLabel.appendChild(autoBox);
+  autoLabel.appendChild(document.createTextNode(" Reset automatically at the start of each month"));
+  autoLabel.hidden = repeatSelect.value !== "monthly";
+  repeatSelect.addEventListener("change", function () { autoLabel.hidden = repeatSelect.value !== "monthly"; });
+  form.appendChild(autoLabel);
 
   const buttons = el("div", "form-actions");
   const saveBtn = el("button", "primary", "Save");
@@ -4443,11 +4655,14 @@ function buildGoalEditor(goal) {
     const newName = nameInput.value.trim();
     const newAmount = Number(amountInput.value);
     if (newName === "" || !(newAmount > 0)) {
-      alert("Please give the goal a name and an amount above 0.");
+      alert("Please give the investment a name and an amount above 0.");
       return;
     }
     goal.name = newName;
     goal.amount = newAmount;
+    goal.repeat = repeatSelect.value === "monthly" ? "monthly" : "none";
+    goal.autoReset = goal.repeat === "monthly" && autoBox.checked;
+    if (goal.repeat === "monthly" && !goal.cycle) goal.cycle = monthOf(todayText());
     editingGoal = null;
     save();
     render();
@@ -4470,6 +4685,9 @@ function buildActiveGoal(goal, rank, count, have, balance) {
     render();
   };
   row.appendChild(head);
+  if (goal.repeat === "monthly") {
+    row.appendChild(el("div", "goal-repeat", "Repeats every month" + (goal.autoReset ? " \u00B7 resets by itself" : " \u00B7 you reset it each month")));
+  }
 
   const bar = document.createElement("progress");
   bar.max = goal.amount;
@@ -4479,15 +4697,16 @@ function buildActiveGoal(goal, rank, count, have, balance) {
   if (openGoal === goal) {
     const actions = el("div", "goal-actions");
 
-    const buy = el("button", "primary wide", "Mark purchased");
+    const buy = el("button", "primary wide", "Mark paid");
     buy.onclick = function () {
       const markIt = function () {
         goal.purchased = true;
+        if (goal.repeat === "monthly") goal.cycle = monthOf(todayText());
         openGoal = null;
         save();
         render();
       };
-      if (goal.amount > balance) askYesNo("You don't have enough balance yet. Mark it purchased anyway?", "Mark purchased", markIt);
+      if (goal.amount > balance) askYesNo("You don't have enough balance yet. Mark it paid anyway?", "Mark paid", markIt);
       else markIt();
     };
     actions.appendChild(buy);
@@ -4540,7 +4759,18 @@ function renderGoals(balance) {
     if (!goal.purchased) return;
     doneCount++;
     const row = el("div", "done-row");
-    row.appendChild(el("span", "done-name", goal.name + " - " + money(goal.amount)));
+    row.appendChild(el("span", "done-name", goal.name + " - " + money(goal.amount) + (goal.repeat === "monthly" && goal.cycle ? " (" + monthLabel(goal.cycle) + ")" : "")));
+    if (goal.repeat === "monthly") {
+      const again = el("button", "", "New month");
+      again.title = "Keeps this payment and makes the investment unpaid again for this month";
+      again.onclick = function () {
+        resetInvestment(goals, goal, monthOf(todayText()));
+        save();
+        render();
+        showToast(goal.name + " is unpaid again for " + monthLabel(monthOf(todayText())) + ".");
+      };
+      row.appendChild(again);
+    }
     const undo = el("button", "", "Undo");
     undo.onclick = function () {
       goal.purchased = false;
@@ -4555,7 +4785,7 @@ function renderGoals(balance) {
   });
 
   document.getElementById("purchased-goals").style.display = doneCount === 0 ? "none" : "block";
-  document.getElementById("purchased-summary").textContent = "Purchased goals (" + doneCount + ")";
+  document.getElementById("purchased-summary").textContent = "Paid investments (" + doneCount + ")";
   renderOverall(balance, activeTotal, active.length);
 }
 
@@ -4569,6 +4799,7 @@ document.getElementById("shipped-toggle").addEventListener("click", function () 
 });
 
 function render() {
+  checkMonthRollover();
   const list = document.getElementById("list");
   list.innerHTML = "";
   refreshFilterOptions();
@@ -4577,6 +4808,7 @@ function render() {
   const dueNames = [];
   const dueItems = [];
   const overdueNames = [];
+  const overdueItems = [];
   const itemByPlatform = {};
   platformNames().forEach(function (name) { itemByPlatform[name] = 0; });
   ensureBalanceBlocks();
@@ -4604,7 +4836,7 @@ function render() {
     }
     if (isDue(item)) { dueNames.push(item.name); dueItems.push(item); }
     const shipNow = shipInfo(item);
-    if (shipNow && shipNow.late) overdueNames.push(item.name);
+    if (shipNow && shipNow.late && !shipDismissed[shipKey(item)]) { overdueNames.push(item.name); overdueItems.push(item); }
 
     if (filter !== "All" && item.site !== filter) return;
     if (statusFilter !== "All" && item.status !== statusFilter) return;
@@ -4640,7 +4872,8 @@ function render() {
     }
 
     const ship = shipInfo(item);
-    const card = el("div", "card " + (STATUS_CLASS[item.status] || "") + (ship && ship.late ? " row-overdue" : ""));
+    const shipAlerting = !!(ship && ship.late && !shipDismissed[shipKey(item)]);
+    const card = el("div", "card " + (STATUS_CLASS[item.status] || "") + (shipAlerting ? " row-overdue" : ""));
     card.dataset.idx = String(index);
     const top = el("div", "card-top");
 
@@ -4664,7 +4897,7 @@ function render() {
     const meta = el("div", "card-meta", (item.site ? item.site + " · " : "") + item.status);
     if (item.bin && item.slot > 0 && item.status !== "Shipped") {
       const slotBadge = el("span", "badge slot", slotLabel(item.bin, item.slot));
-      slotBadge.title = "Bin " + item.bin + ", slot " + item.slot + " (tap to see it)";
+      slotBadge.title = "Location " + item.bin + ", slot " + item.slot + " (tap to see it)";
       slotBadge.onclick = function () {
         const itemBin = findBin(item.bin);
         if (itemBin) openSlotView(itemBin, item.slot);
@@ -4672,12 +4905,12 @@ function render() {
       meta.appendChild(slotBadge);
     }
     const count = photoCount(item);
-    if (count === PHOTO_TYPES.length) {
+    if (photosComplete(item)) {
       const badge = elWithIcon("span", "badge ok", "check", "Photos");
       badge.title = "All photos taken";
       meta.appendChild(badge);
     } else {
-      const badge = el("span", "badge", "Photos " + count + "/" + PHOTO_TYPES.length);
+      const badge = el("span", "badge", "Photos " + count + "/" + photoTotal(item));
       badge.title = "Photos taken";
       meta.appendChild(badge);
     }
@@ -4697,8 +4930,15 @@ function render() {
       if (ship) {
         if (ship.unknown) {
           main.appendChild(el("div", "small", "No sold date. Add one to get ship reminders."));
+        } else if (ship.late && !shipAlerting) {
+          main.appendChild(elWithIcon("div", "ship-soon", "box", "Was due " + prettyDay(ship.by) + " (" + dayWord(ship.daysLate) + " late). Alert dismissed."));
         } else if (ship.late) {
           main.appendChild(elWithIcon("div", "ship-late", "alert", "SHIP NOW! Was due " + prettyDay(ship.by) + " (" + dayWord(ship.daysLate) + " late)"));
+          const dismissBtn = el("button", "small-btn", "Dismiss alert");
+          dismissBtn.type = "button";
+          dismissBtn.style.marginTop = "6px";
+          dismissBtn.onclick = function () { dismissShip([item]); };
+          main.appendChild(dismissBtn);
         } else {
           main.appendChild(elWithIcon("div", "ship-soon" + (ship.today ? " today" : ""), "box",
             ship.today ? "Ship TODAY (due " + prettyDay(ship.by) + ")" : "Ship by " + prettyDay(ship.by)));
@@ -4740,7 +4980,7 @@ function render() {
     const actions = el("div", "card-actions");
     const nextLabel = NEXT_STEP[item.status];
     if (nextLabel) {
-      const next = el("button", "primary next-step" + (ship && ship.late ? " late" : ""), nextLabel);
+      const next = el("button", "primary next-step" + (shipAlerting ? " late" : ""), nextLabel);
       next.type = "button";
       next.onclick = function () { nextStep(item); };
       actions.appendChild(next);
@@ -4816,7 +5056,7 @@ function render() {
   const parts = [];
   if (filter !== "All") parts.push(filter);
   if (statusFilter !== "All") parts.push(statusFilter);
-  if (binFilter !== "All") parts.push(binFilter === "none" ? "No bin" : "Bin " + binFilter);
+  if (binFilter !== "All") parts.push(binFilter === "none" ? "No location" : "Location " + binFilter);
   document.getElementById("filters-summary").textContent = "Filters" + (parts.length ? ": " + parts.join(" \u00B7 ") : "");
   document.getElementById("filters-btn").textContent = "Filters" + (parts.length ? " (" + parts.length + ")" : "");
   document.getElementById("list-count").textContent =
@@ -4847,20 +5087,22 @@ function render() {
     banner.style.display = "none";
   }
   currentDue = freshDue;
+  currentOverdue = overdueItems;
 
   // The red alert at the top for sold items that should have shipped already.
   const shipAlert = document.getElementById("ship-alert");
+  const shipAlertRow = document.getElementById("ship-alert-row");
   if (overdueNames.length > 0) {
     const shownNames = overdueNames.slice(0, 3).join(", ") + (overdueNames.length > 3 ? " +" + (overdueNames.length - 3) + " more" : "");
-    shipAlert.style.display = "block";
+    shipAlertRow.style.display = "flex";
     shipAlert.textContent = "";
     shipAlert.appendChild(icon("alert"));
     shipAlert.appendChild(document.createTextNode(" Ship now: " + overdueNames.length + (overdueNames.length === 1 ? " sold item is" : " sold items are") + " late. " + shownNames));
   } else {
-    shipAlert.style.display = "none";
+    shipAlertRow.style.display = "none";
     shipAlert.textContent = "";
   }
-  document.title = (overdueNames.length > 0 ? "(" + overdueNames.length + ") SHIP NOW - " : "") + "Resale Tracker";
+  document.title = (overdueNames.length > 0 ? "(" + overdueNames.length + ") SHIP NOW - " : "") + appTitle;
   updateBackupBanner();
 
   let startTotal = 0;
@@ -4968,7 +5210,7 @@ form.addEventListener("submit", function (event) {
 
   const wantsSlot = status !== "Shipped" && binInput.value !== "";
   if (wantsSlot && (Number(slotInput.value) || 0) === 0) {
-    problems.push({ text: "Slot in bin " + binInput.value + " (or tick \"Not put away in a slot yet\")", fields: [slotInput] });
+    problems.push({ text: "Slot in location " + binInput.value + " (or tick \"Not put away in a slot yet\")", fields: [slotInput] });
   }
   if (problems.length > 0) {
     showFormProblems(problems, "Can't save yet. Still needed:");
@@ -5002,8 +5244,11 @@ form.addEventListener("submit", function (event) {
   }
 
   const photos = {};
+  const photosNA = {};
   PHOTO_TYPES.forEach(function (type) {
-    photos[type.key] = document.getElementById("photo-" + type.key).checked;
+    const notNeeded = photoNaBox(type).checked;
+    photosNA[type.key] = notNeeded;
+    photos[type.key] = photoBox(type).checked && !notNeeded;
   });
 
   const original = Number(originalInput.value) || 0;
@@ -5025,6 +5270,7 @@ form.addEventListener("submit", function (event) {
     weight: Number(weightInput.value) || 0,
     cost: Number(costInput.value) || 0,
     photos: photos,
+    photosNA: photosNA,
     picture: formPhoto,
     posted: postedInput.value,
     sold: soldInput.value,
@@ -5080,19 +5326,37 @@ function bumpRateForSave(bumped, config, site) {
   return config.bumpPercent;
 }
 
+const goalRepeat = document.getElementById("goal-repeat");
+const goalAutoRow = document.getElementById("goal-auto-row");
+goalRepeat.addEventListener("change", function () { goalAutoRow.hidden = goalRepeat.value !== "monthly"; });
 goalForm.addEventListener("submit", function (event) {
   event.preventDefault();
+  const repeat = goalRepeat.value === "monthly" ? "monthly" : "none";
   goals.push({
-    name: document.getElementById("goal-name").value,
+    name: document.getElementById("goal-name").value.trim(),
     amount: Number(document.getElementById("goal-amount").value),
-    purchased: false
+    purchased: false,
+    settled: 0,
+    repeat: repeat,
+    autoReset: repeat === "monthly" && document.getElementById("goal-auto").checked,
+    cycle: repeat === "monthly" ? monthOf(todayText()) : ""
   });
   save();
   render();
   goalForm.reset();
+  goalAutoRow.hidden = true;
   goalForm.style.display = "none";
-  addGoalButton.textContent = "+ Add goal";
+  addGoalButton.textContent = "+ Add investment";
 });
+
+// A repeating investment that was paid in an earlier month and is set to reset by itself becomes unpaid again.
+function checkMonthRollover() {
+  const names = rolloverInvestments(goals, monthOf(todayText()));
+  if (names.length > 0) {
+    save();
+    showToast("New month: " + names.join(", ") + (names.length === 1 ? " is" : " are") + " unpaid again.");
+  }
+}
 
 function csvCell(value) {
   let text = String(value);
@@ -5101,7 +5365,7 @@ function csvCell(value) {
 }
 
 document.getElementById("export-button").addEventListener("click", function () {
-  const header = ["Item", "Site", "Status", "Bin", "Slot", "Weight (oz)"];
+  const header = ["Item", "Site", "Status", "Location", "Slot", "Weight (oz)"];
   PHOTO_TYPES.forEach(function (type) { header.push("Photo: " + type.label); });
   header.push("Date posted", "Date sold", "Date shipped", "Days to sell", "Days sold to shipped", "Original price", "Current price", "Last price change", "Sold for", "Bumped", "Bump %", "Bump cost", "Platform fee", "Postage label", "Purchase cost", "Profit", "Cashed out");
   const rows = [header];
@@ -5113,7 +5377,7 @@ document.getElementById("export-button").addEventListener("click", function () {
     const shipDays = daysToShip(item);
     const row = [item.name, item.site, item.status, item.bin || "", item.slot || "", item.weight || ""];
     PHOTO_TYPES.forEach(function (type) {
-      row.push(item.photos && item.photos[type.key] ? "Yes" : "No");
+      row.push(!photoNeeded(item, type) ? "N/A" : (item.photos && item.photos[type.key] ? "Yes" : "No"));
     });
     row.push(
       item.posted || "", item.sold || "", item.shipped || "", d === null ? "" : d, shipDays === null ? "" : shipDays,
@@ -5196,7 +5460,9 @@ function markBackupSaved() {
 function backupData() {
   return JSON.stringify({
     app: "resale-tracker",
-    version: 4,
+    version: 5,
+    appTitle: appTitle,
+    photoTypes: PHOTO_TYPES,
     saved: new Date().toISOString(),
     items: items,
     goals: goals,
@@ -5274,14 +5540,12 @@ function restoreFromText(text) {
     return;
   }
   const newItems = data.items.filter(function (x) { return x && typeof x === "object"; });
-  const newGoals = data.goals
-    .filter(function (g) { return g && typeof g === "object"; })
-    .map(function (g) { return { name: String(g.name || ""), amount: Number(g.amount) || 0, purchased: !!g.purchased, settled: Number(g.settled) || 0 }; });
+  const newGoals = cleanGoals(data.goals);
   // Older backups have no bins. In that case this app keeps the bins it already has.
   const newBins = Array.isArray(data.bins) ? cleanBins(data.bins) : null;
 
   const message = "Replace everything in this app with the backup?\n\n" +
-    "The backup has " + newItems.length + " items and " + newGoals.length + " goals" + (newBins ? " and " + newBins.length + " bins" : "") + ".\n" +
+    "The backup has " + newItems.length + " items and " + newGoals.length + " goals" + (newBins ? " and " + newBins.length + " locations" : "") + ".\n" +
     "What is in this app now will be erased.";
   askYesNo(message, "Replace everything", function () {
     items = newItems;
@@ -5312,7 +5576,20 @@ function restoreFromText(text) {
     if (Array.isArray(data.timeLog)) timeLog = cleanTimeLog(data.timeLog);
     if (Array.isArray(data.todos)) todos = cleanTodos(data.todos);
     if (Array.isArray(data.lowerPercents)) lowerPercents = cleanPercents(data.lowerPercents);
+    if (typeof data.appTitle === "string" && data.appTitle.trim() !== "") {
+      appTitle = data.appTitle.trim().slice(0, 30);
+      try { localStorage.setItem("appTitle", appTitle); } catch (e) {}
+      applyTitle();
+    }
+    if (Array.isArray(data.photoTypes)) {
+      PHOTO_TYPES = cleanPhotoTypes(data.photoTypes);
+      try { localStorage.setItem("photoTypes", JSON.stringify(PHOTO_TYPES)); } catch (e) {}
+      buildPhotoBoxes();
+      updatePhotoUI();
+      renderPhotoTypeEditor();
+    }
     filter = "All";
+    draftFilter = "All";
     platformsChanged();
     fillLowerInputs();
     hideImportNote();
@@ -5634,7 +5911,7 @@ function weekdayIndex(dateText) {
   return (new Date(parseDate(dateText)).getUTCDay() + 6) % 7;
 }
 function photosDone(it) {
-  return PHOTO_TYPES.every(function (t) { return it.photos && it.photos[t.key]; });
+  return photosComplete(it);
 }
 function hasPrice(it) { return it.original > 0 || it.current > 0; }
 
@@ -5709,7 +5986,7 @@ function openStageSheet(key) {
     text.appendChild(el("div", "stage-name", item.name));
     let meta = item.status + (item.site ? " \u00B7 " + item.site : "");
     if (item.current > 0) meta += " \u00B7 " + money(item.current);
-    if (key === "photos") meta = "Photos " + photoCount(item) + "/" + PHOTO_TYPES.length;
+    if (key === "photos") meta = "Photos " + photoCount(item) + "/" + photoTotal(item);
     if (key === "ship" && item.sold) meta = "Ship by " + prettyDay(shipByDate(item.sold));
     text.appendChild(el("div", "small", meta));
     head.appendChild(text);
@@ -5724,7 +6001,7 @@ function openStageSheet(key) {
     const edit = function () { stageReturn = null; closeScanModal(); startEdit(index); };
     if (key === "photos") {
       add("All photos taken", "primary", function () {
-        PHOTO_TYPES.forEach(function (t) { item.photos[t.key] = true; });
+        PHOTO_TYPES.forEach(function (t) { if (photoNeeded(item, t)) item.photos[t.key] = true; });
         save();
         render();
         openStageSheet(key);
@@ -6307,6 +6584,7 @@ const toolsModal = document.getElementById("tools-modal");
 document.getElementById("tools-button").addEventListener("click", function () {
   renderBulkHistory();
   renderPlatformEditor();
+  renderPhotoTypeEditor();
   fillLowerInputs();
   toolsModal.hidden = false;
   toolsModal.querySelector(".tools-panel").scrollTop = 0;
@@ -6338,6 +6616,8 @@ function applyPins() {
   pipeBox.open = pins.choice === "pipeline";
   loose.appendChild(document.getElementById("bins-drop"));
   [goalsBox, pipeBox].forEach(function (box) { box.parentNode.appendChild(box); });
+  loose.appendChild(document.getElementById("planner-button"));
+  loose.appendChild(document.getElementById("tools-button"));
   document.body.classList.toggle("summary-loose", pins.choice === "none");
   top.hidden = top.querySelectorAll("details:not([hidden])").length === 0;
   loose.hidden = loose.querySelectorAll("details:not([hidden])").length === 0;
@@ -6372,6 +6652,201 @@ let startCollapsed = true;
 try { if (localStorage.getItem("summaryCollapsed") === "0") startCollapsed = false; } catch (e) {}
 setSummaryCollapsed(startCollapsed);
 
+// ---- rename the app title ----
+const appTitleEl = document.getElementById("app-title");
+const titleEditBtn = document.getElementById("title-edit");
+titleEditBtn.appendChild(icon("pencil"));
+function applyTitle() { appTitleEl.textContent = appTitle; }
+function openTitleSheet() {
+  scanBody.innerHTML = "";
+  scanBody.appendChild(el("h3", "", "Rename your app"));
+  scanBody.appendChild(el("div", "small", "This is the title at the top of the page. Leave it empty to go back to \"" + DEFAULT_TITLE + "\"."));
+  const label = el("label", "field", "Title");
+  const input = document.createElement("input");
+  input.maxLength = 30;
+  input.value = appTitle;
+  label.appendChild(input);
+  scanBody.appendChild(label);
+  function saveTitle() {
+    appTitle = input.value.trim().replace(/\s+/g, " ") || DEFAULT_TITLE;
+    try { localStorage.setItem("appTitle", appTitle); } catch (e) {}
+    applyTitle();
+    render();
+    closeScanModal();
+  }
+  input.addEventListener("keydown", function (event) {
+    if (event.key === "Enter") { event.preventDefault(); saveTitle(); }
+  });
+  scanBody.appendChild(modalButton("Save title", "primary", saveTitle));
+  scanBody.appendChild(modalButton("Cancel", "", closeScanModal));
+  scanModal.hidden = false;
+  input.focus();
+  input.select();
+}
+titleEditBtn.addEventListener("click", openTitleSheet);
+appTitleEl.addEventListener("click", openTitleSheet);
+
+// ---- Tools: the photo checklist (add, rename, remove) ----
+function savePhotoTypes() {
+  try { localStorage.setItem("photoTypes", JSON.stringify(PHOTO_TYPES)); } catch (e) {}
+  buildPhotoBoxes();
+  updatePhotoUI();
+  render();
+  renderPhotoTypeEditor();
+}
+function renderPhotoTypeEditor() {
+  const box = document.getElementById("photo-types-list");
+  box.innerHTML = "";
+  PHOTO_TYPES.forEach(function (type) {
+    const row = el("div", "photo-type-row");
+    const input = document.createElement("input");
+    input.value = type.label;
+    input.maxLength = 24;
+    input.setAttribute("aria-label", "Photo name");
+    input.addEventListener("change", function () {
+      const text = input.value.trim();
+      if (text === "") { input.value = type.label; return; }
+      if (PHOTO_TYPES.some(function (x) { return x !== type && x.label.toLowerCase() === text.toLowerCase(); })) {
+        alert("You already have a photo called " + text + ".");
+        input.value = type.label;
+        return;
+      }
+      type.label = text;
+      savePhotoTypes();
+    });
+    const remove = el("button", "small-btn", "Remove");
+    remove.type = "button";
+    remove.addEventListener("click", function () {
+      if (PHOTO_TYPES.length <= 1) { alert("Keep at least one photo on the list."); return; }
+      askYesNo("Remove \"" + type.label + "\" from the photo list? Items keep their other photo ticks.", "Remove", function () {
+        PHOTO_TYPES = PHOTO_TYPES.filter(function (x) { return x !== type; });
+        savePhotoTypes();
+      });
+    });
+    row.appendChild(input);
+    row.appendChild(remove);
+    box.appendChild(row);
+  });
+}
+document.getElementById("add-photo-type").addEventListener("click", function () {
+  const input = document.getElementById("new-photo-type");
+  const text = input.value.trim().slice(0, 24);
+  if (text === "") { alert("Type the photo's name first, like Measurements."); return; }
+  if (PHOTO_TYPES.some(function (x) { return x.label.toLowerCase() === text.toLowerCase(); })) { alert("You already have a photo called " + text + "."); return; }
+  PHOTO_TYPES.push({ key: "p" + Date.now().toString(36), label: text });
+  input.value = "";
+  savePhotoTypes();
+});
+
+// ---- Tools: example backup, and starting again from zero ----
+function exampleBackupData() {
+  const today = todayText();
+  const day = function (n) { return addDays(today, n); };
+  const allPhotos = {};
+  PHOTO_TYPES.forEach(function (type) { allPhotos[type.key] = true; });
+  const vestPhotos = {};
+  const vestNA = {};
+  PHOTO_TYPES.forEach(function (type) { vestPhotos[type.key] = type.key !== "sleeves"; vestNA[type.key] = type.key === "sleeves"; });
+  const somePhotos = {};
+  PHOTO_TYPES.forEach(function (type, i) { somePhotos[type.key] = i < 2; });
+  const ex = function (o) {
+    return Object.assign({ brand: "", color: "", type: "", picture: "", weight: 0, shipped: "", cost: 0, photosNA: {}, bin: "", slot: 0 }, o);
+  };
+  return JSON.stringify({
+    app: "resale-tracker",
+    version: 5,
+    example: true,
+    saved: new Date().toISOString(),
+    appTitle: DEFAULT_TITLE,
+    photoTypes: PHOTO_TYPES,
+    items: [
+      ex({ name: "Example Nike hoodie", site: "Depop", status: "Listed", bin: "A", slot: 1, photos: allPhotos, posted: day(-12), original: 40, current: 32, soldFor: null }),
+      ex({ name: "Example Levis jeans", site: "Vinted", status: "Sold", bin: "A", slot: 2, photos: allPhotos, posted: day(-20), sold: day(-1), original: 35, current: 35, soldFor: 28 }),
+      ex({ name: "Example Zara dress", site: "Depop", status: "Shipped", photos: allPhotos, posted: day(-30), sold: day(-10), shipped: day(-9), original: 30, current: 30, soldFor: 24 }),
+      ex({ name: "Example leather boots", site: "", status: "In progress", bin: "A", slot: 3, photos: somePhotos, original: 0, current: 0, soldFor: null }),
+      ex({ name: "Example vintage vest", site: "eBay", status: "Listed", bin: "A", slot: 4, photos: vestPhotos, photosNA: vestNA, posted: day(-3), original: 25, current: 25, soldFor: null })
+    ],
+    goals: [
+      { name: "Printer", amount: 89, purchased: false, settled: 0, repeat: "none", autoReset: false, cycle: "" },
+      { name: "Rent", amount: 900, purchased: false, settled: 0, repeat: "monthly", autoReset: true, cycle: monthOf(today) }
+    ],
+    balances: {},
+    bins: [{ name: "A", slots: 12 }],
+    freed: {},
+    remindDays: 7,
+    withdrawals: [],
+    platforms: platforms,
+    bulks: [],
+    plan: plan,
+    timeLog: [],
+    todos: [],
+    lowerPercents: lowerPercents,
+    remindersOn: true
+  }, null, 2);
+}
+document.getElementById("example-backup").addEventListener("click", function () {
+  const blob = new Blob([exampleBackupData()], { type: "application/json" });
+  const link = document.createElement("a");
+  link.href = URL.createObjectURL(blob);
+  link.download = "resale-example-backup.json";
+  link.click();
+  showBackupNote("Example backup saved. To try it, use Restore from file. That replaces what is in the app, so save your own backup first.", false);
+});
+
+// Everything this app keeps in your browser. Only these are removed when you start from zero.
+const APP_STORAGE_KEYS = ["items", "goals", "balances", "bins", "freed", "filter", "statusFilter", "remindDays", "withdrawals",
+  "shipAlerts", "showShipped", "remindersOn", "platforms", "bulks", "planSettings", "timeLog", "todos", "lowerPercents",
+  "shipPulse", "theme", "dueDismissed", "shipDismissed", "qrUsed", "shipIntro", "lastBackup", "backupSnooze", "pinChoice",
+  "pinGoals", "summaryCollapsed", "planTimer", "appTitle", "photoTypes"];
+function wipeEverything() {
+  APP_STORAGE_KEYS.forEach(function (key) { try { localStorage.removeItem(key); } catch (e) {} });
+  location.reload();
+}
+function openWipeSheet() {
+  toolsModal.hidden = true;
+  scanBody.innerHTML = "";
+  scanBody.appendChild(el("h3", "", "Start from zero?"));
+  scanBody.appendChild(el("p", "", "This deletes all your items, investments, balances, locations, planner data and settings from this copy of the app, and it can't be undone. Save a backup first if you might want anything back."));
+  scanBody.appendChild(modalButton("Save a backup first", "primary", function () {
+    document.getElementById("backup-save").click();
+    closeScanModal();
+  }));
+  scanBody.appendChild(modalButton("Delete everything and start over", "danger", function () {
+    askYesNo("Last check: delete everything and start from zero?", "Yes, delete everything", wipeEverything);
+  }));
+  scanBody.appendChild(modalButton("Cancel", "", closeScanModal));
+  scanModal.hidden = false;
+}
+document.getElementById("wipe-button").addEventListener("click", openWipeSheet);
+
+// ---- scrolling: the top banner tucks away when you scroll down and comes back when you scroll up ----
+(function () {
+  const banner = document.getElementById("summary-box");
+  const topButton = document.getElementById("scroll-top");
+  topButton.appendChild(icon("up"));
+  const calm = !!(window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches);
+  topButton.addEventListener("click", function () { window.scrollTo({ top: 0, behavior: calm ? "auto" : "smooth" }); });
+  let lastY = window.pageYOffset || 0;
+  let waiting = false;
+  function update() {
+    waiting = false;
+    const y = Math.max(0, window.pageYOffset || 0);
+    topButton.classList.toggle("show", y > 500);
+    // Stay put while a menu inside the banner is open, a pop-up is open, or the banner isn't pinned.
+    const locked = document.body.classList.contains("summary-loose") || document.body.classList.contains("modal-open") || !!banner.querySelector("details[open]");
+    if (locked || y < 60) { banner.classList.remove("scroll-hidden"); lastY = y; return; }
+    const dy = y - lastY;
+    if (dy > 10) { banner.classList.add("scroll-hidden"); lastY = y; }
+    else if (dy < -10) { banner.classList.remove("scroll-hidden"); lastY = y; }
+  }
+  window.addEventListener("scroll", function () {
+    if (!waiting) { waiting = true; requestAnimationFrame(update); }
+  }, { passive: true });
+  update();
+})();
+
+applyTitle();
+renderPhotoTypeEditor();
 buildBalanceBlocks();
 renderPlatformEditor();
 fillLowerInputs();

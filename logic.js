@@ -121,7 +121,7 @@
     });
     return cents;
   }
-  // Purchased goals that have not been settled yet are paid out of your overall balance.
+  // Paid investments that have not been settled yet come out of your overall balance.
   function goalsSpent(goals) {
     let cents = 0;
     (goals || []).forEach(function (g) { if (g.purchased && !g.settled) cents += toCents(g.amount); });
@@ -138,7 +138,7 @@
     const mine = startMoney(balances, platform) + itemMoney(items, platform);
     if (mine <= 0) return { amount: 0, blocked: "Nothing to withdraw from " + platform + " yet." };
     if (everything - mine < 0) {
-      return { amount: fromCents(mine), blocked: "Goals you marked purchased are paid from your overall balance, so withdrawing all of " + platform + " would leave them unpaid. Use Total instead." };
+      return { amount: fromCents(mine), blocked: "Investments you marked paid come out of your overall balance, so withdrawing all of " + platform + " would leave them unpaid. Use Total instead." };
     }
     return { amount: fromCents(mine), blocked: "" };
   }
@@ -162,12 +162,55 @@
     Object.keys(record.balances).forEach(function (name) { balances[name] = record.balances[name]; });
   }
 
+  // ---- investments that repeat every month (like rent) ----
+  // An investment can be set to repeat monthly. When you mark it paid, the month is saved on it (its "cycle").
+  // Starting a new month keeps the money you paid as a separate paid record, so your balance stays right,
+  // and puts the investment back to unpaid for the new month.
+  function monthOf(dateText) { return String(dateText || "").slice(0, 7); }
+  const MONTH_NAMES = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+  // "2026-10" -> "Oct 2026"
+  function monthLabel(month) {
+    const p = String(month || "").split("-");
+    const name = MONTH_NAMES[Number(p[1]) - 1];
+    return name ? name + " " + p[0] : String(month || "");
+  }
+  function resetInvestment(goals, goal, month) {
+    if (goal.purchased) {
+      const paidMonth = goal.cycle || month;
+      goals.push({
+        name: goal.name + " (" + monthLabel(paidMonth) + ")",
+        amount: goal.amount,
+        purchased: true,
+        settled: goal.settled || 0,
+        repeat: "none",
+        autoReset: false,
+        cycle: ""
+      });
+    }
+    goal.purchased = false;
+    goal.settled = 0;
+    goal.cycle = month;
+  }
+  // Resets every paid monthly investment that is set to reset by itself and was paid in an earlier month.
+  // Returns the names that were reset.
+  function rolloverInvestments(goals, month) {
+    const names = [];
+    goals.slice().forEach(function (g) {
+      if (g.repeat === "monthly" && g.autoReset && g.purchased && g.cycle && g.cycle < month) {
+        resetInvestment(goals, g, month);
+        names.push(g.name);
+      }
+    });
+    return names;
+  }
+
   return {
     toCents: toCents, money: money, salePrice: salePrice, isDone: isDone, feeTotal: feeTotal,
     platformFee: platformFee, shipCostOf: shipCostOf, costsTotal: costsTotal, profitOf: profitOf,
     bulkCosts: bulkCosts, parseDate: parseDate, formatDate: formatDate, dayDiff: dayDiff, addDays: addDays,
     isWeekend: isWeekend, shipByDate: shipByDate, wordCount: wordCount, isQuickNameOk: isQuickNameOk,
     capWords: capWords, backupDue: backupDue,
-    withdrawPlan: withdrawPlan, applyWithdrawal: applyWithdrawal, undoWithdrawal: undoWithdrawal
+    withdrawPlan: withdrawPlan, applyWithdrawal: applyWithdrawal, undoWithdrawal: undoWithdrawal,
+    monthOf: monthOf, monthLabel: monthLabel, resetInvestment: resetInvestment, rolloverInvestments: rolloverInvestments
   };
 });

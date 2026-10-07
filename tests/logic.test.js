@@ -121,23 +121,99 @@ test("two withdrawals in a row, then undo only the last", () => {
   assert.strictEqual(L.withdrawPlan(s.items, s.balances, s.goals, "Vinted").amount, 30);
   assert.strictEqual(L.withdrawPlan(s.items, s.balances, s.goals, "Depop").amount, 0);
 });
-test("purchased goals come out of the total", () => {
+test("paid investments come out of the total", () => {
   const s = shop();
   s.goals = [{ amount: 40, purchased: true, settled: 0 }];
   assert.strictEqual(L.withdrawPlan(s.items, s.balances, s.goals, null).amount, 75);
 });
-test("per-platform withdrawal is blocked if it would leave goals unpaid", () => {
+test("per-platform withdrawal is blocked if it would leave investments unpaid", () => {
   const s = shop();
   s.goals = [{ amount: 100, purchased: true, settled: 0 }];
   const plan = L.withdrawPlan(s.items, s.balances, s.goals, "Depop");
   assert.ok(plan.blocked.indexOf("Total") !== -1);
 });
-test("total withdrawal settles purchased goals, and undo unsettles them", () => {
+test("total withdrawal settles paid investments, and undo unsettles them", () => {
   const s = shop();
   s.goals = [{ amount: 40, purchased: true, settled: 0 }];
   const rec = L.applyWithdrawal(s.items, s.balances, s.goals, null, 9, "d");
   assert.strictEqual(s.goals[0].settled, 9);
   L.undoWithdrawal(s.items, s.balances, s.goals, rec);
   assert.strictEqual(s.goals[0].settled, 0);
+});
+
+// ---- investments that repeat every month ----
+const rent = (o) => Object.assign({ name: "Rent", amount: 40, purchased: true, settled: 0, repeat: "monthly", autoReset: true, cycle: "2026-09" }, o);
+test("month helpers", () => {
+  assert.strictEqual(L.monthOf("2026-10-06"), "2026-10");
+  assert.strictEqual(L.monthOf(""), "");
+  assert.strictEqual(L.monthLabel("2026-10"), "Oct 2026");
+  assert.strictEqual(L.monthLabel("2026-01"), "Jan 2026");
+});
+test("a new month resets a paid, auto-reset investment and keeps a paid record", () => {
+  const goals = [rent()];
+  const names = L.rolloverInvestments(goals, "2026-10");
+  assert.deepStrictEqual(names, ["Rent"]);
+  assert.strictEqual(goals.length, 2);
+  assert.strictEqual(goals[0].purchased, false);
+  assert.strictEqual(goals[0].cycle, "2026-10");
+  assert.strictEqual(goals[1].purchased, true);
+  assert.strictEqual(goals[1].name, "Rent (Sep 2026)");
+  assert.strictEqual(goals[1].amount, 40);
+  assert.strictEqual(goals[1].repeat, "none");
+});
+test("resetting keeps the money spent, so the balance does not jump back up", () => {
+  const s = shop();
+  s.goals = [rent()];
+  assert.strictEqual(L.withdrawPlan(s.items, s.balances, s.goals, null).amount, 75);
+  L.rolloverInvestments(s.goals, "2026-10");
+  assert.strictEqual(L.withdrawPlan(s.items, s.balances, s.goals, null).amount, 75);
+});
+test("a total withdrawal after a reset settles the old paid record, and undo brings it back", () => {
+  const s = shop();
+  s.goals = [rent()];
+  L.rolloverInvestments(s.goals, "2026-10");
+  const rec = L.applyWithdrawal(s.items, s.balances, s.goals, null, 7, "d");
+  assert.strictEqual(rec.amount, 75);
+  assert.strictEqual(s.goals[1].settled, 7);
+  assert.strictEqual(s.goals[0].settled, 0);
+  L.undoWithdrawal(s.items, s.balances, s.goals, rec);
+  assert.strictEqual(L.withdrawPlan(s.items, s.balances, s.goals, null).amount, 75);
+});
+test("no reset in the same month", () => {
+  const goals = [rent({ cycle: "2026-10" })];
+  assert.deepStrictEqual(L.rolloverInvestments(goals, "2026-10"), []);
+  assert.strictEqual(goals[0].purchased, true);
+});
+test("no automatic reset when auto-reset is off", () => {
+  const goals = [rent({ autoReset: false })];
+  assert.deepStrictEqual(L.rolloverInvestments(goals, "2026-10"), []);
+  assert.strictEqual(goals[0].purchased, true);
+});
+test("one-time investments never reset", () => {
+  const goals = [rent({ repeat: "none" })];
+  assert.deepStrictEqual(L.rolloverInvestments(goals, "2027-01"), []);
+  assert.strictEqual(goals[0].purchased, true);
+});
+test("unpaid investments are left alone", () => {
+  const goals = [rent({ purchased: false })];
+  assert.deepStrictEqual(L.rolloverInvestments(goals, "2026-10"), []);
+  assert.strictEqual(goals.length, 1);
+});
+test("skipping several months resets once, labelled with the month it was paid", () => {
+  const goals = [rent()];
+  L.rolloverInvestments(goals, "2026-12");
+  assert.strictEqual(goals.length, 2);
+  assert.strictEqual(goals[1].name, "Rent (Sep 2026)");
+  assert.strictEqual(goals[0].cycle, "2026-12");
+});
+test("a manual reset works even with auto-reset off, and an unpaid one just moves to the new month", () => {
+  const goals = [rent({ autoReset: false })];
+  L.resetInvestment(goals, goals[0], "2026-10");
+  assert.strictEqual(goals.length, 2);
+  assert.strictEqual(goals[0].purchased, false);
+  const unpaid = [rent({ purchased: false })];
+  L.resetInvestment(unpaid, unpaid[0], "2026-10");
+  assert.strictEqual(unpaid.length, 1);
+  assert.strictEqual(unpaid[0].cycle, "2026-10");
 });
 console.log(passed + " tests passed" + (process.exitCode ? " (some failed)" : ""));
