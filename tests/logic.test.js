@@ -295,4 +295,49 @@ test("tapping a theme switches to the mode it belongs to, and Classic is Dark on
   assert.strictEqual(L.themeForLook("light-rose", "classic"), "light");
   assert.strictEqual(L.themeForLook("auto", "classic"), "light");
 });
+const depopLike = { feePercent: 3.3, feeFlat: 0.45, bumpType: "percent", bumpValue: 12 };
+test("example sale: fee, what you keep, and what you keep after a percent bump", () => {
+  const ex = L.feeExample(depopLike, 40);
+  assert.strictEqual(ex.fee, 1.77);
+  assert.strictEqual(ex.keep, 38.23);
+  assert.strictEqual(ex.bump, 4.8);
+  assert.strictEqual(ex.keepWithBump, 33.43);
+});
+test("example sale with a fixed bump", () => {
+  const ex = L.feeExample({ feePercent: 0, feeFlat: 0, bumpType: "flat", bumpValue: 1.5 }, 40);
+  assert.strictEqual(ex.fee, 0);
+  assert.strictEqual(ex.keep, 40);
+  assert.strictEqual(ex.bump, 1.5);
+  assert.strictEqual(ex.keepWithBump, 38.5);
+});
+test("example sale: a bump you type each time is not counted", () => {
+  const ex = L.feeExample({ feePercent: 10, feeFlat: 0, bumpType: "ask", bumpValue: 0 }, 40);
+  assert.strictEqual(ex.keep, 36);
+  assert.strictEqual(ex.bump, null);
+  assert.strictEqual(ex.keepWithBump, null);
+});
+test("example sale matches a real sold item's fee and profit", () => {
+  const p = { feePercent: 13.25, feeFlat: 0.3, bumpType: "ask", bumpValue: 0 };
+  const sale = { status: "Sold", current: 40, soldFor: 40, cost: 0, feePercent: 13.25, feeFlat: 0.3 };
+  assert.strictEqual(L.feeExample(p, 40).fee, L.platformFee(sale));
+  assert.strictEqual(L.feeExample(p, 40).keep, L.profitOf(sale));
+});
+test("example sale treats a bad or negative price and bad fees as zero", () => {
+  assert.strictEqual(L.feeExample(depopLike, -5).price, 0);
+  assert.strictEqual(L.feeExample(depopLike, "abc").keep, -0.45);
+  const ex = L.feeExample({ feePercent: "abc", feeFlat: -3, bumpType: "percent", bumpValue: null }, 25);
+  assert.strictEqual(ex.fee, 0);
+  assert.strictEqual(ex.keep, 25);
+  assert.strictEqual(ex.bump, 0);
+});
+test("fee and bump are written in words", () => {
+  assert.strictEqual(L.feeText(depopLike), "3.3% + $0.45");
+  assert.strictEqual(L.feeText({ feePercent: 10, feeFlat: 0 }), "10%");
+  assert.strictEqual(L.feeText({ feePercent: 0, feeFlat: 0.5 }), "$0.50");
+  assert.strictEqual(L.feeText({ feePercent: 0, feeFlat: 0 }), "");
+  assert.strictEqual(L.bumpText(depopLike), "bump 12%");
+  assert.strictEqual(L.bumpText({ bumpType: "flat", bumpValue: 1.5 }), "bump $1.50");
+  assert.strictEqual(L.bumpText({ bumpType: "ask", bumpValue: 0 }), "you type the bump cost");
+  assert.strictEqual(L.bumpText({ bumpType: "percent", bumpValue: 0 }), "no bump cost set");
+});
 console.log(passed + " tests passed" + (process.exitCode ? " (some failed)" : ""));
