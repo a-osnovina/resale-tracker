@@ -248,7 +248,7 @@ details summary { cursor: pointer; }
 .fab { position: fixed; right: max(16px, calc(50% - 380px + 16px)); bottom: calc(18px + env(safe-area-inset-bottom)); z-index: 30; display: flex; align-items: center; gap: 8px; min-height: 56px; padding: 0 22px 0 18px; border-radius: 999px; font-size: 17px; font-weight: 700; box-shadow: 0 6px 18px rgba(0, 0, 0, 0.35); }
 .fab .ico { width: 24px; height: 24px; }
 @media (max-width: 380px) { .fab-text { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); } .fab { padding: 0 16px; } }
-#shipped-row { text-align: right; margin-top: 8px; }
+#shipped-row { text-align: left; margin-top: 8px; margin-bottom: 70px; }
 #bump-amount-row { display: none; margin-left: 12px; }
 #bump-vinted-row { margin-left: 12px; }
 #sold-for-row { display: none; }
@@ -714,11 +714,9 @@ body.no-invest #goals-mini { display: none !important; }
 .goal-row .goal-head { min-height: 28px; }
 .goal-body .goal-amt { display: block; font-size: 13px; margin: 0 0 4px; }
 .goal-body .goal-repeat { margin: 4px 0 0; }
-.goal-handle { touch-action: none; cursor: grab; text-align: center; color: var(--muted); font-size: 16px; line-height: 1; letter-spacing: -3px; -webkit-user-select: none; user-select: none; padding: 14px 0; }
 .goal-arrows { display: flex; flex-direction: column; gap: 4px; }
 .arrow-btn { min-height: 34px; width: 40px; padding: 0; display: flex; align-items: center; justify-content: center; }
 .arrow-btn:disabled { opacity: 0.35; }
-.goal-row.dragging { position: relative; z-index: 5; box-shadow: 0 6px 16px rgba(0, 0, 0, 0.35); }
 .goal-row .goal-actions { grid-column: 1 / -1; grid-template-columns: 1fr 1fr; }
 .goal-row .goal-actions .wide { grid-column: 1 / -1; }
 .cal-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 8px; }
@@ -749,6 +747,16 @@ body.no-invest #goals-mini { display: none !important; }
 .tl-todo { margin-top: 12px; padding-top: 8px; border-top: 2px solid var(--line-soft); }
 body.no-storage #storage-section { display: none !important; }
 #sold-main { margin-top: 4px; }
+
+/* round 4 */
+#undo-bar { position: fixed; left: 12px; right: 12px; bottom: calc(90px + env(safe-area-inset-bottom)); z-index: 80; max-width: 560px; margin: 0 auto; display: flex; align-items: center; gap: 10px; background: #1d2939; color: #ffffff; padding: 8px 8px 8px 14px; border-radius: 12px; font-size: 14px; box-shadow: 0 4px 14px rgba(0,0,0,.4); }
+#undo-bar[hidden] { display: none; }
+#undo-bar span { flex: 1; }
+#undo-bar button { min-height: 40px; padding: 0 16px; font-weight: 800; }
+body.no-storage #storage-group, body.no-storage #bins-box { display: none !important; }
+#manage-storage-btn { width: 100%; margin-top: 10px; }
+#tools-box > .filters-panel, #alerts-details > .switch-card { margin-top: 8px; }
+.goal-row { grid-template-columns: 1fr 40px; }
 </style>
 </head>
 <body>
@@ -832,18 +840,7 @@ body.no-storage #storage-section { display: none !important; }
       <summary>Storage</summary>
       <div class="dropdown-panel" id="bins-drop-panel">
   <div id="bin-chips"></div>
-  <details class="filters-box" id="bins-box">
-    <summary id="bins-summary">Manage storage and labels</summary>
-    <div class="filters-panel">
-      <div id="bins-list"></div>
-      <form id="bin-form">
-        <label class="field">Storage name (a short letter or word, like A) <input id="bin-name" maxlength="12" required></label>
-        <label class="field">Number of slots <input id="bin-slots" type="number" inputmode="numeric" step="1" min="1" max="100" value="12" required></label>
-        <div class="form-actions"><button type="submit" class="primary">Save storage</button></div>
-      </form>
-      <button type="button" id="add-bin-button">+ Add storage</button>
-    </div>
-  </details>
+  <button type="button" id="manage-storage-btn" class="small-btn">Manage storage and labels</button>
 
       </div>
     </details>
@@ -1047,8 +1044,26 @@ body.no-storage #storage-section { display: none !important; }
     <div class="modal-panel tools-panel">
       <div class="tools-head"><h3>Settings</h3><button type="button" id="tools-close" class="small-btn">Close</button></div>
   <div class="tools-group">Tools</div>
-  <div class="small tools-intro">Turn on the tools you use. Each one gets a button on the main page.</div>
-  <div class="switch-card" id="feature-switches"></div>
+  <details class="filters-box" id="tools-box">
+    <summary>Turn tools on or off</summary>
+    <div class="filters-panel">
+      <div class="small tools-intro">Turn on the tools you use. Each one gets a button on the main page.</div>
+      <div class="switch-card" id="feature-switches"></div>
+    </div>
+  </details>
+  <div class="tools-group" id="storage-group">Storage</div>
+  <details class="filters-box" id="bins-box">
+    <summary id="bins-summary">Manage storage and labels</summary>
+    <div class="filters-panel">
+      <div id="bins-list"></div>
+      <form id="bin-form">
+        <label class="field">Storage name (a short letter or word, like A) <input id="bin-name" maxlength="12" required></label>
+        <label class="field">Number of slots <input id="bin-slots" type="number" inputmode="numeric" step="1" min="1" max="100" value="12" required></label>
+        <div class="form-actions"><button type="submit" class="primary">Save storage</button></div>
+      </form>
+      <button type="button" id="add-bin-button">+ Add storage</button>
+    </div>
+  </details>
   <div class="tools-group">Item list</div>
   <details class="filters-box" id="cards-box">
     <summary>What each item shows</summary>
@@ -1091,6 +1106,8 @@ body.no-storage #storage-section { display: none !important; }
     <div class="filters-panel" id="plan-settings-body"></div>
   </details>
   <div class="tools-group">Reminders and alerts</div>
+  <details class="filters-box" id="alerts-details">
+  <summary>Reminder and alert options</summary>
   <div class="switch-card" id="alerts-box">
     <div class="alerts-inner">
       <div class="switch-row">
@@ -1118,6 +1135,7 @@ body.no-storage #storage-section { display: none !important; }
       </div>
     </div>
   </div>
+  </details>
   <div class="tools-group">Appearance</div>
   <details class="filters-box" id="look-box">
     <summary>Title and colors</summary>
@@ -2101,6 +2119,60 @@ function showToast(text) {
   showToast.timer = setTimeout(function () { t.classList.remove("show"); }, 4000);
 }
 
+
+// ---- undo: a bar at the bottom lets you take back the last change ----
+function cloneDeep(v) {
+  if (Array.isArray(v)) return v.map(cloneDeep);
+  if (v && typeof v === "object") { const o = {}; Object.keys(v).forEach(function (k) { o[k] = cloneDeep(v[k]); }); return o; }
+  return v;
+}
+function captureState() {
+  return cloneDeep({ items: items, goals: goals, balances: balances, bins: bins, freed: freed, withdrawals: withdrawals, todos: todos, shipDismissed: shipDismissed, dueDismissed: dueDismissed });
+}
+function restoreState(snap) {
+  items = snap.items; goals = snap.goals; balances = snap.balances; bins = snap.bins;
+  freed = snap.freed; withdrawals = snap.withdrawals; todos = snap.todos;
+  [[shipDismissed, snap.shipDismissed, "shipDismissed"], [dueDismissed, snap.dueDismissed, "dueDismissed"]].forEach(function (t) {
+    Object.keys(t[0]).forEach(function (k) { delete t[0][k]; });
+    Object.keys(t[1]).forEach(function (k) { t[0][k] = t[1][k]; });
+    try { localStorage.setItem(t[2], JSON.stringify(t[0])); } catch (e) {}
+  });
+  openCards.clear(); openMenus.clear(); expandedSold.clear();
+  editingGoal = null; openGoal = null;
+  save();
+  buildBalanceBlocks();
+  renderPlatformEditor();
+  render();
+}
+function hideUndo() {
+  const bar = document.getElementById("undo-bar");
+  if (bar) bar.hidden = true;
+  clearTimeout(showUndo.timer);
+}
+// Shows the message with an Undo button for about 8 seconds. snap is captureState() taken before the change.
+function showUndo(text, snap) {
+  let bar = document.getElementById("undo-bar");
+  if (!bar) {
+    bar = document.createElement("div");
+    bar.id = "undo-bar";
+    bar.setAttribute("role", "status");
+    bar.appendChild(document.createElement("span"));
+    const b = el("button", "primary", "Undo");
+    b.type = "button";
+    b.id = "undo-btn";
+    bar.appendChild(b);
+    document.body.appendChild(bar);
+  }
+  bar.firstChild.textContent = text;
+  const btn = document.getElementById("undo-btn");
+  btn.onclick = function () { hideUndo(); restoreState(snap); showToast("Undone."); };
+  bar.hidden = false;
+  const t = document.getElementById("toast");
+  if (t) t.classList.remove("show");
+  clearTimeout(showUndo.timer);
+  showUndo.timer = setTimeout(hideUndo, 8000);
+}
+
 // When an item sells, the platform's current fee settings are saved on the item,
 // so changing a platform's fee later never changes the profit of sales you already made.
 function applySaleFees(item) {
@@ -2116,6 +2188,7 @@ function markShipped(item) {
   scanBody.appendChild(el("h3", "", "Mark as shipped?"));
   scanBody.appendChild(el("p", "", item.name + (spot ? ". This frees slot " + spot + "." : ".")));
   scanBody.appendChild(modalButton("Yes, it shipped", "primary", function () {
+    const snap = captureState();
     markFreed(item.bin, item.slot);
     if (!item.sold) item.sold = soldDateFor(item.posted);
     if (!isDone(item)) applySaleFees(item);
@@ -2126,7 +2199,7 @@ function markShipped(item) {
     save();
     render();
     closeScanModal();
-    showToast(item.name + " marked as shipped" + (showShipped ? "." : ". It moved out of the list; tap \"Show shipped items\" to see it."));
+    showUndo(item.name + " marked as shipped" + (showShipped ? "." : ". It moved out of the list."), snap);
   }));
   scanBody.appendChild(modalButton("Not yet", "", closeScanModal));
   scanModal.hidden = false;
@@ -2569,7 +2642,7 @@ function openAddMenu() {
   if (!ready && hasStorage) {
     warn.appendChild(document.createTextNode("To start using QR codes:"));
     const ol = document.createElement("ol");
-    ["Open \"Manage storage and labels\" on the main page and tap Print labels for a storage.", "Print them and stick one on each slot.", "Come back here. This option turns on after you have opened the labels."].forEach(function (t) {
+    ["Open Settings, then Storage, then \"Manage storage and labels\" and tap Print labels for a storage.", "Print them and stick one on each slot.", "Come back here. This option turns on after you have opened the labels."].forEach(function (t) {
       const li = document.createElement("li");
       li.textContent = t;
       ol.appendChild(li);
@@ -3362,10 +3435,12 @@ function closePriceModal() {
 
 function setPrice(item, value) {
   if (value !== item.current) {
+    const snap = captureState();
     item.current = value;
     item.priceChanged = todayText();
     save();
     render();
+    showUndo("Price changed on " + item.name + ".", snap);
   }
   closePriceModal();
 }
@@ -3381,13 +3456,14 @@ function setStartingBalances(values) {
 function doWithdraw(platform) {
   const plan = withdrawPlan(items, balances, goals, platform);
   if (plan.blocked) { showToast(plan.blocked); return; }
+  const snap = captureState();
   const record = applyWithdrawal(items, balances, goals, platform, Date.now(), todayText());
   buildBalanceBlocks();
   withdrawals.push(record);
   save();
   render();
   closeScanModal();
-  showToast("Withdrew " + money(record.amount) + (platform ? " from " + platform + "." : ". Your balance starts again from $0.00."));
+  showUndo("Withdrew " + money(record.amount) + (platform ? " from " + platform + "." : ". Your balance starts again from $0.00."), snap);
 }
 function undoWithdraw() {
   const last = withdrawals[withdrawals.length - 1];
@@ -3479,16 +3555,20 @@ try { shipDismissed = JSON.parse(localStorage.getItem("shipDismissed") || "{}") 
 let currentOverdue = [];
 function shipKey(item) { return item.name + "|" + (item.sold || ""); }
 function dismissShip(list) {
+  const snap = captureState();
   list.forEach(function (it) { shipDismissed[shipKey(it)] = 1; });
   try { localStorage.setItem("shipDismissed", JSON.stringify(shipDismissed)); } catch (e) {}
   render();
+  showUndo("Late shipping alert hidden.", snap);
 }
 document.getElementById("ship-alert-x").addEventListener("click", function () { dismissShip(currentOverdue.slice()); });
 function dueKey(item) { return item.name + "|" + reminderDueDate(item); }
 function dismissDue(list) {
+  const snap = captureState();
   list.forEach(function (it) { dueDismissed[dueKey(it)] = 1; });
   try { localStorage.setItem("dueDismissed", JSON.stringify(dueDismissed)); } catch (e) {}
   render();
+  showUndo("Price reminder hidden.", snap);
 }
 function showCard(item) {
   closeScanModal();
@@ -3961,6 +4041,7 @@ function openListSheet(item) {
     scanBody.appendChild(modalButton(name, name === item.site ? "primary" : "", function () {
       const value = readPrice(price);
       if (value === undefined) return;
+      const snap = captureState();
       item.site = name;
       item.status = "Listed";
       if (nameBox.value.trim() !== "") item.name = nameBox.value.trim();
@@ -3973,6 +4054,7 @@ function openListSheet(item) {
       save();
       render();
       closeScanModal();
+      showUndo(item.name + " listed on " + name + ".", snap);
     }));
   });
   scanBody.appendChild(modalButton("Cancel", "", closeScanModal));
@@ -4003,6 +4085,7 @@ function openSoldSheet(item) {
     }
     const label = readPrice(postage);
     if (label === undefined) return;
+    const snap = captureState();
     applySaleFees(item);
     item.shipCost = label || 0;
     item.status = "Sold";
@@ -4011,6 +4094,7 @@ function openSoldSheet(item) {
     save();
     render();
     closeScanModal();
+    showUndo(item.name + " marked as sold.", snap);
   }));
   scanBody.appendChild(modalButton("Cancel", "", closeScanModal));
   scanModal.hidden = false;
@@ -4806,11 +4890,13 @@ function moveGoal(goal, step) {
 
 function removeGoal(goal) {
   askYesNo("Delete investment " + goal.name + "?", "Delete investment", function () {
+    const snap = captureState();
     goals.splice(goals.indexOf(goal), 1);
     if (openGoal === goal) openGoal = null;
     if (editingGoal === goal) editingGoal = null;
     save();
     render();
+    showUndo("Deleted investment " + goal.name + ".", snap);
   });
 }
 
@@ -4947,69 +5033,11 @@ function buildGoalEditor(goal) {
   return form;
 }
 
-// Moves a goal so it sits where another investment is (used by dragging).
-function moveGoalTo(goal, target) {
-  if (goal === target) return;
-  const from = goals.indexOf(goal);
-  const targetAt = goals.indexOf(target);
-  goals.splice(from, 1);
-  const to = goals.indexOf(target);
-  goals.splice(from < targetAt ? to + 1 : to, 0, goal);
-  save();
-  render();
-}
-// Drag the ⋮⋮ handle up or down to change the order.
-function startGoalDrag(event, row, handle, goal) {
-  event.preventDefault();
-  const list = document.getElementById("goal-list");
-  const rows = Array.prototype.filter.call(list.children, function (r) { return r.classList.contains("goal-row") && !r.classList.contains("editing"); });
-  const active = goals.filter(function (g) { return !g.purchased; });
-  const from = rows.indexOf(row);
-  if (from === -1 || rows.length !== active.length) return;
-  const rects = rows.map(function (r) { return r.getBoundingClientRect(); });
-  const startY = event.clientY;
-  const pid = event.pointerId;
-  try { handle.setPointerCapture(pid); } catch (e) {}
-  row.classList.add("dragging");
-  let target = from;
-  function move(e) {
-    const dy = e.clientY - startY;
-    row.style.transform = "translateY(" + dy + "px)";
-    const center = rects[from].top + rects[from].height / 2 + dy;
-    let t = from;
-    if (center < rects[0].top) t = 0;
-    else if (center > rects[rects.length - 1].bottom) t = rects.length - 1;
-    else {
-      for (let i = 0; i < rects.length; i++) {
-        if (center >= rects[i].top && center <= rects[i].bottom) { t = i; break; }
-      }
-    }
-    target = t;
-  }
-  function finish() {
-    handle.removeEventListener("pointermove", move);
-    handle.removeEventListener("pointerup", finish);
-    handle.removeEventListener("pointercancel", finish);
-    row.classList.remove("dragging");
-    row.style.transform = "";
-    if (target !== from) moveGoalTo(goal, active[target]);
-  }
-  handle.addEventListener("pointermove", move);
-  handle.addEventListener("pointerup", finish);
-  handle.addEventListener("pointercancel", finish);
-}
-
 function buildActiveGoal(goal, rank, count, have, balance) {
   if (editingGoal === goal) return buildGoalEditor(goal);
 
   const row = el("div", "goal-row");
   const full = have >= goal.amount;
-
-  const handle = el("div", "goal-handle", "⋮⋮");
-  handle.setAttribute("role", "button");
-  handle.setAttribute("aria-label", "Drag to change the order");
-  handle.addEventListener("pointerdown", function (event) { startGoalDrag(event, row, handle, goal); });
-  row.appendChild(handle);
 
   const body = el("div", "goal-body");
   const head = el("div", "goal-head");
@@ -5054,11 +5082,13 @@ function buildActiveGoal(goal, rank, count, have, balance) {
     const buy = el("button", "primary wide", "Mark paid");
     buy.onclick = function () {
       const markIt = function () {
+        const snap = captureState();
         goal.purchased = true;
         if (goal.repeat !== "none") goal.cycle = periodStart(goal, todayText());
         openGoal = null;
         save();
         render();
+        showUndo(goal.name + " marked paid.", snap);
       };
       if (goal.amount > balance) askYesNo("You don't have enough balance yet. Mark it paid anyway?", "Mark paid", markIt);
       else markIt();
@@ -5141,6 +5171,7 @@ function askDeleteItem(item) {
   askYesNo("Delete " + item.name + "?", "Delete", function () {
     const at = items.indexOf(item);
     if (at === -1) return;
+    const snap = captureState();
     if (item.status !== "Shipped") markFreed(item.bin, item.slot);
     openMenus.delete(item);
     openCards.delete(item);
@@ -5148,6 +5179,7 @@ function askDeleteItem(item) {
     closeForm();
     save();
     render();
+    showUndo("Deleted " + item.name + ".", snap);
   });
 }
 
@@ -7222,7 +7254,7 @@ document.addEventListener("keydown", function (event) {
 
 // ---- Tools window and pin settings ----
 const toolsModal = document.getElementById("tools-modal");
-document.getElementById("tools-button").addEventListener("click", function () {
+function openSettings() {
   renderBulkHistory();
   renderPlatformEditor();
   renderPhotoTypeEditor();
@@ -7230,6 +7262,14 @@ document.getElementById("tools-button").addEventListener("click", function () {
   fillLowerInputs();
   toolsModal.hidden = false;
   toolsModal.querySelector(".tools-panel").scrollTop = 0;
+}
+document.getElementById("tools-button").addEventListener("click", openSettings);
+document.getElementById("manage-storage-btn").addEventListener("click", function () {
+  document.getElementById("bins-drop").open = false;
+  openSettings();
+  const box = document.getElementById("bins-box");
+  box.open = true;
+  box.scrollIntoView({ block: "start" });
 });
 document.getElementById("tools-close").addEventListener("click", function () { toolsModal.hidden = true; });
 toolsModal.addEventListener("click", function (event) { if (event.target === toolsModal) toolsModal.hidden = true; });
