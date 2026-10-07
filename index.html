@@ -1757,6 +1757,7 @@ const PLAN_SETTING_FIELDS = [
 
 // "Shipped" frees the slot the item was in. Sold items stay in their slot until they are shipped.
 const STATUSES = ["In progress", "Listed", "Sold", "Shipped", "Archived"];
+const STOCK_RANK = ["Listed", "In progress", "Sold", "Shipped", "Archived"];   // order of the Stock list
 const STATUS_CLASS = { "In progress": "row-progress", "Listed": "row-listed", "Sold": "row-sold", "Shipped": "row-shipped", "Archived": "row-shipped" };
 // The button on each card that moves an item to its next step.
 const NEXT_STEP = { "In progress": "Mark as Listed", "Listed": "Mark as Sold", "Sold": "Mark as Shipped" };
@@ -4131,7 +4132,7 @@ function showCard(item) {
   closeScanModal();
   showView("stock");
   showStockPane("items");
-  stockTab = stockTabOf(item);
+  if (stockTab !== "all" || item.status === "Archived") stockTab = stockTabOf(item);
   openCards.add(item);
   if (filter !== "All" || statusFilter !== "All" || binFilter !== "All" || searchText !== "") {
     searchText = ""; document.getElementById("search").value = "";
@@ -5809,7 +5810,7 @@ function attachSwipe(card, buttonCount, onSwipeRight) {
 }
 
 document.getElementById("archive-toggle").addEventListener("click", function () {
-  stockTab = stockTab === "archive" ? "listed" : "archive";
+  stockTab = stockTab === "archive" ? "all" : "archive";
   render();
 });
 // Archive: for items you won't sell anymore. They leave the Stock lists, price reminders and storage, and can be restored.
@@ -5843,7 +5844,7 @@ function restoreArchived(item) {
   item.archivedOn = "";
   openCards.delete(item);
   openMenus.delete(item);
-  stockTab = stockTabOf(item);
+  stockTab = items.some(function (it) { return it.status === "Archived"; }) ? "archive" : "all";
   save();
   render();
   showUndo(item.name + " restored to " + item.status + ".", snap);
@@ -5873,7 +5874,7 @@ function render() {
   // The list is grouped by status (In progress, Listed, Sold, Shipped) and A to Z by name inside each group.
   // Numbers sort as numbers. Totals don't depend on the order.
   const order = items.map(function (it, i) { return i; }).sort(function (a, b) {
-    const byStatus = STATUSES.indexOf(items[a].status) - STATUSES.indexOf(items[b].status);
+    const byStatus = STOCK_RANK.indexOf(items[a].status) - STOCK_RANK.indexOf(items[b].status);
     if (byStatus !== 0) return byStatus;
     return items[a].name.localeCompare(items[b].name, undefined, { sensitivity: "base", numeric: true }) || a - b;
   });
@@ -5902,10 +5903,10 @@ function render() {
     const tabKey = stockTabOf(item);
     if (item.status !== "Shipped" || showShipped) tabCounts[tabKey]++;
     if (item.status === "Shipped" && !showShipped) {
-      if (searchText === "" && tabKey === stockTab) hiddenShipped++;
+      if (searchText === "" && (stockTab === "all" || tabKey === stockTab)) hiddenShipped++;
       return;
     }
-    if (searchText === "" && tabKey !== stockTab) return;
+    if (searchText === "" && (stockTab === "all" ? tabKey === "archive" : tabKey !== stockTab)) return;
     shown++;
     list.appendChild(buildStockRow(item, index));
   });
@@ -5925,7 +5926,7 @@ function render() {
   document.getElementById("list-count").textContent = parts.length ? "Showing " + shown + " of " + items.length + " items (" + parts.join(", ") + ")" : "";
   const shippedTotal = items.filter(function (it) { return it.status === "Shipped"; }).length;
   const shippedToggle = document.getElementById("shipped-toggle");
-  shippedToggle.hidden = shippedTotal === 0 || stockTab !== "sold" || searchText !== "";
+  shippedToggle.hidden = shippedTotal === 0 || (stockTab !== "sold" && stockTab !== "all") || searchText !== "";
   shippedToggle.textContent = showShipped ? "Hide shipped items" : "Show shipped items (" + shippedTotal + ")";
   const archivedTotal = items.filter(function (it) { return it.status === "Archived"; }).length;
   const archiveToggle = document.getElementById("archive-toggle");
@@ -8022,7 +8023,7 @@ function showStockPane(which) {
 }
 
 // ---- Stock: Listed / In progress / Sold tabs and the item rows ----
-var stockTab = "listed";
+var stockTab = "all";   // "all" shows every active item; tapping a tab filters, tapping it again clears the filter
 var STOCK_TABS = [["listed", "Listed"], ["progress", "In progress"], ["sold", "Sold"]];
 function stockTabOf(item) {
   return item.status === "Listed" ? "listed" : (item.status === "In progress" ? "progress" : (item.status === "Archived" ? "archive" : "sold"));
@@ -8035,16 +8036,17 @@ function paintStockTabs(counts) {
     const b = document.createElement("button");
     b.type = "button";
     b.className = stockTab === t[0] ? "on" : "";
+    b.setAttribute("aria-pressed", stockTab === t[0] ? "true" : "false");
     b.appendChild(document.createTextNode(t[1]));
     b.appendChild(el("span", "cnt " + t[0], String(counts[t[0]])));
-    b.onclick = function () { stockTab = t[0]; render(); };
+    b.onclick = function () { stockTab = stockTab === t[0] ? "all" : t[0]; render(); };
     box.appendChild(b);
   });
 }
 function stockEmptyText() {
   if (searchText !== "") return "No items match your search.";
   if (filter !== "All" || binFilter !== "All") return "No items match these filters.";
-  return { listed: "Nothing is listed right now.", progress: "Nothing is in progress.", sold: "No sold items are waiting.", archive: "Nothing is archived." }[stockTab];
+  return { listed: "Nothing is listed right now.", progress: "Nothing is in progress.", sold: "No sold items are waiting.", archive: "Nothing is archived.", all: "No active items." }[stockTab];
 }
 function stockMeta(item, ship) {
   const parts = [];
