@@ -813,6 +813,8 @@ body:not([data-view="home"]) #top-bell { display: none; }
 .notif-row.price .ico { color: var(--warn-text); }
 .notif-row.new { border-color: var(--warn-edge); }
 .notif-text { flex: 1; min-width: 0; overflow-wrap: anywhere; line-height: 1.35; }
+.notif-sub { display: flex; gap: 8px; align-items: center; justify-content: space-between; margin: 4px 0 0; padding: 0 4px; }
+.notif-sub button { flex: none; min-height: 36px; padding: 0 12px; font-size: 13px; font-weight: 700; }
 .notif-time { flex: none; font-size: 12px; color: var(--muted); white-space: nowrap; }
 
 /* ---- shared pieces ---- */
@@ -2576,7 +2578,7 @@ function updateBell() {
   bell.setAttribute("aria-label", n === 0 ? "Notifications" : "Notifications, " + n + " new");
 }
 function logNotif(text, kind, key, itemName) {
-  if (!text || text === "Undone." || !Array.isArray(notifLog)) return;
+  if (!text || text === "Undone." || text === "Alert is back on Home." || !Array.isArray(notifLog)) return;
   const last = notifLog[notifLog.length - 1];
   if (last && last.text === text && Date.now() - last.t < 3000) return;
   notifLog.push({ t: Date.now(), text: String(text), kind: kind || "info", k: key || "", item: itemName || "" });
@@ -2629,13 +2631,33 @@ function openNotifSheet() {
       const row = el("button", "notif-row " + e.kind + (e.t > seenBefore ? " new" : ""));
       row.type = "button";
       row.appendChild(icon(e.kind === "ship" ? "alert" : e.kind === "price" ? "clock" : "bell"));
-      row.appendChild(el("span", "notif-text", e.text));
+      row.appendChild(el("span", "notif-text", e.text.replace(" (Dismissed)", "")));
       row.appendChild(el("span", "notif-time", new Date(e.t).toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit" })));
-      row.onclick = function () {
-        const item = e.item ? items.find(function (it) { return it.name === e.item; }) : null;
-        if (item) showCard(item);
-      };
+      const item = e.item ? items.find(function (it) { return it.name === e.item; }) : null;
+      row.onclick = function () { if (item) showCard(item); };
       scanBody.appendChild(row);
+      // An alert you dismissed stays here. If the item still needs action, you can bring the alert back to Home.
+      const isShip = e.k.indexOf("ship:") === 0, isPrice = e.k.indexOf("price:") === 0;
+      const dismissedMap = isShip ? shipDismissed : isPrice ? dueDismissed : null;
+      const dismissedKey = isShip ? e.k.slice(5) : isPrice ? e.k.slice(6) : "";
+      if (dismissedMap && dismissedMap[dismissedKey]) {
+        const open = item && (isShip ? item.status === "Sold" && !item.shipped : item.status === "Listed");
+        const bar = el("div", "notif-sub");
+        bar.appendChild(el("span", "small", open ? "Dismissed · still needs action" : "Dismissed"));
+        if (open) {
+          const back = el("button", "", "Bring back to Home");
+          back.type = "button";
+          back.onclick = function () {
+            delete dismissedMap[dismissedKey];
+            try { localStorage.setItem(isShip ? "shipDismissed" : "dueDismissed", JSON.stringify(dismissedMap)); } catch (err) {}
+            render();
+            openNotifSheet();
+            showToast("Alert is back on Home.");
+          };
+          bar.appendChild(back);
+        }
+        scanBody.appendChild(bar);
+      }
     });
     scanBody.appendChild(modalButton("Clear history", "danger", function () {
       notifLog = [];
@@ -8882,11 +8904,11 @@ function backfillDismissed() {
   }
   Object.keys(shipDismissed).forEach(function (k) {
     const i = k.lastIndexOf("|");
-    if (i > 0) add("ship:" + k, "ship", "Ship now: " + k.slice(0, i) + " was late. (Dismissed)", k.slice(0, i), k.slice(i + 1));
+    if (i > 0) add("ship:" + k, "ship", "Ship now: " + k.slice(0, i) + " was late.", k.slice(0, i), k.slice(i + 1));
   });
   Object.keys(dueDismissed).forEach(function (k) {
     const i = k.lastIndexOf("|");
-    if (i > 0) add("price:" + k, "price", "Time to lower the price: " + k.slice(0, i) + " (Dismissed)", k.slice(0, i), k.slice(i + 1));
+    if (i > 0) add("price:" + k, "price", "Time to lower the price: " + k.slice(0, i), k.slice(0, i), k.slice(i + 1));
   });
   notifLog.sort(function (a, b) { return a.t - b.t; });
   notifLog = notifLog.slice(-NOTIF_MAX);
