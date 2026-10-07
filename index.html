@@ -762,67 +762,300 @@ body.no-storage #storage-group, body.no-storage #bins-box { display: none !impor
 #manage-storage-btn { width: 100%; margin-top: 10px; }
 #tools-box > .filters-panel, #alerts-details > .switch-card { margin-top: 8px; }
 .goal-row { grid-template-columns: 1fr 40px; }
+/* ================= New layout (matches the design boards E to K) ================= */
 
-/* ---- v6: bottom tab bar (Home, Stock, Money, Plan) ---- */
-:root { --bar-h: 68px; }
-body { padding: 0 12px calc(var(--bar-h) + 28px + env(safe-area-inset-bottom)); }
-.top { gap: 8px; padding-top: calc(10px + env(safe-area-inset-top)); padding-bottom: 6px; position: sticky; top: 0; z-index: 25; background: var(--bg); }
+/* The default light look is the sage green from the boards. "Classic" is still a choice in Settings > Look. */
+:root {
+  --bg: #f3f5ef; --surface: #ffffff; --surface-2: #e4e9df; --summary-bg: #e4e9df; --tint: #e0efe6;
+  --text: #1f2a22; --muted: #5d6b60; --line: #9aab9d; --line-soft: #cdd6c9;
+  --accent-text: #2f6b4f; --accent-line: #2f6b4f; --primary: #2f6b4f; --profit: #2f6b4f;
+  --info-bg: #e0efe6; --info-text: #1f4d37; --listed-bg: #e8f0fb; --listed-edge: #2f78b8;
+  --thumb-bg: #d5dccf; --track: #9aab9d;
+  --bar-h: 68px;
+}
+:root[data-theme="light"]:not([data-look]) {
+  --bg: #ffffff; --surface: #ffffff; --surface-2: #f4f6f8; --summary-bg: #eef0f3; --tint: #eef4fb;
+  --text: #1f2328; --muted: #484f58; --line: #8c959f; --line-soft: #d5dae0;
+  --accent-text: #0b5cad; --accent-line: #0b5cad; --primary: #0b5cad; --profit: #17692f;
+  --info-bg: #e8f3ff; --info-text: #0b3d75; --listed-bg: #e0efff; --listed-edge: #2f78b8; --thumb-bg: #d9d9d9; --track: #8c959f;
+}
+:root[data-theme="light"][data-look="sage"] {
+  --bg: #f3f5ef; --surface: #ffffff; --surface-2: #e4e9df; --summary-bg: #e4e9df; --tint: #e0efe6;
+  --text: #1f2a22; --muted: #5d6b60; --line: #9aab9d; --line-soft: #cdd6c9;
+  --accent-text: #2f6b4f; --accent-line: #2f6b4f; --primary: #2f6b4f; --profit: #2f6b4f;
+  --info-bg: #e0efe6; --info-text: #1f4d37; --listed-bg: #e8f0fb; --listed-edge: #2f78b8; --thumb-bg: #d5dccf; --track: #9aab9d;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]):not([data-look]) { --primary: #3f8a68; --accent-text: #8fd0ae; --accent-line: #6fbf97; --tint: #1d3a2c; }
+}
+
+body { padding: 0 16px calc(var(--bar-h) + 28px + env(safe-area-inset-bottom)); }
+svg { flex: none; }
+
+/* ---- top bar ---- */
+.top { gap: 8px; padding-top: calc(12px + env(safe-area-inset-top)); padding-bottom: 8px; position: sticky; top: 0; z-index: 25; background: var(--bg); align-items: center; }
 .top-text { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 1px; }
 #app-title { font-size: 13px; font-weight: 600; color: var(--muted); cursor: default; overflow-wrap: anywhere; }
-#view-title { font-size: 26px; font-weight: 800; letter-spacing: -0.02em; }
+#view-title { margin: 0; font-size: 26px; font-weight: 800; letter-spacing: -0.02em; }
 #settings-label { display: none; }
-#tools-button, #top-search { flex: none; width: 44px; min-height: 44px; height: 44px; padding: 0; margin-left: 0; display: inline-flex; align-items: center; justify-content: center; background: var(--surface); border: 1px solid var(--line); border-radius: 12px; color: var(--text); }
-#top-search svg { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+#tools-button, #top-search, .icon-btn { flex: none; width: 44px; min-height: 44px; height: 44px; padding: 0; margin-left: 0; display: inline-flex; align-items: center; justify-content: center; background: var(--surface); border: 1px solid var(--line-soft); border-radius: 12px; color: var(--text); }
+#top-search svg, .icon-btn svg { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
 #tools-button .ico { width: 20px; height: 20px; }
 body:not([data-view="home"]) #top-search { display: none; }
 
-/* Home */
+/* ---- shared pieces ---- */
 .view > :first-child { margin-top: 12px; }
-#view-home #ship-alert-row { margin-top: 12px; }
-#ship-alert { min-height: 48px; border-radius: 12px; white-space: normal; }
-#ship-alert-x { min-height: 48px; border-radius: 12px; }
-#view-home #reduce-banner { margin-top: 12px; border-radius: 14px; }
-.msec { margin-top: 12px; }
-.msec-title { margin: 0 2px 6px; font-size: 12px; font-weight: 800; letter-spacing: 0.05em; text-transform: uppercase; color: var(--muted); }
-.msec .dropdown-panel { position: static; max-height: none; overflow: visible; box-shadow: none; border: 1px solid var(--line-soft); border-radius: 14px; padding: 8px 12px 12px; }
-#view-home .summary { position: static; display: flex; gap: 8px; align-items: stretch; background: transparent; border: 0; box-shadow: none; padding: 0; margin: 12px 0 0; transform: none !important; }
-#view-home .summary.empty { display: none; }
-.summary .stats { flex: 1; min-width: 0; display: flex; }
-.summary .stat.main { flex: 1; min-width: 0; justify-content: center; background: var(--primary); border-radius: 14px; padding: 10px 14px; cursor: pointer; }
-.summary .stat:not(.main), .summary .stat-buttons { display: none; }
-.summary .stat-label, .summary .balance { color: #ffffff; }
-.summary .main .stat-value { font-size: 28px; }
-#goals-mini { flex: 1; min-width: 0; background: var(--surface); border: 1px solid var(--line-soft); border-radius: 14px; padding: 10px 12px; margin: 0; align-self: stretch; }
-#view-home .banner { margin-top: 12px; }
+.msec { margin-top: 18px; }
+.msec-title { margin: 0 2px 8px; font-size: 12px; font-weight: 800; letter-spacing: 0.05em; text-transform: uppercase; color: var(--muted); }
+.sec-head { display: flex; align-items: baseline; justify-content: space-between; gap: 8px; margin-top: 18px; }
+.sec-head .msec-title { margin-bottom: 8px; }
+.sec-note { font-size: 13px; color: var(--muted); }
+.sec-link { min-height: 32px; padding: 0 2px; border: 0; background: transparent; color: var(--accent-text); font-size: 13px; font-weight: 800; }
+.msec .dropdown-panel { position: static; max-height: none; overflow: visible; box-shadow: none; background: var(--surface); border: 1px solid var(--line-soft); border-radius: 14px; padding: 12px; }
+.dash-btn { width: 100%; min-height: 48px; margin-top: 10px; border: 1.5px dashed var(--line); border-radius: 14px; background: transparent; color: var(--accent-text); font-size: 14px; font-weight: 800; }
+.seg { display: flex; gap: 4px; margin: 12px 0 0; padding: 4px; background: var(--surface-2); border-radius: 12px; }
+.seg button { flex: 1; min-width: 0; min-height: 40px; padding: 0 6px; border: 0; border-radius: 9px; background: transparent; color: var(--muted); font-size: 14px; font-weight: 700; display: flex; align-items: center; justify-content: center; gap: 6px; }
+.seg button:first-child, .seg button:last-child { border-radius: 9px; }
+.seg button.on { background: var(--surface); color: var(--text); font-weight: 800; box-shadow: 0 1px 3px rgba(31, 42, 34, 0.14); border: 0; }
+.cnt { padding: 1px 7px; border-radius: 999px; font-size: 12px; font-weight: 800; background: var(--tint); color: var(--info-text); }
+.cnt.progress { background: #fdf0c4; color: #6b4a00; }
+.cnt.sold { background: #d7f0dd; color: #17692f; }
+.cnt.listed { background: #dbeafe; color: #1e4f8c; }
 
-/* Bottom bar */
+/* ---- Home ---- */
+#home-alerts { display: flex; flex-direction: column; gap: 8px; }
+.acard { position: relative; display: flex; align-items: center; gap: 12px; padding: 12px; background: var(--surface); border: 1px solid; border-left-width: 5px; border-radius: 14px; }
+.acard.ship { border-color: #f0b8b0; border-left-color: #d92d20; }
+.acard.price { border-color: #e6d29a; border-left-color: #c9a13a; }
+.acard-text { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px; cursor: pointer; padding-right: 16px; }
+.acard-label { font-size: 12px; font-weight: 800; letter-spacing: 0.05em; text-transform: uppercase; }
+.acard.ship .acard-label { color: #b42318; }
+.acard.price .acard-label { color: #6b4a00; }
+.acard-name { font-weight: 700; overflow-wrap: anywhere; }
+.acard-sub { font-size: 13px; color: var(--muted); }
+.acard-btn { flex: none; min-height: 44px; padding: 0 14px; border-radius: 12px; font-size: 14px; font-weight: 700; }
+.acard.ship .acard-btn { background: #d92d20; border-color: #d92d20; color: #ffffff; }
+.acard.price .acard-btn { background: #fff8e1; border: 1.5px solid #c9a13a; color: #6b4a00; }
+.acard-x { position: absolute; top: 2px; right: 2px; min-height: 32px; width: 32px; padding: 0; border: 0; background: transparent; color: var(--muted); font-size: 18px; line-height: 1; }
+#legacy, #legacy * { display: none !important; }
+#pipeline-panel { padding: 14px 10px 12px; }
+.pipe { padding: 2px 0 8px; }
+.pipe-step::before { top: 22px; height: 3px; }
+.pipe-node { width: 36px; height: 36px; background: var(--surface); border: 2px solid var(--accent-line); color: var(--accent-text); font-size: 15px; }
+.pipe-step.next .pipe-node { background: var(--primary); border-color: var(--primary); color: #ffffff; }
+.pipe-step.wait .pipe-node { background: var(--surface-2); border-color: var(--line); color: var(--text); }
+.pipe-step.ok .pipe-node { background: var(--surface); border-color: var(--accent-line); color: var(--accent-text); }
+.pipe-step.ok::before { background: var(--line-soft); }
+.pipe-label { font-size: 13px; font-weight: 700; line-height: 1.15; }
+.pipe-time { font-size: 12px; }
+.pipe-total { display: flex; align-items: center; justify-content: center; gap: 8px; margin: 6px 0 0; padding: 0; background: transparent; font-size: 14px; color: var(--accent-text); }
+.pipe-total b { font-weight: 800; }
+.pipe-total .ico { width: 16px; height: 16px; }
+#summary-box { position: static; display: flex; gap: 8px; align-items: stretch; background: transparent; border: 0; box-shadow: none; padding: 0; margin: 12px 0 0; transform: none !important; }
+#summary-box.empty { display: none; }
+#summary-box .stats { flex: 1; min-width: 0; display: flex; }
+#summary-box .stat.main { flex: 1; min-width: 0; justify-content: center; background: var(--primary); border-radius: 14px; padding: 10px 14px; cursor: pointer; display: flex; flex-direction: column; gap: 2px; }
+#summary-box .stat:not(.main), #summary-box .stat-buttons { display: none; }
+#summary-box .stat-label, #summary-box .balance { color: #ffffff; }
+#summary-box .stat-label { font-size: 13px; opacity: 0.9; }
+#summary-box .main .stat-value { font-size: 26px; font-weight: 800; }
+#goals-mini { flex: 1; min-width: 0; background: var(--surface); border: 1px solid var(--line-soft); border-radius: 14px; padding: 10px 12px; margin: 0; cursor: pointer; flex-direction: column; justify-content: center; gap: 8px; }
+#goals-mini[style*="block"] { display: flex !important; }
+#mini-text { font-size: 14px; font-weight: 600; color: var(--muted); }
+progress { -webkit-appearance: none; appearance: none; border: 0; border-radius: 5px; background: var(--surface-2); overflow: hidden; }
+progress::-webkit-progress-bar { background: var(--surface-2); border-radius: 5px; }
+progress::-webkit-progress-value { background: var(--primary); border-radius: 5px; }
+progress::-moz-progress-bar { background: var(--primary); border-radius: 5px; }
+#goals-mini progress { height: 8px; }
+.trow { display: flex; align-items: center; gap: 12px; margin-top: 8px; padding: 10px 12px; min-height: 60px; background: var(--surface); border: 1px solid var(--line-soft); border-radius: 14px; }
+.trow input[type="checkbox"] { -webkit-appearance: none; appearance: none; flex: none; width: 28px; height: 28px; min-height: 28px; margin: 0; padding: 0; border: 2px solid var(--line); border-radius: 8px; background: var(--surface); display: grid; place-items: center; cursor: pointer; }
+.trow input[type="checkbox"]:checked { background: var(--primary); border-color: var(--primary); }
+.trow input[type="checkbox"]:checked::after { content: ""; width: 7px; height: 13px; margin-top: -3px; border: solid #ffffff; border-width: 0 3px 3px 0; transform: rotate(45deg); }
+.trow-text { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 1px; cursor: pointer; }
+.trow-title { font-weight: 800; overflow-wrap: anywhere; }
+.trow-sub { font-size: 13px; color: var(--muted); }
+.trow.done .trow-title { text-decoration: line-through; color: var(--muted); }
+.trow-icon { flex: none; width: 28px; height: 28px; border-radius: 8px; background: var(--tint); color: var(--accent-text); display: grid; place-items: center; font-weight: 800; font-size: 14px; }
+.todo-empty { padding: 4px 2px; font-size: 14px; color: var(--muted); }
+#view-home .banner { margin-top: 18px; }
+
+/* ---- bottom bar ---- */
 #tabbar { position: fixed; left: 0; right: 0; bottom: 0; z-index: 35; background: var(--surface); border-top: 1px solid var(--line-soft); padding-bottom: env(safe-area-inset-bottom); }
 .tabbar-in { max-width: 760px; margin: 0 auto; height: var(--bar-h); display: flex; align-items: center; justify-content: space-around; padding: 0 8px; }
 .bar-tab { flex: 1; min-width: 0; min-height: 56px; padding: 0; border: 0; border-radius: 12px; background: transparent; color: var(--muted); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; font-size: 12px; font-weight: 600; }
 .bar-tab svg { width: 24px; height: 24px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
 .bar-tab.on { color: var(--accent-text); font-weight: 800; }
-.tab-add { flex: none; width: 58px; height: 58px; min-height: 58px; margin: -22px 8px 0; padding: 0; border-radius: 50%; border: 4px solid var(--bg); background: var(--primary); color: #ffffff; display: flex; align-items: center; justify-content: center; box-shadow: 0 6px 16px rgba(0, 0, 0, 0.3); }
+.tab-add { flex: none; width: 58px; height: 58px; min-height: 58px; margin: -22px 8px 0; padding: 0; border-radius: 50%; border: 4px solid var(--bg); background: var(--primary); color: #ffffff; display: flex; align-items: center; justify-content: center; box-shadow: 0 6px 16px rgba(47, 107, 79, 0.4); }
 .tab-add svg { width: 26px; height: 26px; fill: none; stroke: currentColor; stroke-width: 2.6; stroke-linecap: round; }
 #add-item-button { display: none !important; }
 #toast, #undo-bar { bottom: calc(var(--bar-h) + 24px + env(safe-area-inset-bottom)); }
 #scroll-top { bottom: calc(var(--bar-h) + 16px + env(safe-area-inset-bottom)); }
 
-/* Plan and Sales report open as full screens above the bar */
-#planner-modal, #sales-modal { top: calc(56px + env(safe-area-inset-top)); bottom: calc(var(--bar-h) + env(safe-area-inset-bottom)); z-index: 20; background: var(--bg); align-items: stretch; }
-#planner-modal .modal-panel, #sales-modal .modal-panel { max-height: none; height: 100%; min-height: 0; max-width: 760px; margin: 0 auto; border-radius: 0; background: var(--bg); }
-#planner-modal .tools-head { display: none; }
-#planner-modal .modal-panel { padding-top: 4px; }
-
-/* Stock and Money */
-#stock-seg { margin: 12px 0 0; }
-#view-stock .search-row { margin-top: 12px; }
+/* ---- Stock: items ---- */
+#view-stock .search-row { margin-top: 12px; display: flex; gap: 8px; }
+#search { flex: 1; min-width: 0; min-height: 46px; border: 1px solid var(--line-soft); border-radius: 12px; padding-left: 40px; background: var(--surface) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%235d6b60' stroke-width='2' stroke-linecap='round'%3E%3Ccircle cx='11' cy='11' r='7'/%3E%3Cpath d='M16 16l5 5'/%3E%3C/svg%3E") no-repeat 12px center / 18px; }
+#filters-btn { flex: none; min-height: 46px; padding: 0 16px; border: 1px solid var(--line-soft); border-radius: 12px; background: var(--surface); color: var(--accent-text); font-size: 14px; font-weight: 800; }
 #view-stock .filters-box { margin-top: 8px; }
-#reduce-banner { margin-top: 0; }
-.row-btn { width: 100%; margin-top: 16px; min-height: 60px; padding: 8px 14px; display: flex; flex-direction: column; align-items: flex-start; justify-content: center; gap: 1px; text-align: left; border-radius: 14px; background: var(--surface); }
-.row-btn > span:first-child { font-size: 16px; font-weight: 800; color: var(--accent-text); }
-.row-btn .row-sub { font-size: 13px; color: var(--muted); }
-#view-money .msec { margin-top: 16px; }
-#view-money .bal-panel-row .big { font-size: 30px; }
+#view-stock .filters-box > summary { display: none; }
+#status-filter-label { display: none; }
+.tabs3 { margin-top: 12px; }
+.tabs3 button { font-size: 13px; }
+.tabs3.searching button.on { background: transparent; box-shadow: none; color: var(--muted); font-weight: 700; }
+#list { margin-top: 12px; display: flex; flex-direction: column; gap: 8px; }
+#list-count { margin-top: 8px; }
+.srow-card { background: var(--surface); border: 1px solid var(--line-soft); border-radius: 14px; overflow: hidden; }
+.srow-card.row-overdue { border-color: #f0b8b0; border-left: 5px solid #d92d20; }
+.srow-card.row-shipped { opacity: 0.8; }
+.srow { display: flex; align-items: center; gap: 12px; min-height: 72px; padding: 10px 12px; cursor: pointer; }
+.sthumb { flex: none; width: 52px; height: 52px; border-radius: 10px; object-fit: cover; object-position: top; background: var(--thumb-bg); display: flex; align-items: center; justify-content: center; color: var(--muted); }
+.sthumb .ico { width: 20px; height: 20px; }
+.srow-main { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px; }
+.srow-name { font-weight: 800; font-size: 15px; overflow-wrap: anywhere; }
+.srow-meta { font-size: 13px; color: var(--muted); font-variant-numeric: tabular-nums; overflow-wrap: anywhere; }
+.srow-extra { font-size: 12px; color: var(--muted); }
+.srow .badge { margin-left: 6px; font-size: 11px; padding: 0 7px; vertical-align: 1px; }
+.slot-chip { flex: none; padding: 5px 9px; border: 0; min-height: 0; border-radius: 8px; background: var(--surface-2); color: var(--accent-text); font-size: 13px; font-weight: 800; letter-spacing: 0.03em; }
+.srow-detail { padding: 0 12px 12px; border-top: 1px solid var(--line-soft); }
+.srow-detail .small { margin-top: 6px; }
+.srow-detail .card-price { font-weight: 700; margin-top: 8px; }
+.srow-detail .card-profit { font-weight: 800; color: var(--profit); }
+.srow-detail .card-actions { margin-top: 12px; }
+
+/* ---- Stock: storage ---- */
+.slot-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px; }
+.slot-cell { min-height: 66px; padding: 8px; border: 1.5px dashed var(--line); border-radius: 12px; background: transparent; color: var(--muted); display: flex; flex-direction: column; align-items: flex-start; justify-content: flex-start; gap: 6px; text-align: left; }
+.slot-code { font-size: 14px; font-weight: 800; letter-spacing: 0.02em; }
+.slot-name { max-width: 100%; font-size: 12px; font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.slot-cell.empty .slot-name { font-weight: 400; }
+.slot-cell.full, .slot-cell.sold { border: 1px solid #a9c9b7; background: var(--tint); color: var(--text); }
+.slot-cell.full .slot-code { color: var(--accent-text); }
+.slot-cell.sold { border-color: #e6d29a; background: var(--warn-bg); }
+.slot-cell.sel { border: 2px solid var(--text); }
+.slot-detail { display: flex; align-items: center; gap: 12px; margin-top: 14px; padding: 12px; background: var(--surface); border: 1px solid var(--line-soft); border-radius: 14px; }
+.slot-detail-text { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 1px; cursor: pointer; }
+.slot-detail-code { font-size: 12px; font-weight: 800; color: var(--accent-text); letter-spacing: 0.04em; }
+.slot-detail-name { font-weight: 800; overflow-wrap: anywhere; }
+.slot-detail-btns { flex: none; display: flex; flex-direction: column; gap: 6px; }
+.slot-detail-btns button { min-height: 36px; padding: 0 14px; border: 0; border-radius: 10px; background: var(--surface-2); color: var(--accent-text); font-size: 13px; font-weight: 800; }
+.nospot { margin-top: 14px; padding: 12px; background: var(--warn-bg2); border: 1px solid #e6d29a; border-radius: 14px; display: flex; flex-direction: column; gap: 8px; }
+.nospot-label { font-size: 12px; font-weight: 800; letter-spacing: 0.05em; text-transform: uppercase; color: var(--warn-text); }
+.nospot-row { display: flex; align-items: center; gap: 10px; }
+.nospot-row b { flex: 1; min-width: 0; overflow-wrap: anywhere; }
+.nospot-row button { flex: none; min-height: 40px; padding: 0 14px; border: 1.5px solid var(--accent-line); border-radius: 10px; background: var(--surface); color: var(--accent-text); font-size: 13px; font-weight: 800; }
+.slot-pick { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px; margin: 8px 0 4px; }
+.slot-pick button { min-height: 44px; padding: 0; font-size: 14px; font-weight: 800; }
+.slot-links { display: flex; justify-content: center; margin-top: 10px; }
+
+/* ---- Money ---- */
+.bal-card { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 16px; border-radius: 16px; background: var(--primary); color: #ffffff; }
+.bal-text { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.bal-label { font-size: 13px; opacity: 0.9; }
+.bal-big { font-size: 34px; font-weight: 800; letter-spacing: -0.02em; font-variant-numeric: tabular-nums; }
+.bal-btn { flex: none; min-height: 46px; padding: 0 22px; border: 0; border-radius: 999px; background: #ffffff; color: var(--accent-text); font-size: 15px; font-weight: 800; }
+#inv-wrap { margin-top: 10px; }
+.inv-card { display: flex; flex-direction: column; gap: 10px; padding: 12px 14px; background: var(--surface); border: 1px solid var(--line-soft); border-radius: 14px; }
+.inv-top { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+.inv-title { font-weight: 800; overflow-wrap: anywhere; }
+.inv-sub { font-size: 13px; color: var(--muted); font-variant-numeric: tabular-nums; }
+.inv-btn { flex: none; min-height: 40px; padding: 0 16px; border: 1.5px solid var(--accent-line); border-radius: 10px; background: var(--surface); color: var(--accent-text); font-size: 14px; font-weight: 800; }
+.inv-bar { height: 8px; border-radius: 4px; background: var(--surface-2); overflow: hidden; }
+.inv-bar i { display: block; height: 100%; background: var(--primary); }
+#goals-box:not(.shown) { display: none; }
+#goals-box { margin-top: 10px; }
+#sales-section > .seg { margin-top: 0; }
+.kpis { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; margin-top: 10px; }
+.kpi { padding: 10px 12px; background: var(--surface); border: 1px solid var(--line-soft); border-radius: 14px; display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.kpi span { font-size: 13px; color: var(--muted); }
+.kpi b { font-size: 22px; font-weight: 800; font-variant-numeric: tabular-nums; overflow-wrap: anywhere; }
+.kpi.profit b { color: var(--profit); }
+.chart-card { margin-top: 10px; padding: 14px; background: var(--surface); border: 1px solid var(--line-soft); border-radius: 14px; }
+.chart-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+.chart-head b { font-size: 16px; }
+.chip-select { flex: none; min-height: 34px; padding: 0 10px; border: 1.5px solid var(--accent-line); border-radius: 10px; background: var(--surface); color: var(--accent-text); font-size: 13px; font-weight: 800; }
+.bars { display: flex; align-items: flex-end; gap: 10px; height: 150px; margin-top: 10px; border-bottom: 1px solid var(--line-soft); }
+.bcol { flex: 1; min-width: 0; height: 100%; display: flex; flex-direction: column; justify-content: flex-end; align-items: center; gap: 4px; }
+.bcol .bv { font-size: 13px; font-weight: 800; font-variant-numeric: tabular-nums; }
+.bcol .bb { width: 100%; max-width: 64px; min-height: 4px; border-radius: 6px 6px 2px 2px; background: var(--primary); }
+.bcol.cur .bb { opacity: 0.6; }
+.bcol .bb.neg { background: var(--danger); }
+.bx { display: flex; gap: 10px; margin-top: 6px; }
+.bx span { flex: 1; min-width: 0; text-align: center; font-size: 12px; color: var(--muted); }
+.row-btn { width: 100%; margin-top: 10px; min-height: 52px; padding: 8px 14px; display: flex; flex-direction: row; align-items: center; justify-content: space-between; gap: 8px; text-align: left; border-radius: 14px; background: var(--surface); border: 1px solid var(--line-soft); }
+.row-btn > span:first-child { font-size: 14px; font-weight: 800; color: var(--accent-text); }
+.row-btn .chev { font-size: 22px; color: var(--muted); line-height: 1; }
+.plat-row { width: 100%; min-height: 64px; margin-top: 8px; padding: 10px 14px; display: flex; align-items: center; gap: 12px; text-align: left; background: var(--surface); border: 1px solid var(--line-soft); border-radius: 14px; color: var(--text); }
+.plat-ico { flex: none; width: 40px; height: 40px; border-radius: 10px; background: var(--tint); color: var(--accent-text); display: grid; place-items: center; }
+.plat-ico svg { width: 22px; height: 22px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.plat-text { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 1px; }
+.plat-text b { font-size: 16px; }
+.plat-text span { font-size: 13px; color: var(--muted); font-variant-numeric: tabular-nums; }
+.plat-amt { flex: none; font-size: 18px; font-weight: 800; font-variant-numeric: tabular-nums; }
+
+/* sales report window (full screen above the bar) */
+#sales-modal { top: calc(64px + env(safe-area-inset-top)); bottom: calc(var(--bar-h) + env(safe-area-inset-bottom)); z-index: 20; background: var(--bg); align-items: stretch; }
+#sales-modal .modal-panel { max-height: none; height: 100%; min-height: 0; max-width: 760px; margin: 0 auto; border-radius: 0; background: var(--bg); }
+
+/* ---- Plan ---- */
+.wk-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-top: 4px; }
+.wk-head .msec-title { margin: 0; }
+.wk-nav { display: flex; gap: 4px; }
+.wk-nav button { min-height: 30px; width: 34px; padding: 0; border: 1px solid var(--line-soft); border-radius: 9px; background: var(--surface); color: var(--accent-text); font-size: 18px; line-height: 1; }
+.wk { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 6px; margin-top: 8px; }
+.wk-day { min-height: 64px; padding: 6px 0 4px; border: 1px solid var(--line-soft); border-radius: 12px; background: var(--surface); color: var(--text); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; }
+.wk-day .dn { font-size: 12px; font-weight: 700; }
+.wk-day .dd { font-size: 20px; font-weight: 800; line-height: 1.1; }
+.wk-day .dot { width: 6px; height: 6px; border-radius: 50%; background: transparent; }
+.wk-day.has .dot { background: #c9a13a; }
+.wk-day.today { border-color: var(--accent-line); }
+.wk-day.sel { background: var(--primary); border-color: var(--primary); color: #ffffff; }
+.wk-day.sel.has .dot { background: #f1c75b; }
+.time-card { display: flex; align-items: center; gap: 12px; padding: 12px 14px; background: var(--surface); border: 1px solid var(--line-soft); border-radius: 14px; }
+.time-text { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px; }
+.time-text b { font-size: 16px; }
+.time-text span { font-size: 13px; color: var(--muted); }
+.time-btn { flex: none; min-height: 46px; padding: 0 18px; border: 0; border-radius: 12px; background: var(--primary); color: #ffffff; font-size: 14px; font-weight: 800; }
+#timer-clock { font-size: 22px; font-weight: 800; color: var(--accent-text); font-variant-numeric: tabular-nums; }
+#plan-more .planner-sec { margin-top: 8px; background: var(--surface); border: 1px solid var(--line-soft); border-radius: 14px; }
+#plan-more .planner-sec > summary { min-height: 48px; display: flex; align-items: center; padding: 0 14px; font-weight: 800; color: var(--accent-text); }
+.clear-done { margin-top: 10px; }
+
+/* ---- Settings (full screen, a list of pages) ---- */
+#tools-modal { top: 0; bottom: 0; z-index: 60; background: var(--bg); align-items: stretch; }
+#tools-modal .modal-panel.tools-panel { max-height: none; height: 100%; min-height: 0; max-width: 760px; margin: 0 auto; border-radius: 0; background: var(--bg); padding: calc(12px + env(safe-area-inset-top)) 16px calc(28px + env(safe-area-inset-bottom)); }
+#tools-modal .tools-head { position: static; margin: 0 0 12px; padding: 0; background: transparent; border: 0; justify-content: flex-start; gap: 12px; }
+#tools-modal .tools-titles { display: flex; flex-direction: column; gap: 0; min-width: 0; }
+#tools-modal .tools-head h3 { font-size: 24px; font-weight: 800; letter-spacing: -0.01em; }
+#tools-modal .tools-group { display: none; }
+#tools-modal .filters-box { margin-top: 0; background: transparent; }
+#tools-modal .filters-box > summary { display: none; }
+#tools-modal .filters-box > .filters-panel, #tools-modal #alerts-details > .switch-card { margin-top: 0; padding: 0; }
+.sgroup { margin: 18px 0 0; }
+.srow2 { width: 100%; min-height: 64px; margin-top: 8px; padding: 10px 14px; display: flex; align-items: center; gap: 12px; text-align: left; background: var(--surface); border: 1px solid var(--line-soft); border-radius: 14px; color: var(--text); }
+.srow2-ico { flex: none; width: 40px; height: 40px; border-radius: 10px; background: var(--tint); color: var(--accent-text); display: grid; place-items: center; }
+.srow2-ico svg { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.srow2-text { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 1px; }
+.srow2-text b { font-size: 16px; }
+.srow2-text span { font-size: 13px; color: var(--muted); }
+.srow2 .chev { flex: none; width: 18px; height: 18px; fill: none; stroke: var(--muted); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.swatches { flex: none; display: flex; gap: 6px; }
+.swatches i { display: block; width: 20px; height: 20px; border-radius: 50%; border: 2px solid transparent; }
+.swatches i.on { border-color: var(--text); }
+.swatch-row { display: flex; gap: 12px; margin: 4px 0 12px; }
+.swatch-row button { width: 40px; height: 40px; min-height: 40px; padding: 0; border-radius: 50%; border: 3px solid transparent; }
+.swatch-row button.on { border-color: var(--text); }
+#feature-switches.switch-card { background: transparent; border: 0; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 8px; }
+#feature-switches .switch-row { padding: 12px 14px; background: var(--surface); border: 1px solid var(--line-soft); border-radius: 14px; }
+#feature-switches .switch-row:first-child { border-top: 1px solid var(--line-soft); }
+#feature-switches .switch-text b { font-size: 16px; }
+#feature-switches .switch-text span { font-size: 13px; }
+#feature-switches .how-to { margin: 0; }
+#tools-modal #alerts-details > .switch-card { background: var(--surface); }
+
+/* the old planner window is replaced by the Plan tab */
+#planner-modal { display: none !important; }
+
+/* time log sheet */
+#scan-body .filters-panel button.primary { display: block; width: 100%; margin-top: 8px; }
 
 </style>
 </head>
@@ -836,33 +1069,45 @@ body:not([data-view="home"]) #top-search { display: none; }
     <button type="button" id="tools-button" aria-label="Settings"><span id="settings-label">Settings</span></button>
   </div>
 
+  <!-- places the old screens wrote into; they stay here (hidden) so nothing breaks -->
+  <div id="legacy" hidden>
+    <div id="ship-alert-row"><button type="button" id="ship-alert"></button><button type="button" id="ship-alert-x" aria-label="Dismiss the shipping alert">Dismiss</button></div>
+    <div id="reduce-banner"></div>
+    <section id="bins-drop"><div id="bin-chips"></div><button type="button" id="manage-storage-btn">Manage storage and labels</button></section>
+    <div id="balance-by-platform"></div>
+    <span id="total2"></span>
+    <div id="platforms-drop-panel"></div>
+  </div>
+
   <!-- HOME: what needs doing today -->
   <section class="view" id="view-home" aria-label="Today">
-    <div id="ship-alert-row"><button type="button" id="ship-alert"></button><button type="button" id="ship-alert-x" aria-label="Dismiss the shipping alert">Dismiss</button></div>
-  <div id="reduce-banner"></div>
-      <section id="pipeline-box" class="msec">
-        <div class="dropdown-panel" id="pipeline-panel"></div>
-      </section>
-  <div class="summary" id="summary-box">
-    <div class="stats">
-      <div class="stat main">
-        <span class="stat-label">Available balance</span>
-        <span class="stat-value balance">$<span id="balance">0.00</span></span>
-        <div class="stat-buttons">
-          <button type="button" id="withdraw-button" class="withdraw-btn">Withdraw</button>
+    <div id="home-alerts"></div>
+    <section id="pipeline-box" class="msec">
+      <div class="sec-head"><h2 class="msec-title">Where your items are</h2><span class="sec-note">Tap a step</span></div>
+      <div class="dropdown-panel" id="pipeline-panel"></div>
+    </section>
+    <div class="summary" id="summary-box">
+      <div class="stats">
+        <div class="stat main" id="home-balance-tile" role="button" tabindex="0" aria-label="Balance. Tap to open Money.">
+          <span class="stat-label">Balance</span>
+          <span class="stat-value balance">$<span id="balance">0.00</span></span>
+          <div class="stat-buttons"><button type="button" id="withdraw-button" class="withdraw-btn">Withdraw</button></div>
+        </div>
+        <div class="stat">
+          <span class="stat-label">Total profit</span>
+          <span class="stat-value profit">$<span id="total">0.00</span></span>
         </div>
       </div>
-      <div class="stat">
-        <span class="stat-label">Total profit</span>
-        <span class="stat-value profit">$<span id="total">0.00</span></span>
+      <div id="goals-mini" role="button" tabindex="0" aria-label="Investment progress. Tap to open Money.">
+        <div id="mini-text" class="small"></div>
+        <progress id="mini-bar" value="0" max="1"></progress>
       </div>
     </div>
-
-    <div id="goals-mini">
-      <progress id="mini-bar" value="0" max="1"></progress>
-      <div id="mini-text" class="small"></div>
-    </div>
-  </div>
+    <section id="home-todo" class="msec">
+      <div class="sec-head"><h2 class="msec-title">To do</h2><button type="button" id="home-todo-all" class="sec-link">See all in Plan</button></div>
+      <div id="home-todo-list"></div>
+      <button type="button" id="home-todo-add" class="dash-btn">+ Add a to-do</button>
+    </section>
   <div id="backup-banner" class="banner" hidden>
     <div id="backup-banner-text"></div>
     <div class="banner-buttons">
@@ -893,7 +1138,7 @@ body:not([data-view="home"]) #top-search { display: none; }
         <option>All</option>
       </select>
     </label>
-    <label class="field">Status
+    <label class="field" id="status-filter-label">Status
       <select id="status-filter">
         <option>All</option>
         <option>In progress</option>
@@ -913,35 +1158,28 @@ body:not([data-view="home"]) #top-search { display: none; }
   </div>
     </div>
   </details>
+  <div class="seg tabs3" id="stock-tabs"></div>
   <div id="list"></div>
   <div id="list-count" class="small count-right"></div>
   <div id="shipped-row"><button type="button" id="shipped-toggle" class="small-btn" hidden></button></div>
     </div>
     <div id="stock-storage" hidden>
-    <section id="bins-drop" class="msec">
-      <div class="dropdown-panel" id="bins-drop-panel">
-  <div id="bin-chips"></div>
-  <button type="button" id="manage-storage-btn" class="small-btn">Manage storage and labels</button>
-
-      </div>
-    </section>
+      <div id="storage-view"></div>
     </div>
   </section>
 
-  <!-- MONEY: balance, investments, sales report, platforms -->
+  <!-- MONEY: balance, investments, sales report, platforms and fees -->
   <section class="view" id="view-money" aria-label="Money" hidden>
-    <section id="balance-drop" class="msec">
-      <h2 class="msec-title">Balance</h2>
-      <div class="dropdown-panel">
-        <div class="bal-panel-row"><span>Available balance</span><span class="big">$<span id="balance2">0.00</span></span></div>
-        <div class="bal-panel-row"><span>Total profit</span><span class="big profit">$<span id="total2">0.00</span></span></div>
-        <div class="bal-panel-note">By platform</div>
-        <div id="balance-by-platform"></div>
-        <div class="form-actions"><button type="button" id="withdraw-button2" class="primary">Withdraw</button></div>
+    <section id="balance-drop" class="bal-card">
+      <div class="bal-text">
+        <span class="bal-label">Available balance</span>
+        <span class="bal-big">$<span id="balance2">0.00</span></span>
       </div>
+      <button type="button" id="withdraw-button2" class="bal-btn">Withdraw</button>
     </section>
+    <div id="inv-wrap">
+      <div id="inv-card"></div>
       <section id="goals-box" class="msec">
-      <h2 class="msec-title">Investments</h2>
         <div class="dropdown-panel">
           <div class="goals-head">
             <div id="overall-text">No investments in progress</div>
@@ -967,11 +1205,27 @@ body:not([data-view="home"]) #top-search { display: none; }
           </details>
         </div>
       </section>
-    <button type="button" id="sales-button" class="row-btn"><span>Sales report</span><span class="row-sub">Weeks, lots, time and efficiency</span></button>
-    <section id="platforms-drop" class="msec">
-      <h2 class="msec-title">Platforms</h2>
-      <div class="dropdown-panel" id="platforms-drop-panel"></div>
+    </div>
+    <section id="sales-section" class="msec">
+      <h2 class="msec-title">Sales report</h2>
+      <div class="seg" id="sales-period">
+        <button type="button" data-p="week">Week</button>
+        <button type="button" data-p="month" class="on">Month</button>
+        <button type="button" data-p="all">All time</button>
+      </div>
+      <div class="kpis" id="sales-kpis"></div>
+      <div class="chart-card" id="sales-chart"></div>
+      <button type="button" id="sales-button" class="row-btn"><span>Every week, lot and the time you spent</span><span class="chev">&#8250;</span></button>
     </section>
+    <section id="platforms-drop" class="msec">
+      <h2 class="msec-title">Platforms and fees</h2>
+      <div id="money-platforms"></div>
+    </section>
+  </section>
+
+  <!-- PLAN: your week -->
+  <section class="view" id="view-plan" aria-label="Plan" hidden>
+    <div id="plan-view"></div>
   </section>
 
   <div hidden><button type="button" id="planner-button" tabindex="-1">Planner</button></div>
@@ -1146,15 +1400,9 @@ body:not([data-view="home"]) #top-search { display: none; }
 
   <div id="tools-modal" hidden>
     <div class="modal-panel tools-panel">
-      <div class="tools-head"><h3>Settings</h3><button type="button" id="tools-close" class="small-btn">Close</button></div>
-  <div class="tools-group">Features you use</div>
-  <details class="filters-box" id="tools-box">
-    <summary>Turn features on or off</summary>
-    <div class="filters-panel">
-      <div class="small tools-intro">Turn on the features you use. Each one gets its own spot in the bottom bar or on Home.</div>
-      <div class="switch-card" id="feature-switches"></div>
-    </div>
-  </details>
+      <div class="tools-head"><button type="button" id="tools-close" class="icon-btn" aria-label="Back"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg></button><div class="tools-titles"><h3 id="tools-title">Settings</h3><span id="tools-sub" class="small" hidden></span></div></div>
+      <div id="settings-home"></div>
+  <div id="tools-box" class="filters-box"><div class="switch-card" id="feature-switches"></div></div>
   <div class="tools-group" id="storage-group">Storage</div>
   <details class="filters-box" id="bins-box">
     <summary id="bins-summary">Manage storage and labels</summary>
@@ -1172,9 +1420,9 @@ body:not([data-view="home"]) #top-search { display: none; }
   <details class="filters-box" id="cards-box">
     <summary>What each item shows</summary>
     <div class="filters-panel">
-      <div class="small">Pick the details every item shows. Tap an item to open it and see everything.</div>
+      <div class="small">Every item already shows its picture, platform, price, days and storage spot. Pick extra details to show under the name. Tap an item to open it and see everything.</div>
       <div id="card-switches"></div>
-      <div id="swipe-switch"></div>
+      
       <div class="photo-editor">
         <div class="sub-title">Photo checklist</div>
         <div class="small">The photos you tick off on each item. Add, rename or remove them here.</div>
@@ -1269,6 +1517,18 @@ body:not([data-view="home"]) #top-search { display: none; }
     <div class="filters-panel">
   <div id="backup-section">
     <div id="backup-info" class="small"></div>
+      <div class="export-card">
+        <div class="export-text"><b>Download your items</b><span>Saves a spreadsheet you can open in Excel, Numbers or Google Sheets. Handy for taxes and keeping your own records.</span></div>
+        <div class="export-row">
+          <select id="export-scope" aria-label="What to download">
+            <option value="all">All items</option>
+            <option value="sold">Sold and shipped only</option>
+          </select>
+          <button type="button" id="export-button" class="small-btn"><span class="ico" aria-hidden="true"><svg viewBox="0 0 24 24" focusable="false"><path d="M12 4v11M7 11l5 5 5-5M5 20h14"/></svg></span> Download</button>
+        </div>
+        <div id="export-note" class="small" hidden></div>
+      </div>
+
     <div class="toolbar">
       <button type="button" id="backup-save" class="primary">Save backup</button>
       <button type="button" id="restore-button">Restore from file</button>
@@ -1313,17 +1573,6 @@ body:not([data-view="home"]) #top-search { display: none; }
       <div id="pane-bulk" hidden>
         <div id="bulkhist-summary" class="pane-title">Bulk history</div>
         <div id="bulkhist-body"></div>
-      </div>
-      <div class="export-card">
-        <div class="export-text"><b>Download your items</b><span>Saves a spreadsheet you can open in Excel, Numbers or Google Sheets. Handy for taxes and keeping your own records.</span></div>
-        <div class="export-row">
-          <select id="export-scope" aria-label="What to download">
-            <option value="all">All items</option>
-            <option value="sold">Sold and shipped only</option>
-          </select>
-          <button type="button" id="export-button" class="small-btn"><span class="ico" aria-hidden="true"><svg viewBox="0 0 24 24" focusable="false"><path d="M12 4v11M7 11l5 5 5-5M5 20h14"/></svg></span> Download</button>
-        </div>
-        <div id="export-note" class="small" hidden></div>
       </div>
     </div>
       <div id="sales-extra"></div>
@@ -1498,7 +1747,7 @@ const STATUS_CLASS = { "In progress": "row-progress", "Listed": "row-listed", "S
 const NEXT_STEP = { "In progress": "Mark as Listed", "Listed": "Mark as Sold", "Sold": "Mark as Shipped" };
 // Optional tools (each gets a button) and which extra details every item shows. Both are chosen in Settings.
 const FEATURE_KEYS = ["balance", "summary", "timeline", "investments", "storage", "platforms", "planner", "sales"];
-const CARD_KEYS = ["picture", "price", "profit", "weight", "cost", "storage", "photos", "notes"];
+const CARD_KEYS = ["profit", "weight", "cost", "photos", "notes"];
 function cleanFeatures(obj) {
   const out = {};
   FEATURE_KEYS.forEach(function (k) { out[k] = !obj || obj[k] === undefined ? true : !!obj[k]; });
@@ -1514,8 +1763,7 @@ function loadSetting(key) {
 }
 let features = cleanFeatures(loadSetting("features"));
 let cardFields = cleanCardFields(loadSetting("cardFields"));
-let swipeOn = true;
-try { swipeOn = localStorage.getItem("swipeOn") !== "0"; } catch (e) {}
+let swipeOn = false;
 const openCards = new Set();
 
 // The bin you start with the first time the app opens. You can add bins and change slot counts in the app.
@@ -1792,6 +2040,7 @@ try {
   showShipped = localStorage.getItem("showShipped") === "1";
 } catch (e) {}
 // The filter boxes change these "draft" values. They only become the real filters when you tap Search.
+statusFilter = "All";
 let draftFilter = filter;
 let draftStatus = statusFilter;
 let draftBin = binFilter;
@@ -3577,7 +3826,7 @@ document.getElementById("ship-alert").addEventListener("click", function () {
     save();
     render();
   }
-  const target = document.querySelector(".card.row-overdue");
+  const target = document.querySelector(".srow-card.row-overdue");
   if (target) target.scrollIntoView({ behavior: "smooth", block: "start" });
 });
 
@@ -3735,13 +3984,16 @@ function showCard(item) {
   closeScanModal();
   showView("stock");
   showStockPane("items");
+  stockTab = stockTabOf(item);
+  openCards.add(item);
   if (filter !== "All" || statusFilter !== "All" || binFilter !== "All" || searchText !== "") {
     searchText = ""; document.getElementById("search").value = "";
     setFilters("All", "All", "All");
     save();
     render();
   }
-  const target = document.querySelector('.card[data-idx="' + items.indexOf(item) + '"]');
+  render();
+  const target = document.querySelector('.srow-card[data-idx="' + items.indexOf(item) + '"]');
   if (target) target.scrollIntoView({ behavior: "smooth", block: "center" });
 }
 function openDueSheet() {
@@ -3853,7 +4105,9 @@ new MutationObserver(function () {
   scanBody.setAttribute("data-kind", kind);
 }).observe(scanBody, { childList: true });
 
+var timeSheetOpen = false;
 function closeScanModal() {
+  timeSheetOpen = false;
   const back = stageReturn;
   stageReturn = null;
   bulk = null;
@@ -4934,7 +5188,7 @@ function buildLabel(url, code, sub) {
   return box;
 }
 
-function openLabels(bin) {
+function openLabels(bin, onlySlot) {
   markQrUsed();
   document.getElementById("labels-title").textContent = "Labels for storage " + bin.name;
   const address = appAddress();
@@ -4951,8 +5205,9 @@ function openLabels(bin) {
     .then(function () {
       labelsGrid.innerHTML = "";
       const base = address + "?bin=" + encodeURIComponent(bin.name);
-      labelsGrid.appendChild(buildLabel(base, "LOC " + bin.name, "Scan to see what's inside"));
+      if (!onlySlot) labelsGrid.appendChild(buildLabel(base, "LOC " + bin.name, "Scan to see what's inside"));
       for (let n = 1; n <= bin.slots; n++) {
+        if (onlySlot && n !== onlySlot) continue;
         labelsGrid.appendChild(buildLabel(base + "&slot=" + n, slotLabel(bin.name, n), "Storage " + bin.name + " \u00B7 slot " + n));
       }
     }, function () {
@@ -5435,6 +5690,7 @@ function render() {
     return items[a].name.localeCompare(items[b].name, undefined, { sensitivity: "base", numeric: true }) || a - b;
   });
   let hiddenShipped = 0;
+  const tabCounts = { listed: 0, progress: 0, sold: 0 };
   const groupCount = {};
   items.forEach(function (it) { groupCount[it.status] = (groupCount[it.status] || 0) + 1; });
   let lastGroup = "";
@@ -5453,274 +5709,35 @@ function render() {
     if (shipNow && shipNow.late && !shipDismissed[shipKey(item)]) { overdueNames.push(item.name); overdueItems.push(item); }
 
     if (filter !== "All" && item.site !== filter) return;
-    if (statusFilter !== "All" && item.status !== statusFilter) return;
     if (binFilter === "none" ? item.bin : (binFilter !== "All" && item.bin !== binFilter)) return;
     if (searchText !== "" && [item.name, item.site, item.status, item.bin ? slotLabel(item.bin, item.slot) : ""].join(" ").toLowerCase().indexOf(searchText) === -1) return;
-    if (statusFilter === "All" && item.status === "Shipped" && !showShipped) {
-      hiddenShipped++;
+    const tabKey = stockTabOf(item);
+    if (item.status !== "Shipped" || showShipped) tabCounts[tabKey]++;
+    if (item.status === "Shipped" && !showShipped) {
+      if (searchText === "" && tabKey === stockTab) hiddenShipped++;
       return;
     }
+    if (searchText === "" && tabKey !== stockTab) return;
     shown++;
-    if (item.status !== lastGroup) {
-      lastGroup = item.status;
-      list.appendChild(el("div", "list-group", item.status + " (" + groupCount[item.status] + ")"));
-    }
-
-    // Shipped items shrink to one line (tap to open) unless you are filtering by Shipped.
-    // Sold items still need shipping, so they always show as cards.
-    const showSmall = item.status === "Shipped" && statusFilter !== "Shipped";
-    if (showSmall && !expandedSold.has(item)) {
-      const mini = el("button", "sold-mini shipped");
-      mini.type = "button";
-      mini.appendChild(el("span", "sold-name", item.name));
-      const days = daysToShip(item);
-      const shippedText = days === null ? "Shipped" : (days === 0 ? "shipped same day" : "shipped in " + days + "d");
-      mini.appendChild(el("span", "sold-site", (item.site ? item.site + " \u00B7 " : "") + shippedText));
-      mini.appendChild(el("span", "sold-profit", money(profit)));
-      mini.onclick = function () {
-        expandedSold.add(item);
-        render();
-      };
-      list.appendChild(mini);
-      return;
-    }
-
-    const ship = shipInfo(item);
-    const shipAlerting = !!(ship && ship.late && !shipDismissed[shipKey(item)]);
-    const nextLabel = NEXT_STEP[item.status];
-    // A closed item shows the picture, name, platform and status, plus any details you picked in Settings.
-    // An open item shows every detail that has been filled in.
-    const expanded = openCards.has(item) || showSmall;
-    const wants = function (key) { return expanded || !!cardFields[key]; };
-    const wrap = el("div", "swipe-wrap");
-    const card = el("div", "card " + (STATUS_CLASS[item.status] || "") + (shipAlerting ? " row-overdue" : "") + (expanded ? " open" : " closed"));
-    card.dataset.idx = String(index);
-    const top = el("div", "card-top");
-
-    // Picture (only built when the item is open, or when you chose to show pictures on closed items)
-    if (wants("picture")) {
-      if (item.picture) {
-        const pic = el("img", "thumb");
-        pic.src = item.picture;
-        pic.alt = item.name;
-        pic.loading = "lazy";
-        top.appendChild(pic);
-      } else {
-        const empty = el("div", "thumb empty");
-        empty.appendChild(icon("camera"));
-        empty.setAttribute("aria-label", "No picture");
-        top.appendChild(empty);
-      }
-    }
-
-    const main = el("div", "card-main");
-    main.appendChild(el("div", "card-title", item.name));
-
-    // Platform and status, then the badges
-    const meta = el("div", "card-meta", (item.site ? item.site + " \u00B7 " : "") + item.status);
-    if (shipAlerting) meta.appendChild(el("span", "badge late", "Ship now"));
-    if (!done && isDue(item)) meta.appendChild(el("span", "badge due-badge", "Lower price?"));
-    if (features.storage && wants("storage") && item.bin && item.slot > 0 && item.status !== "Shipped") {
-      const slotBadge = el("span", "badge slot", slotLabel(item.bin, item.slot));
-      slotBadge.title = "Storage " + item.bin + ", slot " + item.slot + " (tap to see it)";
-      slotBadge.onclick = function () {
-        const itemBin = findBin(item.bin);
-        if (itemBin) openSlotView(itemBin, item.slot);
-      };
-      meta.appendChild(slotBadge);
-    }
-    if (wants("photos")) {
-      const count = photoCount(item);
-      if (photosComplete(item)) {
-        const badge = elWithIcon("span", "badge ok", "check", "Photos");
-        badge.title = "All photos taken";
-        meta.appendChild(badge);
-      } else {
-        const badge = el("span", "badge", "Photos " + count + "/" + photoTotal(item));
-        badge.title = "Photos taken";
-        meta.appendChild(badge);
-      }
-    }
-    main.appendChild(meta);
-    if (wants("weight") && item.weight > 0) main.appendChild(el("div", "small", "Weight " + formatWeight(item.weight)));
-    if (wants("cost") && item.cost > 0) main.appendChild(el("div", "small", "Cost " + money(item.cost)));
-
-    // Price, profit, and what is next (lower the price, ship it, how fast it shipped)
-    const priceBox = el("div", "card-price");
-    if (done) {
-      if (wants("price")) {
-        priceBox.textContent = "Sold " + money(salePrice(item));
-        main.appendChild(priceBox);
-        if (item.original !== salePrice(item)) {
-          main.appendChild(el("div", "small", "listed at " + money(item.original)));
-        }
-      }
-      if (wants("profit")) main.appendChild(el("div", "card-profit", "Profit " + money(profit)));
-      if (wants("notes")) {
-        if (ship) {
-          if (ship.unknown) {
-            main.appendChild(el("div", "small", "No sold date. Add one to get ship reminders."));
-          } else if (ship.late && !shipAlerting) {
-            main.appendChild(elWithIcon("div", "ship-soon", "box", "Was due " + prettyDay(ship.by) + " (" + dayWord(ship.daysLate) + " late). Alert dismissed."));
-          } else if (ship.late) {
-            main.appendChild(elWithIcon("div", "ship-late", "alert", "SHIP NOW! Was due " + prettyDay(ship.by) + " (" + dayWord(ship.daysLate) + " late)"));
-            const dismissBtn = el("button", "small-btn", "Dismiss alert");
-            dismissBtn.type = "button";
-            dismissBtn.style.marginTop = "6px";
-            dismissBtn.onclick = function () { dismissShip([item]); };
-            main.appendChild(dismissBtn);
-          } else {
-            main.appendChild(elWithIcon("div", "ship-soon" + (ship.today ? " today" : ""), "box",
-              ship.today ? "Ship TODAY (due " + prettyDay(ship.by) + ")" : "Ship by " + prettyDay(ship.by)));
-          }
-        } else if (item.status === "Shipped") {
-          const taken = daysToShip(item);
-          if (taken === null) {
-            main.appendChild(el("div", "shipped-note", "Shipped (no date saved)"));
-          } else {
-            const late = shippedLate(item);
-            main.appendChild(el("div", "shipped-note" + (late ? " late" : ""),
-              (taken === 0 ? "Shipped the same day it sold" : "Shipped " + dayWord(taken) + " after it sold") + (late ? " (late)" : "")));
-          }
-        }
-      }
-    } else {
-      if (wants("price")) {
-        priceBox.textContent = item.original !== item.current
-          ? money(item.original) + " \u2192 " + money(item.current)
-          : money(item.current);
-        main.appendChild(priceBox);
-      }
-      if (wants("notes")) {
-        const d = daysAtPrice(item);
-        if (d !== null) {
-          const due = reminderDueDate(item);
-          if (isDue(item)) {
-            main.appendChild(elWithIcon("div", "due", "clock", (bumpRuleApplies(item) ? "Bump finished. Reduce price? (" : "Reduce price (") + dayWord(d) + ")"));
-          } else {
-            main.appendChild(el("div", "small", dayWord(d) + " at this price"));
-            if (item.noReduce) {
-              main.appendChild(el("div", "small", "No price-drop reminders for this item"));
-            } else if (due && bumpRuleApplies(item)) {
-              main.appendChild(el("div", "small bump-wait", "Vinted bump running. Reminder on " + prettyDay(due)));
-            }
-          }
-        }
-      }
-    }
-    top.appendChild(main);
-    if (!showSmall) top.appendChild(el("span", "card-chev", expanded ? "\u25B4" : "\u25BE"));
-    card.appendChild(top);
-
-    // Tap an item to open or close it.
-    if (!showSmall) {
-      top.addEventListener("click", function (event) {
-        if (event.target.closest("button, .badge.slot")) return;
-        if (openCards.has(item)) openCards.delete(item); else openCards.add(item);
-        render();
-      });
-    }
-
-    if (expanded) {
-      // One main button, a quick Lower price when it is due, and a ... button for Edit, Lower price and Delete.
-      const actions = el("div", "card-actions");
-      if (nextLabel) {
-        const next = el("button", "primary next-step" + (shipAlerting ? " late" : ""), nextLabel);
-        next.type = "button";
-        next.onclick = function () { nextStep(item); };
-        actions.appendChild(next);
-      } else {
-        const editFirst = el("button", "next-step", "Edit");
-        editFirst.type = "button";
-        editFirst.onclick = function () { startEdit(index); };
-        actions.appendChild(editFirst);
-      }
-      if (item.status === "Listed" && isDue(item)) {
-        const quick = el("button", "", "Lower price");
-        quick.type = "button";
-        quick.onclick = function () { lowerPrice(item); };
-        actions.appendChild(quick);
-      }
-      const menuOpen = openMenus.has(item);
-      const moreButton = el("button", "more-btn", menuOpen ? "\u00D7" : "\u22EF");
-      moreButton.type = "button";
-      moreButton.setAttribute("aria-label", menuOpen ? "Hide more actions" : "More actions");
-      moreButton.onclick = function () {
-        const wasOpen = openMenus.has(item);
-        openMenus.clear();
-        if (!wasOpen) openMenus.add(item);
-        render();
-      };
-      actions.appendChild(moreButton);
-      card.appendChild(actions);
-      if (showSmall) {
-        card.classList.add("has-collapse");
-        const closeButton = el("button", "card-collapse", "Collapse \u25B4");
-        closeButton.type = "button";
-        closeButton.onclick = function () {
-          expandedSold.delete(item);
-          render();
-        };
-        card.appendChild(closeButton);
-      }
-
-      if (menuOpen) {
-        const more = el("div", "card-more");
-        if (nextLabel) {
-          const editButton = el("button", "", "Edit");
-          editButton.onclick = function () { startEdit(index); };
-          more.appendChild(editButton);
-        }
-        if (item.status === "Listed" && !isDue(item)) {
-          const lowerButton = el("button", "", "Lower price");
-          lowerButton.onclick = function () { lowerPrice(item); };
-          more.appendChild(lowerButton);
-        }
-        const deleteButton = el("button", "quiet", "Delete");
-        deleteButton.onclick = function () { askDeleteItem(item); };
-        more.appendChild(deleteButton);
-        card.appendChild(more);
-      }
-    }
-
-    // Swipe right to do the next step. Swipe left for Edit, Lower price, Dismiss alert and Delete.
-    if (swipeOn) {
-      wrap.appendChild(el("div", "swipe-bg swipe-next", nextLabel || "Edit"));
-      const actionsBg = el("div", "swipe-bg swipe-actions");
-      const defs = [["Edit", "edit", function () { startEdit(index); }]];
-      if (item.status === "Listed") defs.push(["Lower price", "lower", function () { lowerPrice(item); }]);
-      if (shipAlerting) defs.push(["Dismiss alert", "dismiss", function () { dismissShip([item]); }]);
-      defs.push(["Delete", "delete", function () { askDeleteItem(item); }]);
-      defs.forEach(function (def) {
-        const b = el("button", "swipe-btn " + def[1], def[0]);
-        b.type = "button";
-        b.onclick = function (event) { event.stopPropagation(); def[2](); };
-        actionsBg.appendChild(b);
-      });
-      wrap.appendChild(actionsBg);
-      attachSwipe(card, defs.length, function () {
-        if (nextLabel) nextStep(item); else startEdit(index);
-      });
-    }
-    wrap.appendChild(card);
-    list.appendChild(wrap);
+    list.appendChild(buildStockRow(item, index));
   });
 
+  paintStockTabs(tabCounts);
+
   if (items.length === 0) {
-    list.appendChild(el("div", "empty-state", "No items yet. Tap Add item to start. A quick name needs at least 2 words, like \"Nike hoodie\"."));
+    list.appendChild(el("div", "empty-state", "No items yet. Tap the + button to start. A quick name needs at least 2 words, like \"Nike hoodie\"."));
+  } else if (shown === 0) {
+    list.appendChild(el("div", "empty-state", stockEmptyText()));
   }
   const parts = [];
   if (filter !== "All") parts.push(filter);
-  if (statusFilter !== "All") parts.push(statusFilter);
   if (binFilter !== "All") parts.push(binFilter === "none" ? "No storage" : "Storage " + binFilter);
   document.getElementById("filters-summary").textContent = "Filters" + (parts.length ? ": " + parts.join(" \u00B7 ") : "");
   document.getElementById("filters-btn").textContent = "Filters" + (parts.length ? " (" + parts.length + ")" : "");
-  document.getElementById("list-count").textContent =
-    "Showing " + shown + " of " + items.length + " items" + (parts.length ? " (" + parts.join(", ") + ")" : "") +
-    (hiddenShipped > 0 ? ", " + hiddenShipped + " shipped hidden" : "");
+  document.getElementById("list-count").textContent = parts.length ? "Showing " + shown + " of " + items.length + " items (" + parts.join(", ") + ")" : "";
   const shippedTotal = items.filter(function (it) { return it.status === "Shipped"; }).length;
   const shippedToggle = document.getElementById("shipped-toggle");
-  shippedToggle.hidden = shippedTotal === 0 || statusFilter !== "All";
+  shippedToggle.hidden = shippedTotal === 0 || stockTab !== "sold" || searchText !== "";
   shippedToggle.textContent = showShipped ? "Hide shipped items" : "Show shipped items (" + shippedTotal + ")";
 
   const banner = document.getElementById("reduce-banner");
@@ -5792,6 +5809,7 @@ function render() {
   updateSummaryBox();
   refreshBinOptions();
   refreshSlotOptions();
+  renderViews();
 }
 
 // Shows what is missing in a red bar above Save and outlines those boxes in red.
@@ -6570,7 +6588,7 @@ function renderBulkHistory() {
 // ---- Planner ----
 const plannerModal = document.getElementById("planner-modal");
 const plannerBody = document.getElementById("planner-body");
-let plannerOpen = { cal: true };
+let plannerOpen = {};
 let plannerCalc = 10;
 let plannerMetric = "profit";
 let timerTick = null;
@@ -6753,35 +6771,18 @@ function drawPipeline(panel, need) {
   const totalBox = el("div", "pipe-total");
   if (total > 0) {
     totalBox.appendChild(icon("clock"));
-    totalBox.appendChild(el("b", "", fmtClock(total)));
+    totalBox.appendChild(el("b", "", "About " + fmtMin(total) + " of work waiting"));
   } else {
     totalBox.appendChild(el("span", "", "All caught up"));
   }
   panel.appendChild(totalBox);
-  panel.appendChild(el("div", "need-note", "Tap a step to see its items."));
   return total;
 }
 // The same timeline as a drop-down at the top of the page (it can be pinned in Tools).
 function renderPipelineBox() {
   const panel = document.getElementById("pipeline-panel");
   panel.innerHTML = "";
-  panel.appendChild(el("div", "pipe-title", "Where your items are"));
   drawPipeline(panel, planNeeds());
-  const box = el("div", "tl-todo");
-  box.appendChild(el("div", "pipe-title", "To do"));
-  const today = todayText();
-  const due = todos.filter(function (t) { return !t.done && (!t.date || t.date <= today); });
-  const later = todos.filter(function (t) { return !t.done && t.date && t.date > today; }).length;
-  if (due.length === 0) box.appendChild(el("div", "small", "Nothing to do today."));
-  due.slice(0, 6).forEach(function (t) { box.appendChild(todoRow(t)); });
-  if (due.length > 6) box.appendChild(el("div", "small", "+" + (due.length - 6) + " more in the Planner"));
-  if (later > 0) box.appendChild(el("div", "small", later + (later === 1 ? " more is" : " more are") + " planned for later days in the Planner."));
-  const add = el("button", "small-btn primary", "+ Add a to-do");
-  add.type = "button";
-  add.style.marginTop = "8px";
-  add.addEventListener("click", function () { openTodoSheet(null, ""); });
-  box.appendChild(add);
-  panel.appendChild(box);
 }
 
 let plannerTarget = null;
@@ -6814,7 +6815,60 @@ function timerState() {
   return null;
 }
 
-function renderPlanner() {
+function buildWorkWaiting(panel) {
+  const need = planNeeds();
+    const steps = PLAN_STEPS.filter(function (st) { return need[st.key].minutes > 0 && (st.key !== "lower" || remindersOn); });
+    if (steps.length === 0) {
+      panel.appendChild(el("div", "small", "Nothing is waiting right now."));
+      return;
+    }
+    const total = steps.reduce(function (sum, st) { return sum + need[st.key].minutes; }, 0);
+    const totalCard = el("div", "need-total");
+    totalCard.appendChild(el("span", "", "All steps together"));
+    totalCard.appendChild(el("b", "", fmtMin(total)));
+    panel.appendChild(totalCard);
+    steps.forEach(function (st) {
+      const n = need[st.key];
+      const card = el("div", "need-card");
+      const head = el("div", "need-card-head");
+      head.appendChild(el("b", "", st.label));
+      head.appendChild(el("b", "", fmtMin(n.minutes)));
+      card.appendChild(head);
+      card.appendChild(el("div", "need-note", n.count + (n.count === 1 ? " item" : " items") + (st.key === "ship" ? " to drop off in one trip" : "")));
+      const track = el("div", "need-track");
+      const fill = el("div", "need-fill");
+      fill.style.width = Math.max(4, Math.round(n.minutes / total * 100)) + "%";
+      track.appendChild(fill);
+      card.appendChild(track);
+      panel.appendChild(card);
+    });
+}
+function buildBatchCalc(panel) {
+    panel.appendChild(el("div", "small", "How long would a new batch take to get listed, if none of it has photos, descriptions or prices yet?"));
+    const label = el("label", "field", "Number of items");
+    label.appendChild(plannerNum(plannerCalc, function (v) { plannerCalc = Math.floor(v); renderPlanner(); }));
+    panel.appendChild(label);
+    const n = plannerCalc;
+    const parts = [
+      ["Photos", n > 0 ? plan.photoSetup + plan.photoPerItem * n : 0, "photos"],
+      ["Descriptions", plan.descPerItem * n, "description"],
+      ["Research prices", plan.researchPerItem * n, "research"],
+      ["Upload", plan.uploadPerItem * n, "upload"]
+    ];
+    let sum = 0;
+    parts.forEach(function (p) {
+      sum += p[1];
+      const row = el("div", "need-row");
+      row.appendChild(el("span", "", p[0]));
+      row.appendChild(el("b", "", fmtMin(p[1])));
+      panel.appendChild(row);
+    });
+    const row = el("div", "need-row");
+    row.appendChild(el("b", "", "Total"));
+    row.appendChild(el("b", "", fmtMin(sum)));
+    panel.appendChild(row);
+}
+function renderPlannerOld() {
   const scroll = plannerModal.querySelector(".tools-panel").scrollTop;
   plannerBody.innerHTML = "";
   const need = planNeeds();
@@ -6890,8 +6944,17 @@ function renderSalesExtra() {
   box.innerHTML = "";
   plannerTarget = box;
   try {
-  // 5. Time log
-    plannerSection("log", "Time log (timer or type it in)", function (panel) {
+    // 6. Weekly efficiency
+    plannerSection("eff", "Weekly efficiency", function (panel) { buildEfficiency(panel); });
+  
+  
+  } finally {
+    plannerTarget = null;
+  }
+  scrollBox.scrollTop = scroll;
+  startTimerTick();
+}
+function buildTimeLogPanel(panel) {
       const t = timerState();
       const stepSel = document.createElement("select");
       PLAN_STEPS.forEach(function (st) {
@@ -6980,24 +7043,14 @@ function renderSalesExtra() {
         row.appendChild(right);
         panel.appendChild(row);
       });
-    });
-  
-    // 6. Weekly efficiency
-    plannerSection("eff", "Weekly efficiency", function (panel) { buildEfficiency(panel); });
-  
-  
-  } finally {
-    plannerTarget = null;
-  }
-  scrollBox.scrollTop = scroll;
-  startTimerTick();
 }
-function refreshHistory() { renderSalesExtra(); }
+function refreshHistory() { renderSalesExtra(); renderPlanView(); if (timeSheetOpen) { if (timerState()) closeScanModal(); else openTimeSheet(); } }
 
 // ---- To-dos: one list, shown in the Timeline and in the Planner calendar ----
 function refreshTodoViews() {
   renderPipelineBox();
-  if (!plannerModal.hidden) renderPlanner();
+  renderHomeTodos();
+  renderPlanView();
 }
 function openTodoSheet(todo, presetDate) {
   scanBody.innerHTML = "";
@@ -7207,7 +7260,7 @@ function startTimerTick() {
   timerTick = null;
   const clock = document.getElementById("timer-clock");
   const t = timerState();
-  if (!clock || !t || (plannerModal.hidden && document.getElementById("sales-modal").hidden)) return;
+  if (!clock || !t) return;
   function paint() {
     const sec = Math.max(0, Math.floor((Date.now() - t.start) / 1000));
     const c = document.getElementById("timer-clock");
@@ -7409,21 +7462,15 @@ function openSettings() {
   renderPhotoTypeEditor();
   renderPlanSettings();
   fillLowerInputs();
+  openSettingsPage("home");
   toolsModal.hidden = false;
   toolsModal.querySelector(".tools-panel").scrollTop = 0;
 }
 document.getElementById("tools-button").addEventListener("click", openSettings);
-document.getElementById("manage-storage-btn").addEventListener("click", function () {
-  document.getElementById("bins-drop").open = false;
-  openSettings();
-  const box = document.getElementById("bins-box");
-  box.open = true;
-  box.scrollIntoView({ block: "start" });
-});
-document.getElementById("tools-close").addEventListener("click", function () { toolsModal.hidden = true; });
-toolsModal.addEventListener("click", function (event) { if (event.target === toolsModal) toolsModal.hidden = true; });
+document.getElementById("manage-storage-btn").addEventListener("click", function () { openSettings(); openSettingsPage("storage"); });
+document.getElementById("tools-close").addEventListener("click", function () { settingsBack(); });
 document.addEventListener("keydown", function (event) {
-  if (event.key === "Escape" && !toolsModal.hidden && msgModal.hidden) toolsModal.hidden = true;
+  if (event.key === "Escape" && !toolsModal.hidden && msgModal.hidden) settingsBack();
 });
 
 // ---- Sales report window ----
@@ -7461,13 +7508,14 @@ function applyFeatures() {
   document.body.classList.toggle("no-storage", !features.storage);
   binFilterInput.closest("label").hidden = !features.storage;
   document.getElementById("pipeline-box").hidden = !features.timeline;
-  document.getElementById("goals-box").hidden = !features.investments;
   document.getElementById("planner-button").hidden = !features.planner;
   document.getElementById("tab-plan").hidden = !features.planner;
   if (!features.planner && currentView === "plan") showView("home");
   document.getElementById("stock-seg").hidden = !features.storage;
   if (!features.storage) showStockPane("items");
-  document.getElementById("sales-button").hidden = !features.sales;
+  document.getElementById("inv-wrap").hidden = !features.investments;
+  document.getElementById("sales-section").hidden = !features.sales;
+  document.getElementById("home-todo-all").hidden = !features.planner;
   document.body.classList.toggle("no-invest", !features.investments);
   updateSummaryBox();
 }
@@ -7493,20 +7541,19 @@ function switchRow(title, desc, checked, onChange) {
   return row;
 }
 const FEATURE_TEXT = {
-  balance: ["Balance", "In Money: available balance, profit by platform and Withdraw."],
-  summary: ["Balance on Home", "Also show your balance in a box on Home."],
-  timeline: ["Timeline", "Where your items are in the process, plus your to-do list."],
+  balance: ["Balance", "Balance, profit by platform and Withdraw."],
+  summary: ["Balance at the top", "Also show your balance on Home."],
+  timeline: ["Timeline", "Where your items are in the process, plus to-dos."],
   investments: ["Investments", "Things you save for or pay, like a printer or rent."],
   storage: ["Storage", "Boxes, shelves and slots that say where each item is kept."],
-  platforms: ["Platforms", "Open Depop or Vinted, or show only the items on one platform."],
-  planner: ["Planner", "The Plan tab: a calendar with your to-dos, ship-by days and bills."],
-  sales: ["Sales report", "In Money: all your sales and past data: weeks, lots, time and efficiency."]
+  platforms: ["Platforms", "Show only the items on one platform."],
+  planner: ["Planner", "A calendar with your to-dos, ship-by days and bills."],
+  sales: ["Sales report", "All your sales and past data: weeks, time and efficiency."]
 };
 const CARD_TEXT = {
-  picture: "Picture", price: "Price", profit: "Profit (sold items)", weight: "Weight", cost: "What you paid",
-  storage: "Storage spot", photos: "Photo progress", notes: "Dates and reminders"
+  profit: "Profit (sold items)", weight: "Weight", cost: "What you paid", photos: "Photo progress", notes: "Dates and reminders"
 };
-const CARD_DESC = { picture: "Off: the picture only loads once you open an item." };
+const CARD_DESC = {};
 // A short "how it works" box shown right under the Storage switch.
 function storageHowTo() {
   const box = el("details", "how-to");
@@ -7516,7 +7563,7 @@ function storageHowTo() {
   box.appendChild(intro);
   const ol = document.createElement("ol");
   [
-    "Open Stock, tap Storage, then Manage storage and labels and + Add storage. Name it (like A) and set how many slots it has.",
+    "Open Stock, tap Storage, then + Add shelf or bin. Name it (like A) and set how many slots it has.",
     "When you add an item, pick its storage and slot.",
     "Marking an item shipped opens its slot again.",
     "Optional QR labels: Print labels, stick one on each slot, then Add item > Scan a QR code."
@@ -7545,13 +7592,6 @@ function buildSettingsSwitches() {
       render();
     }));
   });
-  const swipeBox = document.getElementById("swipe-switch");
-  swipeBox.innerHTML = "";
-  swipeBox.appendChild(switchRow("Swipe on items", "Swipe right to do the next step. Swipe left for Edit, Lower price and Delete.", swipeOn, function (on) {
-    swipeOn = on;
-    try { localStorage.setItem("swipeOn", on ? "1" : "0"); } catch (e) {}
-    render();
-  }));
 }
 buildSettingsSwitches();
 applyFeatures();
@@ -7560,8 +7600,8 @@ applyFeatures();
 const appTitleEl = document.getElementById("app-title");
 const titleInput = document.getElementById("title-input");
 function applyTitle() {
-  appTitleEl.textContent = appTitle;
   titleInput.value = appTitle;
+  if (typeof updateEyebrow === "function") updateEyebrow();
 }
 function saveTitle() {
   appTitle = titleInput.value.trim().replace(/\s+/g, " ") || DEFAULT_TITLE;
@@ -7734,50 +7774,989 @@ document.getElementById("wipe-button").addEventListener("click", openWipeSheet);
   update();
 })();
 
-// ---- Bottom tab bar: Home, Stock, Money, Plan ----
-// Each tab shows one part of the app. Plan opens the planner, and the Sales report (in Money) opens as a full screen above the bar.
+// ================= The new screens: Home, Stock, Money, Plan, Settings =================
+// Every screen below is painted from the same data as before (items, goals, bins, todos...), so nothing is stored differently.
+function $(id) { return document.getElementById(id); }
+function svgEl(inner, cls) {
+  const s = document.createElement("span");
+  if (cls) s.className = cls;
+  s.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true">' + inner + "</svg>";
+  return s;
+}
+function moneyShort(v) {
+  const r = Math.round(v);
+  return Math.abs(v - r) < 0.005 ? (v < 0 ? "-$" : "$") + Math.abs(r) : money(v);
+}
+
+// ---- Bottom bar: Home, Stock, Money, Plan ----
 var currentView = "home";
-const VIEW_TITLES = { home: "Today", stock: "Stock", money: "Money", plan: "Plan" };
+var VIEW_TITLES = { home: "Today", stock: "Stock", money: "Money", plan: "Plan" };
+var VIEW_EYEBROW = { stock: "Your items", money: "Balance, sales and fees", plan: "Your week" };
+var MONTHS = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+var WEEKDAYS = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+function updateEyebrow() {
+  const d = new Date();
+  $("app-title").textContent = currentView === "home" ? WEEKDAYS[d.getDay()] + ", " + d.getDate() + " " + MONTHS[d.getMonth()] : VIEW_EYEBROW[currentView];
+}
 function showView(name) {
   if (!VIEW_TITLES[name]) name = "home";
   if (name === "plan" && !features.planner) name = "home";
   currentView = name;
   Object.keys(VIEW_TITLES).forEach(function (key) {
-    const section = document.getElementById("view-" + key);
+    const section = $("view-" + key);
     if (section) section.hidden = key !== name;
-    const tab = document.getElementById("tab-" + key);
+    const tab = $("tab-" + key);
     if (tab) {
       tab.classList.toggle("on", key === name);
       if (key === name) tab.setAttribute("aria-current", "page"); else tab.removeAttribute("aria-current");
     }
   });
   document.body.setAttribute("data-view", name);
-  document.getElementById("view-title").textContent = VIEW_TITLES[name];
+  $("view-title").textContent = VIEW_TITLES[name];
+  updateEyebrow();
   if (name !== "money" && !salesModal.hidden) closeSales();
-  if (name !== "plan" && !plannerModal.hidden) closePlanner();
-  if (name === "plan" && plannerModal.hidden) openPlanner();
+  if (name === "plan") renderPlanView();
+  startTimerTick();
   window.scrollTo(0, 0);
 }
 // Stock has two parts: your items, and where they are stored.
 function showStockPane(which) {
   if (which === "storage" && !features.storage) which = "items";
-  document.getElementById("stock-items").hidden = which !== "items";
-  document.getElementById("stock-storage").hidden = which !== "storage";
-  document.getElementById("seg-stock-items").classList.toggle("on", which === "items");
-  document.getElementById("seg-stock-storage").classList.toggle("on", which === "storage");
+  $("stock-items").hidden = which !== "items";
+  $("stock-storage").hidden = which !== "storage";
+  $("seg-stock-items").classList.toggle("on", which === "items");
+  $("seg-stock-storage").classList.toggle("on", which === "storage");
 }
+
+// ---- Stock: Listed / In progress / Sold tabs and the item rows ----
+var stockTab = "listed";
+var STOCK_TABS = [["listed", "Listed"], ["progress", "In progress"], ["sold", "Sold"]];
+function stockTabOf(item) {
+  return item.status === "Listed" ? "listed" : (item.status === "In progress" ? "progress" : "sold");
+}
+function paintStockTabs(counts) {
+  const box = $("stock-tabs");
+  box.innerHTML = "";
+  box.classList.toggle("searching", searchText !== "");
+  STOCK_TABS.forEach(function (t) {
+    const b = document.createElement("button");
+    b.type = "button";
+    b.className = stockTab === t[0] ? "on" : "";
+    b.appendChild(document.createTextNode(t[1]));
+    b.appendChild(el("span", "cnt " + t[0], String(counts[t[0]])));
+    b.onclick = function () { stockTab = t[0]; render(); };
+    box.appendChild(b);
+  });
+}
+function stockEmptyText() {
+  if (searchText !== "") return "No items match your search.";
+  if (filter !== "All" || binFilter !== "All") return "No items match these filters.";
+  return { listed: "Nothing is listed right now.", progress: "Nothing is in progress.", sold: "No sold items are waiting." }[stockTab];
+}
+function stockMeta(item, ship) {
+  const parts = [];
+  if (item.site) parts.push(item.site);
+  if (item.status === "Listed") {
+    parts.push(money(item.current));
+    const d = daysAtPrice(item);
+    if (d !== null) parts.push(dayWord(d));
+  } else if (item.status === "In progress") {
+    const p = item.current > 0 ? item.current : item.original;
+    if (p > 0) parts.push(money(p));
+    parts.push("Photos " + photoCount(item) + "/" + photoTotal(item));
+  } else if (item.status === "Sold") {
+    parts.push("Sold " + money(salePrice(item)));
+    if (ship && ship.late) parts.push(dayWord(ship.daysLate) + " late");
+    else if (ship && !ship.unknown && ship.by) parts.push(ship.today ? "ship today" : "ship by " + prettyDay(ship.by));
+  } else {
+    parts.push("Shipped");
+  }
+  return parts.join(" · ");
+}
+function buildStockRow(item, index) {
+  const done = isDone(item);
+  const profit = done ? profitOf(item) : null;
+  const ship = shipInfo(item);
+  const shipAlerting = !!(ship && ship.late && !shipDismissed[shipKey(item)]);
+  const expanded = openCards.has(item);
+  const card = el("div", "srow-card" + (item.status === "Shipped" ? " row-shipped" : "") + (shipAlerting ? " row-overdue" : "") + (expanded ? " open" : " closed"));
+  card.dataset.idx = String(index);
+
+  const row = el("div", "srow");
+  row.setAttribute("role", "button");
+  row.tabIndex = 0;
+  row.setAttribute("aria-expanded", expanded ? "true" : "false");
+  if (item.picture) {
+    const pic = el("img", "sthumb");
+    pic.src = item.picture;
+    pic.alt = "";
+    pic.loading = "lazy";
+    row.appendChild(pic);
+  } else {
+    const empty = el("div", "sthumb");
+    empty.appendChild(icon("camera"));
+    row.appendChild(empty);
+  }
+  const main = el("div", "srow-main");
+  main.appendChild(el("div", "srow-name", item.name));
+  const meta = el("div", "srow-meta", stockMeta(item, ship));
+  if (shipAlerting) meta.appendChild(el("span", "badge late", "Ship now"));
+  if (!done && isDue(item)) meta.appendChild(el("span", "badge due-badge", "Lower price?"));
+  main.appendChild(meta);
+  const extra = [];
+  if (cardFields.profit && done) extra.push("Profit " + money(profit));
+  if (cardFields.weight && item.weight > 0) extra.push("Weight " + formatWeight(item.weight));
+  if (cardFields.cost && item.cost > 0) extra.push("Cost " + money(item.cost));
+  if (cardFields.photos && item.status !== "In progress") extra.push("Photos " + photoCount(item) + "/" + photoTotal(item));
+  if (extra.length) main.appendChild(el("div", "srow-extra", extra.join(" · ")));
+  row.appendChild(main);
+  if (features.storage && item.bin && item.slot > 0 && item.status !== "Shipped") {
+    const chip = el("button", "slot-chip", slotLabel(item.bin, item.slot));
+    chip.type = "button";
+    chip.title = "Show where it is stored";
+    chip.onclick = function (event) {
+      event.stopPropagation();
+      selSlot = { bin: item.bin, slot: item.slot };
+      showStockPane("storage");
+      render();
+      window.scrollTo(0, 0);
+    };
+    row.appendChild(chip);
+  }
+  function toggle() {
+    if (openCards.has(item)) openCards.delete(item); else openCards.add(item);
+    render();
+  }
+  row.addEventListener("click", function (event) { if (event.target.closest(".slot-chip")) return; toggle(); });
+  row.addEventListener("keydown", function (event) {
+    if (event.target === row && (event.key === "Enter" || event.key === " ")) { event.preventDefault(); toggle(); }
+  });
+  card.appendChild(row);
+  if (expanded) card.appendChild(buildItemDetail(item, index, done, profit, ship, shipAlerting));
+  return card;
+}
+// What opens under a row: every detail, and the buttons.
+function buildItemDetail(item, index, done, profit, ship, shipAlerting) {
+  const box = el("div", "srow-detail");
+  const nextLabel = NEXT_STEP[item.status];
+  if (done) {
+    const priceBox = el("div", "card-price", "Sold " + money(salePrice(item)));
+    box.appendChild(priceBox);
+    if (item.original !== salePrice(item)) box.appendChild(el("div", "small", "listed at " + money(item.original)));
+    box.appendChild(el("div", "card-profit", "Profit " + money(profit)));
+  } else {
+    box.appendChild(el("div", "card-price", item.original !== item.current ? money(item.original) + " → " + money(item.current) : money(item.current)));
+  }
+  if (item.weight > 0) box.appendChild(el("div", "small", "Weight " + formatWeight(item.weight)));
+  if (item.cost > 0) box.appendChild(el("div", "small", "Cost " + money(item.cost)));
+  const count = photoCount(item);
+  box.appendChild(el("div", "small", "Photos " + count + "/" + photoTotal(item) + (photosComplete(item) ? " (all taken)" : "")));
+  if (item.bin && item.slot > 0 && item.status !== "Shipped") box.appendChild(el("div", "small", "Stored in " + slotLabel(item.bin, item.slot)));
+  if (done) {
+    if (ship) {
+      if (ship.unknown) {
+        box.appendChild(el("div", "small", "No sold date. Add one to get ship reminders."));
+      } else if (ship.late && !shipAlerting) {
+        box.appendChild(elWithIcon("div", "ship-soon", "box", "Was due " + prettyDay(ship.by) + " (" + dayWord(ship.daysLate) + " late). Alert dismissed."));
+      } else if (ship.late) {
+        box.appendChild(elWithIcon("div", "ship-late", "alert", "SHIP NOW! Was due " + prettyDay(ship.by) + " (" + dayWord(ship.daysLate) + " late)"));
+      } else {
+        box.appendChild(elWithIcon("div", "ship-soon" + (ship.today ? " today" : ""), "box", ship.today ? "Ship TODAY (due " + prettyDay(ship.by) + ")" : "Ship by " + prettyDay(ship.by)));
+      }
+    } else if (item.status === "Shipped") {
+      const taken = daysToShip(item);
+      if (taken === null) box.appendChild(el("div", "shipped-note", "Shipped (no date saved)"));
+      else box.appendChild(el("div", "shipped-note" + (shippedLate(item) ? " late" : ""), (taken === 0 ? "Shipped the same day it sold" : "Shipped " + dayWord(taken) + " after it sold") + (shippedLate(item) ? " (late)" : "")));
+    }
+  } else {
+    const d = daysAtPrice(item);
+    if (d !== null) {
+      const due = reminderDueDate(item);
+      if (isDue(item)) {
+        box.appendChild(elWithIcon("div", "due", "clock", (bumpRuleApplies(item) ? "Bump finished. Reduce price? (" : "Reduce price (") + dayWord(d) + ")"));
+      } else {
+        box.appendChild(el("div", "small", dayWord(d) + " at this price"));
+        if (item.noReduce) box.appendChild(el("div", "small", "No price-drop reminders for this item"));
+        else if (due && bumpRuleApplies(item)) box.appendChild(el("div", "small bump-wait", "Vinted bump running. Reminder on " + prettyDay(due)));
+      }
+    }
+  }
+
+  const actions = el("div", "card-actions");
+  if (nextLabel) {
+    const next = el("button", "primary next-step" + (shipAlerting ? " late" : ""), nextLabel);
+    next.type = "button";
+    next.onclick = function () { nextStep(item); };
+    actions.appendChild(next);
+  } else {
+    const editFirst = el("button", "next-step", "Edit");
+    editFirst.type = "button";
+    editFirst.onclick = function () { startEdit(index); };
+    actions.appendChild(editFirst);
+  }
+  if (item.status === "Listed" && isDue(item)) {
+    const quick = el("button", "", "Lower price");
+    quick.type = "button";
+    quick.onclick = function () { lowerPrice(item); };
+    actions.appendChild(quick);
+  }
+  const menuOpen = openMenus.has(item);
+  const moreButton = el("button", "more-btn", menuOpen ? "×" : "⋯");
+  moreButton.type = "button";
+  moreButton.setAttribute("aria-label", menuOpen ? "Hide more actions" : "More actions");
+  moreButton.onclick = function () {
+    const wasOpen = openMenus.has(item);
+    openMenus.clear();
+    if (!wasOpen) openMenus.add(item);
+    render();
+  };
+  actions.appendChild(moreButton);
+  box.appendChild(actions);
+  if (menuOpen) {
+    const more = el("div", "card-more");
+    function add(label, cls, fn) {
+      const b = el("button", cls, label);
+      b.type = "button";
+      b.onclick = fn;
+      more.appendChild(b);
+    }
+    if (nextLabel) add("Edit", "", function () { startEdit(index); });
+    if (item.status === "Listed" && !isDue(item)) add("Lower price", "", function () { lowerPrice(item); });
+    if (shipAlerting) add("Dismiss alert", "", function () { dismissShip([item]); });
+    if (!done && isDue(item) && !dueDismissed[dueKey(item)]) add("Dismiss reminder", "", function () { dismissDue([item]); });
+    add("Delete", "quiet", function () { askDeleteItem(item); });
+    box.appendChild(more);
+  }
+  return box;
+}
+// A button under the list that clears a platform or storage filter.
+function renderFilterChip() {
+  const count = $("list-count");
+  if (filter === "All" && binFilter === "All") return;
+  const b = el("button", "small-btn", "Show all items");
+  b.type = "button";
+  b.style.marginLeft = "8px";
+  b.onclick = function () { setFilters("All", "All", "All"); applyFilters(); };
+  count.appendChild(b);
+}
+
+// ---- Stock: storage (shelves with their slots) ----
+var selSlot = null;
+function shelfName(name) { return /^[A-Za-z0-9]{1,2}$/.test(name) ? "Shelf " + name : name; }
+function openSpotSheet(item) {
+  scanBody.innerHTML = "";
+  scanBody.appendChild(el("h3", "", item.bin && item.slot > 0 ? "Move " + item.name : "Choose a spot"));
+  scanBody.appendChild(el("div", "small", item.name + (item.bin && item.slot > 0 ? " is in " + slotLabel(item.bin, item.slot) + ". Pick an empty slot." : ". Pick an empty slot.")));
+  let any = false;
+  bins.forEach(function (bin) {
+    const free = [];
+    for (let n = 1; n <= bin.slots; n++) if (itemInSlot(bin.name, n) === -1) free.push(n);
+    if (!free.length) return;
+    any = true;
+    scanBody.appendChild(el("div", "nospot-label", shelfName(bin.name)));
+    const grid = el("div", "slot-pick");
+    free.forEach(function (n) {
+      const b = el("button", "", slotLabel(bin.name, n));
+      b.type = "button";
+      b.onclick = function () {
+        const snap = captureState();
+        if (item.bin && item.slot > 0) markFreed(item.bin, item.slot);
+        item.bin = bin.name;
+        item.slot = n;
+        selSlot = { bin: bin.name, slot: n };
+        save();
+        closeScanModal();
+        render();
+        showUndo(item.name + " is now in " + slotLabel(bin.name, n) + ".", snap);
+      };
+      grid.appendChild(b);
+    });
+    scanBody.appendChild(grid);
+  });
+  if (!any) scanBody.appendChild(el("div", "slot-item-name", "Every slot is full. Add a slot or a shelf in Settings > Storage."));
+  scanBody.appendChild(modalButton("Close", "", closeScanModal));
+  scanModal.hidden = false;
+}
+function renderStorage() {
+  const box = $("storage-view");
+  if (!box) return;
+  box.innerHTML = "";
+  if (!features.storage) return;
+  bins.forEach(function (bin) {
+    const head = el("div", "sec-head");
+    head.appendChild(el("h2", "msec-title", shelfName(bin.name)));
+    head.appendChild(el("span", "sec-note", binUsed(bin) + " of " + bin.slots + " used"));
+    box.appendChild(head);
+    const grid = el("div", "slot-grid");
+    for (let n = 1; n <= bin.slots; n++) {
+      const idx = itemInSlot(bin.name, n);
+      const it = idx === -1 ? null : items[idx];
+      const picked = selSlot && selSlot.bin === bin.name && selSlot.slot === n;
+      const cell = el("button", "slot-cell " + (it ? (it.status === "Sold" ? "sold" : "full") : "empty") + (picked ? " sel" : ""));
+      cell.type = "button";
+      cell.appendChild(el("span", "slot-code", slotLabel(bin.name, n)));
+      cell.appendChild(el("span", "slot-name", it ? it.name : "empty"));
+      cell.onclick = function () { selSlot = { bin: bin.name, slot: n }; renderStorage(); };
+      grid.appendChild(cell);
+    }
+    box.appendChild(grid);
+  });
+  if (!bins.length) box.appendChild(el("div", "empty-state", "No shelves or bins yet. Add one below."));
+
+  const sel = selSlot && findBin(selSlot.bin) ? selSlot : null;
+  if (sel) {
+    const bin = findBin(sel.bin);
+    const idx = itemInSlot(bin.name, sel.slot);
+    const card = el("div", "slot-detail");
+    if (idx === -1) {
+      const text = el("div", "slot-detail-text");
+      text.appendChild(el("span", "slot-detail-code", slotLabel(bin.name, sel.slot)));
+      text.appendChild(el("span", "slot-detail-name", "Empty slot"));
+      card.appendChild(text);
+      const btns = el("div", "slot-detail-btns");
+      const add = el("button", "", "Add item here");
+      add.type = "button";
+      add.onclick = function () { startNewItemIn(bin.name, sel.slot); };
+      const lab = el("button", "", "Print label");
+      lab.type = "button";
+      lab.onclick = function () { openLabels(bin, sel.slot); };
+      btns.appendChild(add);
+      btns.appendChild(lab);
+      card.appendChild(btns);
+    } else {
+      const it = items[idx];
+      if (it.picture) {
+        const pic = el("img", "sthumb");
+        pic.src = it.picture;
+        pic.alt = "";
+        card.appendChild(pic);
+      } else {
+        const e = el("div", "sthumb");
+        e.appendChild(icon("camera"));
+        card.appendChild(e);
+      }
+      const text = el("div", "slot-detail-text");
+      text.appendChild(el("span", "slot-detail-code", slotLabel(bin.name, sel.slot)));
+      text.appendChild(el("span", "slot-detail-name", it.name));
+      text.onclick = function () { showCard(it); };
+      card.appendChild(text);
+      const btns = el("div", "slot-detail-btns");
+      const move = el("button", "", "Move");
+      move.type = "button";
+      move.onclick = function () { openSpotSheet(it); };
+      const lab = el("button", "", "Print label");
+      lab.type = "button";
+      lab.onclick = function () { openLabels(bin, sel.slot); };
+      btns.appendChild(move);
+      btns.appendChild(lab);
+      card.appendChild(btns);
+    }
+    box.appendChild(card);
+  }
+
+  const loose = items.filter(function (it) { return it.status !== "Shipped" && !(it.bin && it.slot > 0); });
+  if (loose.length) {
+    const warn = el("div", "nospot");
+    warn.appendChild(el("div", "nospot-label", "No spot yet (" + loose.length + ")"));
+    loose.slice(0, 6).forEach(function (it) {
+      const row = el("div", "nospot-row");
+      row.appendChild(el("b", "", it.name));
+      const b = el("button", "", "Choose spot");
+      b.type = "button";
+      b.onclick = function () { openSpotSheet(it); };
+      row.appendChild(b);
+      warn.appendChild(row);
+    });
+    if (loose.length > 6) warn.appendChild(el("div", "small", "+" + (loose.length - 6) + " more. Open the item to give it a spot."));
+    box.appendChild(warn);
+  }
+  const add = el("button", "dash-btn", "+ Add shelf or bin");
+  add.type = "button";
+  add.onclick = function () {
+    openSettings();
+    openSettingsPage("storage");
+    if ($("bin-form").style.display !== "block") $("add-bin-button").click();
+  };
+  box.appendChild(add);
+  const manage = el("div", "slot-links");
+  const link = el("button", "sec-link", "Edit shelves and print labels");
+  link.type = "button";
+  link.onclick = function () { openSettings(); openSettingsPage("storage"); };
+  manage.appendChild(link);
+  box.appendChild(manage);
+}
+
+// ---- Home ----
+function alertCard(kind, label, item, sub, btnText, onClick, onDismiss) {
+  const c = el("div", "acard " + kind);
+  const text = el("div", "acard-text");
+  text.appendChild(el("span", "acard-label", label));
+  text.appendChild(el("span", "acard-name", item.name));
+  text.appendChild(el("span", "acard-sub", sub));
+  text.onclick = function () { showCard(item); };
+  c.appendChild(text);
+  const btn = el("button", "acard-btn", btnText);
+  btn.type = "button";
+  btn.onclick = onClick;
+  c.appendChild(btn);
+  const x = el("button", "acard-x", "×");
+  x.type = "button";
+  x.setAttribute("aria-label", "Dismiss this alert");
+  x.onclick = onDismiss;
+  c.appendChild(x);
+  return c;
+}
+function renderHomeAlerts() {
+  const box = $("home-alerts");
+  box.innerHTML = "";
+  currentOverdue.slice(0, 3).forEach(function (item) {
+    const ship = shipInfo(item);
+    box.appendChild(alertCard("ship", "Ship now", item,
+      (item.site ? item.site + " · " : "") + (ship && ship.late ? dayWord(ship.daysLate) + " late" : "late") + " · sold " + money(salePrice(item)),
+      "Mark shipped", function () { markShipped(item); }, function () { dismissShip([item]); }));
+  });
+  if (currentOverdue.length > 3) {
+    const more = el("button", "sec-link", "+" + (currentOverdue.length - 3) + " more late orders");
+    more.type = "button";
+    more.onclick = function () { $("ship-alert").click(); };
+    box.appendChild(more);
+  }
+  currentDue.slice(0, 3).forEach(function (item) {
+    box.appendChild(alertCard("price", "Price check", item,
+      (item.site ? item.site + " · " : "") + dayWord(daysAtPrice(item) || 0) + " at " + money(item.current),
+      "Lower price", function () { lowerPrice(item); }, function () { dismissDue([item]); }));
+  });
+  if (currentDue.length > 3) {
+    const more = el("button", "sec-link", "+" + (currentDue.length - 3) + " more price checks");
+    more.type = "button";
+    more.onclick = openDueSheet;
+    box.appendChild(more);
+  }
+  if (box.children.length) box.style.marginBottom = "4px"; else box.style.marginBottom = "";
+}
+function paintGoalTile() {
+  const mini = $("goals-mini");
+  const active = goals.filter(function (g) { return !g.purchased; });
+  if (!features.investments || active.length === 0) { mini.style.display = "none"; return; }
+  const g = active[0];
+  const have = Math.min(Math.max(0, lastBalance), g.amount);
+  const pct = g.amount > 0 ? Math.round(have / g.amount * 100) : 0;
+  $("mini-text").textContent = g.name + " " + pct + "%";
+  $("mini-bar").max = g.amount;
+  $("mini-bar").value = have;
+  mini.style.display = "block";
+}
+
+// ---- to-do rows (Home and Plan) ----
+function dayLabel(dateText) {
+  const today = todayText();
+  if (dateText === today) return "Today";
+  return prettyDay(dateText);
+}
+function planRows(day, forHome) {
+  const today = todayText();
+  const isToday = day === today;
+  const rows = [];
+  todos.forEach(function (t) {
+    const show = t.date === day || (isToday && !t.done && (!t.date || t.date < today));
+    if (!show) return;
+    let sub = "Any day";
+    if (t.date) sub = t.date < today && !t.done ? "Late: " + prettyDay(t.date) : dayLabel(t.date);
+    rows.push({ kind: "todo", todo: t, title: t.text, sub: sub, done: t.done });
+  });
+  items.forEach(function (it) {
+    if (it.status !== "Sold" || !it.sold) return;
+    const by = shipByDate(it.sold);
+    const late = by < today;
+    if (!(by === day || (isToday && late))) return;
+    if (forHome && late) return;
+    const sub = late ? dayWord(dayDiff(by, today)) + " late" : (by === today ? "Due today" : "Due " + prettyDay(by));
+    rows.push({ kind: "ship", item: it, title: "Ship " + it.name, sub: sub + (it.site ? " · " + it.site : "") });
+  });
+  if (!forHome) {
+    eventsOn(day).bills.forEach(function (g) {
+      rows.push({ kind: "bill", goal: g, title: "Pay " + g.name + " " + money(g.amount), sub: "Investment due" });
+    });
+  }
+  if (isToday) {
+    items.filter(function (it) { return it.status === "In progress" && !photosDone(it); }).slice(0, 3).forEach(function (it) {
+      rows.push({ kind: "photo", item: it, title: "Photograph " + it.name, sub: "Needed to finish the listing" });
+    });
+    if (!forHome) {
+      currentDue.forEach(function (it) {
+        rows.push({ kind: "price", item: it, title: "Lower " + it.name + " price", sub: dayWord(daysAtPrice(it) || 0) + " at " + money(it.current) + (it.site ? " · " + it.site : "") });
+      });
+    }
+  }
+  return rows;
+}
+function takeAllPhotos(item) {
+  const snap = captureState();
+  PHOTO_TYPES.forEach(function (t) { if (photoNeeded(item, t)) item.photos[t.key] = true; });
+  save();
+  render();
+  showUndo(item.name + ": all photos marked as taken.", snap);
+}
+function todoRowEl(r) {
+  const row = el("div", "trow" + (r.done ? " done" : ""));
+  if (r.kind === "bill") {
+    row.appendChild(el("span", "trow-icon", "$"));
+  } else {
+    const box = document.createElement("input");
+    box.type = "checkbox";
+    box.checked = !!r.done;
+    box.setAttribute("aria-label", "Done: " + r.title);
+    box.addEventListener("change", function () {
+      if (r.kind === "todo") { r.todo.done = box.checked; save(); refreshTodoViews(); return; }
+      box.checked = false;
+      if (r.kind === "ship") markShipped(r.item);
+      else if (r.kind === "photo") takeAllPhotos(r.item);
+      else if (r.kind === "price") lowerPrice(r.item);
+    });
+    row.appendChild(box);
+  }
+  const text = el("div", "trow-text");
+  text.appendChild(el("span", "trow-title", r.title));
+  text.appendChild(el("span", "trow-sub", r.sub));
+  text.onclick = function () {
+    if (r.kind === "todo") openTodoSheet(r.todo);
+    else if (r.item) showCard(r.item);
+  };
+  row.appendChild(text);
+  return row;
+}
+function renderHomeTodos() {
+  const box = $("home-todo-list");
+  if (!box) return;
+  box.innerHTML = "";
+  const rows = planRows(todayText(), true);
+  rows.slice(0, 4).forEach(function (r) { box.appendChild(todoRowEl(r)); });
+  if (rows.length > 4) box.appendChild(el("div", "todo-empty", "+" + (rows.length - 4) + " more" + (features.planner ? " in Plan" : "")));
+  if (!rows.length) box.appendChild(el("div", "todo-empty", "Nothing to do today."));
+  $("home-todo").hidden = !features.timeline;
+}
+
+// ---- Money ----
+var salesPeriod = "month";
+function periodRange(p) {
+  const today = todayText();
+  if (p === "week") { const m = mondayOf(today); return [m, addDays(m, 6)]; }
+  if (p === "month") { const mo = monthOf(today); return [mo + "-01", mo + "-31"]; }
+  return ["", "9999-99-99"];
+}
+function soldInPeriod(p) {
+  const r = periodRange(p);
+  return items.filter(function (it) {
+    if (!isDone(it)) return false;
+    if (p === "all") return true;
+    return !!it.sold && it.sold >= r[0] && it.sold <= r[1];
+  });
+}
+var METRIC_SHORT = { profit: "Profit", sales: "Sales", sold: "Items sold", posted: "Items posted", hours: "Hours", perHour: "Profit per hour" };
+function renderInvCard() {
+  const box = $("inv-card");
+  box.innerHTML = "";
+  if (!features.investments) return;
+  const active = goals.filter(function (g) { return !g.purchased; });
+  const card = el("div", "inv-card");
+  const top = el("div", "inv-top");
+  const text = el("div");
+  text.style.minWidth = "0";
+  if (active.length) {
+    const g = active[0];
+    const have = Math.min(Math.max(0, lastBalance), g.amount);
+    text.appendChild(el("div", "inv-title", "Investment: " + g.name));
+    text.appendChild(el("div", "inv-sub", moneyShort(have) + " of " + moneyShort(g.amount) + " paid back" + (active.length > 1 ? " · +" + (active.length - 1) + " more" : "")));
+    card.appendChild(top);
+    top.appendChild(text);
+    const bar = el("div", "inv-bar");
+    const fill = document.createElement("i");
+    fill.style.width = (g.amount > 0 ? Math.min(100, have / g.amount * 100) : 0) + "%";
+    bar.appendChild(fill);
+    const btn = el("button", "inv-btn", $("goals-box").classList.contains("shown") ? "Hide" : "Invest");
+    btn.type = "button";
+    btn.onclick = function () { $("goals-box").classList.toggle("shown"); renderInvCard(); };
+    top.appendChild(btn);
+    card.appendChild(bar);
+  } else {
+    text.appendChild(el("div", "inv-title", "Investments"));
+    text.appendChild(el("div", "inv-sub", "Things you save for or pay, like a printer or rent."));
+    top.appendChild(text);
+    const btn = el("button", "inv-btn", "Add");
+    btn.type = "button";
+    btn.onclick = function () {
+      $("goals-box").classList.add("shown");
+      if (goalForm.style.display !== "block") addGoalButton.click();
+      $("goals-box").scrollIntoView({ block: "start" });
+    };
+    top.appendChild(btn);
+    card.appendChild(top);
+  }
+  box.appendChild(card);
+}
+function renderSalesBlock() {
+  if (!features.sales) return;
+  document.querySelectorAll("#sales-period button").forEach(function (b) { b.classList.toggle("on", b.getAttribute("data-p") === salesPeriod); });
+  const sold = soldInPeriod(salesPeriod);
+  const revenue = sold.reduce(function (s, it) { return s + salePrice(it); }, 0);
+  const profit = sold.reduce(function (s, it) { return s + profitOf(it); }, 0);
+  const k = $("sales-kpis");
+  k.innerHTML = "";
+  [["Sold", String(sold.length), ""], ["Revenue", moneyShort(revenue), ""], ["Profit", moneyShort(profit), " profit"]].forEach(function (t) {
+    const d = el("div", "kpi" + t[2]);
+    d.appendChild(el("span", "", t[0]));
+    d.appendChild(el("b", "", t[1]));
+    k.appendChild(d);
+  });
+  const weeks = weeklyStats();
+  const show = salesPeriod === "all" ? weeks : weeks.slice(-4);
+  const metric = METRICS[plannerMetric] || METRICS.profit;
+  const values = show.map(function (w) { return metric.get(w); });
+  const topV = Math.max.apply(null, values.map(Math.abs).concat([0.0001]));
+  const card = $("sales-chart");
+  card.innerHTML = "";
+  const head = el("div", "chart-head");
+  head.appendChild(el("b", "", (METRIC_SHORT[plannerMetric] || "Profit") + " by week"));
+  const sel = document.createElement("select");
+  sel.className = "chip-select";
+  sel.setAttribute("aria-label", "What the chart shows");
+  Object.keys(METRICS).forEach(function (key) {
+    const o = document.createElement("option");
+    o.value = key;
+    o.textContent = METRIC_SHORT[key] + " ▾";
+    sel.appendChild(o);
+  });
+  sel.value = plannerMetric;
+  sel.onchange = function () { plannerMetric = sel.value; renderSalesBlock(); };
+  head.appendChild(sel);
+  card.appendChild(head);
+  const bars = el("div", "bars");
+  show.forEach(function (w, i) {
+    const v = values[i];
+    const col = el("div", "bcol" + (w.current ? " cur" : ""));
+    col.appendChild(el("span", "bv", metric.money ? (v < 0 ? "-$" : "$") + Math.abs(Math.round(v)) : String(v)));
+    const bar = el("div", "bb" + (v < 0 ? " neg" : ""));
+    bar.style.height = Math.max(4, Math.round(Math.abs(v) / topV * 100)) + "px";
+    col.appendChild(bar);
+    bars.appendChild(col);
+  });
+  card.appendChild(bars);
+  const xs = el("div", "bx");
+  show.forEach(function (w) {
+    const d = new Date(parseDate(w.monday));
+    xs.appendChild(el("span", "", (d.getUTCMonth() + 1) + "/" + d.getUTCDate()));
+  });
+  card.appendChild(xs);
+}
+function renderPlatformRows() {
+  const box = $("money-platforms");
+  box.innerHTML = "";
+  if (!features.platforms) return;
+  const sold = soldInPeriod(salesPeriod);
+  enabledPlatformNames().forEach(function (name) {
+    const mine = sold.filter(function (it) { return it.site === name; });
+    const fees = mine.reduce(function (s, it) { return s + feeTotal(it); }, 0);
+    const revenue = mine.reduce(function (s, it) { return s + salePrice(it); }, 0);
+    const row = el("button", "plat-row");
+    row.type = "button";
+    row.appendChild(svgEl('<path d="M4 9l1-5h14l1 5"/><path d="M5 9v11h14V9"/><path d="M9 20v-6h6v6"/><path d="M4 9a3 3 0 0 0 5 0 3 3 0 0 0 6 0 3 3 0 0 0 5 0"/>', "plat-ico"));
+    const text = el("div", "plat-text");
+    text.appendChild(el("b", "", name));
+    text.appendChild(el("span", "", mine.length + " sold · fees " + money(fees)));
+    row.appendChild(text);
+    row.appendChild(el("span", "plat-amt", moneyShort(revenue)));
+    row.onclick = function () {
+      setFilters(name, "All", "All");
+      applyFilters();
+      showView("stock");
+      showStockPane("items");
+    };
+    box.appendChild(row);
+  });
+}
+function renderMoney() {
+  renderInvCard();
+  renderSalesBlock();
+  renderPlatformRows();
+}
+
+// ---- Plan ----
+function planDots(day) {
+  const ev = eventsOn(day);
+  return ev.todos.length || ev.ships.length || ev.bills.length;
+}
+function stopTimer() {
+  const t = timerState();
+  if (!t) return;
+  const mins = Math.max(1, Math.round((Date.now() - t.start) / 60000));
+  try { localStorage.removeItem("planTimer"); } catch (e) {}
+  timeLog.push({ id: Date.now(), date: todayText(), step: t.step, minutes: mins, items: 0 });
+  save();
+  refreshHistory();
+  showToast("Saved " + fmtMin(mins) + " of " + stepLabel(t.step).toLowerCase() + ".");
+}
+function openTimeSheet() {
+  scanBody.innerHTML = "";
+  scanBody.appendChild(el("h3", "", "Time log"));
+  const panel = el("div", "filters-panel");
+  buildTimeLogPanel(panel);
+  scanBody.appendChild(panel);
+  scanBody.appendChild(modalButton("Close", "", closeScanModal));
+  scanModal.hidden = false;
+  timeSheetOpen = true;
+  startTimerTick();
+}
+function renderPlanView() {
+  const box = $("plan-view");
+  if (!box || currentView !== "plan") return;
+  box.innerHTML = "";
+  const today = todayText();
+  if (!calDay) calDay = today;
+  if (!calMonth) calMonth = monthOf(today);
+
+  // the week
+  const monday = mondayOf(calDay);
+  const head = el("div", "wk-head");
+  const monthName = MONTHS[new Date(parseDate(calDay)).getUTCMonth()];
+  head.appendChild(el("h2", "msec-title", "Planner · " + monthName));
+  const nav = el("div", "wk-nav");
+  [["‹", -7, "Earlier week"], ["›", 7, "Later week"]].forEach(function (t) {
+    const b = el("button", "", t[0]);
+    b.type = "button";
+    b.setAttribute("aria-label", t[2]);
+    b.onclick = function () { calDay = addDays(calDay, t[1]); calMonth = monthOf(calDay); renderPlanView(); };
+    nav.appendChild(b);
+  });
+  head.appendChild(nav);
+  box.appendChild(head);
+  const strip = el("div", "wk");
+  for (let i = 0; i < 7; i++) {
+    const day = addDays(monday, i);
+    const b = el("button", "wk-day" + (day === calDay ? " sel" : "") + (day === today ? " today" : "") + (planDots(day) ? " has" : ""));
+    b.type = "button";
+    b.appendChild(el("span", "dn", DAY_NAMES[i]));
+    b.appendChild(el("span", "dd", String(Number(day.slice(8)))));
+    b.appendChild(el("span", "dot"));
+    b.onclick = function () { calDay = day; calMonth = monthOf(day); renderPlanView(); };
+    strip.appendChild(b);
+  }
+  box.appendChild(strip);
+
+  // to-dos for that day
+  const rows = planRows(calDay, false);
+  const doneCount = rows.filter(function (r) { return r.done; }).length;
+  const dayName = calDay === today ? "today" : prettyDay(calDay);
+  const th = el("div", "sec-head");
+  th.appendChild(el("h2", "msec-title", "To-dos for " + dayName + " (" + doneCount + " of " + rows.length + " done)"));
+  box.appendChild(th);
+  const list = el("div");
+  rows.forEach(function (r) { list.appendChild(todoRowEl(r)); });
+  if (!rows.length) list.appendChild(el("div", "todo-empty", "Nothing planned for this day."));
+  box.appendChild(list);
+  const add = el("button", "dash-btn", "+ Add a to-do");
+  add.type = "button";
+  add.onclick = function () { openTodoSheet(null, calDay); };
+  box.appendChild(add);
+  if (todos.some(function (t) { return t.done; })) {
+    const clear = el("button", "small-btn clear-done", "Clear finished to-dos");
+    clear.type = "button";
+    clear.onclick = function () { todos = todos.filter(function (t) { return !t.done; }); save(); refreshTodoViews(); };
+    box.appendChild(clear);
+  }
+
+  // the time log
+  const tl = el("div", "sec-head");
+  tl.appendChild(el("h2", "msec-title", "Timeline"));
+  box.appendChild(tl);
+  const card = el("div", "time-card");
+  const text = el("div", "time-text");
+  const t = timerState();
+  if (t) {
+    text.appendChild(el("b", "", "Timing " + stepLabel(t.step).toLowerCase()));
+    const clock = el("span", "", "0:00");
+    clock.id = "timer-clock";
+    text.appendChild(clock);
+    card.appendChild(text);
+    const stop = el("button", "time-btn", "Stop");
+    stop.type = "button";
+    stop.onclick = stopTimer;
+    card.appendChild(stop);
+  } else {
+    const todayMin = timeLog.filter(function (e) { return e.date === today; }).reduce(function (s, e) { return s + e.minutes; }, 0);
+    const wk = weeklyStats()[7];
+    text.appendChild(el("b", "", "Time log"));
+    text.appendChild(el("span", "", (todayMin > 0 ? fmtMin(todayMin) + " today" : "Nothing logged today") + (wk && wk.perHour !== null ? " · about " + moneyShort(wk.perHour) + " profit per hour" : "")));
+    card.appendChild(text);
+    const start = el("button", "time-btn", "Start timer");
+    start.type = "button";
+    start.onclick = openTimeSheet;
+    card.appendChild(start);
+  }
+  box.appendChild(card);
+
+  // everything else the old planner had
+  const mh = el("div", "sec-head");
+  mh.appendChild(el("h2", "msec-title", "More planning tools"));
+  box.appendChild(mh);
+  const more = el("div");
+  more.id = "plan-more";
+  box.appendChild(more);
+  plannerTarget = more;
+  try {
+    plannerSection("cal", "Month calendar", buildCalendar);
+    plannerSection("week", "Work waiting and time needed", buildWorkWaiting);
+    plannerSection("calc", "Planning a new batch?", buildBatchCalc);
+  } finally {
+    plannerTarget = null;
+  }
+  startTimerTick();
+}
+function renderPlanner() { renderPlanView(); }
+
+// ---- Settings: a list of pages ----
+var settingsPage = "home";
+var SETTINGS_PAGES = {
+  look: { box: "look-box", title: "Look" },
+  features: { box: "tools-box", title: "Features you use", sub: "Turn off what you don't need" },
+  reminders: { box: "alerts-details", title: "Reminders" },
+  time: { box: "plan-box", title: "Time estimates" },
+  storage: { box: "bins-box", title: "Storage" },
+  cards: { box: "cards-box", title: "What each item shows" },
+  platforms: { box: "platforms-box", title: "Platforms and fees" },
+  backup: { box: "backup-box", title: "Back up and export" }
+};
+var THEME_SWATCHES = [["light", "#0b5cad", "Classic"], ["light-rose", "#d6457a", "Rose"], ["light-sage", "#2f6b4f", "Sage"], ["dark-midnight", "#1b2238", "Midnight"], ["dark-plum", "#8a3fc0", "Plum"]];
+var THEME_NAMES = { auto: "Automatic", light: "Classic", "light-rose": "Rose", "light-sage": "Sage", dark: "Dark", "dark-midnight": "Midnight", "dark-plum": "Plum" };
+function openSettingsPage(key) {
+  if (key !== "home" && !SETTINGS_PAGES[key]) key = "home";
+  settingsPage = key;
+  $("settings-home").hidden = key !== "home";
+  Object.keys(SETTINGS_PAGES).forEach(function (k) {
+    const b = $(SETTINGS_PAGES[k].box);
+    b.hidden = k !== key;
+    if (k === key && b.tagName === "DETAILS") b.open = true;
+  });
+  $("tools-title").textContent = key === "home" ? "Settings" : SETTINGS_PAGES[key].title;
+  const sub = $("tools-sub");
+  sub.hidden = key === "home" || !SETTINGS_PAGES[key].sub;
+  sub.textContent = key === "home" ? "" : (SETTINGS_PAGES[key].sub || "");
+  if (key === "home") renderSettingsHome();
+  if (key === "look") renderSwatches();
+  toolsModal.querySelector(".tools-panel").scrollTop = 0;
+}
+function settingsBack() {
+  if (settingsPage === "home") toolsModal.hidden = true; else openSettingsPage("home");
+}
+var CHEV = '<svg class="chev" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg>';
+function settingsRow(iconPath, title, sub, onClick, extra) {
+  const b = el("button", "srow2");
+  b.type = "button";
+  b.appendChild(svgEl(iconPath, "srow2-ico"));
+  const t = el("div", "srow2-text");
+  t.appendChild(el("b", "", title));
+  t.appendChild(el("span", "", sub));
+  b.appendChild(t);
+  if (extra) b.appendChild(extra);
+  b.insertAdjacentHTML("beforeend", CHEV);
+  b.onclick = onClick;
+  return b;
+}
+function settingsGroup(box, title, rows) {
+  const g = el("div", "sgroup");
+  g.appendChild(el("h2", "msec-title", title));
+  rows.forEach(function (r) { g.appendChild(r); });
+  box.appendChild(g);
+}
+function renderSettingsHome() {
+  const box = $("settings-home");
+  box.innerHTML = "";
+  const sw = el("span", "swatches");
+  THEME_SWATCHES.forEach(function (t) {
+    const i = document.createElement("i");
+    i.style.background = t[1];
+    if (themeChoice === t[0]) i.className = "on";
+    sw.appendChild(i);
+  });
+  const on = FEATURE_KEYS.filter(function (k) { return features[k]; }).length;
+  settingsGroup(box, "Make it yours", [
+    settingsRow('<circle cx="12" cy="12" r="8"/><path d="M12 4v16"/>', "Look", (themeChoice === "auto" ? "Follows your phone" : (THEME_NAMES[themeChoice] || "Automatic") + " theme"), function () { openSettingsPage("look"); }, sw),
+    settingsRow('<rect x="4" y="4" width="6.5" height="6.5" rx="1.5"/><rect x="13.5" y="4" width="6.5" height="6.5" rx="1.5"/><rect x="4" y="13.5" width="6.5" height="6.5" rx="1.5"/><rect x="13.5" y="13.5" width="6.5" height="6.5" rx="1.5"/>', "Features you use", on + " of " + FEATURE_KEYS.length + " turned on", function () { openSettingsPage("features"); })
+  ]);
+  settingsGroup(box, "How the app helps", [
+    settingsRow('<path d="M6 16V11a6 6 0 0 1 12 0v5l1.5 2h-15z"/><path d="M10 21h4"/>', "Reminders", remindersOn ? "Lower-price reminders are on" : "Lower-price reminders are off", function () { openSettingsPage("reminders"); }),
+    settingsRow('<circle cx="12" cy="13" r="7.5"/><path d="M12 9v4l2.5 2M9.5 2.5h5"/>', "Time estimates", "How long photos, writing and shipping take", function () { openSettingsPage("time"); })
+  ]);
+  const shop = [];
+  if (features.storage) shop.push(settingsRow('<path d="M21 8 12 3 3 8v8l9 5 9-5V8z"/><path d="M3 8l9 5 9-5M12 13v8"/>', "Storage", bins.length + (bins.length === 1 ? " shelf or bin" : " shelves and bins") + " · labels", function () { openSettingsPage("storage"); }));
+  shop.push(settingsRow('<rect x="4" y="5" width="16" height="14" rx="2"/><path d="M4 10h16"/>', "What each item shows", "Extra details and the photo checklist", function () { openSettingsPage("cards"); }));
+  shop.push(settingsRow('<path d="M4 9l1-5h14l1 5"/><path d="M5 9v11h14V9"/>', "Platforms and fees", "Which platforms you sell on, and their fees", function () { openSettingsPage("platforms"); }));
+  settingsGroup(box, "Your shop", shop);
+  settingsGroup(box, "Your data", [
+    settingsRow('<path d="M12 4v11M7 11l5 5 5-5M5 20h14"/>', "Back up and export", "Save a backup or a spreadsheet file", function () { openSettingsPage("backup"); }),
+    settingsRow('<path d="M12 20V9M7 13l5-5 5 5M5 4h14"/>', "Restore", "Load a backup you saved before", function () { openSettingsPage("backup"); $("restore-button").scrollIntoView({ block: "center" }); })
+  ]);
+}
+function renderSwatches() {
+  let row = $("swatch-row");
+  const panel = $("look-box").querySelector(".filters-panel");
+  if (!row) {
+    row = el("div", "swatch-row");
+    row.id = "swatch-row";
+    panel.insertBefore(row, panel.firstChild);
+  }
+  row.innerHTML = "";
+  THEME_SWATCHES.forEach(function (t) {
+    const b = document.createElement("button");
+    b.type = "button";
+    b.style.background = t[1];
+    b.setAttribute("aria-label", t[2] + " theme");
+    if (themeChoice === t[0]) b.className = "on";
+    b.onclick = function () {
+      themeSelect.value = t[0];
+      themeSelect.dispatchEvent(new Event("change"));
+      renderSwatches();
+    };
+    row.appendChild(b);
+  });
+}
+
+// ---- everything that is painted after render() ----
+function renderViews() {
+  try {
+    paintGoalTile();
+    renderHomeAlerts();
+    renderHomeTodos();
+    renderStorage();
+    renderMoney();
+    renderFilterChip();
+    if (currentView === "plan") renderPlanView();
+    if (!toolsModal.hidden && settingsPage === "home") renderSettingsHome();
+    updateEyebrow();
+  } catch (e) {
+    console.error(e);
+  }
+}
+
+// ---- wiring ----
 document.querySelectorAll(".bar-tab").forEach(function (button) {
   button.addEventListener("click", function () { showView(button.getAttribute("data-view")); });
 });
-document.getElementById("tab-add").addEventListener("click", function () { addItemButton.click(); });
-document.getElementById("seg-stock-items").addEventListener("click", function () { showStockPane("items"); });
-document.getElementById("seg-stock-storage").addEventListener("click", function () { showStockPane("storage"); });
-document.getElementById("top-search").addEventListener("click", function () {
+$("tab-add").addEventListener("click", function () { addItemButton.click(); });
+$("seg-stock-items").addEventListener("click", function () { showStockPane("items"); });
+$("seg-stock-storage").addEventListener("click", function () { showStockPane("storage"); });
+$("top-search").addEventListener("click", function () {
   showView("stock");
   showStockPane("items");
-  document.getElementById("search").focus();
+  $("search").focus();
 });
-document.querySelector("#summary-box .stat.main").addEventListener("click", function () { showView("money"); });
+function goMoney() { showView("money"); }
+$("home-balance-tile").addEventListener("click", goMoney);
+$("goals-mini").addEventListener("click", goMoney);
+$("home-todo-all").addEventListener("click", function () { showView("plan"); });
+$("home-todo-add").addEventListener("click", function () { openTodoSheet(null, ""); });
+document.querySelectorAll("#sales-period button").forEach(function (b) {
+  b.addEventListener("click", function () { salesPeriod = b.getAttribute("data-p"); renderSalesBlock(); renderPlatformRows(); });
+});
 showView("home");
 showStockPane("items");
 
