@@ -798,10 +798,22 @@ svg { flex: none; }
 #app-title { font-size: 13px; font-weight: 600; color: var(--muted); cursor: default; overflow-wrap: anywhere; }
 #view-title { margin: 0; font-size: 26px; font-weight: 800; letter-spacing: -0.02em; }
 #settings-label { display: none; }
-#tools-button, #top-search, .icon-btn { flex: none; width: 44px; min-height: 44px; height: 44px; padding: 0; margin-left: 0; display: inline-flex; align-items: center; justify-content: center; background: var(--surface); border: 1px solid var(--line-soft); border-radius: 12px; color: var(--text); }
-#top-search svg, .icon-btn svg { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+#tools-button, #top-bell, .icon-btn { flex: none; width: 44px; min-height: 44px; height: 44px; padding: 0; margin-left: 0; display: inline-flex; align-items: center; justify-content: center; background: var(--surface); border: 1px solid var(--line-soft); border-radius: 12px; color: var(--text); }
+#top-bell svg, .icon-btn svg { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
 #tools-button .ico { width: 20px; height: 20px; }
-body:not([data-view="home"]) #top-search { display: none; }
+body:not([data-view="home"]) #top-bell { display: none; }
+#top-bell { position: relative; }
+#bell-badge { position: absolute; top: -5px; right: -5px; min-width: 18px; height: 18px; padding: 0 5px; box-sizing: border-box; border-radius: 9px; background: var(--danger); color: var(--bg); font-size: 11px; font-weight: 800; line-height: 18px; text-align: center; }
+#bell-badge[hidden] { display: none; }
+/* notification history sheet */
+.notif-day { margin: 16px 0 6px; font-size: 12px; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase; color: var(--muted); }
+.notif-row { display: flex; gap: 10px; align-items: flex-start; width: 100%; min-height: 44px; margin-top: 6px; padding: 10px 12px; text-align: left; background: var(--surface); border: 1px solid var(--line-soft); border-radius: 12px; color: var(--text); font-size: 14px; }
+.notif-row .ico { flex: none; width: 20px; height: 20px; margin-top: 1px; }
+.notif-row.ship .ico { color: var(--danger); }
+.notif-row.price .ico { color: var(--warn-text); }
+.notif-row.new { border-color: var(--warn-edge); }
+.notif-text { flex: 1; min-width: 0; overflow-wrap: anywhere; line-height: 1.35; }
+.notif-time { flex: none; font-size: 12px; color: var(--muted); white-space: nowrap; }
 
 /* ---- shared pieces ---- */
 .view > :first-child { margin-top: 12px; }
@@ -1065,7 +1077,7 @@ progress::-moz-progress-bar { background: var(--primary); border-radius: 5px; }
       <span id="app-title">Resale Tracker</span>
       <h1 id="view-title">Today</h1>
     </div>
-    <button type="button" id="top-search" class="icon-btn" aria-label="Search your items"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M16 16l5 5"/></svg></button>
+    <button type="button" id="top-bell" class="icon-btn" aria-label="Notifications"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg><span id="bell-badge" hidden></span></button>
     <button type="button" id="tools-button" aria-label="Settings"><span id="settings-label">Settings</span></button>
   </div>
 
@@ -1643,6 +1655,7 @@ progress::-moz-progress-bar { background: var(--primary); border-radius: 5px; }
     clock: '<circle cx="12" cy="13" r="8"/><path d="M12 9v4.5l3 1.5M9.5 2.5h5"/>',
     camera: '<path d="M3.5 8h3.5l1.8-2.5h6.4L17 8h3.5v11.5h-17z"/><circle cx="12" cy="13.5" r="3.6"/>',
     check: '<path d="M5 12.5l4.5 4.5L19 7"/>',
+    bell: '<path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/>',
     download: '<path d="M12 4v11M7 11l5 5 5-5M5 20h14"/>',
     plus: '<path d="M12 5v14M5 12h14"/>',
     up: '<path d="M6 14.5l6-6 6 6"/>',
@@ -2512,6 +2525,7 @@ function applySuggestedSlot() {
 
 // Shows a short message at the bottom so it is clear that a tap did something.
 function showToast(text) {
+  logNotif(text, "info");
   let t = document.getElementById("toast");
   if (!t) {
     t = document.createElement("div");
@@ -2523,6 +2537,115 @@ function showToast(text) {
   t.classList.add("show");
   clearTimeout(showToast.timer);
   showToast.timer = setTimeout(function () { t.classList.remove("show"); }, 4000);
+}
+
+// ---- notification history: the bell on Home keeps every alert and message so you can look back ----
+// Each entry: { t: time in ms, text, kind: "info" | "ship" | "price", k: alert key, item: item name }.
+var NOTIF_MAX = 200;
+function cleanNotifs(list) {
+  if (!Array.isArray(list)) return [];
+  return list.filter(function (e) { return e && typeof e.text === "string" && Number(e.t) > 0; })
+    .map(function (e) {
+      return { t: Number(e.t), text: e.text.slice(0, 300), kind: e.kind === "ship" || e.kind === "price" ? e.kind : "info", k: typeof e.k === "string" ? e.k : "", item: typeof e.item === "string" ? e.item : "" };
+    }).slice(-NOTIF_MAX);
+}
+var notifFirstRun = false;
+var notifLog = [];
+try {
+  notifFirstRun = localStorage.getItem("notifLog") === null;
+  notifLog = cleanNotifs(JSON.parse(localStorage.getItem("notifLog")));
+} catch (e) { notifLog = []; }
+var notifSeen = 0;
+try { notifSeen = Number(localStorage.getItem("notifSeen")) || 0; } catch (e) {}
+function saveNotifs() {
+  try {
+    localStorage.setItem("notifLog", JSON.stringify(notifLog));
+    localStorage.setItem("notifSeen", String(notifSeen));
+  } catch (e) {}
+}
+function unreadNotifs() {
+  return notifLog.filter(function (e) { return e.t > notifSeen; }).length;
+}
+function updateBell() {
+  const badge = document.getElementById("bell-badge");
+  const bell = document.getElementById("top-bell");
+  if (!badge || !bell) return;
+  const n = unreadNotifs();
+  badge.hidden = n === 0;
+  badge.textContent = n > 9 ? "9+" : String(n);
+  bell.setAttribute("aria-label", n === 0 ? "Notifications" : "Notifications, " + n + " new");
+}
+function logNotif(text, kind, key, itemName) {
+  if (!text || text === "Undone." || !Array.isArray(notifLog)) return;
+  const last = notifLog[notifLog.length - 1];
+  if (last && last.text === text && Date.now() - last.t < 3000) return;
+  notifLog.push({ t: Date.now(), text: String(text), kind: kind || "info", k: key || "", item: itemName || "" });
+  if (notifLog.length > NOTIF_MAX) notifLog = notifLog.slice(-NOTIF_MAX);
+  saveNotifs();
+  updateBell();
+}
+// Late-shipping and lower-price alerts are logged once each, the first time they show up.
+function logAlerts() {
+  function once(key, kind, text, name) {
+    if (notifLog.some(function (e) { return e.k === key; })) return;
+    logNotif(text, kind, key, name);
+  }
+  currentOverdue.forEach(function (it) { once("ship:" + shipKey(it), "ship", "Ship now: " + it.name + " is late.", it.name); });
+  currentDue.forEach(function (it) { once("price:" + dueKey(it), "price", "Time to lower the price: " + it.name, it.name); });
+  if (notifFirstRun) {
+    // The very first time, alerts that already existed are history, not news.
+    notifFirstRun = false;
+    notifSeen = Date.now();
+    saveNotifs();
+    updateBell();
+  }
+}
+function markNotifsSeen() {
+  notifSeen = Date.now();
+  saveNotifs();
+  updateBell();
+}
+function notifDayLabel(ms) {
+  const d = new Date(ms);
+  const text = d.getFullYear() + "-" + pad(d.getMonth() + 1) + "-" + pad(d.getDate());
+  const ago = dayDiff(text, todayText());
+  if (ago === 0) return "Today";
+  if (ago === 1) return "Yesterday";
+  return prettyDay(text);
+}
+function openNotifSheet() {
+  const seenBefore = notifSeen;
+  markNotifsSeen();
+  scanBody.innerHTML = "";
+  scanBody.appendChild(el("h3", "", "Notifications"));
+  if (notifLog.length === 0) {
+    scanBody.appendChild(el("div", "small", "Nothing yet. Late-shipping alerts, price reminders and confirmations will collect here."));
+  } else {
+    scanBody.appendChild(el("div", "small", "Newest first. Tap an item alert to jump to the item."));
+    let lastDay = "";
+    notifLog.slice().reverse().forEach(function (e) {
+      const day = notifDayLabel(e.t);
+      if (day !== lastDay) { scanBody.appendChild(el("div", "notif-day", day)); lastDay = day; }
+      const row = el("button", "notif-row " + e.kind + (e.t > seenBefore ? " new" : ""));
+      row.type = "button";
+      row.appendChild(icon(e.kind === "ship" ? "alert" : e.kind === "price" ? "clock" : "bell"));
+      row.appendChild(el("span", "notif-text", e.text));
+      row.appendChild(el("span", "notif-time", new Date(e.t).toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit" })));
+      row.onclick = function () {
+        const item = e.item ? items.find(function (it) { return it.name === e.item; }) : null;
+        if (item) showCard(item);
+      };
+      scanBody.appendChild(row);
+    });
+    scanBody.appendChild(modalButton("Clear history", "danger", function () {
+      notifLog = [];
+      saveNotifs();
+      updateBell();
+      openNotifSheet();
+    }));
+  }
+  scanBody.appendChild(modalButton("Close", "", closeScanModal));
+  scanModal.hidden = false;
 }
 
 
@@ -2557,6 +2680,7 @@ function hideUndo() {
 }
 // Shows the message with an Undo button for about 8 seconds. snap is captureState() taken before the change.
 function showUndo(text, snap) {
+  logNotif(text, "info");
   let bar = document.getElementById("undo-bar");
   if (!bar) {
     bar = document.createElement("div");
@@ -5761,6 +5885,7 @@ function render() {
   }
   currentDue = freshDue;
   currentOverdue = overdueItems;
+  logAlerts();
 
   // The red alert at the top for sold items that should have shipped already.
   const shipAlert = document.getElementById("ship-alert");
@@ -8744,11 +8869,8 @@ document.querySelectorAll(".bar-tab").forEach(function (button) {
 $("tab-add").addEventListener("click", function () { addItemButton.click(); });
 $("seg-stock-items").addEventListener("click", function () { showStockPane("items"); });
 $("seg-stock-storage").addEventListener("click", function () { showStockPane("storage"); });
-$("top-search").addEventListener("click", function () {
-  showView("stock");
-  showStockPane("items");
-  $("search").focus();
-});
+$("top-bell").addEventListener("click", openNotifSheet);
+updateBell();
 function goMoney() { showView("money"); }
 $("home-balance-tile").addEventListener("click", goMoney);
 $("goals-mini").addEventListener("click", goMoney);
