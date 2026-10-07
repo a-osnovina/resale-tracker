@@ -675,9 +675,10 @@ body.no-invest #goals-mini { display: none !important; }
 .swipe-wrap { position: relative; margin: 14px 0; border-radius: 12px; overflow: hidden; }
 .swipe-wrap > .card { margin: 0; position: relative; z-index: 1; touch-action: pan-y; -webkit-user-select: none; user-select: none; }
 .swipe-bg { position: absolute; top: 0; bottom: 0; display: flex; align-items: stretch; }
-.swipe-next { left: 0; width: 150px; background: var(--sold-edge); color: #ffffff; align-items: center; padding-left: 14px; font-weight: 800; font-size: 15px; }
+.swipe-next { left: 0; width: 176px; background: var(--sold-edge); color: #ffffff; align-items: center; padding-left: 14px; font-weight: 800; font-size: 15px; }
 .swipe-actions { right: 0; }
 .swipe-btn { flex: none; width: 76px; min-height: 0; border: 0; border-radius: 0; margin: 0; padding: 0 4px; font-size: 13px; font-weight: 800; color: #ffffff; }
+.swipe-btn:first-child { width: 102px; padding-left: 26px; }
 .swipe-btn.edit { background: #0b5cad; }
 .swipe-btn.lower { background: #b26a00; }
 .swipe-btn.dismiss { background: #5b6770; }
@@ -748,6 +749,10 @@ body.no-invest #goals-mini { display: none !important; }
 body.no-storage #storage-section { display: none !important; }
 #sold-main { margin-top: 4px; }
 
+/* round 5 */
+.weight-row { display: flex; gap: 8px; margin-top: 4px; }
+.weight-row input { margin-top: 0 !important; flex: 1; min-width: 0; }
+.weight-row select { flex: none; width: 96px; }
 /* round 4 */
 #undo-bar { position: fixed; left: 12px; right: 12px; bottom: calc(90px + env(safe-area-inset-bottom)); z-index: 80; max-width: 560px; margin: 0 auto; display: flex; align-items: center; gap: 10px; background: #1d2939; color: #ffffff; padding: 8px 8px 8px 14px; border-radius: 12px; font-size: 14px; box-shadow: 0 4px 14px rgba(0,0,0,.4); }
 #undo-bar[hidden] { display: none; }
@@ -977,7 +982,19 @@ body.no-storage #storage-group, body.no-storage #bins-box { display: none !impor
 
           <label class="field">Date posted (filled in when it's marked Listed) <input id="posted" type="date"></label>
 
-          <label class="field">Weight (oz) <input id="weight" type="number" inputmode="decimal" step="0.1" min="0" placeholder="0"></label>
+          <div class="field">Weight
+            <div class="weight-row">
+              <input id="weight" type="number" inputmode="decimal" step="any" min="0" placeholder="0" aria-label="Weight">
+              <input id="weight-oz" type="number" inputmode="decimal" step="any" min="0" placeholder="oz" aria-label="Ounces" hidden>
+              <select id="weight-unit" aria-label="Weight unit">
+                <option value="oz">oz</option>
+                <option value="lb">lb</option>
+                <option value="lboz">lb + oz</option>
+                <option value="g">g</option>
+                <option value="kg">kg</option>
+              </select>
+            </div>
+          </div>
 
           <label class="field">Purchase cost ($) <input id="cost" type="number" inputmode="decimal" step="0.01" min="0" placeholder="0.00"></label>
           <div class="small" style="margin-top:4px">What you paid for this item. It is subtracted from your profit. Bulk upload fills it in for you.</div>
@@ -1249,10 +1266,6 @@ body.no-storage #storage-group, body.no-storage #bins-box { display: none !impor
       <label class="field">Or type a new price ($)
         <input id="price-custom" type="number" inputmode="decimal" step="0.01" min="0">
       </label>
-      <label class="field">Or take this % off
-        <input id="price-percent" type="number" inputmode="decimal" step="0.5" min="1" max="95">
-      </label>
-      <div class="small">Fill in a new price or a percent, not both.</div>
       <div class="form-actions">
         <button type="button" id="price-set" class="primary">Set price</button>
         <button type="button" id="price-cancel">Cancel</button>
@@ -1803,7 +1816,47 @@ const statusInput = document.getElementById("status");
 const binInput = document.getElementById("bin");
 const slotInput = document.getElementById("slot");
 const noSlotBox = document.getElementById("no-slot");
+const WEIGHT_UNITS = ["oz", "lb", "lboz", "g", "kg"];
+const OZ_PER_G = 1 / 28.349523125;
+let weightUnit = "oz";
+try { const u = localStorage.getItem("weightUnit"); if (WEIGHT_UNITS.indexOf(u) !== -1) weightUnit = u; } catch (e) {}
 const weightInput = document.getElementById("weight");
+const weightOzInput = document.getElementById("weight-oz");
+const weightUnitSelect = document.getElementById("weight-unit");
+let weightBoxUnit = weightUnit;   // the unit the boxes in the form are currently showing
+// What is typed in the boxes, in ounces.
+function readWeightOz() {
+  const a = Number(weightInput.value) || 0;
+  if (weightBoxUnit === "lboz") return Math.round((a * 16 + (Number(weightOzInput.value) || 0)) * 10000) / 10000;
+  if (weightBoxUnit === "lb") return Math.round(a * 16 * 10000) / 10000;
+  if (weightBoxUnit === "g") return Math.round(a * OZ_PER_G * 10000) / 10000;
+  if (weightBoxUnit === "kg") return Math.round(a * 1000 * OZ_PER_G * 10000) / 10000;
+  return a;
+}
+function showWeightOz(oz, unit) {
+  weightBoxUnit = unit;
+  weightUnitSelect.value = unit;
+  weightOzInput.hidden = unit !== "lboz";
+  weightInput.placeholder = unit === "lboz" ? "lb" : "0";
+  if (!oz) { weightInput.value = ""; weightOzInput.value = ""; return; }
+  if (unit === "lboz") {
+    let lb = Math.floor(oz / 16);
+    let rest = Math.round((oz - lb * 16) * 10) / 10;
+    if (rest >= 16) { lb += 1; rest = 0; }
+    weightInput.value = String(lb);
+    weightOzInput.value = String(rest);
+  } else {
+    weightInput.value = trimNum(ozToUnit(oz, unit), unit === "g" ? 1 : 3);
+    weightOzInput.value = "";
+  }
+}
+weightUnitSelect.addEventListener("change", function () {
+  const oz = readWeightOz();
+  weightUnit = weightUnitSelect.value;
+  try { localStorage.setItem("weightUnit", weightUnit); } catch (e) {}
+  showWeightOz(oz, weightUnit);
+  render();
+});
 const costInput = document.getElementById("cost");
 const originalInput = document.getElementById("original");
 const currentInput = document.getElementById("current");
@@ -1864,8 +1917,25 @@ function save() {
 }
 
 
+// Weights are always saved in ounces. The unit you pick only changes how they are typed and shown.
+function trimNum(n, digits) { return String(Math.round(n * Math.pow(10, digits)) / Math.pow(10, digits)); }
+function ozToUnit(oz, unit) {
+  if (unit === "lb") return oz / 16;
+  if (unit === "g") return oz / OZ_PER_G;
+  if (unit === "kg") return oz / OZ_PER_G / 1000;
+  return oz;
+}
 function formatWeight(w) {
-  return String(Math.round(w * 10) / 10) + " oz";
+  if (weightUnit === "lboz") {
+    let lb = Math.floor(w / 16);
+    let oz = Math.round((w - lb * 16) * 10) / 10;
+    if (oz >= 16) { lb += 1; oz = 0; }
+    return lb > 0 ? lb + " lb " + trimNum(oz, 1) + " oz" : trimNum(oz, 1) + " oz";
+  }
+  if (weightUnit === "g") return trimNum(ozToUnit(w, "g"), 0) + " g";
+  if (weightUnit === "kg") return trimNum(ozToUnit(w, "kg"), 2) + " kg";
+  if (weightUnit === "lb") return trimNum(ozToUnit(w, "lb"), 2) + " lb";
+  return trimNum(w, 1) + " oz";
 }
 
 // Small helper to build a page element.
@@ -2594,6 +2664,7 @@ function closeForm() {
   advancedOpen = false;
   binInput.disabled = false;
   form.reset();
+  showWeightOz(0, weightUnit);
   if (typeof clearFormProblems === "function") clearFormProblems();
   noSlotBox.checked = false;
   setFormPhoto("");
@@ -2684,7 +2755,7 @@ function startEdit(index) {
   refreshSlotOptions();
   slotInput.value = item.slot ? String(item.slot) : "";
   document.getElementById("slot-suggest").textContent = "";
-  weightInput.value = item.weight ? item.weight : "";
+  showWeightOz(item.weight || 0, weightUnit);
   costInput.value = item.cost ? item.cost : "";
   PHOTO_TYPES.forEach(function (type) {
     photoBox(type).checked = !!(item.photos && item.photos[type.key]);
@@ -3628,29 +3699,14 @@ function lowerPrice(item) {
   });
 
   priceCustom.value = "";
-  document.getElementById("price-percent").value = "";
   priceModal.hidden = false;
 }
 
 document.getElementById("price-set").addEventListener("click", function () {
   if (!priceTarget) return;
   const text = priceCustom.value.trim();
-  const pctText = document.getElementById("price-percent").value.trim();
-  if (text !== "" && pctText !== "") {
-    alert("Fill in a new price or a percent, not both.");
-    return;
-  }
-  if (text === "" && pctText !== "") {
-    const pct = Number(pctText);
-    if (isNaN(pct) || pct <= 0 || pct >= 100) {
-      alert("Please enter a percent between 1 and 99.");
-      return;
-    }
-    setPrice(priceTarget, Math.round(priceTarget.current * (100 - pct)) / 100);
-    return;
-  }
   if (text === "") {
-    alert("Type a new price, tap one of the suggestions, or type a percent off.");
+    alert("Type a new price or tap one of the suggestions.");
     return;
   }
   const value = Number(text);
@@ -5775,7 +5831,7 @@ form.addEventListener("submit", function (event) {
     status: status,
     bin: bin,
     slot: slot,
-    weight: Number(weightInput.value) || 0,
+    weight: readWeightOz(),
     cost: Number(costInput.value) || 0,
     photos: photos,
     photosNA: photosNA,
