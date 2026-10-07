@@ -502,9 +502,6 @@ label.has-error { color: var(--danger); font-weight: 700; }
 #weekly-more { width: 100%; margin-top: 10px; }
 #backup-note { display: none; background: var(--info-bg); color: var(--info-text); border-radius: 10px; padding: 10px 12px; margin-top: 10px; }
 #backup-note.warn { background: var(--warn-bg); color: var(--warn-text); }
-#backup-text-box { margin-top: 6px; }
-#backup-text-box summary { min-height: 40px; display: flex; align-items: center; color: var(--accent-text); font-weight: 600; font-size: 14px; }
-#backup-text { display: block; width: 100%; font: inherit; font-size: 16px; padding: 8px 10px; border: 1px solid var(--line); border-radius: 8px; margin-bottom: 8px; }
 /* Planner, platforms, bulk history */
 .top-buttons { display: flex; gap: 8px; }
 .pipe { display: flex; gap: 0; overflow-x: auto; padding: 6px 0 10px; }
@@ -1033,6 +1030,7 @@ progress::-moz-progress-bar { background: var(--primary); border-radius: 5px; }
 #plan-more .planner-sec > summary { min-height: 48px; display: flex; align-items: center; padding: 0 14px; font-weight: 800; color: var(--accent-text); }
 .clear-done { margin-top: 10px; }
 
+#backup-section .export-row2 .dl { width: 22px; height: 22px; flex: none; fill: none; stroke: var(--accent-text, #0b5cad); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
 /* ---- Settings (full screen: grey page, white title bar, grouped cards, Done button) ---- */
 #tools-modal { top: 0; bottom: 0; z-index: 60; background: var(--summary-bg); align-items: stretch; }
 #tools-modal .modal-panel.tools-panel { max-height: none; height: 100%; min-height: 0; max-width: 760px; margin: 0 auto; border-radius: 0; background: var(--summary-bg); padding: 0; display: flex; flex-direction: column; }
@@ -1094,7 +1092,6 @@ progress::-moz-progress-bar { background: var(--primary); border-radius: 5px; }
 #backup-section .set-card .export-card { margin: 0; padding: 0; background: transparent; border: 0; }
 #backup-section button.srow2 { min-height: 60px; font-size: 16px; }
 #backup-section .srow2-text { flex: 1 1 auto; white-space: normal; }
-#backup-section .set-card > #backup-text-box { margin: 0; padding: 0 14px; border-top: 1px solid var(--line-soft); }
 #backup-section .set-card .switch-row { padding: 0; border: 0; }
 #backup-section .danger-zone { margin-top: 10px; }
 #backup-section .sgroup > #backup-note { margin-top: 10px; }
@@ -1606,19 +1603,11 @@ progress::-moz-progress-bar { background: var(--primary); border-radius: 5px; }
 
     <div class="sgroup">
       <h2 class="msec-title">Export as a spreadsheet</h2>
-      <div class="set-card pad">
-        <div class="export-card">
-          <div class="export-text"><b>Download your items</b><span>Saves a spreadsheet you can open in Excel, Numbers or Google Sheets. Handy for taxes and keeping your own records.</span></div>
-          <div class="export-row">
-            <select id="export-scope" aria-label="What to download">
-              <option value="all">All items</option>
-              <option value="sold">Sold and shipped only</option>
-            </select>
-            <button type="button" id="export-button" class="small-btn"><span class="ico" aria-hidden="true"><svg viewBox="0 0 24 24" focusable="false"><path d="M12 4v11M7 11l5 5 5-5M5 20h14"/></svg></span> Download</button>
-          </div>
-          <div id="export-note" class="small" hidden></div>
-        </div>
+      <div class="set-card">
+        <button type="button" class="srow2 export-row2" data-scope="all" aria-label="Download items"><span class="srow2-ico data"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21 8l-9-5-9 5 9 5 9-5zM3 8v8l9 5 9-5V8"/></svg></span><span class="srow2-text">Items<small>Everything in stock</small></span><svg class="dl" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4v11M7 11l5 5 5-5M5 20h14"/></svg></button>
+        <button type="button" class="srow2 export-row2" data-scope="sold" aria-label="Download sales and profit"><span class="srow2-ico data"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 19V9M10 19V5M16 19v-7M22 19H2"/></svg></span><span class="srow2-text">Sales and profit<small>What sold, and what you made</small></span><svg class="dl" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4v11M7 11l5 5 5-5M5 20h14"/></svg></button>
       </div>
+      <div id="export-note" class="set-hint" hidden></div>
     </div>
 
     <div class="sgroup">
@@ -1626,14 +1615,6 @@ progress::-moz-progress-bar { background: var(--primary); border-radius: 5px; }
       <div class="set-card">
         <button type="button" id="restore-button" class="srow2"><span class="srow2-ico help"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21V9M8 13l4-4 4 4M4 5h16"/></svg></span><span class="srow2-text">Restore from a backup file<small>Replaces what's in the app right now</small></span><svg class="chev" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg></button>
         <input type="file" id="restore-file" accept=".json,application/json" hidden>
-        <details id="backup-text-box">
-          <summary>Copy and paste instead</summary>
-          <textarea id="backup-text" rows="3" placeholder="Your backup text shows up here. To restore, paste a backup in this box."></textarea>
-          <div class="toolbar">
-            <button type="button" id="backup-copy">Copy backup text</button>
-            <button type="button" id="restore-text">Restore from text</button>
-          </div>
-        </details>
       </div>
       <div id="backup-note"></div>
     </div>
@@ -1651,8 +1632,8 @@ progress::-moz-progress-bar { background: var(--primary); border-radius: 5px; }
     <div class="sgroup">
       <h2 class="msec-title">More</h2>
       <div class="export-card" style="margin-top: 0">
-        <div class="export-text"><b>Example backup</b><span>A sample file with a few made-up items, an investment and a storage, so you can see how a backup looks or try the app with data. Restoring it replaces what is in the app, so save your own backup first.</span></div>
-        <div class="toolbar"><button type="button" id="example-backup" class="small-btn">Download example backup</button></div>
+        <div class="export-text"><b>Example backup</b><span>Fills the app with a few made-up items, an investment and a storage so you can try it with data. It replaces what is in the app right now, so save your own backup first.</span></div>
+        <div class="toolbar"><button type="button" id="example-backup" class="small-btn">Load example data</button></div>
       </div>
       <div class="danger-zone">
         <div class="export-text"><b>Start from zero</b><span>Deletes all your items, investments, balances, storage, planner data and settings from this copy of the app. Save a backup first if you might want anything back.</span></div>
@@ -6328,13 +6309,12 @@ function csvCell(value) {
   return '"' + text.replace(/"/g, '""') + '"';
 }
 
-document.getElementById("export-button").addEventListener("click", function () {
+function exportCsv(scope) {
   const header = ["Item", "Site", "Status", "Storage", "Slot", "Weight (oz)"];
   PHOTO_TYPES.forEach(function (type) { header.push("Photo: " + type.label); });
   header.push("Date posted", "Date sold", "Date shipped", "Days to sell", "Days sold to shipped", "Original price", "Current price", "Last price change", "Sold for", "Bumped", "Bump %", "Bump cost", "Platform fee", "Postage label", "Purchase cost", "Profit", "Cashed out");
   const rows = [header];
 
-  const scope = document.getElementById("export-scope").value;
   const exportItems = items.filter(function (it) { return scope === "all" || isDone(it); });
   exportItems.forEach(function (item) {
     const d = daysToSell(item);
@@ -6369,6 +6349,9 @@ document.getElementById("export-button").addEventListener("click", function () {
   const note = document.getElementById("export-note");
   note.hidden = false;
   note.textContent = exportItems.length === 0 ? "Nothing to download yet." : "Saved " + exportItems.length + (exportItems.length === 1 ? " item" : " items") + ". Look in your Downloads or the Files app.";
+}
+document.querySelectorAll(".export-row2").forEach(function (b) {
+  b.addEventListener("click", function () { exportCsv(b.dataset.scope); });
 });
 
 // ---- backup and restore ----
@@ -6376,7 +6359,6 @@ document.getElementById("export-button").addEventListener("click", function () {
 // Restoring replaces everything in this copy of the app with what is in the backup.
 const backupNote = document.getElementById("backup-note");
 const backupInfo = document.getElementById("backup-info");
-const backupText = document.getElementById("backup-text");
 const restoreFile = document.getElementById("restore-file");
 
 function showBackupNote(text, isWarning) {
@@ -6498,28 +6480,7 @@ document.getElementById("backup-save").addEventListener("click", function () {
   }
 });
 
-document.getElementById("backup-copy").addEventListener("click", function () {
-  const text = backupData();
-  backupText.value = text;
-  document.getElementById("backup-text-box").open = true;
-  const fallback = function () {
-    backupText.focus();
-    backupText.select();
-    showBackupNote("I couldn't copy it automatically. Press and hold in the box, choose Select All, then Copy.", true);
-  };
-  if (navigator.clipboard && navigator.clipboard.writeText) {
-    navigator.clipboard.writeText(text)
-      .then(function () {
-        markBackupSaved();
-        showBackupNote("Backup copied. Open the other copy of the app, paste it into the box under Copy and paste instead, and press Restore from text.", false);
-      })
-      .catch(fallback);
-  } else {
-    fallback();
-  }
-});
-
-function restoreFromText(text) {
+function restoreFromText(text, skipAsk) {
   let data = null;
   try { data = JSON.parse(text); } catch (e) {}
   if (!data || data.app !== "resale-tracker" || !Array.isArray(data.items) || !Array.isArray(data.goals)) {
@@ -6534,7 +6495,7 @@ function restoreFromText(text) {
   const message = "Replace everything in this app with the backup?\n\n" +
     "The backup has " + newItems.length + " items and " + newGoals.length + " investments" + (newBins ? " and " + newBins.length + " storage" : "") + ".\n" +
     "What is in this app now will be erased.";
-  askYesNo(message, "Replace everything", function () {
+  const apply = function () {
     items = newItems;
     goals = newGoals;
     if (newBins) bins = newBins;
@@ -6588,7 +6549,8 @@ function restoreFromText(text) {
     save();
     render();
     showBackupNote("Restored " + newItems.length + " items and " + newGoals.length + " investments.", false);
-  });
+  };
+  if (skipAsk) apply(); else askYesNo(message, "Replace everything", apply);
 }
 
 document.getElementById("restore-button").addEventListener("click", function () {
@@ -6603,14 +6565,6 @@ restoreFile.addEventListener("change", function () {
   reader.onerror = function () { showBackupNote("I couldn't open that file.", true); };
   reader.readAsText(file);
   restoreFile.value = "";
-});
-
-document.getElementById("restore-text").addEventListener("click", function () {
-  if (backupText.value.trim() === "") {
-    showBackupNote("Paste your backup text into the box first.", true);
-    return;
-  }
-  restoreFromText(backupText.value);
 });
 
 // Sales history shows one view at a time: by week, or by lot.
@@ -8024,12 +7978,10 @@ function exampleBackupData() {
   }, null, 2);
 }
 document.getElementById("example-backup").addEventListener("click", function () {
-  const blob = new Blob([exampleBackupData()], { type: "application/json" });
-  const link = document.createElement("a");
-  link.href = URL.createObjectURL(blob);
-  link.download = "resale-example-backup.json";
-  link.click();
-  showBackupNote("Example backup saved. To try it, use Restore from file. That replaces what is in the app, so save your own backup first.", false);
+  // One tap loads the sample. If you already have items, ask first so nothing is lost by accident.
+  const load = function () { restoreFromText(exampleBackupData(), true); showBackupNote("Example data loaded. Look at Home and Stock.", false); };
+  if (items.length > 0) askYesNo("Load the example data? It replaces everything in this app right now.", "Load example", load);
+  else load();
 });
 
 // Everything this app keeps in your browser. Only these are removed when you start from zero.
