@@ -117,6 +117,8 @@
     return String(text || "").trim().split(/\s+/).filter(function (w) { return w !== ""; }).length;
   }
   function isQuickNameOk(text) { return wordCount(text) >= 2; }
+  // A new item is In progress until it has both a price and a platform, then it counts as Listed.
+  function autoStatus(hasPrice, hasSite) { return hasPrice && hasSite ? "Listed" : "In progress"; }
 
   function capWords(text) {
     return String(text).replace(/(^|\s)(\S)/g, function (m, space, ch) { return space + ch.toUpperCase(); });
@@ -387,7 +389,7 @@
     platformFee: platformFee, shipCostOf: shipCostOf, costsTotal: costsTotal, profitOf: profitOf,
     bumpLastDay: bumpLastDay, boostCost: boostCost, pastBumpCents: pastBumpCents,
     bundlePrice: bundlePrice, bulkCosts: bulkCosts, parseDate: parseDate, formatDate: formatDate, dayDiff: dayDiff, addDays: addDays,
-    isWeekend: isWeekend, shipByDate: shipByDate, wordCount: wordCount, isQuickNameOk: isQuickNameOk,
+    isWeekend: isWeekend, shipByDate: shipByDate, wordCount: wordCount, isQuickNameOk: isQuickNameOk, autoStatus: autoStatus,
     capWords: capWords, backupDue: backupDue, backupAge: backupAge,
     themeParts: themeParts, themeForMode: themeForMode, themeForLook: themeForLook,
     withdrawPlan: withdrawPlan, applyWithdrawal: applyWithdrawal, undoWithdrawal: undoWithdrawal,

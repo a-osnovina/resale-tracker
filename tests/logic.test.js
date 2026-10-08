@@ -98,6 +98,13 @@ test("quick name needs two words", () => {
   assert.ok(L.isQuickNameOk("Nike hoodie"));
   assert.ok(L.isQuickNameOk("  Black   Nike hoodie "));
 });
+test("a new item is In progress until it has a price and a platform", () => {
+  assert.strictEqual(L.autoStatus(false, false), "In progress");
+  assert.strictEqual(L.autoStatus(true, false), "In progress");
+  assert.strictEqual(L.autoStatus(false, true), "In progress");
+  assert.strictEqual(L.autoStatus(true, true), "Listed");
+});
+
 test("capWords", () => assert.strictEqual(L.capWords("nike black hoodie"), "Nike Black Hoodie"));
 test("backup reminder", () => {
   const day = 86400000, now = 100 * day;

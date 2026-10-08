@@ -365,7 +365,10 @@ body.goals-unpinned #goals-mini { display: none !important; }
 @media (prefers-reduced-motion: reduce) { .switch .track, .switch .track::after { transition: none; } }
 #toast { position: fixed; left: 12px; right: 12px; bottom: calc(90px + env(safe-area-inset-bottom)); z-index: 70; max-width: 560px; margin: 0 auto; background: #1d2939; color: #ffffff; padding: 12px 14px; border-radius: 12px; font-size: 14px; box-shadow: 0 4px 14px rgba(0,0,0,.35); opacity: 0; pointer-events: none; transition: opacity .2s; }
 #toast.show { opacity: 1; }
-#add-menu { position: fixed; top: 0; right: 0; bottom: 0; left: 0; z-index: 50; background: rgba(0, 0, 0, 0.45); display: flex; align-items: flex-end; justify-content: center; }
+.add-methods { display: flex; gap: 8px; margin: 6px 0 4px; }
+.add-methods[hidden] { display: none; }
+.add-methods button { flex: 1; min-width: 0; min-height: 44px; padding: 0 6px; font-size: 14px; font-weight: 700; }
+.weight-unit-label { flex: none; display: flex; align-items: center; padding: 0 6px; font-size: 16px; font-weight: 700; color: var(--muted); }
 .menu-option { display: block; width: 100%; text-align: left; margin-top: 10px; padding: 12px 14px; min-height: 64px; }
 .menu-option b { display: block; font-size: 16px; }
 .menu-option span { display: block; font-size: 13px; color: var(--muted); font-weight: 400; margin-top: 2px; }
@@ -731,7 +734,7 @@ body.no-invest #goals-mini { display: none !important; }
 .swipe-btn.dismiss { background: #5b6770; }
 .swipe-btn.delete { background: #b42318; }
 .picker-list { margin-top: 4px; }
-#menu-qr[hidden] { display: none; }
+#add-qr[hidden] { display: none; }
 .look-note { margin-top: 6px; }
 /* Color styles: two extra light looks and two extra dark looks */
 :root[data-theme="light"][data-look="rose"] { --bg: #fff8fa; --surface-2: #fceef2; --summary-bg: #f8e3ea; --tint: #fdeaf0; --text: #2a1a20; --muted: #5e464f; --line: #9d7f8b; --line-soft: #ecd0d9; --accent-text: #a3154f; --accent-line: #a3154f; --primary: #a3154f; --info-bg: #fde6ee; --info-text: #6e0e36; --listed-bg: #fde3ec; --listed-edge: #c0336f; --thumb-bg: #ecd9df; --track: #9d7f8b; }
@@ -1431,6 +1434,13 @@ body.modal-open #undo-bar { visibility: hidden; }
         </details>
         <input type="file" id="import-file" accept="image/*" hidden>
 
+        <div class="add-methods" id="add-methods">
+          <button type="button" id="add-qr">Scan QR</button>
+          <button type="button" id="add-shot">Screenshot</button>
+          <button type="button" id="add-bulk">Bulk upload</button>
+        </div>
+        <div class="menu-warning" id="add-qr-warning" hidden></div>
+
         <div class="form-section" style="margin-top:6px">The item</div>
         <label class="field">Status
           <select id="status">
@@ -1440,6 +1450,8 @@ body.modal-open #undo-bar { visibility: hidden; }
             <option>Shipped</option>
           </select>
         </label>
+
+        <div class="field-hint" id="status-hint"></div>
 
         <label class="field" id="name-row">Item name <input id="name" autocomplete="off" placeholder="e.g. Nike hoodie"></label>
         <div class="field-hint" id="name-hint"></div>
@@ -1497,6 +1509,21 @@ body.modal-open #undo-bar { visibility: hidden; }
         </div>
         </div>
 
+        <div class="field" id="weight-field">Weight
+          <div class="weight-row">
+            <input id="weight" type="number" inputmode="decimal" step="any" min="0" placeholder="0" aria-label="Weight">
+            <input id="weight-oz" type="number" inputmode="decimal" step="any" min="0" placeholder="oz" aria-label="Ounces" hidden>
+            <span id="weight-unit-label" class="weight-unit-label">oz</span>
+            <select id="weight-unit" aria-label="Weight unit" hidden>
+              <option value="oz">oz</option>
+              <option value="lb">lb</option>
+              <option value="lboz">lb + oz</option>
+              <option value="g">g</option>
+              <option value="kg">kg</option>
+            </select>
+          </div>
+        </div>
+
         <button type="button" id="advanced-toggle" class="advanced-toggle">Advanced options</button>
 
         <div id="advanced-fields" hidden>
@@ -1505,20 +1532,6 @@ body.modal-open #undo-bar { visibility: hidden; }
           <div id="site-adv-holder"></div>
 
           <label class="field">Date posted (filled in when it's marked Listed) <input id="posted" type="date"></label>
-
-          <div class="field">Weight
-            <div class="weight-row">
-              <input id="weight" type="number" inputmode="decimal" step="any" min="0" placeholder="0" aria-label="Weight">
-              <input id="weight-oz" type="number" inputmode="decimal" step="any" min="0" placeholder="oz" aria-label="Ounces" hidden>
-              <select id="weight-unit" aria-label="Weight unit">
-                <option value="oz">oz</option>
-                <option value="lb">lb</option>
-                <option value="lboz">lb + oz</option>
-                <option value="g">g</option>
-                <option value="kg">kg</option>
-              </select>
-            </div>
-          </div>
 
           <label class="field">Purchase cost ($) <input id="cost" type="number" inputmode="decimal" step="0.01" min="0" placeholder="0.00"></label>
           <div class="small" style="margin-top:4px">What you paid for this item. It is subtracted from your profit. Bulk upload fills it in for you.</div>
@@ -1566,34 +1579,11 @@ body.modal-open #undo-bar { visibility: hidden; }
     <div class="tabbar-in">
       <button type="button" class="bar-tab on" id="tab-home" data-view="home"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 11l9-7 9 7v9a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1v-9z"/></svg>Home</button>
       <button type="button" class="bar-tab" id="tab-stock" data-view="stock"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21 8 12 3 3 8v8l9 5 9-5V8z"/><path d="M3 8l9 5 9-5M12 13v8"/></svg>Stock</button>
-      <button type="button" class="tab-add" id="tab-add" aria-label="Add or log"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg></button>
+      <button type="button" class="tab-add" id="tab-add" aria-label="Add item"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg></button>
       <button type="button" class="bar-tab" id="tab-money" data-view="money"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20V10M10 20V4M16 20v-8M22 20H2"/></svg>Money</button>
       <button type="button" class="bar-tab" id="tab-plan" data-view="plan"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="5" width="16" height="15" rx="2"/><path d="M4 10h16M8 3v4M16 3v4"/></svg>Plan</button>
     </div>
   </nav>
-
-  <div id="add-menu" hidden>
-    <div class="modal-panel">
-      <div id="menu-main">
-        <h3>What do you want to do?</h3>
-        <button type="button" class="menu-option" id="menu-add"><b>Add an item</b><span>Type it in, bulk upload, a screenshot or a QR code</span></button>
-        <button type="button" class="menu-option" id="menu-sale"><b>Log a sale</b><span>Pick a listed item that sold</span></button>
-        <button type="button" class="menu-option" id="menu-ship"><b>Log a shipment</b><span>Pick a sold item you shipped</span></button>
-        <button type="button" class="menu-option" id="menu-bump"><b>Start a bump</b><span>Bump a Vinted item or boost a Depop one</span></button>
-        <button type="button" class="menu-option" id="menu-withdraw"><b>Withdraw</b><span>Cash out one platform or everything</span></button>
-        <button type="button" class="block" id="menu-cancel">Cancel</button>
-      </div>
-      <div id="menu-adding" hidden>
-        <h3>How do you want to add it?</h3>
-        <button type="button" class="menu-option" id="menu-manual"><b>Type it in</b><span>Fill in the details yourself</span></button>
-        <button type="button" class="menu-option" id="menu-bulk"><b>Bulk upload</b><span>Add many items fast: a picture and a title each, with an optional lot cost</span></button>
-        <button type="button" class="menu-option" id="menu-shot"><b>From a screenshot</b><span>Pick a screenshot of a listing and the app reads it</span></button>
-        <button type="button" class="menu-option" id="menu-qr"><b>Scan a QR code</b><span id="menu-qr-sub">Point the camera at a slot label</span></button>
-        <div class="menu-warning" id="menu-qr-warning" hidden></div>
-        <button type="button" class="block" id="menu-back">Back</button>
-      </div>
-    </div>
-  </div>
 
   <div id="tools-modal" hidden>
     <div class="modal-panel tools-panel">
@@ -1681,6 +1671,19 @@ body.modal-open #undo-bar { visibility: hidden; }
       </div>
     </div>
   </div>
+  </details>
+  <div class="tools-group">Units</div>
+  <details class="filters-box" id="units-box">
+    <summary>Weight units</summary>
+    <div class="filters-panel">
+      <div class="sgroup">
+        <h2 class="msec-title">Measurements</h2>
+        <div class="set-card pad">
+          <div class="mode-seg" id="units-seg" role="group" aria-label="Measurements"></div>
+          <p class="set-hint" id="units-hint"></p>
+        </div>
+      </div>
+    </div>
   </details>
   <div class="tools-group">Appearance</div>
   <details class="filters-box" id="look-box">
@@ -1911,7 +1914,7 @@ body.modal-open #undo-bar { visibility: hidden; }
 const { money, salePrice, isDone, feeTotal, platformFee, shipCostOf, costsTotal, profitOf, bundlePrice, bulkCosts, feeText, bumpText, feeExample,
   parseDate, formatDate, dayDiff, addDays, isWeekend, shipByDate, capWords, wordCount, isQuickNameOk, backupDue, backupAge, themeParts, themeForMode, themeForLook,
   withdrawPlan, applyWithdrawal, undoWithdrawal, monthOf, monthLabel, periodStart, isDueOn, periodLabel, repeatText, resetInvestment, rolloverInvestments,
-  bumpLastDay, boostCost } = window.ResaleLogic;
+  bumpLastDay, boostCost, autoStatus } = window.ResaleLogic;
 
 // The browser's own alert and confirm pop-ups are blocked in some browsers, so the app shows its own.
 const msgModal = document.getElementById("msg-modal");
@@ -2432,7 +2435,7 @@ items.forEach(migrateItem);
 
 const form = document.getElementById("item-form");
 const addItemButton = document.getElementById("add-item-button");
-const importButton = document.getElementById("menu-shot");
+const importButton = document.getElementById("add-shot");
 const importFile = document.getElementById("import-file");
 const importNote = document.getElementById("import-note");
 const importRaw = document.getElementById("import-raw");
@@ -2464,6 +2467,7 @@ function readWeightOz() {
 function showWeightOz(oz, unit) {
   weightBoxUnit = unit;
   weightUnitSelect.value = unit;
+  document.getElementById("weight-unit-label").textContent = unit === "lboz" ? "lb + oz" : unit;
   weightOzInput.hidden = unit !== "lboz";
   weightInput.placeholder = unit === "lboz" ? "lb" : "0";
   if (!oz) { weightInput.value = ""; weightOzInput.value = ""; return; }
@@ -2693,6 +2697,29 @@ function updateStatusUI() {
   shipCostRow.style.display = s === "Sold" || s === "Shipped" ? "block" : "none";
   feeNote.style.display = shipCostRow.style.display;
   updateNameHint();
+  updateStatusHint();
+}
+
+// A new item starts as In progress and becomes Listed by itself once it has a price and a platform.
+// Picking a status by hand switches this off for that item.
+var statusTouched = false;
+var autoPostedSet = false;
+function updateStatusHint() {
+  const hint = document.getElementById("status-hint");
+  if (editingIndex !== null || statusTouched) { hint.textContent = ""; return; }
+  if (statusInput.value === "In progress") hint.textContent = "Becomes Listed once you add a price and a platform.";
+  else if (statusInput.value === "Listed") hint.textContent = "Set automatically because it has a price and a platform. Change it if you like.";
+  else hint.textContent = "";
+}
+function autoStatusUpdate() {
+  if (editingIndex !== null || statusTouched) return;
+  const want = autoStatus(Number(originalInput.value) > 0, siteInput.value !== "");
+  if (statusInput.value === want) return;
+  statusInput.value = want;
+  if (want === "Listed" && postedInput.value === "") { postedInput.value = todayText(); autoPostedSet = true; }
+  if (want === "In progress" && autoPostedSet) { postedInput.value = ""; autoPostedSet = false; }
+  updateStatusUI();
+  updateBumpUI(false);
 }
 
 // A quick name needs at least two words, like "Nike hoodie". Other statuses only need a name.
@@ -3169,6 +3196,8 @@ siteInput.addEventListener("change", function () {
 // Listed -> date posted, Sold -> date sold, Shipped -> date shipped.
 statusInput.addEventListener("change", function () {
   const s = statusInput.value;
+  statusTouched = true;
+  autoPostedSet = false;
   if (s === "Listed" && postedInput.value === "") postedInput.value = todayText();
   if ((s === "Sold" || s === "Shipped") && soldInput.value === "") soldInput.value = soldDateFor(postedInput.value);
   if (s === "Shipped" && shippedInput.value === "") shippedInput.value = shipDateFor(soldInput.value);
@@ -3179,7 +3208,8 @@ bumpInput.addEventListener("change", function () {
   startBumpClock();
   updateBumpUI(false);
 });
-originalInput.addEventListener("input", function () { updateBumpUI(false); });
+originalInput.addEventListener("input", function () { updateBumpUI(false); autoStatusUpdate(); });
+siteInput.addEventListener("change", autoStatusUpdate);
 currentInput.addEventListener("input", function () { updateBumpUI(false); });
 
 // ---- date helpers ----
@@ -3423,12 +3453,16 @@ function showForm() {
   updateAdvancedUI();
   if (editingIndex === null) noSlotBox.checked = bins.length === 0;
   syncSlotUI();
+  updateAddMethods();
+  updateStatusUI();
   itemSheet.hidden = false;
   document.querySelector(".sheet-body").scrollTop = 0;
 }
 
 function closeForm() {
   editingIndex = null;
+  statusTouched = false;
+  autoPostedSet = false;
   advancedOpen = false;
   binInput.disabled = false;
   form.reset();
@@ -3468,66 +3502,30 @@ function qrInUse() {
 function markQrUsed() {
   try { localStorage.setItem("qrUsed", "1"); } catch (e) {}
 }
-const addMenu = document.getElementById("add-menu");
-function openAddMenu() {
-  const hasStorage = features.storage && bins.length > 0;
-  const ready = qrInUse();
-  document.getElementById("menu-qr").hidden = !hasStorage;
-  document.getElementById("menu-qr").disabled = !ready;
-  document.getElementById("menu-qr-sub").textContent = ready ? "Point the camera at a slot label" : "Not set up yet";
-  const warn = document.getElementById("menu-qr-warning");
-  warn.hidden = ready || !hasStorage;
+// The + button opens the add window straight away. Scan QR, Screenshot and Bulk upload sit at the top of that window.
+function updateAddMethods() {
+  document.getElementById("add-methods").hidden = editingIndex !== null;
+  document.getElementById("add-qr").hidden = !(features.storage && bins.length > 0);
+  document.getElementById("add-qr-warning").hidden = true;
+}
+addItemButton.addEventListener("click", function () { openNewForm(); });
+document.getElementById("add-bulk").addEventListener("click", function () { closeForm(); openBulkSetup(); });
+document.getElementById("add-shot").addEventListener("click", function () { importTarget = null; importFile.click(); });
+document.getElementById("add-qr").addEventListener("click", function () {
+  const warn = document.getElementById("add-qr-warning");
+  if (qrInUse()) { warn.hidden = true; closeForm(); startCamera(); return; }
+  if (!warn.hidden) { warn.hidden = true; return; }
   warn.innerHTML = "";
-  if (!ready && hasStorage) {
-    warn.appendChild(document.createTextNode("To start using QR codes:"));
-    const ol = document.createElement("ol");
-    ["Open Settings, then Storage, then \"Manage storage and labels\" and tap Print labels for a storage.", "Print them and stick one on each slot.", "Come back here. This option turns on after you have opened the labels."].forEach(function (t) {
-      const li = document.createElement("li");
-      li.textContent = t;
-      ol.appendChild(li);
-    });
-    warn.appendChild(ol);
-  }
-  document.getElementById("menu-main").hidden = false;
-  document.getElementById("menu-adding").hidden = true;
-  addMenu.hidden = false;
-  syncModalLock();
-}
-function closeAddMenu() {
-  addMenu.hidden = true;
-  syncModalLock();
-}
-addItemButton.addEventListener("click", openAddMenu);
-document.getElementById("menu-cancel").addEventListener("click", closeAddMenu);
-document.getElementById("menu-add").addEventListener("click", function () {
-  document.getElementById("menu-main").hidden = true;
-  document.getElementById("menu-adding").hidden = false;
+  warn.appendChild(document.createTextNode("To start using QR codes:"));
+  const ol = document.createElement("ol");
+  ["Open Settings, then Storage, then \"Manage storage and labels\" and tap Print labels for a storage.", "Print them and stick one on each slot.", "Come back here. Scan QR works after you have opened the labels."].forEach(function (t) {
+    const li = document.createElement("li");
+    li.textContent = t;
+    ol.appendChild(li);
+  });
+  warn.appendChild(ol);
+  warn.hidden = false;
 });
-document.getElementById("menu-back").addEventListener("click", function () {
-  document.getElementById("menu-main").hidden = false;
-  document.getElementById("menu-adding").hidden = true;
-});
-document.getElementById("menu-sale").addEventListener("click", function () {
-  closeAddMenu();
-  openItemPicker("Which item sold?", items.filter(function (it) { return it.status === "Listed"; }), "You have no listed items to mark as sold.", openSoldSheet);
-});
-document.getElementById("menu-ship").addEventListener("click", function () {
-  closeAddMenu();
-  openItemPicker("Which item did you ship?", items.filter(function (it) { return it.status === "Sold"; }), "No sold items are waiting to ship.", markShipped);
-});
-document.getElementById("menu-bump").addEventListener("click", function () {
-  closeAddMenu();
-  openItemPicker("Which item do you want to bump?", items.filter(function (it) { return it.status === "Listed"; }), "You have no listed items to bump.", openBumpSheet);
-});
-document.getElementById("menu-withdraw").addEventListener("click", function () {
-  closeAddMenu();
-  openWithdrawSheet();
-});
-addMenu.addEventListener("click", function (event) { if (event.target === addMenu) closeAddMenu(); });
-document.getElementById("menu-manual").addEventListener("click", function () { closeAddMenu(); openNewForm(); });
-document.getElementById("menu-bulk").addEventListener("click", function () { closeAddMenu(); openBulkSetup(); });
-document.getElementById("menu-shot").addEventListener("click", function () { closeAddMenu(); importTarget = null; importFile.click(); });
-document.getElementById("menu-qr").addEventListener("click", function () { closeAddMenu(); startCamera(); });
 
 function leaveForm() {
   hideImportNote();
@@ -4545,11 +4543,11 @@ const scanModal = document.getElementById("scan-modal");
 const scanBody = document.getElementById("scan-body");
 
 function syncModalLock() {
-  const open = ["scan-modal", "price-modal", "add-menu", "tools-modal", "planner-modal", "sales-modal", "plat-sheet", "msg-modal"].some(function (id) { return !document.getElementById(id).hidden; });
+  const open = ["scan-modal", "price-modal", "tools-modal", "planner-modal", "sales-modal", "plat-sheet", "msg-modal"].some(function (id) { return !document.getElementById(id).hidden; });
   document.body.classList.toggle("modal-open", open);
 }
 new MutationObserver(syncModalLock).observe(scanModal, { attributes: true, attributeFilter: ["hidden"] });
-["price-modal", "tools-modal", "planner-modal", "sales-modal", "plat-sheet", "msg-modal", "add-menu"].forEach(function (id) {
+["price-modal", "tools-modal", "planner-modal", "sales-modal", "plat-sheet", "msg-modal"].forEach(function (id) {
   new MutationObserver(syncModalLock).observe(document.getElementById(id), { attributes: true, attributeFilter: ["hidden"] });
 });
 
@@ -9561,6 +9559,11 @@ function buildItemDetail(item, index, done, profit, ship, shipAlerting) {
     if (nextLabel) add("Edit", "", function () { startEdit(index); });
     if (item.status === "In progress" || item.status === "Listed") add("Archive", "", function () { askArchive(item); });
     if (item.status === "Listed" && !isDue(item)) add("Lower price", "", function () { lowerPrice(item); });
+    if (item.status === "Listed") {
+      const platform = platformConfig(item.site);
+      const isBoost = !!platform && platform.bumpPercent !== null;
+      add(isBoost ? (item.bump && item.bumpRate > 0 ? "Boosted" : "Boost") : "Bump", "", function () { openBumpSheet(item); });
+    }
     if (shipAlerting) add("Dismiss alert", "", function () { dismissShip([item]); });
     if (!done && isDue(item) && !dueDismissed[dueKey(item)]) add("Dismiss reminder", "", function () { dismissDue([item]); });
     add("Delete", "quiet", function () { askDeleteItem(item); });
@@ -10156,6 +10159,7 @@ function renderPlanner() { renderPlanView(); }
 var settingsPage = "home";
 var SETTINGS_PAGES = {
   look: { box: "look-box", title: "Appearance" },
+  units: { box: "units-box", title: "Units" },
   reminders: { box: "alerts-details", title: "Reminders" },
   time: { box: "plan-box", title: "Time estimates" },
   storage: { box: "bins-box", title: "Storage" },
@@ -10194,6 +10198,7 @@ function openSettingsPage(key) {
   sub.textContent = key === "home" ? "" : (SETTINGS_PAGES[key].sub || "");
   if (key === "home") renderSettingsHome();
   if (key === "look") renderAppearance();
+  if (key === "units") renderUnits();
   if (key === "backup") updateBackupInfo();
   toolsModal.querySelector(".tools-panel").scrollTop = 0;
 }
@@ -10247,6 +10252,7 @@ function renderSettingsHome() {
   const ICON_ARCHIVE = '<rect x="3" y="4" width="18" height="5" rx="1"/><path d="M5 9v10h14V9M10 13h4"/>';
   const ICON_BELL = '<path d="M6 16v-5a6 6 0 0 1 12 0v5l1.5 2h-15z"/><path d="M10 21a2 2 0 0 0 4 0"/>';
   const ICON_CLOCK = '<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>';
+  const ICON_UNITS = '<path d="M3 17l14-14 4 4L7 21z"/><path d="M7 13l2 2M10 10l2 2M13 7l2 2"/>';
   const platformsRow = function () {
     return settingsRow(ICON_PLATFORMS, "Platforms and fees", (function (names) { return names.length > 2 ? names.length + " platforms" : names.join(", "); })(enabledPlatformNames()), function () { openSettingsPage("platforms"); }, "shop");
   };
@@ -10274,6 +10280,9 @@ function renderSettingsHome() {
   const timeRow = function () {
     return settingsRow(ICON_CLOCK, "Time estimates", "Per step", function () { openSettingsPage("time"); }, "help");
   };
+  const unitsRow = function () {
+    return settingsRow(ICON_UNITS, "Units", unitsLabel(), function () { openSettingsPage("units"); }, "shop");
+  };
   const allRow = function () {
     return settingsRow('<path d="M4 7h9M17 7h3M4 17h3M11 17h9"/><circle cx="15" cy="7" r="2"/><circle cx="9" cy="17" r="2"/>', "All settings", "", function () { openSettingsScope("all", ""); });
   };
@@ -10288,6 +10297,7 @@ function renderSettingsHome() {
     if (features.storage) shop.push(storageRow());
     shop.push(archiveRow());
     settingsGroup(box, "Your items", shop);
+    settingsGroup(box, "Measurements", [unitsRow()]);
     settingsGroup(box, "Alerts", [remindersRow()]);
     settingsGroup(box, "More", [allRow()]);
     return;
@@ -10309,6 +10319,7 @@ function renderSettingsHome() {
   if (features.storage) shop.push(storageRow());
   shop.push(archiveRow());
   settingsGroup(box, "Your shop", shop);
+  settingsGroup(box, "Measurements", [unitsRow()]);
   settingsGroup(box, "Plan and alerts", [remindersRow(), timeRow()]);
   let last = "";
   try { last = localStorage.getItem("lastBackup") || ""; } catch (e) {}
@@ -10317,6 +10328,39 @@ function renderSettingsHome() {
     settingsRow('<path d="M12 3v12M8 11l4 4 4-4M4 19h16"/>', "Back up and export", age.text, function () { openSettingsPage("backup"); }, "data", age.level)
   ]);
 }
+// Units page: US or Metric. Weights are always saved in ounces, so switching never changes what you saved.
+function weightIsUS() { return ["oz", "lb", "lboz"].indexOf(weightUnit) !== -1; }
+function unitsLabel() {
+  const detail = { oz: "oz", lb: "lb", lboz: "lb + oz", g: "g", kg: "kg" }[weightUnit] || weightUnit;
+  return (weightIsUS() ? "US" : "Metric") + " (" + detail + ")";
+}
+function setWeightSystem(system) {
+  const oz = readWeightOz();
+  if (system === "us" && !weightIsUS()) weightUnit = "oz";
+  else if (system === "metric" && weightIsUS()) weightUnit = "g";
+  try { localStorage.setItem("weightUnit", weightUnit); } catch (e) {}
+  showWeightOz(oz, weightUnit);
+  render();
+  renderUnits();
+}
+function renderUnits() {
+  const seg = $("units-seg");
+  seg.innerHTML = "";
+  [["us", "US"], ["metric", "Metric"]].forEach(function (u) {
+    const on = (u[0] === "us") === weightIsUS();
+    const b = document.createElement("button");
+    b.type = "button";
+    b.textContent = u[1];
+    b.setAttribute("aria-pressed", on ? "true" : "false");
+    if (on) b.className = "on";
+    b.onclick = function () { setWeightSystem(u[0]); };
+    seg.appendChild(b);
+  });
+  $("units-hint").textContent = weightIsUS()
+    ? "Weights are typed and shown in " + (weightUnit === "lb" ? "pounds" : weightUnit === "lboz" ? "pounds and ounces" : "ounces") + "."
+    : "Weights are typed and shown in " + (weightUnit === "kg" ? "kilograms" : "grams") + ".";
+}
+
 // Appearance page: Mode (Automatic, Light, Dark) and Theme (the five color circles).
 function setThemeChoice(choice) {
   themeSelect.value = choice;
