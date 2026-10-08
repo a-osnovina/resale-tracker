@@ -340,32 +340,32 @@ body.summary-loose .summary { position: relative; }
 .withdraw-note { font-size: 14px; color: var(--muted); margin: 8px 0 4px; }
 
 /* ---- Withdraw pop-up (design S2): always the dark sheet, whatever the app's colors are ---- */
-#scan-body[data-kind="money"] { background: #1e2127; color: #f2f2ef; border-top: 0; border-radius: 28px 28px 0 0; padding: 10px 20px 28px 20px; box-shadow: 0 -8px 30px rgba(0, 0, 0, 0.4); display: flex; flex-direction: column; gap: 18px; }
+#scan-body[data-kind="money"] { background: var(--surface); color: var(--text); border-top: 0; border-radius: 28px 28px 0 0; padding: 10px 20px 28px 20px; box-shadow: 0 -8px 30px rgba(0, 0, 0, 0.4); display: flex; flex-direction: column; gap: 18px; }
 #scan-modal:has(#scan-body[data-kind="money"]) { background: rgba(0, 0, 0, 0.55); }
-.wd-grab { width: 40px; height: 4px; border-radius: 2px; background: #3a3f48; align-self: center; flex: none; }
+.wd-grab { width: 40px; height: 4px; border-radius: 2px; background: var(--line); align-self: center; flex: none; }
 .wd-top { display: flex; align-items: center; justify-content: space-between; }
-#scan-body[data-kind="money"] h3.wd-title { margin: 0; font-size: 22px; font-weight: 700; color: #f2f2ef; }
-.wd-x { width: 44px; height: 44px; min-height: 44px; padding: 0; border: 0; border-radius: 22px; background: #2a2e36; color: #f2f2ef; display: flex; align-items: center; justify-content: center; }
+#scan-body[data-kind="money"] h3.wd-title { margin: 0; font-size: 22px; font-weight: 700; color: var(--text); }
+.wd-x { width: 44px; height: 44px; min-height: 44px; padding: 0; border: 0; border-radius: 22px; background: var(--surface-2); color: var(--text); display: flex; align-items: center; justify-content: center; }
 .wd-choices { display: flex; flex-direction: column; gap: 12px; }
-.wd-choice { width: 100%; min-height: 72px; padding: 14px 16px; border-radius: 16px; display: flex; flex-direction: column; align-items: flex-start; gap: 4px; text-align: left; background: none; border: 1px solid #3a3f48; color: #f2f2ef; }
+.wd-choice { width: 100%; min-height: 72px; padding: 14px 16px; border-radius: 16px; display: flex; flex-direction: column; align-items: flex-start; gap: 4px; text-align: left; background: none; border: 1px solid var(--line); color: var(--text); }
 .wd-choice b { font-size: 18px; font-weight: 700; }
 .wd-choice span { font-size: 14px; opacity: 0.8; }
-.wd-choice.fill { background: #5fd08a; border-color: #5fd08a; color: #0e1a12; }
+.wd-choice.fill { background: var(--primary); border-color: var(--primary); color: #ffffff; }
 .wd-choice:disabled { opacity: 0.45; }
 .wd-amount-wrap { display: flex; flex-direction: column; align-items: center; gap: 8px; padding: 6px 0; }
 .wd-amount-box { display: flex; align-items: center; justify-content: center; max-width: 100%; }
-.wd-dollar { font-size: 56px; line-height: 1; color: #a3a8b0; font-weight: 500; margin-right: 4px; }
-#scan-body .wd-amount-input { width: 5.5ch; min-width: 0; min-height: 0; padding: 0; border: 0; background: none; color: #f2f2ef; font-size: 56px; line-height: 1.1; font-weight: 700; letter-spacing: -0.02em; font-variant-numeric: tabular-nums; outline: none; caret-color: #5fd08a; box-shadow: none; }
-#scan-body .wd-amount-input::placeholder { color: #3a3f48; }
-.wd-stays { font-size: 15px; color: #a3a8b0; text-align: center; }
-.wd-stays b { color: #f2f2ef; }
-.wd-stays.bad { color: #e66767; }
-.wd-from-row { position: relative; display: flex; align-items: center; justify-content: space-between; gap: 10px; min-height: 52px; padding: 0 16px; border-radius: 14px; border: 1px solid #3a3f48; color: #a3a8b0; font-size: 16px; }
-.wd-from-val { display: flex; align-items: center; gap: 6px; color: #f2f2ef; font-weight: 700; }
+.wd-dollar { font-size: 56px; line-height: 1; color: var(--muted); font-weight: 500; margin-right: 4px; }
+#scan-body .wd-amount-input { width: 5.5ch; min-width: 0; min-height: 0; padding: 0; border: 0; background: none; color: var(--text); font-size: 56px; line-height: 1.1; font-weight: 700; letter-spacing: -0.02em; font-variant-numeric: tabular-nums; outline: none; caret-color: #5fd08a; box-shadow: none; }
+#scan-body .wd-amount-input::placeholder { color: var(--line); }
+.wd-stays { font-size: 15px; color: var(--muted); text-align: center; }
+.wd-stays b { color: var(--text); }
+.wd-stays.bad { color: var(--danger); }
+.wd-from-row { position: relative; display: flex; align-items: center; justify-content: space-between; gap: 10px; min-height: 52px; padding: 0 16px; border-radius: 14px; border: 1px solid var(--line); color: var(--muted); font-size: 16px; }
+.wd-from-val { display: flex; align-items: center; gap: 6px; color: var(--text); font-weight: 700; }
 .wd-from { position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0; font-size: 16px; }
-.wd-go { width: 100%; min-height: 56px; border-radius: 28px; font-size: 17px; font-weight: 700; border: 0; background: #5fd08a; color: #0e1a12; }
-#scan-body[data-kind="money"] button.primary.wd-go { background: #5fd08a; border-color: #5fd08a; }
-.wd-go:disabled { background: #2a2e36; color: #6e7580; opacity: 1; }
+.wd-go { width: 100%; min-height: 56px; border-radius: 28px; font-size: 17px; font-weight: 700; border: 0; background: var(--primary); color: #ffffff; }
+#scan-body[data-kind="money"] button.primary.wd-go { background: var(--primary); border-color: var(--primary); }
+.wd-go:disabled { background: var(--surface-2); color: var(--muted); opacity: 1; }
 
 .wd-row { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 8px 0; border-top: 1px solid var(--line-soft); font-size: 14px; }
 .wd-row button { min-height: 36px; padding: 0 12px; font-size: 13px; }
@@ -759,6 +759,7 @@ body.no-invest #goals-mini { display: none !important; }
 .card-chev { position: absolute; top: 8px; right: 12px; font-size: 14px; color: var(--muted); pointer-events: none; }
 .card .card-title { padding-right: 22px; }
 .swipe-wrap { position: relative; border-radius: 14px; overflow: hidden; }
+.srow-card.swiping .srow-detail { display: none; }
 .swipe-wrap > .srow-card { position: relative; z-index: 1; touch-action: pan-y; -webkit-user-select: none; user-select: none; }
 .swipe-bg { position: absolute; top: 0; bottom: 0; display: flex; align-items: stretch; }
 .swipe-lead { left: 0; }
@@ -1422,14 +1423,18 @@ body.modal-open #undo-bar { visibility: hidden; }
   <!-- STOCK: your items, and where they are stored -->
   <section class="view" id="view-stock" aria-label="Stock" hidden>
     <div class="seg" id="stock-seg">
+      <button type="button" id="seg-stock-overview">Overview</button>
       <button type="button" id="seg-stock-items" class="on">Items</button>
       <button type="button" id="seg-stock-storage">Storage</button>
     </div>
-    <div id="stock-items">
+    <div id="stock-overview" hidden>
+    <div id="overview-off" class="small" hidden>The timeline is turned off. Turn it on in Stock settings.</div>
     <section id="pipeline-box" class="msec">
       <div class="sec-head"><h2 class="msec-title">Where your items are</h2><span class="sec-note">Tap a step</span></div>
       <div class="dropdown-panel" id="pipeline-panel"></div>
     </section>
+    </div>
+    <div id="stock-items">
   <!-- ITEM LIST -->
   <div class="search-row">
     <input id="search" type="search" placeholder="Search your items" aria-label="Search your items" autocomplete="off">
@@ -1505,7 +1510,7 @@ body.modal-open #undo-bar { visibility: hidden; }
           <div id="overall-box">
             <progress id="overall-bar" value="0" max="1"></progress>
           </div>
-          <div id="priority-hint" class="small">Drag ⋮⋮ or use the arrows to set the order. Your balance fills them from the top.</div>
+          <div id="priority-hint" class="small" hidden></div>
 
           <form id="goal-form">
             <label class="field">Investment name <input id="goal-name" required placeholder="e.g. Printer or Rent"></label>
@@ -1854,7 +1859,7 @@ body.modal-open #undo-bar { visibility: hidden; }
         <h2 class="msec-title">Preview</h2>
         <div class="pv">
           <div class="pv-pic"></div>
-          <div class="pv-text"><b>Sample item</b><span>$24.00 &middot; profit <i>$24.00</i></span></div>
+          <div class="pv-text"><b>Sample item</b><span>$24.00 &middot; profit <i>$24.00</i></span><span id="pv-weight" style="display:block"></span></div>
           <span class="pv-pill">Listed</span>
         </div>
       </div>
@@ -1862,7 +1867,6 @@ body.modal-open #undo-bar { visibility: hidden; }
         <h2 class="msec-title">App name</h2>
         <div class="set-card pad">
           <label class="field" style="margin-top: 0">App title <input id="title-input" maxlength="30" autocomplete="off"></label>
-          <div class="form-actions"><button type="button" id="title-save" class="primary">Save title</button></div>
         </div>
       </div>
       <select id="theme-select" hidden aria-hidden="true" tabindex="-1">
@@ -2267,9 +2271,10 @@ let lowerPercents = [10, 15];   // the percent-off buttons in the Lower price po
 let bulks = [];      // one record per bulk upload: { id, date, name, count, totalCost }
 let plan = JSON.parse(JSON.stringify(DEFAULT_PLAN));   // planner time estimates and the weekly plan
 let timeEstOn = true;   // show time estimates (minutes of work) around the app
+let pipelineOn = true;  // show Where your items are in Stock
 let homeCal = "none";   // calendar on Home: "none", "week" or "month"
-try { timeEstOn = localStorage.getItem("timeEst") !== "0"; const hc = localStorage.getItem("homeCal"); homeCal = hc === "week" || hc === "month" ? hc : "none"; } catch (e) {}
-function savePlanOptions() { try { localStorage.setItem("timeEst", timeEstOn ? "1" : "0"); localStorage.setItem("homeCal", homeCal); } catch (e) {} }
+try { pipelineOn = localStorage.getItem("pipelineOn") !== "0"; timeEstOn = localStorage.getItem("timeEst") !== "0"; const hc = localStorage.getItem("homeCal"); homeCal = hc === "week" || hc === "month" ? hc : "none"; } catch (e) {}
+function savePlanOptions() { try { localStorage.setItem("pipelineOn", pipelineOn ? "1" : "0"); localStorage.setItem("timeEst", timeEstOn ? "1" : "0"); localStorage.setItem("homeCal", homeCal); } catch (e) {} }
 let planPrefs = null; // Plan tab choices: shipping days, limit, repeating jobs, money goal
 let timeLog = [];    // time you logged: { id, date, step, minutes, items }
 let todos = [];      // your own to-dos: { id, text, day (-1 = any, 0 = Monday ... 6 = Sunday), done }
@@ -4626,10 +4631,6 @@ function openWithdrawSheet() {
     const from = document.createElement("select");
     from.className = "wd-from";
     from.setAttribute("aria-label", "Take it from");
-    const allOpt = document.createElement("option");
-    allOpt.value = "";
-    allOpt.textContent = "All platforms · " + money(withdrawMax(items, balances, goals, null, withdrawals));
-    from.appendChild(allOpt);
     platformNames().forEach(function (name) {
       const platform = findPlatform(name);
       const max = withdrawMax(items, balances, goals, name, withdrawals);
@@ -4640,14 +4641,14 @@ function openWithdrawSheet() {
       from.appendChild(o);
     });
     from.value = wdFrom || "";
-    if (from.value !== (wdFrom || "")) { wdFrom = null; from.value = ""; }
+    if (!wdFrom || from.value !== wdFrom) { from.selectedIndex = Math.max(0, Array.prototype.findIndex.call(from.options, function (o) { return withdrawMax(items, balances, goals, o.value, withdrawals) > 0; })); wdFrom = from.value || null; }
     const fromRow = el("label", "wd-from-row");
     fromRow.appendChild(el("span", "", "From"));
     const fromVal = el("span", "wd-from-val");
     const fromName = document.createTextNode("");
     fromVal.appendChild(fromName);
     const chev = document.createElement("span");
-    chev.style.cssText = "color:#a3a8b0;display:flex";
+    chev.style.cssText = "color:var(--muted);display:flex";
     chev.innerHTML = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>';
     fromVal.appendChild(chev);
     fromRow.appendChild(fromVal);
@@ -4660,7 +4661,7 @@ function openWithdrawSheet() {
 
     const update = function () {
       wdFrom = from.value || null;
-      fromName.nodeValue = wdFrom || "All platforms";
+      fromName.nodeValue = wdFrom || "";
       const max = withdrawMax(items, balances, goals, wdFrom, withdrawals);
       const text = input.value.replace(/[^0-9.]/g, "");
       const amount = text === "" ? 0 : Number(text);
@@ -6340,7 +6341,7 @@ function renderOverall(balance, activeTotal, activeCount) {
   document.getElementById("overall-bar").max = activeTotal;
   document.getElementById("overall-bar").value = have;
   text.textContent = "All investments: " + money(have) + " of " + money(activeTotal);
-  hint.style.display = activeCount > 1 ? "block" : "none";
+  hint.style.display = "none";
 }
 
 // Goals are listed in priority order: the first one gets your balance first, then the next, and so on.
@@ -6670,6 +6671,7 @@ function attachSwipe(card, leadCount, trailCount) {
   }
   function closeIt() {
     base = 0;
+    card.classList.remove("swiping");
     setX(0, true);
     if (openSwipe && openSwipe.card === card) openSwipe = null;
   }
@@ -6693,6 +6695,7 @@ function attachSwipe(card, leadCount, trailCount) {
       decided = true;
       if (Math.abs(mx) > Math.abs(my) * 1.4) {
         dragging = true;
+        card.classList.add("swiping");
         try { card.setPointerCapture(pid); } catch (e) {}
       } else {
         pid = null;
@@ -7358,6 +7361,7 @@ function backupData() {
     todos: todos,
     planPrefs: planPrefs,
     timeEstOn: timeEstOn,
+    pipelineOn: pipelineOn,
     homeCal: homeCal,
     lowerPercents: lowerPercents,
     remindersOn: remindersOn
@@ -7439,6 +7443,7 @@ function restoreFromText(text, skipAsk) {
     if (Array.isArray(data.todos)) todos = cleanTodos(data.todos);
     if (data.planPrefs) planPrefs = cleanPlanPrefs(data.planPrefs);
     if (typeof data.timeEstOn === "boolean") timeEstOn = data.timeEstOn;
+    if (typeof data.pipelineOn === "boolean") pipelineOn = data.pipelineOn;
     if (data.homeCal === "week" || data.homeCal === "month" || data.homeCal === "none") homeCal = data.homeCal;
     savePlanOptions();
     if (Array.isArray(data.lowerPercents)) lowerPercents = cleanPercents(data.lowerPercents);
@@ -8514,12 +8519,33 @@ function openTodoSheet(todo, presetDate) {
   text.placeholder = "e.g. Buy mailers";
   textLabel.appendChild(text);
   scanBody.appendChild(textLabel);
-  const dateLabel = el("label", "field", "Day (leave empty for any day)");
+  // New to-dos start on "Any day". Pick a day only when you want one.
+  const hasDay = todo ? !!todo.date : !!presetDate && presetDate !== todayText();
+  const dayLabel2 = el("div", "field", "Day");
+  const daySeg = el("div", "mode-seg");
+  const anyBtn = el("button", "", "Any day");
+  const pickBtn = el("button", "", "Pick a day");
+  [anyBtn, pickBtn].forEach(function (b) { b.type = "button"; daySeg.appendChild(b); });
+  dayLabel2.appendChild(daySeg);
+  scanBody.appendChild(dayLabel2);
+  const dateLabel = el("label", "field", "Date");
   const date = document.createElement("input");
   date.type = "date";
-  date.value = todo ? todo.date : (presetDate || "");
+  date.value = todo && todo.date ? todo.date : (hasDay ? presetDate : "");
   dateLabel.appendChild(date);
   scanBody.appendChild(dateLabel);
+  function showDay(on) {
+    anyBtn.className = on ? "" : "on";
+    pickBtn.className = on ? "on" : "";
+    anyBtn.setAttribute("aria-pressed", on ? "false" : "true");
+    pickBtn.setAttribute("aria-pressed", on ? "true" : "false");
+    dateLabel.hidden = !on;
+    if (on && !date.value) date.value = presetDate || todayText();
+    if (!on) date.value = "";
+  }
+  anyBtn.onclick = function () { showDay(false); };
+  pickBtn.onclick = function () { showDay(true); };
+  showDay(hasDay);
   function saveIt() {
     const value = text.value.trim();
     if (value === "") { text.focus(); return; }
@@ -9316,12 +9342,13 @@ function applyFeatures() {
   document.getElementById("platforms-drop").hidden = !features.platforms;
   document.body.classList.toggle("no-storage", !features.storage);
   binFilterInput.closest("label").hidden = !features.storage;
-  document.getElementById("pipeline-box").hidden = !features.timeline;
+  document.getElementById("pipeline-box").hidden = !pipelineOn;
+  document.getElementById("overview-off").hidden = pipelineOn;
   document.getElementById("planner-button").hidden = !features.planner;
   document.getElementById("tab-plan").hidden = !features.planner;
   if (!features.planner && currentView === "plan") showView("home");
-  document.getElementById("stock-seg").hidden = !features.storage;
-  if (!features.storage) showStockPane("items");
+  document.getElementById("seg-stock-storage").hidden = !features.storage;
+  if (!features.storage && !$("stock-storage").hidden) showStockPane("items");
   document.getElementById("inv-wrap").hidden = !features.investments;
   document.getElementById("sales-section").hidden = !features.sales;
   document.getElementById("mtab-profit").hidden = !features.sales;
@@ -9413,7 +9440,7 @@ function saveTitle() {
   render();
   showToast("Title saved.");
 }
-document.getElementById("title-save").addEventListener("click", saveTitle);
+titleInput.addEventListener("change", saveTitle);
 titleInput.addEventListener("keydown", function (event) {
   if (event.key === "Enter") { event.preventDefault(); saveTitle(); }
 });
@@ -9525,7 +9552,7 @@ document.getElementById("example-backup").addEventListener("click", function () 
 
 // Everything this app keeps in your browser. Only these are removed when you start from zero.
 const APP_STORAGE_KEYS = ["items", "goals", "balances", "bins", "freed", "filter", "statusFilter", "remindDays", "withdrawals",
-  "shipAlerts", "showShipped", "remindersOn", "platforms", "bulks", "planSettings", "planPrefs", "timeEst", "homeCal", "timeLog", "todos", "lowerPercents",
+  "shipAlerts", "showShipped", "remindersOn", "platforms", "bulks", "planSettings", "planPrefs", "timeEst", "pipelineOn", "homeCal", "timeLog", "todos", "lowerPercents",
   "shipPulse", "theme", "dueDismissed", "shipDismissed", "qrUsed", "shipIntro", "lastBackup", "backupSnooze", "pinChoice",
   "pinGoals", "summaryCollapsed", "planTimer", "appTitle", "photoTypes", "features", "cardFields", "swipeOn"];
 function wipeEverything() {
@@ -9624,6 +9651,9 @@ function showView(name) {
 // Stock has two parts: your items, and where they are stored.
 function showStockPane(which) {
   if (which === "storage" && !features.storage) which = "items";
+  if (which !== "overview" && which !== "storage") which = "items";
+  $("stock-overview").hidden = which !== "overview";
+  $("seg-stock-overview").classList.toggle("on", which === "overview");
   $("stock-items").hidden = which !== "items";
   $("stock-storage").hidden = which !== "storage";
   $("seg-stock-items").classList.toggle("on", which === "items");
@@ -11063,7 +11093,7 @@ function renderPlanView() {
   const today = todayText();
   if (!calDay) calDay = today;
   if (!calMonth) calMonth = monthOf(today);
-  box.appendChild(planSeg([["overview", "Overview"], ["calendar", "Calendar"], ["goal", "Money goal"]], planPrefs.tab, showPlanTab, "Plan sections"));
+  box.appendChild(planSeg([["overview", "Overview"], ["calendar", "Calendar"], ["goal", "Calculator"]], planPrefs.tab, showPlanTab, "Plan sections"));
   if (planPrefs.tab === "calendar") renderPlanCalendar(box);
   else if (planPrefs.tab === "goal") renderPlanGoal(box);
   else renderPlanOverview(box);
@@ -11147,7 +11177,7 @@ function settingsGroup(box, title, rows) {
 // with an "All settings" row at the bottom. Every setting lives in one place, so both doors lead to the same switches.
 var settingsScope = "all";      // "all", "money", "stock" or "plan"
 var settingsParent = "";        // set when a page's settings were opened from the All settings list, so Back returns there
-var SCOPE_TITLES = { all: "Settings", money: "Money settings", stock: "Stock settings", plan: "Plan settings" };
+var SCOPE_TITLES = { all: "Settings", home: "Home settings", money: "Money settings", stock: "Stock settings", plan: "Plan settings" };
 function scopeForView() {
   return currentView === "money" || currentView === "stock" || currentView === "plan" ? currentView : "all";
 }
@@ -11213,7 +11243,21 @@ function renderSettingsHome() {
     shop.push(archiveRow());
     settingsGroup(box, "Your items", shop);
     settingsGroup(box, "Alerts", [remindersRow()]);
-    settingsGroup(box, "Time", [optsRow()]);
+    const tl = el("div", "sgroup");
+    tl.appendChild(el("h2", "msec-title", "Timeline"));
+    const tc = el("div", "set-card pad");
+    tc.appendChild(switchRow("Timeline", "Shows Where your items are at the top of Stock.", pipelineOn, function (on) { pipelineOn = on; savePlanOptions(); applyFeatures(); renderSettingsHome(); }));
+    if (pipelineOn) tc.appendChild(switchRow("Estimated times", "Show how long each step should take.", timeEstOn, function (on) { timeEstOn = on; savePlanOptions(); render(); renderPlanView(); renderSettingsHome(); }));
+    tl.appendChild(tc);
+    box.appendChild(tl);
+    settingsGroup(box, "More", [allRow()]);
+    return;
+  }
+  if (scope === "home") {
+    const g = el("div", "sgroup");
+    g.appendChild(el("h2", "msec-title", "Home"));
+    g.appendChild(el("div", "small", "Nothing to set here yet."));
+    box.appendChild(g);
     settingsGroup(box, "More", [allRow()]);
     return;
   }
@@ -11226,6 +11270,7 @@ function renderSettingsHome() {
     settingsRow(ICON_LOOK, "Appearance", themeLabel() + " · " + unitsLabel(), function () { openSettingsPage("look"); })
   ]);
   settingsGroup(box, "Pages", [
+    settingsRow('<path d="M3 11l9-7 9 7v9a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1v-9z"/>', "Home", "Nothing yet", function () { openSettingsScope("home", "all"); }),
     settingsRow('<path d="M21 8 12 3 3 8v8l9 5 9-5V8z"/><path d="M3 8l9 5 9-5M12 13v8"/>', "Stock", "Items, storage, alerts", function () { openSettingsScope("stock", "all"); }),
     settingsRow('<path d="M4 20V10M10 20V4M16 20v-8M22 20H2"/>', "Money", "Platforms and fees", function () { openSettingsScope("money", "all"); }),
     settingsRow('<rect x="4" y="5" width="16" height="15" rx="2"/><path d="M4 10h16M8 3v4M16 3v4"/>', "Plan", "Time estimates", function () { openSettingsScope("plan", "all"); })
@@ -11273,6 +11318,7 @@ function unitsLabel() {
   return (weightIsUS() ? "US" : "Metric") + " (" + detail + ")";
 }
 function setWeightSystem(system) {
+  try { $("pv-weight").textContent = ""; } catch (e) {}
   const oz = readWeightOz();
   if (system === "us" && !weightIsUS()) weightUnit = "oz";
   else if (system === "metric" && weightIsUS()) weightUnit = "g";
@@ -11280,6 +11326,7 @@ function setWeightSystem(system) {
   showWeightOz(oz, weightUnit);
   render();
   renderUnits();
+  $("pv-weight").textContent = "Weight " + formatWeight(8);
 }
 function renderUnits() {
   const seg = $("units-seg");
@@ -11306,6 +11353,7 @@ function setThemeChoice(choice) {
   renderAppearance();
 }
 function renderAppearance() {
+  $("pv-weight").textContent = "Weight " + formatWeight(8);
   const t = themeParts(themeChoice);
   const seg = $("mode-seg");
   seg.innerHTML = "";
@@ -11364,6 +11412,7 @@ document.querySelectorAll(".bar-tab").forEach(function (button) {
 });
 $("tab-add").addEventListener("click", function () { addItemButton.click(); });
 $("select-btn").addEventListener("click", function () { setSelectMode(!selectMode); });
+$("seg-stock-overview").addEventListener("click", function () { showStockPane("overview"); });
 $("seg-stock-items").addEventListener("click", function () { showStockPane("items"); });
 $("seg-stock-storage").addEventListener("click", function () { showStockPane("storage"); });
 $("top-bell").addEventListener("click", openNotifSheet);
