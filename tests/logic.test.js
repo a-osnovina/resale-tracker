@@ -23,6 +23,12 @@ test("platform percent + flat fee", () => assert.strictEqual(L.platformFee(sold(
 test("fee is rounded to the cent", () => assert.strictEqual(L.platformFee(sold({ soldFor: 12.34, feePercent: 13 })), 1.6));
 test("platform fee is zero while not sold", () => assert.strictEqual(L.platformFee(sold({ status: "Listed", feePercent: 10 })), 0));
 test("shipping label comes off profit", () => assert.strictEqual(L.profitOf(sold({ shipCost: 4.5 })), 25.5));
+test("bundle discount takes the percent off the price", () => {
+  assert.strictEqual(L.bundlePrice(25, 20), 20);
+  assert.strictEqual(L.bundlePrice(19.99, 20), 15.99);
+  assert.strictEqual(L.bundlePrice(25, 0), 25);
+  assert.strictEqual(L.bundlePrice(25, ""), 25);
+});
 test("all costs together", () => {
   const it = sold({ bump: true, bumpAmount: 1, feePercent: 10, feeFlat: 0.5, shipCost: 5 });
   assert.strictEqual(L.costsTotal(it), 10.5);

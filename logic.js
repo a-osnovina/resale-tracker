@@ -53,6 +53,12 @@
     return fromCents(toCents(salePrice(item)) - toCents(costsTotal(item)) - toCents(item.cost));
   }
 
+  // The price after a bundle discount, in whole cents: 20% off $25.00 is $20.00. A bad or missing percent means no discount.
+  function bundlePrice(price, percent) {
+    const pct = Number(percent) > 0 && Number(percent) <= 100 ? Number(percent) : 0;
+    return fromCents(toCents(price) - Math.round(toCents(price) * pct / 100));
+  }
+
   // Splits a lot's total cost over n items, to the cent, so the parts add up to the total exactly.
   function bulkCosts(n, total) {
     const cents = toCents(total);
@@ -357,7 +363,7 @@
     feeText: feeText, bumpText: bumpText, feeExample: feeExample,
     toCents: toCents, money: money, salePrice: salePrice, isDone: isDone, feeTotal: feeTotal,
     platformFee: platformFee, shipCostOf: shipCostOf, costsTotal: costsTotal, profitOf: profitOf,
-    bulkCosts: bulkCosts, parseDate: parseDate, formatDate: formatDate, dayDiff: dayDiff, addDays: addDays,
+    bundlePrice: bundlePrice, bulkCosts: bulkCosts, parseDate: parseDate, formatDate: formatDate, dayDiff: dayDiff, addDays: addDays,
     isWeekend: isWeekend, shipByDate: shipByDate, wordCount: wordCount, isQuickNameOk: isQuickNameOk,
     capWords: capWords, backupDue: backupDue, backupAge: backupAge,
     themeParts: themeParts, themeForMode: themeForMode, themeForLook: themeForLook,

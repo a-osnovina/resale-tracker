@@ -1812,7 +1812,7 @@ progress::-moz-progress-bar { background: var(--primary); border-radius: 5px; }
 })();
 
 // The money and date rules live in js/logic.js (tested with: node tests/logic.test.js).
-const { money, salePrice, isDone, feeTotal, platformFee, shipCostOf, costsTotal, profitOf, bulkCosts, feeText, bumpText, feeExample,
+const { money, salePrice, isDone, feeTotal, platformFee, shipCostOf, costsTotal, profitOf, bundlePrice, bulkCosts, feeText, bumpText, feeExample,
   parseDate, formatDate, dayDiff, addDays, isWeekend, shipByDate, capWords, wordCount, isQuickNameOk, backupDue, backupAge, themeParts, themeForMode, themeForLook,
   withdrawPlan, applyWithdrawal, undoWithdrawal, monthOf, monthLabel, periodStart, isDueOn, periodLabel, repeatText, resetInvestment, rolloverInvestments } = window.ResaleLogic;
 
@@ -4745,6 +4745,19 @@ function openSoldSheet(item) {
   scanBody.appendChild(el("h3", "", "Sold: " + item.name));
   const price = numberBox("Sold for ($)", item.current);
   scanBody.appendChild(price.label);
+  const bundle = numberBox("Bundle discount (%, optional - your shop gives 20)", "");
+  bundle.input.step = "1";
+  bundle.input.max = "100";
+  scanBody.appendChild(bundle.label);
+  const bundleNote = el("p", "small", "");
+  scanBody.appendChild(bundleNote);
+  function showBundle() {
+    const base = Number(price.input.value);
+    const pct = Number(bundle.input.value);
+    bundleNote.textContent = pct > 0 && base > 0 ? "After " + pct + "% off it sells for " + money(bundlePrice(base, pct)) + "." : "";
+  }
+  price.input.addEventListener("input", showBundle);
+  bundle.input.addEventListener("input", showBundle);
   const postage = numberBox("Postage label you paid ($, optional)", item.shipCost > 0 ? item.shipCost : "");
   scanBody.appendChild(postage.label);
   const dateLabel = el("label", "field", "Date sold");
@@ -4754,8 +4767,14 @@ function openSoldSheet(item) {
   dateLabel.appendChild(dateBox);
   scanBody.appendChild(dateLabel);
   scanBody.appendChild(modalButton("Mark as sold", "primary", function () {
-    const value = readPrice(price);
+    let value = readPrice(price);
     if (value === undefined) return;
+    const pct = Number(bundle.input.value);
+    if (bundle.input.value.trim() !== "" && (isNaN(pct) || pct < 0 || pct > 100)) {
+      alert("Please enter a bundle discount between 0 and 100.");
+      return;
+    }
+    if (value !== null && pct > 0) value = bundlePrice(value, pct);
     const date = dateBox.value || todayText();
     if (item.posted && date < item.posted) {
       alert("The sold date can't be earlier than the posted date.");
