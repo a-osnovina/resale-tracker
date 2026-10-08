@@ -1317,6 +1317,11 @@ progress::-moz-progress-bar { background: var(--primary); border-radius: 5px; }
 .theme-row .dot svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; }
 .pv { display: flex; align-items: center; gap: 12px; padding: 12px; background: var(--tint); border: 1px solid var(--line-soft); border-radius: 14px; }
 .pv-pic { flex: none; width: 48px; height: 48px; border-radius: 10px; background: var(--thumb-bg); }
+.to-row { width: 100%; min-height: 60px; margin-top: 8px; padding: 8px 12px; display: flex; align-items: center; gap: 12px; text-align: left; background: var(--sold-bg); border: 1px solid var(--line-soft); border-left: 5px solid var(--sold-edge); border-radius: 14px; color: var(--text); }
+.to-slot { flex: none; min-width: 44px; padding: 6px 8px; border-radius: 10px; background: var(--surface); font-weight: 800; text-align: center; }
+.to-text { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 1px; }
+.to-text b { font-size: 16px; overflow-wrap: anywhere; }
+.to-text span { font-size: 13px; color: var(--muted); }
 .sp2-row { display: flex; align-items: stretch; gap: 8px; margin-top: 8px; }
 .spl-main { flex: 1; min-width: 0; min-height: 60px; display: flex; align-items: center; gap: 12px; padding: 8px 12px; background: var(--surface); border: 1px solid var(--line-soft); border-radius: 14px; color: var(--text); text-align: left; }
 .spl-main .spl-text { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 1px; }
@@ -1434,6 +1439,7 @@ body.modal-open #undo-bar { visibility: hidden; }
       <button type="button" id="seg-stock-storage">Storage</button>
     </div>
     <div id="stock-overview" hidden>
+    <div id="stock-takeout"></div>
     <div id="stock-platforms"></div>
     <div id="overview-off" class="small" hidden>The timeline is turned off. Turn it on in Stock settings.</div>
     <section id="pipeline-box" class="msec">
@@ -8247,6 +8253,7 @@ function renderPipelineBox() {
   const panel = document.getElementById("pipeline-panel");
   panel.innerHTML = "";
   drawPipeline(panel, planNeeds());
+  renderStockTakeout();
   renderStockPlatforms();
 }
 
@@ -8262,6 +8269,30 @@ function platformItems(name) {
 function openPlatformLink(name) {
   const url = platformLink(name);
   if (url) window.open(url, "_blank", "noopener");
+}
+// Sold items still sitting in storage: they need to be taken out and packed.
+function renderStockTakeout() {
+  const box = $("stock-takeout");
+  if (!box) return;
+  box.innerHTML = "";
+  const list = features.storage ? items.filter(function (it) { return it.status === "Sold" && it.bin && it.slot > 0; }) : [];
+  box.hidden = list.length === 0;
+  if (!list.length) return;
+  const head = el("div", "sec-head");
+  head.appendChild(el("h2", "msec-title", "Take out of storage"));
+  head.appendChild(el("span", "sec-note", list.length + (list.length === 1 ? " sold item" : " sold items")));
+  box.appendChild(head);
+  list.slice().sort(function (a, b) { return slotLabel(a.bin, a.slot).localeCompare(slotLabel(b.bin, b.slot), undefined, { numeric: true }); }).forEach(function (it) {
+    const row = el("button", "to-row");
+    row.type = "button";
+    row.appendChild(el("span", "to-slot", slotLabel(it.bin, it.slot)));
+    const text = el("span", "to-text");
+    text.appendChild(el("b", "", it.name));
+    text.appendChild(el("span", "", (it.site ? it.site + " · " : "") + "sold " + money(salePrice(it)) + (it.sold ? " · " + prettyDay(it.sold) : "")));
+    row.appendChild(text);
+    row.onclick = function () { showCard(it); };
+    box.appendChild(row);
+  });
 }
 function renderStockPlatforms() {
   const box = $("stock-platforms");
