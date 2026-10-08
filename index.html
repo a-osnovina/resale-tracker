@@ -1136,7 +1136,7 @@ progress::-moz-progress-bar { background: var(--primary); border-radius: 5px; }
 .row-btn { width: 100%; margin-top: 10px; min-height: 52px; padding: 8px 14px; display: flex; flex-direction: row; align-items: center; justify-content: space-between; gap: 8px; text-align: left; border-radius: 14px; background: var(--surface); border: 1px solid var(--line-soft); }
 .row-btn > span:first-child { font-size: 14px; font-weight: 800; color: var(--accent-text); }
 .row-btn .chev { font-size: 22px; color: var(--muted); line-height: 1; }
-.plat-row { width: 100%; min-height: 64px; margin-top: 8px; padding: 10px 14px; display: flex; align-items: center; gap: 12px; text-align: left; background: var(--surface); border: 1px solid var(--line-soft); border-radius: 14px; color: var(--text); }
+.spl-row { width: 100%; min-height: 64px; margin-top: 8px; padding: 10px 14px; display: flex; align-items: center; gap: 12px; text-align: left; background: var(--surface); border: 1px solid var(--line-soft); border-radius: 14px; color: var(--text); }
 .plat-ico { flex: none; width: 40px; height: 40px; border-radius: 10px; background: var(--tint); color: var(--accent-text); display: grid; place-items: center; }
 .plat-ico svg { width: 22px; height: 22px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
 .plat-text { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 1px; }
@@ -1317,6 +1317,12 @@ progress::-moz-progress-bar { background: var(--primary); border-radius: 5px; }
 .theme-row .dot svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; }
 .pv { display: flex; align-items: center; gap: 12px; padding: 12px; background: var(--tint); border: 1px solid var(--line-soft); border-radius: 14px; }
 .pv-pic { flex: none; width: 48px; height: 48px; border-radius: 10px; background: var(--thumb-bg); }
+.sp2-row { display: flex; align-items: stretch; gap: 8px; margin-top: 8px; }
+.spl-main { flex: 1; min-width: 0; min-height: 60px; display: flex; align-items: center; gap: 12px; padding: 8px 12px; background: var(--surface); border: 1px solid var(--line-soft); border-radius: 14px; color: var(--text); text-align: left; }
+.spl-main .spl-text { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 1px; }
+.spl-main .spl-text b { font-size: 16px; }
+.spl-main .spl-text span { font-size: 13px; color: var(--muted); }
+.spl-open { flex: none; min-width: 64px; min-height: 60px; padding: 0 14px; border-radius: 14px; font-weight: 800; }
 .pv-text { flex: 1; min-width: 0; }
 .pv-text b { display: block; font-size: 15px; }
 .pv-text span { font-size: 13px; color: var(--muted); }
@@ -1428,6 +1434,7 @@ body.modal-open #undo-bar { visibility: hidden; }
       <button type="button" id="seg-stock-storage">Storage</button>
     </div>
     <div id="stock-overview" hidden>
+    <div id="stock-platforms"></div>
     <div id="overview-off" class="small" hidden>The timeline is turned off. Turn it on in Stock settings.</div>
     <section id="pipeline-box" class="msec">
       <div class="sec-head"><h2 class="msec-title">Where your items are</h2><span class="sec-note">Tap a step</span></div>
@@ -8240,6 +8247,85 @@ function renderPipelineBox() {
   const panel = document.getElementById("pipeline-panel");
   panel.innerHTML = "";
   drawPipeline(panel, planNeeds());
+  renderStockPlatforms();
+}
+
+// ---- Stock > Overview: your platforms. Tap one to browse its items, or open its app ----
+var PLATFORM_LINKS = {
+  depop: "https://www.depop.com/", vinted: "https://www.vinted.com/", facebook: "https://www.facebook.com/marketplace/",
+  ebay: "https://www.ebay.com/", mercari: "https://www.mercari.com/", poshmark: "https://poshmark.com/", etsy: "https://www.etsy.com/"
+};
+function platformLink(name) { return PLATFORM_LINKS[String(name).toLowerCase()] || ""; }
+function platformItems(name) {
+  return items.filter(function (it) { return it.site === name && it.status !== "Archived"; });
+}
+function openPlatformLink(name) {
+  const url = platformLink(name);
+  if (url) window.open(url, "_blank", "noopener");
+}
+function renderStockPlatforms() {
+  const box = $("stock-platforms");
+  if (!box) return;
+  box.innerHTML = "";
+  const names = enabledPlatformNames();
+  box.hidden = names.length === 0;
+  if (!names.length) return;
+  const head = el("div", "sec-head");
+  head.appendChild(el("h2", "msec-title", "Platforms"));
+  head.appendChild(el("span", "sec-note", "Tap to browse"));
+  box.appendChild(head);
+  names.forEach(function (name) {
+    const list = platformItems(name);
+    const count = function (st) { return list.filter(function (it) { return it.status === st; }).length; };
+    const row = el("div", "sp2-row");
+    const main = el("button", "spl-main");
+    main.type = "button";
+    const dot = document.createElement("i");
+    dot.style.cssText = "width:10px;height:10px;border-radius:5px;flex:none;background:" + platColor(name);
+    main.appendChild(dot);
+    const text = el("span", "spl-text");
+    text.appendChild(el("b", "", name));
+    text.appendChild(el("span", "", count("Listed") + " listed · " + count("In progress") + " in progress · " + count("Sold") + " sold"));
+    main.appendChild(text);
+    main.insertAdjacentHTML("beforeend", '<svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" style="flex:none;fill:none;stroke:var(--muted);stroke-width:2;stroke-linecap:round;stroke-linejoin:round"><path d="M9 5l7 7-7 7"/></svg>');
+    main.onclick = function () { openPlatformSheet(name); };
+    row.appendChild(main);
+    if (platformLink(name)) {
+      const open = el("button", "spl-open", "Open");
+      open.type = "button";
+      open.setAttribute("aria-label", "Open " + name);
+      open.onclick = function () { openPlatformLink(name); };
+      row.appendChild(open);
+    }
+    box.appendChild(row);
+  });
+}
+function openPlatformSheet(name) {
+  const list = platformItems(name);
+  scanBody.innerHTML = "";
+  scanBody.appendChild(el("h3", "", name));
+  scanBody.appendChild(el("div", "small", list.length + (list.length === 1 ? " item" : " items") + " on " + name));
+  if (platformLink(name)) {
+    const go = modalButton("Open " + name, "primary", function () { openPlatformLink(name); });
+    scanBody.appendChild(go);
+  }
+  [["Listed", "Listed"], ["In progress", "In progress"], ["Sold", "Sold, waiting to ship"], ["Shipped", "Shipped"]].forEach(function (g) {
+    const part = list.filter(function (it) { return it.status === g[0]; });
+    if (!part.length) return;
+    scanBody.appendChild(el("div", "notif-day", g[1] + " (" + part.length + ")"));
+    part.forEach(function (it) {
+      const row = el("button", "notif-row");
+      row.type = "button";
+      row.appendChild(el("span", "notif-text", it.name));
+      const price = g[0] === "Sold" || g[0] === "Shipped" ? salePrice(it) : it.current;
+      row.appendChild(el("span", "notif-time", price > 0 ? money(price) : ""));
+      row.onclick = function () { showCard(it); };
+      scanBody.appendChild(row);
+    });
+  });
+  if (!list.length) scanBody.appendChild(el("div", "small", "Nothing on " + name + " yet."));
+  scanBody.appendChild(modalButton("Close", "", closeScanModal));
+  scanModal.hidden = false;
 }
 
 let plannerTarget = null;
