@@ -383,6 +383,59 @@
     };
   }
 
+  // ---- the Profit tab: one month, all platforms or one platform ----
+  // month is "2026-10". site is a platform name, or "All" / "" / null for every platform.
+  function prevMonth(month) {
+    const p = String(month).split("-").map(Number);
+    return p[1] === 1 ? (p[0] - 1) + "-12" : p[0] + "-" + pad2(p[1] - 1);
+  }
+  function nextMonth(month) {
+    const p = String(month).split("-").map(Number);
+    return p[1] === 12 ? (p[0] + 1) + "-01" : p[0] + "-" + pad2(p[1] + 1);
+  }
+  function daysIn(month) {
+    const p = String(month).split("-").map(Number);
+    return daysInMonth(p[0], p[1]);
+  }
+  function wantSite(item, site) { return !site || site === "All" || item.site === site; }
+  // Sold items whose sold date falls in that month.
+  function soldInMonth(items, month, site) {
+    return items.filter(function (it) {
+      return isDone(it) && !!it.sold && monthOf(it.sold) === month && wantSite(it, site);
+    });
+  }
+  // The rows of the table: sales minus fees, boost/bump, postage and item cost leaves profit. All in dollars.
+  function profitTable(items, month, site) {
+    let sales = 0, fees = 0, bump = 0, ship = 0, cost = 0;
+    const list = soldInMonth(items, month, site);
+    list.forEach(function (it) {
+      sales += toCents(salePrice(it));
+      fees += toCents(platformFee(it));
+      bump += toCents(feeTotal(it));
+      ship += toCents(shipCostOf(it));
+      cost += toCents(it.cost);
+    });
+    return {
+      count: list.length,
+      sales: fromCents(sales), fees: fromCents(fees), bump: fromCents(bump),
+      ship: fromCents(ship), cost: fromCents(cost),
+      profit: fromCents(sales - fees - bump - ship - cost)
+    };
+  }
+  // Running total of profit for day 1, 2, 3 ... throughDay of that month (an array with one number per day).
+  function cumulativeProfit(items, month, site, throughDay) {
+    const perDay = [];
+    for (let d = 0; d < throughDay; d++) perDay.push(0);
+    soldInMonth(items, month, site).forEach(function (it) {
+      const day = Number(String(it.sold).slice(8, 10));
+      if (day >= 1 && day <= throughDay) perDay[day - 1] += toCents(profitOf(it));
+    });
+    const out = [];
+    let run = 0;
+    perDay.forEach(function (c) { run += c; out.push(fromCents(run)); });
+    return out;
+  }
+
   return {
     feeText: feeText, bumpText: bumpText, feeExample: feeExample,
     toCents: toCents, money: money, salePrice: salePrice, isDone: isDone, feeTotal: feeTotal,
@@ -394,6 +447,8 @@
     themeParts: themeParts, themeForMode: themeForMode, themeForLook: themeForLook,
     withdrawPlan: withdrawPlan, applyWithdrawal: applyWithdrawal, undoWithdrawal: undoWithdrawal,
     monthOf: monthOf, monthLabel: monthLabel, periodStart: periodStart, isDueOn: isDueOn, periodLabel: periodLabel, repeatText: repeatText,
-    resetInvestment: resetInvestment, rolloverInvestments: rolloverInvestments
+    resetInvestment: resetInvestment, rolloverInvestments: rolloverInvestments,
+    prevMonth: prevMonth, nextMonth: nextMonth, daysIn: daysIn, soldInMonth: soldInMonth,
+    profitTable: profitTable, cumulativeProfit: cumulativeProfit
   };
 });

@@ -35,3 +35,6 @@ jobs:
 
       - name: Run the money and date tests
         run: node tests/logic.test.js
+
+      - name: Run the Profit tab tests
+        run: node tests/profit.test.js
