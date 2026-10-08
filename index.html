@@ -930,7 +930,7 @@ svg { flex: none; }
 .acard { position: relative; display: flex; align-items: center; gap: 12px; padding: 12px; background: var(--surface); border: 1px solid; border-left-width: 5px; border-radius: 14px; }
 .acard.ship { border-color: #f0b8b0; border-left-color: #d92d20; }
 .acard.price { border-color: #e6d29a; border-left-color: #c9a13a; }
-.acard-text { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px; cursor: pointer; padding-right: 16px; }
+.acard-text { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px; cursor: pointer; }
 .acard-label { font-size: 12px; font-weight: 800; letter-spacing: 0.05em; text-transform: uppercase; }
 .acard.ship .acard-label { color: #b42318; }
 .acard.price .acard-label { color: #6b4a00; }
@@ -1387,10 +1387,6 @@ body.modal-open #undo-bar { visibility: hidden; }
   <!-- HOME: what needs doing today -->
   <section class="view" id="view-home" aria-label="Today">
     <div id="home-alerts"></div>
-    <section id="pipeline-box" class="msec">
-      <div class="sec-head"><h2 class="msec-title">Where your items are</h2><span class="sec-note">Tap a step</span></div>
-      <div class="dropdown-panel" id="pipeline-panel"></div>
-    </section>
     <div class="summary" id="summary-box">
       <div class="stats">
         <div class="stat main" id="home-balance-tile" role="button" tabindex="0" aria-label="Balance. Tap to open Money.">
@@ -1408,6 +1404,7 @@ body.modal-open #undo-bar { visibility: hidden; }
         <progress id="mini-bar" value="0" max="1"></progress>
       </div>
     </div>
+    <section id="home-cal" class="msec" hidden></section>
     <section id="home-todo" class="msec">
       <div class="sec-head"><h2 class="msec-title">To do</h2><button type="button" id="home-todo-all" class="sec-link">See all in Plan</button></div>
       <div id="home-todo-list"></div>
@@ -1429,6 +1426,10 @@ body.modal-open #undo-bar { visibility: hidden; }
       <button type="button" id="seg-stock-storage">Storage</button>
     </div>
     <div id="stock-items">
+    <section id="pipeline-box" class="msec">
+      <div class="sec-head"><h2 class="msec-title">Where your items are</h2><span class="sec-note">Tap a step</span></div>
+      <div class="dropdown-panel" id="pipeline-panel"></div>
+    </section>
   <!-- ITEM LIST -->
   <div class="search-row">
     <input id="search" type="search" placeholder="Search your items" aria-label="Search your items" autocomplete="off">
@@ -1491,14 +1492,8 @@ body.modal-open #undo-bar { visibility: hidden; }
       </div>
       <button type="button" id="withdraw-button2" class="bal-btn">Withdraw</button>
     </section>
-    <section class="bal-card profit-card" id="profit-card" aria-label="Total profit">
-      <div class="bal-text">
-        <span class="bal-label">Total profit</span>
-        <span class="bal-big">$<span id="profit2">0.00</span></span>
-      </div>
-    </section>
-    <details id="money-more">
-      <summary>More money details</summary>
+    <section id="money-by-platform" class="wd-card" aria-label="By platform"></section>
+    <div id="money-more">
     <div id="inv-wrap">
       <div id="inv-card"></div>
       <section id="goals-box" class="msec">
@@ -1528,7 +1523,7 @@ body.modal-open #undo-bar { visibility: hidden; }
         </div>
       </section>
     </div>
-    </details>
+    </div>
     </div>
 
     <!-- Profit: pick a month and a platform, see the pace graph and the table -->
@@ -1789,6 +1784,11 @@ body.modal-open #undo-bar { visibility: hidden; }
       </div>
     </div>
   </details>
+  <div class="tools-group">Plan options</div>
+  <details class="filters-box" id="planopts-box" hidden>
+    <summary>Plan options</summary>
+    <div class="filters-panel" id="planopts-body"></div>
+  </details>
   <div class="tools-group">Planner</div>
   <details class="filters-box" id="plan-box">
     <summary>My time estimates</summary>
@@ -1825,19 +1825,6 @@ body.modal-open #undo-bar { visibility: hidden; }
     </div>
   </div>
   </details>
-  <div class="tools-group">Units</div>
-  <details class="filters-box" id="units-box">
-    <summary>Weight units</summary>
-    <div class="filters-panel">
-      <div class="sgroup">
-        <h2 class="msec-title">Measurements</h2>
-        <div class="set-card pad">
-          <div class="mode-seg" id="units-seg" role="group" aria-label="Measurements"></div>
-          <p class="set-hint" id="units-hint"></p>
-        </div>
-      </div>
-    </div>
-  </details>
   <div class="tools-group">Appearance</div>
   <details class="filters-box" id="look-box">
     <summary>Title and colors</summary>
@@ -1847,6 +1834,13 @@ body.modal-open #undo-bar { visibility: hidden; }
         <div class="set-card pad">
           <div class="mode-seg" id="mode-seg" role="group" aria-label="Mode"></div>
           <p class="set-hint" id="mode-hint"></p>
+        </div>
+      </div>
+      <div class="sgroup">
+        <h2 class="msec-title">Measurements</h2>
+        <div class="set-card pad">
+          <div class="mode-seg" id="units-seg" role="group" aria-label="Measurements"></div>
+          <p class="set-hint" id="units-hint"></p>
         </div>
       </div>
       <div class="sgroup">
@@ -2272,6 +2266,10 @@ let remindersOn = true;   // the lower-price reminders switch
 let lowerPercents = [10, 15];   // the percent-off buttons in the Lower price pop-up
 let bulks = [];      // one record per bulk upload: { id, date, name, count, totalCost }
 let plan = JSON.parse(JSON.stringify(DEFAULT_PLAN));   // planner time estimates and the weekly plan
+let timeEstOn = true;   // show time estimates (minutes of work) around the app
+let homeCal = "none";   // calendar on Home: "none", "week" or "month"
+try { timeEstOn = localStorage.getItem("timeEst") !== "0"; const hc = localStorage.getItem("homeCal"); homeCal = hc === "week" || hc === "month" ? hc : "none"; } catch (e) {}
+function savePlanOptions() { try { localStorage.setItem("timeEst", timeEstOn ? "1" : "0"); localStorage.setItem("homeCal", homeCal); } catch (e) {} }
 let planPrefs = null; // Plan tab choices: shipping days, limit, repeating jobs, money goal
 let timeLog = [];    // time you logged: { id, date, step, minutes, items }
 let todos = [];      // your own to-dos: { id, text, day (-1 = any, 0 = Monday ... 6 = Sunday), done }
@@ -6980,7 +6978,6 @@ function render() {
   document.getElementById("balance").textContent = balance.toFixed(2);
   document.getElementById("balance2").textContent = balance.toFixed(2);
   document.getElementById("total2").textContent = total.toFixed(2);
-  document.getElementById("profit2").textContent = total.toFixed(2);
   paintBalancePanel();
   renderPlatformLinks();
   renderGoals(balance);
@@ -7360,6 +7357,8 @@ function backupData() {
     timeLog: timeLog,
     todos: todos,
     planPrefs: planPrefs,
+    timeEstOn: timeEstOn,
+    homeCal: homeCal,
     lowerPercents: lowerPercents,
     remindersOn: remindersOn
   });
@@ -7439,6 +7438,9 @@ function restoreFromText(text, skipAsk) {
     if (Array.isArray(data.timeLog)) timeLog = cleanTimeLog(data.timeLog);
     if (Array.isArray(data.todos)) todos = cleanTodos(data.todos);
     if (data.planPrefs) planPrefs = cleanPlanPrefs(data.planPrefs);
+    if (typeof data.timeEstOn === "boolean") timeEstOn = data.timeEstOn;
+    if (data.homeCal === "week" || data.homeCal === "month" || data.homeCal === "none") homeCal = data.homeCal;
+    savePlanOptions();
     if (Array.isArray(data.lowerPercents)) lowerPercents = cleanPercents(data.lowerPercents);
     if (typeof data.appTitle === "string" && data.appTitle.trim() !== "") {
       appTitle = data.appTitle.trim().slice(0, 30);
@@ -8112,7 +8114,7 @@ function openStageSheet(key) {
   scanBody.innerHTML = "";
   scanBody.appendChild(el("h3", "", info.title));
   const mins = info.minutes(planNeeds());
-  scanBody.appendChild(el("div", "small", list.length + (list.length === 1 ? " item" : " items") + (mins > 0 ? " \u00B7 about " + fmtMin(mins) : "")));
+  scanBody.appendChild(el("div", "small", list.length + (list.length === 1 ? " item" : " items") + (timeEstOn && mins > 0 ? " \u00B7 about " + fmtMin(mins) : "")));
   scanBody.appendChild(el("div", "small", info.help));
   if (list.length === 0) scanBody.appendChild(el("div", "slot-item-name", "Nothing here right now."));
   list.forEach(function (item) {
@@ -8211,13 +8213,15 @@ function drawPipeline(panel, need) {
     if (cls === "ok") node.appendChild(icon("check"));
     step.appendChild(node);
     step.appendChild(el("div", "pipe-label", st.label));
-    step.appendChild(el("div", "pipe-time", st.wait ? "no work" : (st.n === 0 ? "done" : fmtMin(st.m))));
+    step.appendChild(el("div", "pipe-time", st.wait ? "no work" : (st.n === 0 ? "done" : (timeEstOn ? fmtMin(st.m) : ""))));
     pipe.appendChild(step);
   });
   total += need.upload.minutes;
   panel.appendChild(pipe);
   const totalBox = el("div", "pipe-total");
-  if (total > 0) {
+  if (!timeEstOn) {
+    totalBox.hidden = true;
+  } else if (total > 0) {
     totalBox.appendChild(icon("clock"));
     totalBox.appendChild(el("b", "", "About " + fmtMin(total) + " of work waiting"));
   } else {
@@ -9521,7 +9525,7 @@ document.getElementById("example-backup").addEventListener("click", function () 
 
 // Everything this app keeps in your browser. Only these are removed when you start from zero.
 const APP_STORAGE_KEYS = ["items", "goals", "balances", "bins", "freed", "filter", "statusFilter", "remindDays", "withdrawals",
-  "shipAlerts", "showShipped", "remindersOn", "platforms", "bulks", "planSettings", "planPrefs", "timeLog", "todos", "lowerPercents",
+  "shipAlerts", "showShipped", "remindersOn", "platforms", "bulks", "planSettings", "planPrefs", "timeEst", "homeCal", "timeLog", "todos", "lowerPercents",
   "shipPulse", "theme", "dueDismissed", "shipDismissed", "qrUsed", "shipIntro", "lastBackup", "backupSnooze", "pinChoice",
   "pinGoals", "summaryCollapsed", "planTimer", "appTitle", "photoTypes", "features", "cardFields", "swipeOn"];
 function wipeEverything() {
@@ -10050,12 +10054,18 @@ function alertCard(kind, label, item, sub, btnText, onClick, onDismiss) {
   btn.type = "button";
   btn.onclick = onClick;
   c.appendChild(btn);
-  const x = el("button", "acard-x", "×");
-  x.type = "button";
-  x.setAttribute("aria-label", "Dismiss this alert");
-  x.onclick = onDismiss;
-  c.appendChild(x);
-  return c;
+  // Slide the card left to dismiss it, like the buttons in Stock.
+  const wrap = el("div", "swipe-wrap");
+  const bg = el("div", "swipe-bg swipe-actions");
+  const dismiss = el("button", "swipe-btn dismiss", "Dismiss");
+  dismiss.type = "button";
+  let api = null;
+  dismiss.onclick = function (event) { event.stopPropagation(); api.close(); onDismiss(); };
+  bg.appendChild(dismiss);
+  wrap.appendChild(bg);
+  wrap.appendChild(c);
+  api = attachSwipe(c, 0, 1);
+  return wrap;
 }
 function renderHomeAlerts() {
   const box = $("home-alerts");
@@ -10179,6 +10189,58 @@ function todoRowEl(r) {
   };
   row.appendChild(text);
   return row;
+}
+function renderHomeCalendar() {
+  const box = $("home-cal");
+  if (!box) return;
+  box.innerHTML = "";
+  box.hidden = homeCal === "none";
+  if (homeCal === "none") return;
+  const today = todayText();
+  function open(day) { calDay = day; calMonth = monthOf(day); planPrefs.tab = "calendar"; planPrefs.calMode = homeCal; savePlanPrefs(); showView("plan"); }
+  const head = el("div", "sec-head");
+  head.appendChild(el("h2", "msec-title", homeCal === "week" ? "This week" : monthLabel(monthOf(today))));
+  const all = el("button", "sec-link", "Open calendar");
+  all.type = "button";
+  all.onclick = function () { open(today); };
+  head.appendChild(all);
+  box.appendChild(head);
+  if (homeCal === "week") {
+    const strip = el("div", "wk");
+    const monday = mondayOf(today);
+    for (let i = 0; i < 7; i++) {
+      const day = addDays(monday, i);
+      const b = el("button", "wk-day" + (day === today ? " today" : "") + (planDots(day) ? " has" : ""));
+      b.type = "button";
+      b.appendChild(el("span", "dn", DAY_NAMES[i]));
+      b.appendChild(el("span", "dd", String(Number(day.slice(8)))));
+      b.appendChild(el("span", "dot"));
+      b.onclick = function () { open(day); };
+      strip.appendChild(b);
+    }
+    box.appendChild(strip);
+  } else {
+    const month = monthOf(today);
+    const grid = el("div", "cal-grid");
+    ["M", "T", "W", "T", "F", "S", "S"].forEach(function (d) { grid.appendChild(el("div", "cal-dow", d)); });
+    for (let i = 0; i < weekdayIndex(month + "-01"); i++) grid.appendChild(el("div", "cal-blank"));
+    const n = new Date(Date.UTC(Number(month.slice(0, 4)), Number(month.slice(5, 7)), 0)).getUTCDate();
+    for (let d = 1; d <= n; d++) {
+      const day = month + "-" + pad(d);
+      const ev = eventsOn(day);
+      const cell = el("button", "cal-cell" + (day === today ? " today" : ""));
+      cell.type = "button";
+      cell.appendChild(el("span", "", String(d)));
+      const dots = el("span", "cal-dots");
+      if (ev.todos.length || jobRowsFor(day).length) dots.appendChild(el("span", "cal-dot todo"));
+      if (ev.ships.length) dots.appendChild(el("span", "cal-dot ship"));
+      if (ev.bills.length) dots.appendChild(el("span", "cal-dot bill"));
+      cell.appendChild(dots);
+      cell.onclick = function () { open(day); };
+      grid.appendChild(cell);
+    }
+    box.appendChild(grid);
+  }
 }
 function renderHomeTodos() {
   const box = $("home-todo-list");
@@ -10448,22 +10510,9 @@ function renderProfitTab() {
   box.appendChild(total);
 }
 
-function renderWithdrawalsTab() {
-  const box = $("wd-panel");
-  box.innerHTML = "";
-  const all = withdrawPlan(items, balances, goals, null, withdrawals);
-  const top = el("div", "bal-card");
-  const text = el("div", "bal-text");
-  text.appendChild(el("span", "bal-label", "You can withdraw"));
-  text.appendChild(el("span", "bal-big", money(all.amount)));
-  top.appendChild(text);
-  const go = el("button", "bal-btn", "Withdraw");
-  go.type = "button";
-  go.onclick = function () { openWithdraw("choose"); };
-  top.appendChild(go);
-  box.appendChild(top);
-
-  const per = el("div", "wd-card");
+function renderByPlatform() {
+  const per = $("money-by-platform");
+  per.innerHTML = "";
   per.appendChild(el("div", "msec-title", "By platform"));
   const names = enabledPlatformNames();
   names.forEach(function (name) {
@@ -10483,7 +10532,23 @@ function renderWithdrawalsTab() {
     per.appendChild(line);
   });
   if (!names.length) per.appendChild(el("div", "small", "No platforms are switched on yet."));
-  box.appendChild(per);
+}
+
+function renderWithdrawalsTab() {
+  const box = $("wd-panel");
+  box.innerHTML = "";
+  const all = withdrawPlan(items, balances, goals, null, withdrawals);
+  const top = el("div", "bal-card");
+  const text = el("div", "bal-text");
+  text.appendChild(el("span", "bal-label", "You can withdraw"));
+  text.appendChild(el("span", "bal-big", money(all.amount)));
+  top.appendChild(text);
+  const go = el("button", "bal-btn", "Withdraw");
+  go.type = "button";
+  go.onclick = function () { openWithdraw("choose"); };
+  top.appendChild(go);
+  box.appendChild(top);
+
 
   const hist = el("div", "wd-card");
   hist.appendChild(el("div", "msec-title", "Past withdrawals"));
@@ -10515,6 +10580,7 @@ function renderWithdrawalsTab() {
 
 function renderMoney() {
   renderInvCard();
+  renderByPlatform();
   if (moneyTab === "profit") renderProfitTab();
   if (moneyTab === "withdrawals") renderWithdrawalsTab();
 }
@@ -10730,6 +10796,7 @@ function renderPlanTimeAndTools(box) {
   }
   box.appendChild(card);
   const mh = el("div", "sec-head");
+  mh.hidden = !timeEstOn;
   mh.appendChild(el("h2", "msec-title", "More planning tools"));
   box.appendChild(mh);
   const more = el("div");
@@ -10737,8 +10804,10 @@ function renderPlanTimeAndTools(box) {
   box.appendChild(more);
   plannerTarget = more;
   try {
-    plannerSection("week", "Work waiting and time needed", buildWorkWaiting);
-    plannerSection("calc", "Planning a new batch?", buildBatchCalc);
+    if (timeEstOn) {
+      plannerSection("week", "Work waiting and time needed", buildWorkWaiting);
+      plannerSection("calc", "Planning a new batch?", buildBatchCalc);
+    }
   } finally {
     plannerTarget = null;
   }
@@ -10845,7 +10914,7 @@ function renderPlanGoal(box) {
     box.appendChild(tiles);
     const why = el("div", "pl-card");
     if (gp.tooLate) why.appendChild(el("div", "pl-warn", "There is not enough time to list that many items before " + prettyDay(g.by) + ". Try a later date or a smaller goal."));
-    else why.appendChild(el("div", "", "List " + gp.listingsNeeded + " items by " + prettyDay(gp.listBy) + " so they have time to sell. That is about " + gp.hours + " hours of work."));
+    else why.appendChild(el("div", "", "List " + gp.listingsNeeded + " items by " + prettyDay(gp.listBy) + " so they have time to sell." + (timeEstOn ? " That is about " + gp.hours + " hours of work." : "")));
     why.appendChild(el("div", "small", n.stats.enough
       ? "From your last 90 days: " + n.stats.count + " sales, about " + money(n.avg) + " each, roughly 1 in " + Math.round(1 / n.stats.sellRate) + " items sells, about " + n.stats.daysToSell + " days to sell."
       : "You have fewer than 3 sales in the last 90 days, so this uses sample numbers (about " + money(n.avg) + " per sale, 1 in 3 sells, 3 weeks to sell). It gets more exact as you sell."));
@@ -11005,9 +11074,9 @@ function renderPlanner() { renderPlanView(); }
 var settingsPage = "home";
 var SETTINGS_PAGES = {
   look: { box: "look-box", title: "Appearance" },
-  units: { box: "units-box", title: "Units" },
   reminders: { box: "alerts-details", title: "Reminders" },
   time: { box: "plan-box", title: "Time estimates" },
+  planopts: { box: "planopts-box", title: "Plan options" },
   storage: { box: "bins-box", title: "Storage" },
   cards: { box: "cards-box", title: "What each item shows" },
   platforms: { box: "platforms-box", title: "Platforms and fees" },
@@ -11043,8 +11112,8 @@ function openSettingsPage(key) {
   sub.hidden = key === "home" || !SETTINGS_PAGES[key].sub;
   sub.textContent = key === "home" ? "" : (SETTINGS_PAGES[key].sub || "");
   if (key === "home") renderSettingsHome();
-  if (key === "look") renderAppearance();
-  if (key === "units") renderUnits();
+  if (key === "look") { renderAppearance(); renderUnits(); }
+  if (key === "planopts") renderPlanOptions();
   if (key === "backup") updateBackupInfo();
   toolsModal.querySelector(".tools-panel").scrollTop = 0;
 }
@@ -11126,8 +11195,8 @@ function renderSettingsHome() {
   const timeRow = function () {
     return settingsRow(ICON_CLOCK, "Time estimates", "Per step", function () { openSettingsPage("time"); }, "help");
   };
-  const unitsRow = function () {
-    return settingsRow(ICON_UNITS, "Units", unitsLabel(), function () { openSettingsPage("units"); }, "shop");
+  const optsRow = function () {
+    return settingsRow(ICON_CLOCK, "Plan options", (timeEstOn ? "Estimates on" : "Estimates off") + " · Home calendar: " + homeCal, function () { openSettingsPage("planopts"); }, "help");
   };
   const allRow = function () {
     return settingsRow('<path d="M4 7h9M17 7h3M4 17h3M11 17h9"/><circle cx="15" cy="7" r="2"/><circle cx="9" cy="17" r="2"/>', "All settings", "", function () { openSettingsScope("all", ""); });
@@ -11143,36 +11212,59 @@ function renderSettingsHome() {
     if (features.storage) shop.push(storageRow());
     shop.push(archiveRow());
     settingsGroup(box, "Your items", shop);
-    settingsGroup(box, "Measurements", [unitsRow()]);
     settingsGroup(box, "Alerts", [remindersRow()]);
+    settingsGroup(box, "Time", [optsRow()]);
     settingsGroup(box, "More", [allRow()]);
     return;
   }
   if (scope === "plan") {
-    settingsGroup(box, "Your week", [timeRow()]);
+    settingsGroup(box, "Your week", [optsRow(), timeRow()]);
     settingsGroup(box, "More", [allRow()]);
     return;
   }
   settingsGroup(box, "Your app", [
-    settingsRow(ICON_LOOK, "Appearance", themeLabel(), function () { openSettingsPage("look"); })
+    settingsRow(ICON_LOOK, "Appearance", themeLabel() + " · " + unitsLabel(), function () { openSettingsPage("look"); })
   ]);
   settingsGroup(box, "Pages", [
-    settingsRow('<path d="M4 20V10M10 20V4M16 20v-8M22 20H2"/>', "Money", "Platforms and fees", function () { openSettingsScope("money", "all"); }),
     settingsRow('<path d="M21 8 12 3 3 8v8l9 5 9-5V8z"/><path d="M3 8l9 5 9-5M12 13v8"/>', "Stock", "Items, storage, alerts", function () { openSettingsScope("stock", "all"); }),
+    settingsRow('<path d="M4 20V10M10 20V4M16 20v-8M22 20H2"/>', "Money", "Platforms and fees", function () { openSettingsScope("money", "all"); }),
     settingsRow('<rect x="4" y="5" width="16" height="15" rx="2"/><path d="M4 10h16M8 3v4M16 3v4"/>', "Plan", "Time estimates", function () { openSettingsScope("plan", "all"); })
   ]);
   const shop = [platformsRow(), cardsRow()];
   if (features.storage) shop.push(storageRow());
   shop.push(archiveRow());
   settingsGroup(box, "Your shop", shop);
-  settingsGroup(box, "Measurements", [unitsRow()]);
-  settingsGroup(box, "Plan and alerts", [remindersRow(), timeRow()]);
+  settingsGroup(box, "Plan and alerts", [remindersRow(), optsRow(), timeRow()]);
   let last = "";
   try { last = localStorage.getItem("lastBackup") || ""; } catch (e) {}
   const age = backupAge(last, todayText());
   settingsGroup(box, "Your data", [
     settingsRow('<path d="M12 3v12M8 11l4 4 4-4M4 19h16"/>', "Back up and export", age.text, function () { openSettingsPage("backup"); }, "data", age.level)
   ]);
+}
+// Plan options page: show or hide time estimates, and pick the calendar shown on Home.
+function renderPlanOptions() {
+  const body = $("planopts-body");
+  body.innerHTML = "";
+  const card = el("div", "set-card pad");
+  card.appendChild(switchRow("Time estimates", "Show how long work will take: on the Where your items are steps, in Plan and in your goal.", timeEstOn, function (on) {
+    timeEstOn = on; savePlanOptions(); render(); renderPlanView(); renderPlanOptions();
+  }));
+  body.appendChild(el("h2", "msec-title", "Time"));
+  body.appendChild(card);
+  body.appendChild(el("h2", "msec-title", "Calendar on Home"));
+  const c2 = el("div", "set-card pad");
+  const seg = el("div", "mode-seg");
+  [["none", "None"], ["week", "Week"], ["month", "Month"]].forEach(function (o) {
+    const b = el("button", homeCal === o[0] ? "on" : "", o[1]);
+    b.type = "button";
+    b.setAttribute("aria-pressed", homeCal === o[0] ? "true" : "false");
+    b.onclick = function () { homeCal = o[0]; savePlanOptions(); renderHomeCalendar(); renderPlanOptions(); };
+    seg.appendChild(b);
+  });
+  c2.appendChild(seg);
+  c2.appendChild(el("p", "set-hint", "Shows this week or this month from Plan on your Home page. Tap a day to open it in Plan."));
+  body.appendChild(c2);
 }
 // Units page: US or Metric. Weights are always saved in ounces, so switching never changes what you saved.
 function weightIsUS() { return ["oz", "lb", "lboz"].indexOf(weightUnit) !== -1; }
@@ -11254,6 +11346,7 @@ function renderViews() {
     paintGoalTile();
     renderHomeAlerts();
     renderHomeTodos();
+    renderHomeCalendar();
     renderStorage();
     renderMoney();
     renderFilterChip();
