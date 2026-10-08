@@ -339,25 +339,33 @@ body.summary-loose .summary { position: relative; }
 .withdraw-amount { font-size: 34px; font-weight: 800; color: var(--accent-text); margin-top: 4px; }
 .withdraw-note { font-size: 14px; color: var(--muted); margin: 8px 0 4px; }
 
-/* ---- Withdraw pop-up: everything, or a different amount ---- */
-.wd-choice { width: 100%; margin-top: 10px; min-height: 72px; padding: 14px 16px; border-radius: 16px; display: flex; flex-direction: column; align-items: flex-start; gap: 4px; text-align: left; background: var(--surface); border: 1px solid var(--line); color: var(--text); }
-.wd-choice b { font-size: 18px; }
-.wd-choice span { font-size: 14px; opacity: 0.85; }
-.wd-choice.primary { background: var(--primary); border-color: var(--primary); color: #ffffff; }
-.wd-choice:disabled { opacity: 0.5; }
-.wd-head { margin: -4px 0 4px; }
-.wd-back { min-height: 44px; padding: 0 12px 0 0; border: 0; background: none; color: var(--accent-text); font-size: 16px; font-weight: 700; }
-.wd-amount-box { display: flex; align-items: center; gap: 6px; margin-top: 10px; padding: 0 16px; min-height: 72px; border-radius: 16px; background: var(--bg); border: 1.5px solid var(--accent-line); }
-.wd-dollar { font-size: 32px; color: var(--muted); font-weight: 500; }
-.wd-amount-input { flex: 1; min-width: 0; border: 0; background: none; color: var(--text); font-size: 36px; font-weight: 800; font-variant-numeric: tabular-nums; outline: none; padding: 0; }
-.wd-stays { margin: 10px 2px 0; font-size: 14px; color: var(--muted); }
-.wd-stays b { color: var(--text); }
-.wd-from-row { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-top: 14px; min-height: 52px; padding: 0 12px 0 16px; border-radius: 14px; border: 1px solid var(--line-soft); color: var(--muted); font-size: 16px; }
-.wd-from { flex: 1; min-width: 0; min-height: 44px; border: 0; background: none; color: var(--text); font-size: 16px; font-weight: 700; text-align: right; }
-.wd-max { margin-top: 8px; min-height: 44px; padding: 0 4px; border: 0; background: none; color: var(--accent-text); font-size: 15px; font-weight: 700; }
-.wd-go { width: 100%; margin-top: 10px; min-height: 56px; border-radius: 28px; font-size: 17px; font-weight: 800; }
-.wd-go:disabled { opacity: 0.45; }
-.wd-warn:empty { display: none; }
+/* ---- Withdraw pop-up (design S2): always the dark sheet, whatever the app's colors are ---- */
+#scan-body[data-kind="money"] { background: #1e2127; color: #f2f2ef; border-top: 0; border-radius: 28px 28px 0 0; padding: 10px 20px 28px 20px; box-shadow: 0 -8px 30px rgba(0, 0, 0, 0.4); display: flex; flex-direction: column; gap: 18px; }
+#scan-modal:has(#scan-body[data-kind="money"]) { background: rgba(0, 0, 0, 0.55); }
+.wd-grab { width: 40px; height: 4px; border-radius: 2px; background: #3a3f48; align-self: center; flex: none; }
+.wd-top { display: flex; align-items: center; justify-content: space-between; }
+#scan-body[data-kind="money"] h3.wd-title { margin: 0; font-size: 22px; font-weight: 700; color: #f2f2ef; }
+.wd-x { width: 44px; height: 44px; min-height: 44px; padding: 0; border: 0; border-radius: 22px; background: #2a2e36; color: #f2f2ef; display: flex; align-items: center; justify-content: center; }
+.wd-choices { display: flex; flex-direction: column; gap: 12px; }
+.wd-choice { width: 100%; min-height: 72px; padding: 14px 16px; border-radius: 16px; display: flex; flex-direction: column; align-items: flex-start; gap: 4px; text-align: left; background: none; border: 1px solid #3a3f48; color: #f2f2ef; }
+.wd-choice b { font-size: 18px; font-weight: 700; }
+.wd-choice span { font-size: 14px; opacity: 0.8; }
+.wd-choice.fill { background: #5fd08a; border-color: #5fd08a; color: #0e1a12; }
+.wd-choice:disabled { opacity: 0.45; }
+.wd-amount-wrap { display: flex; flex-direction: column; align-items: center; gap: 8px; padding: 6px 0; }
+.wd-amount-box { display: flex; align-items: center; justify-content: center; max-width: 100%; }
+.wd-dollar { font-size: 56px; line-height: 1; color: #a3a8b0; font-weight: 500; margin-right: 4px; }
+#scan-body .wd-amount-input { width: 5.5ch; min-width: 0; min-height: 0; padding: 0; border: 0; background: none; color: #f2f2ef; font-size: 56px; line-height: 1.1; font-weight: 700; letter-spacing: -0.02em; font-variant-numeric: tabular-nums; outline: none; caret-color: #5fd08a; box-shadow: none; }
+#scan-body .wd-amount-input::placeholder { color: #3a3f48; }
+.wd-stays { font-size: 15px; color: #a3a8b0; text-align: center; }
+.wd-stays b { color: #f2f2ef; }
+.wd-stays.bad { color: #e66767; }
+.wd-from-row { position: relative; display: flex; align-items: center; justify-content: space-between; gap: 10px; min-height: 52px; padding: 0 16px; border-radius: 14px; border: 1px solid #3a3f48; color: #a3a8b0; font-size: 16px; }
+.wd-from-val { display: flex; align-items: center; gap: 6px; color: #f2f2ef; font-weight: 700; }
+.wd-from { position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0; font-size: 16px; }
+.wd-go { width: 100%; min-height: 56px; border-radius: 28px; font-size: 17px; font-weight: 700; border: 0; background: #5fd08a; color: #0e1a12; }
+#scan-body[data-kind="money"] button.primary.wd-go { background: #5fd08a; border-color: #5fd08a; }
+.wd-go:disabled { background: #2a2e36; color: #6e7580; opacity: 1; }
 
 .wd-row { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 8px 0; border-top: 1px solid var(--line-soft); font-size: 14px; }
 .wd-row button { min-height: 36px; padding: 0 12px; font-size: 13px; }
@@ -4514,33 +4522,26 @@ function doPartialWithdraw(platform, amount) {
   closeScanModal();
   showUndo("Withdrew " + money(record.amount) + (platform ? " from " + platform + "." : "."), snap);
 }
-function wdHistory() {
-  if (withdrawals.length === 0) return;
-  scanBody.appendChild(el("div", "slot-item-name", "Past withdrawals"));
-  withdrawals.slice().reverse().forEach(function (w, i) {
-    const row = el("div", "wd-row");
-    row.appendChild(el("span", "", prettyDay(w.date) + " · " + (w.platform ? w.platform + " · " : "Total · ") + money(w.amount)));
-    if (i === 0) {
-      const undo = el("button", "", "Undo");
-      undo.type = "button";
-      undo.onclick = undoWithdraw;
-      row.appendChild(undo);
-    }
-    scanBody.appendChild(row);
-  });
-  scanBody.appendChild(el("div", "small", "Withdrawn in total: " + money(withdrawals.reduce(function (sum, w) { return sum + w.amount; }, 0))));
+function wdTop() {
+  scanBody.appendChild(el("div", "wd-grab"));
+  const top = el("div", "wd-top");
+  top.appendChild(el("h3", "wd-title", "Withdraw"));
+  const x = el("button", "wd-x");
+  x.type = "button";
+  x.setAttribute("aria-label", "Close");
+  x.innerHTML = '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>';
+  x.onclick = closeScanModal;
+  top.appendChild(x);
+  scanBody.appendChild(top);
 }
 function openWithdrawSheet() {
   scanBody.innerHTML = "";
+  wdTop();
   if (wdStep === "amount") {
     // Step 2: type the amount
-    const head = el("div", "wd-head");
-    const back = el("button", "wd-back", "‹ Back");
-    back.type = "button";
-    back.onclick = function () { wdStep = "choose"; openWithdrawSheet(); };
-    head.appendChild(back);
-    scanBody.appendChild(head);
-    scanBody.appendChild(el("h3", "", "Withdraw a different amount"));
+    const wrap = el("div", "wd-amount-wrap");
+    const box = el("div", "wd-amount-box");
+    box.appendChild(el("span", "wd-dollar", "$"));
     const input = document.createElement("input");
     input.type = "text";
     input.inputMode = "decimal";
@@ -4548,12 +4549,12 @@ function openWithdrawSheet() {
     input.placeholder = "0.00";
     input.value = wdText;
     input.setAttribute("aria-label", "Amount to withdraw in dollars");
-    const box = el("div", "wd-amount-box");
-    box.appendChild(el("span", "wd-dollar", "$"));
     box.appendChild(input);
-    scanBody.appendChild(box);
+    wrap.appendChild(box);
     const stays = el("div", "wd-stays");
-    scanBody.appendChild(stays);
+    wrap.appendChild(stays);
+    scanBody.appendChild(wrap);
+
     const from = document.createElement("select");
     from.className = "wd-from";
     from.setAttribute("aria-label", "Take it from");
@@ -4574,65 +4575,68 @@ function openWithdrawSheet() {
     if (from.value !== (wdFrom || "")) { wdFrom = null; from.value = ""; }
     const fromRow = el("label", "wd-from-row");
     fromRow.appendChild(el("span", "", "From"));
+    const fromVal = el("span", "wd-from-val");
+    const fromName = document.createTextNode("");
+    fromVal.appendChild(fromName);
+    const chev = document.createElement("span");
+    chev.style.cssText = "color:#a3a8b0;display:flex";
+    chev.innerHTML = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>';
+    fromVal.appendChild(chev);
+    fromRow.appendChild(fromVal);
     fromRow.appendChild(from);
     scanBody.appendChild(fromRow);
-    const maxBtn = el("button", "wd-max", "");
-    maxBtn.type = "button";
-    scanBody.appendChild(maxBtn);
-    const go = el("button", "primary wd-go", "Withdraw");
+
+    const go = el("button", "wd-go", "Withdraw");
     go.type = "button";
     scanBody.appendChild(go);
-    const warn = el("div", "withdraw-note wd-warn");
-    scanBody.appendChild(warn);
+
     const update = function () {
       wdFrom = from.value || null;
+      fromName.nodeValue = wdFrom || "All platforms";
       const max = withdrawMax(items, balances, goals, wdFrom, withdrawals);
       const text = input.value.replace(/[^0-9.]/g, "");
       const amount = text === "" ? 0 : Number(text);
       const plan = partialPlan(items, balances, goals, wdFrom, amount, withdrawals);
       wdText = input.value;
-      const left = withdrawMax(items, balances, goals, wdFrom, withdrawals) - (plan.ok ? amount : 0);
+      input.style.width = Math.max(4.5, Math.min(9, (input.value.length || 4) + 0.6)) + "ch";
       stays.textContent = "";
-      stays.appendChild(el("b", "", money(Math.max(0, left))));
-      stays.appendChild(document.createTextNode(wdFrom ? " stays in " + wdFrom : " stays in your balance"));
-      maxBtn.textContent = "Use all " + money(max);
-      maxBtn.hidden = max <= 0;
+      stays.className = "wd-stays";
+      if (text !== "" && !plan.ok) {
+        stays.classList.add("bad");
+        stays.textContent = plan.reason;
+      } else {
+        stays.appendChild(el("b", "", money(Math.max(0, max - (plan.ok ? amount : 0)))));
+        stays.appendChild(document.createTextNode(wdFrom ? " stays in " + wdFrom : " stays in your balance"));
+      }
       go.textContent = plan.ok ? "Withdraw " + money(amount) : "Withdraw";
       go.disabled = !plan.ok;
-      warn.textContent = text !== "" && !plan.ok ? plan.reason : "";
     };
     input.addEventListener("input", update);
     from.addEventListener("change", update);
-    maxBtn.onclick = function () { input.value = String(withdrawMax(items, balances, goals, from.value || null, withdrawals).toFixed(2)); update(); input.focus(); };
-    go.onclick = function () {
-      const amount = Number(input.value.replace(/[^0-9.]/g, ""));
-      doPartialWithdraw(from.value || null, amount);
-    };
+    go.onclick = function () { doPartialWithdraw(from.value || null, Number(input.value.replace(/[^0-9.]/g, ""))); };
     update();
-    scanBody.appendChild(modalButton("Close", "", closeScanModal));
     scanModal.hidden = false;
     setTimeout(function () { try { input.focus(); } catch (e) {} }, 50);
     return;
   }
   // Step 1: everything, or a different amount
-  scanBody.appendChild(el("h3", "", "Withdraw"));
   const plan = withdrawPlan(items, balances, goals, null, withdrawals);
-  const all = el("button", "wd-choice primary");
+  const wrap = el("div", "wd-choices");
+  const all = el("button", "wd-choice fill");
   all.type = "button";
   all.appendChild(el("b", "", "Withdraw everything"));
   all.appendChild(el("span", "", plan.blocked ? plan.blocked : money(plan.amount) + " from all platforms"));
   all.disabled = !!plan.blocked;
   all.onclick = function () { doWithdraw(null); };
-  scanBody.appendChild(all);
+  wrap.appendChild(all);
   const some = el("button", "wd-choice");
   some.type = "button";
   some.appendChild(el("b", "", "Withdraw a different amount"));
   some.appendChild(el("span", "", "Pick how much to take"));
   some.disabled = !!plan.blocked;
   some.onclick = function () { wdStep = "amount"; wdFrom = null; wdText = ""; openWithdrawSheet(); };
-  scanBody.appendChild(some);
-  wdHistory();
-  scanBody.appendChild(modalButton("Close", "", closeScanModal));
+  wrap.appendChild(some);
+  scanBody.appendChild(wrap);
   scanModal.hidden = false;
 }
 document.getElementById("withdraw-button").addEventListener("click", function () { openWithdraw("choose"); });
