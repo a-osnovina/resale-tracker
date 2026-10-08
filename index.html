@@ -1081,8 +1081,8 @@ progress::-moz-progress-bar { background: var(--primary); border-radius: 5px; }
 #money-tabs { margin-top: 0; }
 .pm-row { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-top: 4px; }
 .pm-row b { font-size: 20px; }
-.pm-btn { width: 44px; height: 44px; min-height: 44px; padding: 0; border-radius: 22px; font-size: 24px; line-height: 1; background: var(--surface); border: 1px solid var(--line-soft); color: var(--text); }
-.pm-btn:disabled { opacity: 0.35; }
+.pm-pick { position: relative; display: flex; align-items: center; gap: 6px; min-height: 44px; padding: 0 14px; border-radius: 12px; border: 1px solid var(--line); color: var(--text); font-size: 14px; font-weight: 600; }
+.pm-pick select { position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0; font-size: 16px; }
 .pchips { display: flex; gap: 8px; margin: 10px -16px 0; padding: 0 16px 4px; overflow-x: auto; -webkit-overflow-scrolling: touch; scrollbar-width: none; }
 .pchips::-webkit-scrollbar { display: none; }
 .pchip { flex: none; min-height: 44px; padding: 0 16px; border-radius: 22px; display: flex; align-items: center; gap: 8px; font-size: 15px; font-weight: 600; background: none; border: 1px solid var(--line-soft); color: var(--text); }
@@ -1488,9 +1488,8 @@ body.modal-open #undo-bar { visibility: hidden; }
     <div id="money-profit" role="tabpanel" aria-labelledby="mtab-profit" hidden>
       <section id="sales-section" class="msec">
         <div class="pm-row">
-          <button type="button" id="pm-prev" class="pm-btn" aria-label="Earlier month">&#8249;</button>
           <b id="pm-label">October 2026</b>
-          <button type="button" id="pm-next" class="pm-btn" aria-label="Later month">&#8250;</button>
+          <label class="pm-pick"><span>Month</span><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg><select id="pm-select" aria-label="Choose a month"></select></label>
         </div>
         <div class="pchips" id="profit-chips"></div>
         <div class="chart-card" id="pace-card"></div>
@@ -10238,7 +10237,19 @@ function renderProfitTab() {
   const nowMonth = monthOf(todayText());
   const thisIsNow = month === nowMonth;
   $("pm-label").textContent = monthName(month) + " " + month.slice(0, 4);
-  $("pm-next").disabled = month >= nowMonth;
+  // the Month button: every month from your first sale up to this month, newest first
+  const sel = $("pm-select");
+  let first = nowMonth;
+  items.forEach(function (it) { if (isDone(it) && it.sold && monthOf(it.sold) < first) first = monthOf(it.sold); });
+  if (month < first) first = month;
+  sel.innerHTML = "";
+  for (let m = nowMonth; m >= first; m = ResaleLogic.prevMonth(m)) {
+    const o = document.createElement("option");
+    o.value = m;
+    o.textContent = monthName(m) + " " + m.slice(0, 4);
+    sel.appendChild(o);
+  }
+  sel.value = month;
 
   // platform chips
   const names = enabledPlatformNames();
@@ -10870,8 +10881,7 @@ $("home-todo-add").addEventListener("click", function () { openTodoSheet(null, "
 document.querySelectorAll("#money-tabs button").forEach(function (b) {
   b.addEventListener("click", function () { showMoneyTab(b.getAttribute("data-t")); });
 });
-$("pm-prev").addEventListener("click", function () { profitMonth = ResaleLogic.prevMonth(profitMonthNow()); renderProfitTab(); });
-$("pm-next").addEventListener("click", function () { profitMonth = ResaleLogic.nextMonth(profitMonthNow()); renderProfitTab(); });
+$("pm-select").addEventListener("change", function () { profitMonth = this.value; renderProfitTab(); });
 showView("home");
 showStockPane("items");
 
