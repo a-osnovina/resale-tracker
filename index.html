@@ -1047,6 +1047,45 @@ progress::-moz-progress-bar { background: var(--primary); border-radius: 5px; }
 #goals-box:not(.shown) { display: none; }
 #goals-box { margin-top: 10px; }
 #sales-section > .seg { margin-top: 0; }
+
+/* ---- Money tabs: Overview / Profit / Withdrawals ---- */
+#money-tabs { margin-top: 0; }
+.pm-row { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-top: 4px; }
+.pm-row b { font-size: 20px; }
+.pm-btn { width: 44px; height: 44px; min-height: 44px; padding: 0; border-radius: 22px; font-size: 24px; line-height: 1; background: var(--surface); border: 1px solid var(--line-soft); color: var(--text); }
+.pm-btn:disabled { opacity: 0.35; }
+.pchips { display: flex; gap: 8px; margin: 10px -16px 0; padding: 0 16px 4px; overflow-x: auto; -webkit-overflow-scrolling: touch; scrollbar-width: none; }
+.pchips::-webkit-scrollbar { display: none; }
+.pchip { flex: none; min-height: 44px; padding: 0 16px; border-radius: 22px; display: flex; align-items: center; gap: 8px; font-size: 15px; font-weight: 600; background: none; border: 1px solid var(--line-soft); color: var(--text); }
+.pchip.on { background: var(--surface-2); border-color: var(--line); font-weight: 800; }
+.pchip i { width: 8px; height: 8px; border-radius: 4px; display: block; }
+.pc-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+.pc-head b { font-size: 15px; color: var(--muted); font-weight: 600; }
+.pc-toggle { display: flex; gap: 2px; padding: 3px; border-radius: 12px; background: var(--bg); }
+.pc-toggle button { min-height: 40px; padding: 0 12px; border: 0; border-radius: 9px; background: none; color: var(--muted); font-size: 14px; font-weight: 600; }
+.pc-toggle button.on { background: var(--surface-2); color: var(--text); font-weight: 800; }
+.pc-svg { display: block; width: 100%; height: auto; margin-top: 10px; }
+.pc-svg text { font-family: inherit; }
+.pc-delta { margin-top: 10px; padding: 12px 14px; border-radius: 14px; background: var(--bg); font-size: 14px; font-weight: 600; display: flex; align-items: center; gap: 8px; }
+.pc-delta.up { color: var(--profit); }
+.pc-delta.down { color: var(--danger); }
+.pc-delta.flat, .pc-delta.note { color: var(--muted); font-weight: 500; }
+.pc-key { display: flex; gap: 16px; margin-top: 10px; font-size: 13px; color: var(--muted); }
+.pc-key span { display: flex; align-items: center; gap: 6px; }
+.pt-row { display: flex; align-items: center; justify-content: space-between; gap: 8px; min-height: 46px; border-top: 1px solid var(--line-soft); font-size: 16px; font-variant-numeric: tabular-nums; }
+.pt-row.head { border-top: 0; min-height: 30px; font-size: 14px; color: var(--muted); font-weight: 600; }
+.pt-row .n { flex: 1; min-width: 0; }
+.pt-row .v { width: 90px; text-align: right; font-weight: 700; }
+.pt-row .v.dim { font-weight: 500; color: var(--muted); }
+.pt-row.total { min-height: 56px; border-top-color: var(--line); font-size: 18px; font-weight: 800; color: var(--profit); }
+.pt-row.total .v.dim { color: var(--muted); font-size: 16px; font-weight: 600; }
+.pt-row .neg { color: var(--danger); }
+.wd-card { padding: 14px; background: var(--surface); border: 1px solid var(--line-soft); border-radius: 14px; margin-top: 10px; }
+.wd-line { display: flex; align-items: center; justify-content: space-between; gap: 10px; min-height: 46px; font-size: 16px; font-variant-numeric: tabular-nums; }
+.wd-line + .wd-line { border-top: 1px solid var(--line-soft); }
+.wd-line .wd-sub { font-size: 13px; color: var(--muted); }
+.wd-undo { min-height: 40px; padding: 0 14px; border-radius: 10px; font-size: 14px; font-weight: 800; }
+
 .kpis { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; margin-top: 10px; }
 .kpi { padding: 10px 12px; background: var(--surface); border: 1px solid var(--line-soft); border-radius: 14px; display: flex; flex-direction: column; gap: 2px; min-width: 0; }
 .kpi span { font-size: 13px; color: var(--muted); }
@@ -1361,6 +1400,14 @@ body.modal-open #undo-bar { visibility: hidden; }
 
   <!-- MONEY: balance, investments, sales report, platforms and fees -->
   <section class="view" id="view-money" aria-label="Money" hidden>
+    <div class="seg" id="money-tabs" role="tablist" aria-label="Money sections">
+      <button type="button" role="tab" id="mtab-overview" data-t="overview" class="on">Overview</button>
+      <button type="button" role="tab" id="mtab-profit" data-t="profit">Profit</button>
+      <button type="button" role="tab" id="mtab-withdrawals" data-t="withdrawals">Withdrawals</button>
+    </div>
+
+    <!-- Overview: balance, total profit, and the "More money details" fold -->
+    <div id="money-overview" role="tabpanel" aria-labelledby="mtab-overview">
     <section id="balance-drop" class="bal-card">
       <div class="bal-text">
         <span class="bal-label">Available balance</span>
@@ -1405,22 +1452,30 @@ body.modal-open #undo-bar { visibility: hidden; }
         </div>
       </section>
     </div>
-    <section id="sales-section" class="msec">
-      <h2 class="msec-title">Sales report</h2>
-      <div class="seg" id="sales-period">
-        <button type="button" data-p="week">Week</button>
-        <button type="button" data-p="month" class="on">Month</button>
-        <button type="button" data-p="all">All time</button>
-      </div>
-      <div class="kpis" id="sales-kpis"></div>
-      <div class="chart-card" id="sales-chart"></div>
-      <button type="button" id="sales-button" class="row-btn"><span>Every week, lot and the time you spent</span><span class="chev">&#8250;</span></button>
-    </section>
-    <section id="platforms-drop" class="msec">
-      <h2 class="msec-title">Platforms and fees</h2>
-      <div id="money-platforms"></div>
-    </section>
     </details>
+    </div>
+
+    <!-- Profit: pick a month and a platform, see the pace graph and the table -->
+    <div id="money-profit" role="tabpanel" aria-labelledby="mtab-profit" hidden>
+      <section id="sales-section" class="msec">
+        <div class="pm-row">
+          <button type="button" id="pm-prev" class="pm-btn" aria-label="Earlier month">&#8249;</button>
+          <b id="pm-label">October 2026</b>
+          <button type="button" id="pm-next" class="pm-btn" aria-label="Later month">&#8250;</button>
+        </div>
+        <div class="pchips" id="profit-chips"></div>
+        <div class="chart-card" id="pace-card"></div>
+        <div class="chart-card" id="profit-table"></div>
+      <button type="button" id="sales-button" class="row-btn"><span>Every week, lot and the time you spent</span><span class="chev">&#8250;</span></button>
+      </section>
+    </div>
+
+    <!-- Withdrawals: what you can cash out, and what you already did -->
+    <div id="money-withdrawals" role="tabpanel" aria-labelledby="mtab-withdrawals" hidden>
+      <div id="wd-panel"></div>
+    </div>
+
+    <section id="platforms-drop" hidden><div id="money-platforms"></div></section>
   </section>
 
   <!-- PLAN: your week -->
@@ -9085,6 +9140,7 @@ function applyFeatures() {
   if (!features.storage) showStockPane("items");
   document.getElementById("inv-wrap").hidden = !features.investments;
   document.getElementById("sales-section").hidden = !features.sales;
+  document.getElementById("mtab-profit").hidden = !features.sales;
   document.getElementById("home-todo-all").hidden = !features.planner;
   document.body.classList.toggle("no-invest", !features.investments);
   updateSummaryBox();
@@ -9952,21 +10008,6 @@ function renderHomeTodos() {
 }
 
 // ---- Money ----
-var salesPeriod = "month";
-function periodRange(p) {
-  const today = todayText();
-  if (p === "week") { const m = mondayOf(today); return [m, addDays(m, 6)]; }
-  if (p === "month") { const mo = monthOf(today); return [mo + "-01", mo + "-31"]; }
-  return ["", "9999-99-99"];
-}
-function soldInPeriod(p) {
-  const r = periodRange(p);
-  return items.filter(function (it) {
-    if (!isDone(it)) return false;
-    if (p === "all") return true;
-    return !!it.sold && it.sold >= r[0] && it.sold <= r[1];
-  });
-}
 var METRIC_SHORT = { profit: "Profit", sales: "Sales", sold: "Items sold", posted: "Items posted", hours: "Hours", perHour: "Profit per hour" };
 function renderInvCard() {
   const box = $("inv-card");
@@ -10009,90 +10050,277 @@ function renderInvCard() {
   }
   box.appendChild(card);
 }
-function renderSalesBlock() {
+// ---- Money tabs: Overview / Profit / Withdrawals ----
+var moneyTab = "overview";
+var profitMonth = "";      // "" means this month
+var profitSite = "All";    // "All" or one platform's name
+var profitView = "chart";  // "chart" or "table"
+var PLAT_COLORS = { Depop: "#3987e5", Vinted: "#d95926", Facebook: "#199e70", Mercari: "#c98500", Poshmark: "#d55181", Etsy: "#008300" };
+function platColor(name) { return PLAT_COLORS[name] || "#8d9299"; }
+function profitMonthNow() {
+  const now = monthOf(todayText());
+  return profitMonth && profitMonth <= now ? profitMonth : now;
+}
+function monthName(month) { return MONTHS[Number(month.slice(5, 7)) - 1]; }
+function showMoneyTab(name) {
+  moneyTab = name;
+  ["overview", "profit", "withdrawals"].forEach(function (key) {
+    const panel = $("money-" + key);
+    const tab = $("mtab-" + key);
+    if (panel) panel.hidden = key !== name;
+    if (tab) { tab.classList.toggle("on", key === name); tab.setAttribute("aria-selected", key === name ? "true" : "false"); }
+  });
+  renderMoney();
+}
+// A "nice" step for the graph's gridlines: 1, 2, 2.5, 5 times a power of ten.
+function niceStep(raw) {
+  if (!(raw > 0)) return 1;
+  const pow = Math.pow(10, Math.floor(Math.log10(raw)));
+  const f = raw / pow;
+  return (f <= 1 ? 1 : f <= 2 ? 2 : f <= 2.5 ? 2.5 : f <= 5 ? 5 : 10) * pow;
+}
+function negMoney(v) { return v > 0 ? "−" + money(v) : money(0); }
+function signedMoney(v) { return (v < 0 ? "−" : "+") + money(Math.abs(v)); }
+
+// The pace graph: profit so far this month against the same days last month.
+function buildPaceSvg(cur, prev, curName, prevName, hasPrev) {
+  const W = 310, H = 186, X0 = 34, X1 = 226, TOP = 10, BOT = 160;
+  const through = cur.length;
+  const all = cur.concat(hasPrev ? prev : []).concat([0]);
+  const hiRaw = Math.max.apply(null, all), loRaw = Math.min.apply(null, all);
+  const step = niceStep(Math.max(hiRaw - loRaw, 1) / 3);
+  const lo = Math.floor(loRaw / step) * step;
+  const hi = Math.max(Math.ceil(hiRaw / step) * step, lo + step);
+  function y(v) { return BOT - (v - lo) / (hi - lo) * (BOT - TOP); }
+  function x(i) { return through === 1 ? X0 : X0 + i * (X1 - X0) / (through - 1); }
+  function pts(list) { return list.map(function (v, i) { return x(i).toFixed(2) + "," + y(v).toFixed(2); }).join(" "); }
+  let svg = '<svg class="pc-svg" viewBox="0 0 ' + W + " " + H + '" role="img" aria-label="' +
+    curName + " profit so far: " + money(cur[through - 1]) + (hasPrev ? ". " + prevName + " at the same point: " + money(prev[through - 1]) + "." : ". Nothing to compare with yet.") + '">';
+  for (let v = lo; v <= hi + step / 2; v += step) {
+    const yy = y(v).toFixed(1);
+    svg += '<line x1="' + X0 + '" y1="' + yy + '" x2="' + X1 + '" y2="' + yy + '" style="stroke:var(--line-soft)" stroke-width="1"/>';
+    svg += '<text x="0" y="' + (Number(yy) + 4) + '" font-size="11" style="fill:var(--muted)">' + (Math.abs(v) >= 1000 ? "$" + (v / 1000) + "k" : (v < 0 ? "-$" : "$") + Math.abs(v)) + "</text>";
+  }
+  if (hasPrev) svg += '<polyline points="' + pts(prev) + '" fill="none" stroke-width="2" stroke-dasharray="5 4" stroke-linejoin="round" stroke-linecap="round" style="stroke:var(--muted)"/>';
+  svg += '<polyline points="' + pts(cur) + '" fill="none" stroke-width="2" stroke-linejoin="round" stroke-linecap="round" style="stroke:var(--profit)"/>';
+  const ey = y(cur[through - 1]), py = hasPrev ? y(prev[through - 1]) : 0;
+  if (hasPrev) svg += '<circle cx="' + x(through - 1) + '" cy="' + py.toFixed(1) + '" r="4" stroke-width="2" style="fill:var(--muted);stroke:var(--surface)"/>';
+  svg += '<circle cx="' + x(through - 1) + '" cy="' + ey.toFixed(1) + '" r="4" stroke-width="2" style="fill:var(--profit);stroke:var(--surface)"/>';
+  // end labels (nudged apart if the two lines finish close together)
+  let curLabelY = ey + 4, prevLabelY = py + 4;
+  if (hasPrev && Math.abs(curLabelY - prevLabelY) < 16) {
+    if (curLabelY <= prevLabelY) { curLabelY -= 8; prevLabelY += 8; } else { curLabelY += 8; prevLabelY -= 8; }
+  }
+  const lx = X1 + 8;
+  svg += '<text x="' + lx + '" y="' + curLabelY.toFixed(1) + '" font-size="11" font-weight="700" style="fill:var(--text)">' + (hasPrev ? curName.slice(0, 3) + " " : "") + money(cur[through - 1]) + "</text>";
+  if (hasPrev) svg += '<text x="' + lx + '" y="' + prevLabelY.toFixed(1) + '" font-size="11" style="fill:var(--muted)">' + prevName.slice(0, 3) + " " + money(prev[through - 1]) + "</text>";
+  // day numbers along the bottom
+  const every = Math.max(1, Math.ceil(through / 7));
+  for (let i = 0; i < through; i++) {
+    const last = i === through - 1;
+    if (!last && (i % every !== 0 || through - 1 - i < every / 2)) continue;
+    svg += '<text x="' + x(i).toFixed(1) + '" y="177" font-size="12" text-anchor="middle"' + (last ? ' font-weight="700" style="fill:var(--text)"' : ' style="fill:var(--muted)"') + ">" + (i + 1) + "</text>";
+  }
+  return svg + "</svg>";
+}
+
+function renderProfitTab() {
   if (!features.sales) return;
-  document.querySelectorAll("#sales-period button").forEach(function (b) { b.classList.toggle("on", b.getAttribute("data-p") === salesPeriod); });
-  const sold = soldInPeriod(salesPeriod);
-  const revenue = sold.reduce(function (s, it) { return s + salePrice(it); }, 0);
-  const profit = sold.reduce(function (s, it) { return s + profitOf(it); }, 0);
-  const k = $("sales-kpis");
-  k.innerHTML = "";
-  [["Sold", String(sold.length), ""], ["Revenue", moneyShort(revenue), ""], ["Profit", moneyShort(profit), " profit"]].forEach(function (t) {
-    const d = el("div", "kpi" + t[2]);
-    d.appendChild(el("span", "", t[0]));
-    d.appendChild(el("b", "", t[1]));
-    k.appendChild(d);
+  const month = profitMonthNow();
+  const nowMonth = monthOf(todayText());
+  const thisIsNow = month === nowMonth;
+  $("pm-label").textContent = monthName(month) + " " + month.slice(0, 4);
+  $("pm-next").disabled = month >= nowMonth;
+
+  // platform chips
+  const names = enabledPlatformNames();
+  if (profitSite !== "All" && names.indexOf(profitSite) === -1) profitSite = "All";
+  const chips = $("profit-chips");
+  chips.innerHTML = "";
+  chips.hidden = names.length < 2;
+  [["All", ""]].concat(names.map(function (n) { return [n, platColor(n)]; })).forEach(function (t) {
+    const b = el("button", "pchip" + (profitSite === t[0] ? " on" : ""));
+    b.type = "button";
+    if (t[1]) { const dot = document.createElement("i"); dot.style.background = t[1]; b.appendChild(dot); }
+    b.appendChild(document.createTextNode(t[0]));
+    b.setAttribute("aria-pressed", profitSite === t[0] ? "true" : "false");
+    b.onclick = function () { profitSite = t[0]; renderProfitTab(); };
+    chips.appendChild(b);
   });
-  const weeks = weeklyStats();
-  const show = salesPeriod === "all" ? weeks : weeks.slice(-4);
-  const metric = METRICS[plannerMetric] || METRICS.profit;
-  const values = show.map(function (w) { return metric.get(w); });
-  const topV = Math.max.apply(null, values.map(Math.abs).concat([0.0001]));
-  const card = $("sales-chart");
+
+  // the graph card
+  const through = thisIsNow ? Number(todayText().slice(8, 10)) : ResaleLogic.daysIn(month);
+  const prevM = ResaleLogic.prevMonth(month);
+  const cur = ResaleLogic.cumulativeProfit(items, month, profitSite, through);
+  const prev = ResaleLogic.cumulativeProfit(items, prevM, profitSite, through);
+  const hasPrev = ResaleLogic.soldInMonth(items, prevM, profitSite).length > 0;
+  const hasCur = ResaleLogic.soldInMonth(items, month, profitSite).length > 0;
+  const card = $("pace-card");
   card.innerHTML = "";
-  const head = el("div", "chart-head");
-  head.appendChild(el("b", "", (METRIC_SHORT[plannerMetric] || "Profit") + " by week"));
-  const sel = document.createElement("select");
-  sel.className = "chip-select";
-  sel.setAttribute("aria-label", "What the chart shows");
-  Object.keys(METRICS).forEach(function (key) {
-    const o = document.createElement("option");
-    o.value = key;
-    o.textContent = METRIC_SHORT[key] + " ▾";
-    sel.appendChild(o);
+  const head = el("div", "pc-head");
+  head.appendChild(el("b", "", thisIsNow ? "Profit so far this month" : "Profit in " + monthName(month)));
+  const tog = el("div", "pc-toggle");
+  [["chart", "Chart"], ["table", "Table"]].forEach(function (t) {
+    const b = el("button", profitView === t[0] ? "on" : "", t[1]);
+    b.type = "button";
+    b.onclick = function () { profitView = t[0]; renderProfitTab(); };
+    tog.appendChild(b);
   });
-  sel.value = plannerMetric;
-  sel.onchange = function () { plannerMetric = sel.value; renderSalesBlock(); };
-  head.appendChild(sel);
+  head.appendChild(tog);
   card.appendChild(head);
-  const bars = el("div", "bars");
-  show.forEach(function (w, i) {
-    const v = values[i];
-    const col = el("div", "bcol" + (w.current ? " cur" : ""));
-    col.appendChild(el("span", "bv", metric.money ? (v < 0 ? "-$" : "$") + Math.abs(Math.round(v)) : String(v)));
-    const bar = el("div", "bb" + (v < 0 ? " neg" : ""));
-    bar.style.height = Math.max(4, Math.round(Math.abs(v) / topV * 100)) + "px";
-    col.appendChild(bar);
-    bars.appendChild(col);
-  });
-  card.appendChild(bars);
-  const xs = el("div", "bx");
-  show.forEach(function (w) {
-    const d = new Date(parseDate(w.monday));
-    xs.appendChild(el("span", "", (d.getUTCMonth() + 1) + "/" + d.getUTCDate()));
-  });
-  card.appendChild(xs);
-}
-function renderPlatformRows() {
-  const box = $("money-platforms");
+
+  if (!hasCur) {
+    const empty = el("div", "pc-delta note", "No sales in " + monthName(month) + (profitSite === "All" ? "" : " on " + profitSite) + " yet.");
+    empty.style.marginTop = "12px";
+    card.appendChild(empty);
+  } else if (profitView === "chart") {
+    const holder = document.createElement("div");
+    holder.innerHTML = buildPaceSvg(cur, prev, monthName(month), monthName(prevM), hasPrev);
+    card.appendChild(holder.firstChild);
+    const key = el("div", "pc-key");
+    const k1 = el("span");
+    k1.innerHTML = '<svg width="22" height="4" viewBox="0 0 22 4" aria-hidden="true"><line x1="0" y1="2" x2="22" y2="2" stroke-width="2" style="stroke:var(--profit)"/></svg>';
+    k1.appendChild(document.createTextNode(monthName(month)));
+    key.appendChild(k1);
+    if (hasPrev) {
+      const k2 = el("span");
+      k2.innerHTML = '<svg width="22" height="4" viewBox="0 0 22 4" aria-hidden="true"><line x1="0" y1="2" x2="22" y2="2" stroke-width="2" stroke-dasharray="5 4" style="stroke:var(--muted)"/></svg>';
+      k2.appendChild(document.createTextNode(monthName(prevM)));
+      key.appendChild(k2);
+    }
+    card.appendChild(key);
+    if (hasPrev) {
+      const diff = ResaleLogic.toCents(cur[through - 1]) - ResaleLogic.toCents(prev[through - 1]);
+      const when = thisIsNow ? " at this point" : "";
+      let text, cls;
+      if (diff > 0) { text = signedMoney(diff / 100) + " ahead of " + monthName(prevM) + when; cls = "up"; }
+      else if (diff < 0) { text = signedMoney(diff / 100) + " behind " + monthName(prevM) + when; cls = "down"; }
+      else { text = "Level with " + monthName(prevM) + when; cls = "flat"; }
+      card.appendChild(el("div", "pc-delta " + cls, text));
+    } else {
+      card.appendChild(el("div", "pc-delta note", "Nothing to compare yet" + (profitSite === "All" ? "" : " for " + profitSite) + ". Once you have sales from an earlier month, its line shows up here for the same days."));
+    }
+  } else {
+    // the same numbers as a table, for anyone who prefers reading them
+    const t = el("div");
+    t.style.marginTop = "8px";
+    const h = el("div", "pt-row head");
+    h.appendChild(el("span", "n", "Day"));
+    h.appendChild(el("span", "v", monthName(month)));
+    if (hasPrev) h.appendChild(el("span", "v", monthName(prevM)));
+    t.appendChild(h);
+    for (let i = 0; i < through; i++) {
+      const r = el("div", "pt-row");
+      r.appendChild(el("span", "n", String(i + 1)));
+      r.appendChild(el("span", "v", money(cur[i])));
+      if (hasPrev) r.appendChild(el("span", "v dim", money(prev[i])));
+      t.appendChild(r);
+    }
+    card.appendChild(t);
+  }
+
+  // the numbers table: sales to profit
+  const mine = ResaleLogic.profitTable(items, month, profitSite);
+  const everyone = ResaleLogic.profitTable(items, month, "All");
+  const two = profitSite !== "All";
+  const box = $("profit-table");
   box.innerHTML = "";
-  if (!features.platforms) return;
-  const sold = soldInPeriod(salesPeriod);
-  enabledPlatformNames().forEach(function (name) {
-    const mine = sold.filter(function (it) { return it.site === name; });
-    const fees = mine.reduce(function (s, it) { return s + feeTotal(it); }, 0);
-    const revenue = mine.reduce(function (s, it) { return s + salePrice(it); }, 0);
-    const row = el("button", "plat-row");
-    row.type = "button";
-    row.appendChild(svgEl('<path d="M4 9l1-5h14l1 5"/><path d="M5 9v11h14V9"/><path d="M9 20v-6h6v6"/><path d="M4 9a3 3 0 0 0 5 0 3 3 0 0 0 6 0 3 3 0 0 0 5 0"/>', "plat-ico"));
-    const text = el("div", "plat-text");
-    text.appendChild(el("b", "", name));
-    text.appendChild(el("span", "", mine.length + " sold · fees " + money(fees)));
-    row.appendChild(text);
-    row.appendChild(el("span", "plat-amt", moneyShort(revenue)));
-    row.onclick = function () {
-      setFilters(name, "All", "All");
-      applyFilters();
-      showView("stock");
-      showStockPane("items");
-    };
-    box.appendChild(row);
-  });
+  const th = el("div", "pt-row head");
+  th.appendChild(el("span", "n", mine.count + (mine.count === 1 ? " item sold" : " items sold")));
+  const c1 = el("span", "v");
+  if (two) { const dot = document.createElement("i"); dot.style.cssText = "display:inline-block;width:8px;height:8px;border-radius:4px;margin-right:6px;background:" + platColor(profitSite); c1.appendChild(dot); c1.appendChild(document.createTextNode(profitSite)); }
+  else c1.textContent = "All platforms";
+  th.appendChild(c1);
+  if (two) th.appendChild(el("span", "v dim", "All platforms"));
+  box.appendChild(th);
+  function row(label, a, b, neg, dim) {
+    const r = el("div", "pt-row");
+    r.appendChild(el("span", "n", label));
+    r.appendChild(el("span", "v" + (dim ? " dim" : ""), neg ? negMoney(a) : money(a)));
+    if (two) r.appendChild(el("span", "v dim", neg ? negMoney(b) : money(b)));
+    box.appendChild(r);
+  }
+  row("Sales", mine.sales, everyone.sales, false);
+  row("Fees", mine.fees, everyone.fees, true);
+  row("Boost/bump", mine.bump, everyone.bump, true);
+  if (mine.ship > 0 || everyone.ship > 0) row("Postage", mine.ship, everyone.ship, true);
+  row("Item cost", mine.cost, everyone.cost, true, mine.cost === 0);
+  const total = el("div", "pt-row total");
+  total.appendChild(el("span", "n", "Profit"));
+  total.appendChild(el("span", "v", money(mine.profit)));
+  if (two) total.appendChild(el("span", "v dim", money(everyone.profit)));
+  box.appendChild(total);
 }
+
+function renderWithdrawalsTab() {
+  const box = $("wd-panel");
+  box.innerHTML = "";
+  const all = withdrawPlan(items, balances, goals, null);
+  const top = el("div", "bal-card");
+  const text = el("div", "bal-text");
+  text.appendChild(el("span", "bal-label", "You can withdraw"));
+  text.appendChild(el("span", "bal-big", money(all.amount)));
+  top.appendChild(text);
+  const go = el("button", "bal-btn", "Withdraw");
+  go.type = "button";
+  go.onclick = function () { withdrawMode = "total"; openWithdrawSheet(); };
+  top.appendChild(go);
+  box.appendChild(top);
+
+  const per = el("div", "wd-card");
+  per.appendChild(el("div", "msec-title", "By platform"));
+  const names = enabledPlatformNames();
+  names.forEach(function (name) {
+    const plan = withdrawPlan(items, balances, goals, name);
+    const line = el("button", "wd-line");
+    line.type = "button";
+    line.style.cssText = "width:100%;background:none;border:0;padding:0;text-align:left;color:var(--text)";
+    const left = el("span");
+    left.style.cssText = "display:flex;align-items:center;gap:8px";
+    const dot = document.createElement("i");
+    dot.style.cssText = "width:8px;height:8px;border-radius:4px;background:" + platColor(name);
+    left.appendChild(dot);
+    left.appendChild(document.createTextNode(name));
+    line.appendChild(left);
+    line.appendChild(el("b", "", money(plan.amount)));
+    line.onclick = function () { withdrawMode = "platform"; openWithdrawSheet(); };
+    per.appendChild(line);
+  });
+  if (!names.length) per.appendChild(el("div", "small", "No platforms are switched on yet."));
+  box.appendChild(per);
+
+  const hist = el("div", "wd-card");
+  hist.appendChild(el("div", "msec-title", "Past withdrawals"));
+  if (!withdrawals.length) {
+    hist.appendChild(el("div", "small", "Nothing withdrawn yet. When you cash out, it shows up here."));
+  } else {
+    withdrawals.slice().reverse().forEach(function (w, i) {
+      const line = el("div", "wd-line");
+      const left = el("span");
+      left.appendChild(document.createTextNode(prettyDay(w.date)));
+      left.appendChild(el("div", "wd-sub", w.platform ? w.platform : "Total"));
+      line.appendChild(left);
+      const right = el("span");
+      right.style.cssText = "display:flex;align-items:center;gap:10px";
+      right.appendChild(el("b", "", money(w.amount)));
+      if (i === 0) {
+        const undo = el("button", "wd-undo", "Undo");
+        undo.type = "button";
+        undo.onclick = function () { undoWithdraw(); closeScanModal(); };
+        right.appendChild(undo);
+      }
+      line.appendChild(right);
+      hist.appendChild(line);
+    });
+    hist.appendChild(el("div", "small", "Withdrawn in total: " + money(withdrawals.reduce(function (sum, w) { return sum + w.amount; }, 0))));
+  }
+  box.appendChild(hist);
+}
+
 function renderMoney() {
   renderInvCard();
-  renderSalesBlock();
-  renderPlatformRows();
+  if (moneyTab === "profit") renderProfitTab();
+  if (moneyTab === "withdrawals") renderWithdrawalsTab();
 }
 
 // ---- Plan ----
@@ -10526,14 +10754,16 @@ function backfillDismissed() {
 }
 backfillDismissed();
 updateBell();
-function goMoney() { showView("money"); }
+function goMoney() { showView("money"); showMoneyTab("overview"); }
 $("home-balance-tile").addEventListener("click", goMoney);
 $("goals-mini").addEventListener("click", goMoney);
 $("home-todo-all").addEventListener("click", function () { showView("plan"); });
 $("home-todo-add").addEventListener("click", function () { openTodoSheet(null, ""); });
-document.querySelectorAll("#sales-period button").forEach(function (b) {
-  b.addEventListener("click", function () { salesPeriod = b.getAttribute("data-p"); renderSalesBlock(); renderPlatformRows(); });
+document.querySelectorAll("#money-tabs button").forEach(function (b) {
+  b.addEventListener("click", function () { showMoneyTab(b.getAttribute("data-t")); });
 });
+$("pm-prev").addEventListener("click", function () { profitMonth = ResaleLogic.prevMonth(profitMonthNow()); renderProfitTab(); });
+$("pm-next").addEventListener("click", function () { profitMonth = ResaleLogic.nextMonth(profitMonthNow()); renderProfitTab(); });
 showView("home");
 showStockPane("items");
 
