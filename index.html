@@ -524,6 +524,55 @@ label.has-error { color: var(--danger); font-weight: 700; }
 .todo-row .todo-day { font-size: 12px; font-weight: 700; color: var(--accent-text); white-space: nowrap; }
 .todo-row.done .todo-text { text-decoration: line-through; color: var(--muted); }
 .set-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px 12px; }
+/* Time estimates page: pace card, step rows, step screen (wheel and stopwatch) */
+.est-card { background: var(--surface); border: 1px solid var(--line-soft); border-radius: 14px; padding: 12px; margin-top: 8px; }
+.est-head { display: flex; align-items: center; justify-content: space-between; min-height: 44px; margin-top: 8px; }
+.est-head .msec-title { margin: 0; }
+.est-link { min-height: 44px; padding: 0 12px; border: 0; background: transparent; color: var(--accent-text); font-size: 15px; font-weight: 800; }
+.est-link:disabled { color: var(--muted); opacity: 0.55; }
+.est-seg { display: flex; gap: 3px; padding: 3px; border-radius: 12px; background: var(--surface-2); }
+.est-seg button { flex: 1; min-height: 44px; padding: 0 4px; border: 0; border-radius: 10px; background: transparent; color: var(--text); font-size: 15px; }
+.est-seg button.on { background: var(--primary); color: #ffffff; font-weight: 800; }
+.est-seg.tabs button.on { background: var(--surface); color: var(--text); border: 1px solid var(--line-soft); }
+.est-note { font-size: 14px; line-height: 1.4; color: var(--muted); margin-top: 10px; }
+.est-total { display: flex; align-items: baseline; justify-content: space-between; gap: 8px; margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--line-soft); }
+.est-total span { font-size: 15px; color: var(--muted); }
+.est-total b { font-size: 22px; color: var(--accent-text); }
+.est-list { background: var(--surface); border: 1px solid var(--line-soft); border-radius: 14px; overflow: hidden; margin-top: 4px; }
+.est-row { display: flex; align-items: center; gap: 8px; width: 100%; min-height: 56px; padding: 0 14px; border: 0; border-bottom: 1px solid var(--line-soft); border-radius: 0; background: transparent; color: var(--text); font-size: 17px; text-align: left; }
+.est-row:last-child { border-bottom: 0; }
+.est-name { flex: 1; }
+.est-val { color: var(--muted); font-size: 16px; }
+.est-val.changed { color: var(--accent-text); font-weight: 800; }
+.est-row .chev { flex: none; width: 16px; height: 16px; fill: none; stroke: var(--muted); stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; }
+.est-wheel { position: relative; height: 220px; overflow: hidden; }
+.est-band { position: absolute; left: 0; right: 0; top: 88px; height: 44px; border-radius: 10px; background: var(--surface-2); }
+.est-spin { position: relative; height: 220px; overflow-y: auto; padding: 88px 0; box-sizing: border-box; scroll-snap-type: y mandatory; overscroll-behavior: contain; scrollbar-width: none; }
+.est-spin::-webkit-scrollbar { display: none; }
+.est-spin button { display: block; width: 100%; height: 44px; min-height: 44px; padding: 0; border: 0; border-radius: 0; background: transparent; color: var(--text); font-size: 20px; opacity: 0.3; scroll-snap-align: center; scroll-snap-stop: always; }
+.est-spin button.near { opacity: 0.6; }
+.est-spin button.sel { opacity: 1; font-size: 24px; font-weight: 800; color: var(--accent-text); }
+.est-foot { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-top: 8px; padding-top: 6px; border-top: 1px solid var(--line-soft); }
+.est-foot span { font-size: 14px; color: var(--muted); }
+.est-step { display: flex; align-items: center; justify-content: space-between; gap: 10px; min-height: 56px; padding: 6px 0; border-bottom: 1px solid var(--line-soft); }
+.est-step:last-child { border-bottom: 0; }
+.est-step label { flex: 1; font-size: 15px; }
+.est-step button { flex: none; width: 44px; min-height: 44px; padding: 0; border-radius: 22px; font-size: 24px; line-height: 1; color: var(--accent-text); }
+.est-step output { min-width: 56px; text-align: center; font-size: 17px; font-weight: 800; }
+.est-timer { display: flex; flex-direction: column; align-items: center; gap: 12px; padding: 8px 0; text-align: center; }
+.est-clock { font-size: 64px; font-weight: 800; letter-spacing: 0.02em; font-variant-numeric: tabular-nums; }
+.est-clock.stopped { color: var(--muted); }
+.est-btns { display: flex; align-items: flex-start; justify-content: center; gap: 28px; }
+.est-btns .btn-col { display: flex; flex-direction: column; align-items: center; gap: 6px; font-size: 13px; color: var(--muted); }
+.est-round { width: 72px; min-height: 72px; height: 72px; padding: 0; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; }
+.est-round svg { width: 26px; height: 26px; fill: currentColor; }
+.est-round.primary { color: #ffffff; }
+.est-wide { display: block; width: 100%; min-height: 52px; margin-top: 8px; font-size: 17px; font-weight: 800; }
+.est-two { display: flex; gap: 8px; }
+.est-two button { flex: 1; min-height: 52px; font-size: 17px; margin-top: 8px; }
+.est-line { display: flex; align-items: center; justify-content: space-between; gap: 8px; min-height: 48px; border-bottom: 1px solid var(--line-soft); font-size: 15px; }
+.est-line:last-child { border-bottom: 0; }
+.est-line b { font-size: 17px; }
 .chart { display: flex; align-items: flex-end; gap: 6px; height: 130px; padding: 18px 0 0; border-bottom: 1px solid var(--line); }
 .chart .col { flex: 1; display: flex; flex-direction: column; justify-content: flex-end; align-items: center; height: 100%; position: relative; }
 .bar { width: 70%; background: var(--primary); border-radius: 4px 4px 0 0; min-height: 2px; }
@@ -1930,6 +1979,50 @@ const PLAN_SETTING_FIELDS = [
   { key: "dropOff", label: "Shipping: drop-off at the store (min per trip)" },
   { key: "packPerItem", label: "Shipping: packing per item (min)" }
 ];
+
+// Time estimates page: pace presets. Quick and Careful scale the per-item work times from the Normal numbers
+// (the starting numbers above). Photo set-up, trips to the store and drop-off stay the same in every pace.
+const PACE_SCALED = ["photoPerItem", "descPerItem", "researchPerItem", "uploadPerItem", "lowerPerItem", "packPerItem"];
+const PACES = [
+  { key: "quick", label: "Quick", factor: 0.7, text: "Quick is a fast pace with little double-checking." },
+  { key: "normal", label: "Normal", factor: 1, text: "Normal is a steady pace with room for a second look at photos and prices." },
+  { key: "careful", label: "Careful", factor: 1.5, text: "Careful is a slower pace for extra photos and a closer look at prices." }
+];
+// All ten estimate numbers for a pace.
+function paceValues(key) {
+  const pace = PACES.filter(function (p) { return p.key === key; })[0] || PACES[1];
+  const out = {};
+  PLAN_SETTING_FIELDS.forEach(function (f) {
+    const base = DEFAULT_PLAN[f.key];
+    out[f.key] = PACE_SCALED.indexOf(f.key) < 0 || base === 0 ? base : Math.max(1, Math.round(base * pace.factor));
+  });
+  return out;
+}
+// Which pace the current numbers match: "quick", "normal", "careful", or "custom" when you changed a step.
+function paceOf(p) {
+  for (let i = 0; i < PACES.length; i++) {
+    const want = paceValues(PACES[i].key);
+    if (PLAN_SETTING_FIELDS.every(function (f) { return Number(p[f.key]) === want[f.key]; })) return PACES[i].key;
+  }
+  return "custom";
+}
+// Minutes for one item from start to finish: photos, writing, research, upload and packing.
+function itemMinutes(p) {
+  return p.photoPerItem + p.descPerItem + p.researchPerItem + p.uploadPerItem + p.packPerItem;
+}
+// What the stopwatch time becomes: whole minutes, never less than 1.
+function timedMinutes(ms) { return Math.max(1, Math.round(ms / 60000)); }
+// The screen behind each step row: the number the wheel and the stopwatch set, plus any extra numbers for that step.
+const STEP_SCREENS = {
+  photos: { title: "Photos", about: "Shoot and edit the photos for one item.", main: "photoPerItem", mainLabel: "Photos for one item",
+    extras: [{ key: "photoSetup", label: "Set up a session (min, once)" }] },
+  description: { title: "Descriptions", about: "Write the title and description for one item.", main: "descPerItem", mainLabel: "Writing for one item", extras: [] },
+  research: { title: "Research prices", about: "Look up what similar items sell for.", main: "researchPerItem", mainLabel: "Research for one item", extras: [] },
+  upload: { title: "Upload (list them)", about: "Enter the details and post one item.", main: "uploadPerItem", mainLabel: "Upload for one item", extras: [] },
+  lower: { title: "Lower prices", about: "Lower the price of one item.", main: "lowerPerItem", mainLabel: "Lowering one price", extras: [] },
+  ship: { title: "Shipping", about: "Pack one item. The trip to the store is set below.", main: "packPerItem", mainLabel: "Packing one item",
+    extras: [{ key: "tripThere", label: "Trip to the store (min)" }, { key: "tripBack", label: "Trip back (min)" }, { key: "dropOff", label: "Drop-off at the store (min per trip)" }] }
+};
 
 // "Shipped" frees the slot the item was in. Sold items stay in their slot until they are shipped.
 const STATUSES = ["In progress", "Listed", "Sold", "Shipped", "Archived"];
@@ -8274,34 +8367,388 @@ function buildCalendar(panel) {
 }
 
 // ---- Settings: the planner's time estimates ----
+// The page is a list: a pace card on top, then one row per step. Tapping a row opens that step's screen,
+// which has two tabs: "Set time" (a scroll wheel) and "Time myself" (a stopwatch).
+// Reset only puts the ten estimate numbers back to Normal. Your weekly plan is not touched.
+var planStep = null;   // the step screen that is open, or null for the list
+var planTab = "set";   // "set" or "timer"
+var estTick = null;
+
+// The stopwatch is saved on the phone, so it keeps counting if you leave the page or close the app.
+// It is separate from the Plan tab's timer, and nothing is added to the time log.
+function estTimer() {
+  try {
+    const t = JSON.parse(localStorage.getItem("estimateTimer") || "null");
+    if (t && STEP_SCREENS[t.step]) return t;
+  } catch (e) {}
+  return null;
+}
+function setEstTimer(t) {
+  try { if (t) localStorage.setItem("estimateTimer", JSON.stringify(t)); else localStorage.removeItem("estimateTimer"); } catch (e) {}
+}
+function estElapsed(t) { return (Number(t.acc) || 0) + (t.seg ? Date.now() - t.seg : 0); }
+function estClockText(ms) {
+  const sec = Math.max(0, Math.floor(ms / 1000));
+  const h = Math.floor(sec / 3600);
+  return h > 0 ? h + ":" + pad(Math.floor(sec / 60) % 60) + ":" + pad(sec % 60) : Math.floor(sec / 60) + ":" + pad(sec % 60);
+}
+function estChanged(key) {
+  const s = STEP_SCREENS[key];
+  return [s.main].concat(s.extras.map(function (x) { return x.key; })).some(function (k) { return plan[k] !== DEFAULT_PLAN[k]; });
+}
+function estRowText(key) {
+  if (key === "ship") {
+    const trip = plan.tripThere + plan.tripBack + plan.dropOff;
+    return "Trip " + fmtMin(trip) + (plan.packPerItem > 0 ? " · pack " + fmtMin(plan.packPerItem) : "");
+  }
+  return fmtMin(plan[STEP_SCREENS[key].main]);
+}
+function openPlanStep(key, tab) {
+  planStep = key;
+  planTab = tab || "set";
+  $("tools-title").textContent = STEP_SCREENS[key].title;
+  renderPlanSettings();
+  toolsModal.querySelector(".tools-panel").scrollTop = 0;
+}
+function closePlanStep() {
+  planStep = null;
+  $("tools-title").textContent = SETTINGS_PAGES.time.title;
+  renderPlanSettings();
+  toolsModal.querySelector(".tools-panel").scrollTop = 0;
+}
 function renderPlanSettings() {
+  if (estTick) { clearInterval(estTick); estTick = null; }
   const panel = document.getElementById("plan-settings-body");
   panel.innerHTML = "";
-  panel.appendChild(el("div", "small", "These numbers set the times in the timeline and planner. Change them to match how fast you really are."));
-  const g = el("div", "set-grid");
-  PLAN_SETTING_FIELDS.forEach(function (f) {
-    const l = el("label", "field", f.label);
-    l.appendChild(plannerNum(plan[f.key], function (v) {
-      plan[f.key] = v;
-      save();
-      renderPlanSettings();
-      refreshTodoViews();
-    }, "0.5"));
-    g.appendChild(l);
-  });
-  panel.appendChild(g);
-  const reset = el("button", "small-btn", "Reset estimates");
+  if (planStep) renderPlanStep(panel); else renderPlanList(panel);
+}
+
+function renderPlanList(panel) {
+  const pace = paceOf(plan);
+  const running = estTimer();
+  if (running && !running.done) {
+    const list = el("div", "est-list");
+    const b = el("button", "est-row");
+    b.type = "button";
+    b.appendChild(el("span", "est-name", "Timing " + STEP_SCREENS[running.step].title.toLowerCase()));
+    b.appendChild(el("span", "est-val changed", running.seg ? estClockText(estElapsed(running)) : "Paused"));
+    b.insertAdjacentHTML("beforeend", CHEV);
+    b.onclick = function () { openPlanStep(running.step, "timer"); };
+    list.appendChild(b);
+    panel.appendChild(list);
+  }
+
+  const head = el("div", "est-head");
+  head.appendChild(el("h2", "msec-title", "My pace"));
+  const reset = el("button", "est-link", "Reset");
   reset.type = "button";
-  reset.style.marginTop = "8px";
+  reset.disabled = pace === "normal";
   reset.addEventListener("click", function () {
-    askYesNo("Put all estimates back to the starting numbers?", "Reset", function () {
-      plan = JSON.parse(JSON.stringify(DEFAULT_PLAN));
+    askYesNo("Put all your time estimates back to Normal? Your weekly plan stays the same.", "Reset", function () {
+      Object.assign(plan, paceValues("normal"));
       save();
-      renderPlanSettings();
       refreshTodoViews();
+      renderPlanSettings();
     });
   });
-  panel.appendChild(reset);
+  head.appendChild(reset);
+  panel.appendChild(head);
+
+  const card = el("div", "est-card");
+  const seg = el("div", "est-seg");
+  seg.setAttribute("role", "group");
+  seg.setAttribute("aria-label", "Pace");
+  PACES.concat([{ key: "custom", label: "Custom" }]).forEach(function (p) {
+    const b = el("button", pace === p.key ? "on" : "", p.label);
+    b.type = "button";
+    b.setAttribute("aria-pressed", pace === p.key ? "true" : "false");
+    b.addEventListener("click", function () {
+      if (p.key === "custom") {
+        if (pace !== "custom") showToast("Custom shows up when you change a step below.");
+        return;
+      }
+      Object.assign(plan, paceValues(p.key));
+      save();
+      refreshTodoViews();
+      renderPlanSettings();
+    });
+    seg.appendChild(b);
+  });
+  card.appendChild(seg);
+  const found = PACES.filter(function (p) { return p.key === pace; })[0];
+  card.appendChild(el("div", "est-note", found ? found.text : "Custom means you changed a step. Reset goes back to Normal."));
+  const total = el("div", "est-total");
+  total.appendChild(el("span", "", "One item, start to finish"));
+  total.appendChild(el("b", "", fmtMin(itemMinutes(plan))));
+  card.appendChild(total);
+  panel.appendChild(card);
+
+  const sh = el("div", "est-head");
+  sh.appendChild(el("h2", "msec-title", "By step"));
+  panel.appendChild(sh);
+  const list = el("div", "est-list");
+  PLAN_STEPS.forEach(function (st) {
+    const b = el("button", "est-row");
+    b.type = "button";
+    b.appendChild(el("span", "est-name", st.label));
+    b.appendChild(el("span", "est-val" + (estChanged(st.key) ? " changed" : ""), estRowText(st.key)));
+    b.insertAdjacentHTML("beforeend", CHEV);
+    b.addEventListener("click", function () { openPlanStep(st.key, "set"); });
+    list.appendChild(b);
+  });
+  panel.appendChild(list);
+  panel.appendChild(el("div", "est-note", "Tap a step to set its time yourself. A highlighted number is different from Normal. These numbers set the times in the timeline and planner."));
+}
+
+function renderPlanStep(panel) {
+  const s = STEP_SCREENS[planStep];
+  const tabs = el("div", "est-seg tabs");
+  tabs.setAttribute("role", "group");
+  tabs.setAttribute("aria-label", "How to set the time");
+  [["set", "Set time"], ["timer", "Time myself"]].forEach(function (t) {
+    const b = el("button", planTab === t[0] ? "on" : "", t[1]);
+    b.type = "button";
+    b.setAttribute("aria-pressed", planTab === t[0] ? "true" : "false");
+    b.addEventListener("click", function () { planTab = t[0]; renderPlanSettings(); });
+    tabs.appendChild(b);
+  });
+  panel.appendChild(tabs);
+  if (planTab === "set") buildStepSet(panel, s); else buildStepTimer(panel, s);
+}
+
+// A scroll wheel of whole minutes. It calls onPick(minutes) once the wheel stops moving.
+function buildWheel(value, onPick) {
+  const start = Math.max(0, Math.round(Number(value) || 0));
+  const max = Math.max(60, start);
+  const wrap = el("div", "est-wheel");
+  wrap.appendChild(el("div", "est-band"));
+  const list = el("div", "est-spin");
+  list.setAttribute("role", "group");
+  list.setAttribute("aria-label", "Minutes");
+  const rows = [];
+  for (let m = 0; m <= max; m++) {
+    const b = el("button", "", m + " min");
+    b.type = "button";
+    b.addEventListener("click", function () { list.scrollTo({ top: m * 44, behavior: "smooth" }); });
+    list.appendChild(b);
+    rows.push(b);
+  }
+  wrap.appendChild(list);
+  let ignore = true;
+  let current = start;
+  let settle = null;
+  function paint(i) {
+    rows.forEach(function (r, k) { r.className = k === i ? "sel" : (Math.abs(k - i) === 1 ? "near" : ""); });
+  }
+  paint(start);
+  list.addEventListener("scroll", function () {
+    const i = Math.max(0, Math.min(max, Math.round(list.scrollTop / 44)));
+    paint(i);
+    if (ignore) return;
+    clearTimeout(settle);
+    settle = setTimeout(function () { if (i !== current) { current = i; onPick(i); } }, 150);
+  });
+  setTimeout(function () {
+    list.scrollTop = start * 44;
+    setTimeout(function () { ignore = false; }, 200);
+  }, 0);
+  return wrap;
+}
+
+function buildStepSet(panel, s) {
+  const normal = DEFAULT_PLAN[s.main];
+  panel.appendChild(el("div", "est-note", s.about + " Scroll to pick the minutes."));
+  const card = el("div", "est-card");
+  let totalEl = null;
+  let backBtn = null;
+  function refresh() {
+    if (totalEl) totalEl.textContent = fmtMin(itemMinutes(plan));
+    backBtn.disabled = plan[s.main] === normal;
+  }
+  card.appendChild(buildWheel(plan[s.main], function (m) {
+    plan[s.main] = m;
+    save();
+    refreshTodoViews();
+    refresh();
+  }));
+  const foot = el("div", "est-foot");
+  foot.appendChild(el("span", "", "Normal is " + fmtMin(normal)));
+  backBtn = el("button", "est-link", "Put back to " + normal);
+  backBtn.type = "button";
+  backBtn.addEventListener("click", function () {
+    plan[s.main] = normal;
+    save();
+    refreshTodoViews();
+    renderPlanSettings();
+  });
+  foot.appendChild(backBtn);
+  card.appendChild(foot);
+  panel.appendChild(card);
+
+  if (s.main !== "lowerPerItem") {
+    const tc = el("div", "est-card");
+    const total = el("div", "est-total");
+    total.style.marginTop = "0";
+    total.style.paddingTop = "0";
+    total.style.borderTop = "0";
+    total.appendChild(el("span", "", "One item, start to finish"));
+    totalEl = el("b", "", fmtMin(itemMinutes(plan)));
+    total.appendChild(totalEl);
+    tc.appendChild(total);
+    panel.appendChild(tc);
+  }
+  refresh();
+
+  if (s.extras.length) {
+    const eh = el("div", "est-head");
+    eh.appendChild(el("h2", "msec-title", "Other times for this step"));
+    panel.appendChild(eh);
+    const ec = el("div", "est-card");
+    s.extras.forEach(function (x) {
+      const row = el("div", "est-step");
+      const id = "est-" + x.key;
+      const label = el("label", "", x.label);
+      label.setAttribute("for", id);
+      const less = el("button", "", "−");
+      less.type = "button";
+      less.setAttribute("aria-label", "Less: " + x.label);
+      const more = el("button", "", "+");
+      more.type = "button";
+      more.setAttribute("aria-label", "More: " + x.label);
+      const out = document.createElement("output");
+      out.id = id;
+      out.textContent = String(plan[x.key]);
+      function change(v) {
+        plan[x.key] = Math.max(0, v);
+        out.textContent = String(plan[x.key]);
+        save();
+        refreshTodoViews();
+      }
+      less.addEventListener("click", function () { change(plan[x.key] - 1); });
+      more.addEventListener("click", function () { change(plan[x.key] + 1); });
+      row.appendChild(label);
+      row.appendChild(less);
+      row.appendChild(out);
+      row.appendChild(more);
+      ec.appendChild(row);
+    });
+    panel.appendChild(ec);
+  }
+}
+
+const EST_ICONS = {
+  play: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 4.5v15a1 1 0 0 0 1.5.86l12-7.5a1 1 0 0 0 0-1.72l-12-7.5A1 1 0 0 0 7 4.5z"/></svg>',
+  pause: '<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="6" y="4" width="4.5" height="16" rx="1"/><rect x="13.5" y="4" width="4.5" height="16" rx="1"/></svg>',
+  stop: '<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="5" width="14" height="14" rx="2.5"/></svg>'
+};
+function estRound(kind, label, primary, onClick) {
+  const col = el("div", "btn-col");
+  const b = el("button", "est-round" + (primary ? " primary" : ""));
+  b.type = "button";
+  b.setAttribute("aria-label", label);
+  b.innerHTML = EST_ICONS[kind];
+  b.addEventListener("click", onClick);
+  col.appendChild(b);
+  col.appendChild(el("span", "", label));
+  return col;
+}
+
+// The "Time myself" tab: start, pause and stop a stopwatch for one item, then choose to use that time.
+function buildStepTimer(panel, s) {
+  const t = estTimer();
+  const card = el("div", "est-card");
+  if (t && t.step !== planStep) {
+    const other = STEP_SCREENS[t.step].title;
+    card.appendChild(el("div", "est-note", "You are already timing " + other.toLowerCase() + ". Finish that one first."));
+    const go = el("button", "primary est-wide", "Open " + other);
+    go.type = "button";
+    go.addEventListener("click", function () { openPlanStep(t.step, "timer"); });
+    card.appendChild(go);
+    panel.appendChild(card);
+    return;
+  }
+  const box = el("div", "est-timer");
+  if (t && t.done) {
+    const ms = Number(t.acc) || 0;
+    const mins = timedMinutes(ms);
+    box.appendChild(el("div", "est-note", "Stopped · " + s.title + " for one item"));
+    const clock = el("div", "est-clock stopped", estClockText(ms));
+    box.appendChild(clock);
+    const about = el("div", "");
+    about.style.fontSize = "17px";
+    about.appendChild(document.createTextNode("That's about "));
+    about.appendChild(el("b", "", fmtMin(mins)));
+    box.appendChild(about);
+    card.appendChild(box);
+    const lines = el("div", "");
+    const l1 = el("div", "est-line");
+    l1.appendChild(el("span", "", "Your estimate now"));
+    l1.appendChild(el("b", "", fmtMin(plan[s.main])));
+    lines.appendChild(l1);
+    if (s.main !== "lowerPerItem") {
+      const after = Object.assign({}, plan);
+      after[s.main] = mins;
+      const l2 = el("div", "est-line");
+      l2.appendChild(el("span", "", "One item, start to finish"));
+      l2.appendChild(el("b", "", fmtMin(itemMinutes(plan)) + " → " + fmtMin(itemMinutes(after))));
+      lines.appendChild(l2);
+    }
+    card.appendChild(lines);
+    const use = el("button", "primary est-wide", "Use " + fmtMin(mins));
+    use.type = "button";
+    use.addEventListener("click", function () {
+      setEstTimer(null);
+      plan[s.main] = mins;
+      save();
+      refreshTodoViews();
+      planTab = "set";
+      showToast(s.title + " set to " + fmtMin(mins) + ".");
+      renderPlanSettings();
+    });
+    card.appendChild(use);
+    const two = el("div", "est-two");
+    const again = el("button", "", "Time again");
+    again.type = "button";
+    again.addEventListener("click", function () { setEstTimer({ step: planStep, acc: 0, seg: Date.now(), done: false }); renderPlanSettings(); });
+    const drop = el("button", "", "Discard");
+    drop.type = "button";
+    drop.addEventListener("click", function () { setEstTimer(null); renderPlanSettings(); });
+    two.appendChild(again);
+    two.appendChild(drop);
+    card.appendChild(two);
+    panel.appendChild(card);
+    return;
+  }
+
+  const running = !!(t && t.seg);
+  const paused = !!(t && !t.seg);
+  box.appendChild(el("div", "est-note", running ? "Timing " + s.title.toLowerCase() + " for one item" : paused ? "Paused" : "Time " + s.title.toLowerCase() + " for one item, then use that time as your estimate."));
+  const clock = el("div", "est-clock", estClockText(t ? estElapsed(t) : 0));
+  clock.id = "est-clock";
+  box.appendChild(clock);
+  const btns = el("div", "est-btns");
+  if (!t) {
+    btns.appendChild(estRound("play", "Start", true, function () { setEstTimer({ step: planStep, acc: 0, seg: Date.now(), done: false }); renderPlanSettings(); }));
+  } else {
+    if (running) {
+      btns.appendChild(estRound("pause", "Pause", false, function () { t.acc = estElapsed(t); t.seg = 0; setEstTimer(t); renderPlanSettings(); }));
+    } else {
+      btns.appendChild(estRound("play", "Resume", false, function () { t.seg = Date.now(); setEstTimer(t); renderPlanSettings(); }));
+    }
+    btns.appendChild(estRound("stop", "Stop", true, function () { setEstTimer({ step: planStep, acc: estElapsed(t), seg: 0, done: true }); renderPlanSettings(); }));
+  }
+  box.appendChild(btns);
+  card.appendChild(box);
+  panel.appendChild(card);
+  panel.appendChild(el("div", "est-note", "When you stop, you can use the time as your estimate, rounded to the nearest minute. The timer keeps counting if you leave this page."));
+  if (running) {
+    estTick = setInterval(function () {
+      const c = document.getElementById("est-clock");
+      const cur = estTimer();
+      if (!c || !cur || !cur.seg) { clearInterval(estTick); estTick = null; return; }
+      c.textContent = estClockText(estElapsed(cur));
+    }, 500);
+  }
 }
 
 function startTimerTick() {
@@ -8511,6 +8958,7 @@ function openSettings(scope) {
   renderBulkHistory();
   renderPlatformEditor();
   renderPhotoTypeEditor();
+  planStep = null;
   renderPlanSettings();
   fillLowerInputs();
   openSettingsPage("home");
@@ -9730,6 +10178,8 @@ function themeLabel() {
 }
 function openSettingsPage(key) {
   if (key !== "home" && !SETTINGS_PAGES[key]) key = "home";
+  if (key !== "time" && estTick) { clearInterval(estTick); estTick = null; }
+  if (key === "time") { planStep = null; renderPlanSettings(); }
   settingsPage = key;
   $("settings-home").hidden = key !== "home";
   $("settings-done-bar").hidden = key !== "home";
@@ -9748,6 +10198,7 @@ function openSettingsPage(key) {
   toolsModal.querySelector(".tools-panel").scrollTop = 0;
 }
 function settingsBack() {
+  if (settingsPage === "time" && planStep) { closePlanStep(); return; }
   if (settingsPage !== "home") { openSettingsPage("home"); return; }
   if (settingsParent) { openSettingsScope(settingsParent, ""); return; }
   toolsModal.hidden = true;
