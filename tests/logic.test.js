@@ -18,6 +18,40 @@ test("profit uses soldFor over current", () => assert.strictEqual(L.profitOf(sol
 test("old items without fee fields keep their old profit", () => assert.strictEqual(L.profitOf(sold({ feePercent: undefined })), 30));
 test("percent bump comes off profit", () => assert.strictEqual(L.profitOf(sold({ bump: true, bumpRate: 12 })), 25.2));
 test("flat bump comes off profit", () => assert.strictEqual(L.profitOf(sold({ bump: true, bumpAmount: 2 })), 28));
+test("percent boost uses the price it actually sold for", () => {
+  assert.strictEqual(L.feeTotal(sold({ bump: true, bumpRate: 12, current: 50, soldFor: 40 })), 4.8);
+  assert.strictEqual(L.profitOf(sold({ bump: true, bumpRate: 12, current: 50, soldFor: 40 })), 25.2);
+});
+test("percent boost costs nothing until the item sells", () => {
+  assert.strictEqual(L.feeTotal(sold({ status: "Listed", soldFor: null, bump: true, bumpRate: 12 })), 0);
+  assert.strictEqual(L.feeTotal(sold({ status: "Shipped", bump: true, bumpRate: 12 })), 4.8);
+});
+test("percent boost is worked out in whole cents", () => {
+  assert.strictEqual(L.feeTotal(sold({ bump: true, bumpRate: 12, soldFor: 19.99 })), 2.4);
+  assert.strictEqual(L.boostCost(40, 12), 4.8);
+  assert.strictEqual(L.boostCost(40, 0), 0);
+  assert.strictEqual(L.boostCost(40, "abc"), 0);
+});
+test("a typed bump counts even before the item sells", () => {
+  assert.strictEqual(L.feeTotal(sold({ status: "Listed", soldFor: null, bump: true, bumpAmount: 2 })), 2);
+});
+test("older bumps on the same item add up with the newest one", () => {
+  const it = sold({ bump: true, bumpAmount: 3, bumpPast: [{ date: "2026-10-01", days: 3, amount: 1.5 }, { date: "2026-10-05", days: 7, amount: 2 }] });
+  assert.strictEqual(L.feeTotal(it), 6.5);
+  assert.strictEqual(L.profitOf(it), 23.5);
+});
+test("bad past bump entries are ignored", () => {
+  assert.strictEqual(L.feeTotal(sold({ bump: true, bumpAmount: 1, bumpPast: "nope" })), 1);
+  assert.strictEqual(L.feeTotal(sold({ bump: true, bumpAmount: 1, bumpPast: [null, { amount: "x" }] })), 1);
+  assert.strictEqual(L.feeTotal(sold({ bump: false, bumpAmount: 5, bumpPast: [{ amount: 2 }] })), 2);
+});
+test("the bump's last day counts the start day as day 1", () => {
+  assert.strictEqual(L.bumpLastDay("2026-10-08", 3), "2026-10-10");
+  assert.strictEqual(L.bumpLastDay("2026-10-08", 7), "2026-10-14");
+  assert.strictEqual(L.bumpLastDay("2026-10-30", 3), "2026-11-01");
+  assert.strictEqual(L.bumpLastDay("2026-10-08", 1), "2026-10-08");
+  assert.strictEqual(L.bumpLastDay("2026-10-08", 0), "2026-10-08");
+});
 test("platform percent fee", () => assert.strictEqual(L.platformFee(sold({ feePercent: 10 })), 4));
 test("platform percent + flat fee", () => assert.strictEqual(L.platformFee(sold({ feePercent: 10, feeFlat: 0.45 })), 4.45));
 test("fee is rounded to the cent", () => assert.strictEqual(L.platformFee(sold({ soldFor: 12.34, feePercent: 13 })), 1.6));

@@ -22,11 +22,22 @@
     return item.status === "Sold" || item.status === "Shipped";
   }
 
-  // A bump or ad costs a percent of the current price (the percent saved with the item) or a dollar amount.
+  // Older bumps you paid for on this item (for example a 3 day Vinted bump, then a 7 day one later).
+  // Each is { date, days, amount }. The bump on the item itself is the newest one.
+  function pastBumpCents(item) {
+    let cents = 0;
+    (Array.isArray(item.bumpPast) ? item.bumpPast : []).forEach(function (b) { cents += toCents(b && b.amount); });
+    return cents;
+  }
+
+  // A boost that costs a percent (Depop) is only paid when the item sells: the percent of the price it actually sold for.
+  // A bump with a dollar amount (Vinted) is paid when you start it, so it always counts, plus any older bumps on the item.
   function feeTotal(item) {
-    if (!item.bump) return 0;
-    if (item.bumpRate > 0) return Math.round(item.current * item.bumpRate) / 100;
-    return item.bumpAmount || 0;
+    if (!item.bump) return fromCents(pastBumpCents(item));
+    if (item.bumpRate > 0) {
+      return isDone(item) ? fromCents(Math.round(toCents(salePrice(item)) * item.bumpRate / 100)) : 0;
+    }
+    return fromCents(toCents(item.bumpAmount) + pastBumpCents(item));
   }
 
   // The platform's selling fee, saved on the item when it sold: a percent of the sale price plus a flat amount.
@@ -76,6 +87,17 @@
   function formatDate(ms) { return new Date(ms).toISOString().slice(0, 10); }
   function dayDiff(fromText, toText) { return Math.round((parseDate(toText) - parseDate(fromText)) / 86400000); }
   function addDays(text, n) { return formatDate(parseDate(text) + n * 86400000); }
+
+  // The last day of a bump. The day you start it counts as day 1, so a 3 day bump started Thursday ends Saturday.
+  function bumpLastDay(startText, days) {
+    return addDays(startText, Math.max(1, Math.round(Number(days)) || 1) - 1);
+  }
+
+  // What a percent boost costs for a sale price, in dollars (12% of $40.00 is $4.80).
+  function boostCost(price, percent) {
+    const pct = Number(percent) > 0 ? Number(percent) : 0;
+    return fromCents(Math.round(toCents(price) * pct / 100));
+  }
 
   // Business days are Monday to Friday.
   function isWeekend(ms) {
@@ -363,6 +385,7 @@
     feeText: feeText, bumpText: bumpText, feeExample: feeExample,
     toCents: toCents, money: money, salePrice: salePrice, isDone: isDone, feeTotal: feeTotal,
     platformFee: platformFee, shipCostOf: shipCostOf, costsTotal: costsTotal, profitOf: profitOf,
+    bumpLastDay: bumpLastDay, boostCost: boostCost, pastBumpCents: pastBumpCents,
     bundlePrice: bundlePrice, bulkCosts: bulkCosts, parseDate: parseDate, formatDate: formatDate, dayDiff: dayDiff, addDays: addDays,
     isWeekend: isWeekend, shipByDate: shipByDate, wordCount: wordCount, isQuickNameOk: isQuickNameOk,
     capWords: capWords, backupDue: backupDue, backupAge: backupAge,

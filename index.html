@@ -666,17 +666,22 @@ body.no-invest #goals-mini { display: none !important; }
 .card.closed .card-top { cursor: pointer; }
 .card-chev { position: absolute; top: 8px; right: 12px; font-size: 14px; color: var(--muted); pointer-events: none; }
 .card .card-title { padding-right: 22px; }
-.swipe-wrap { position: relative; margin: 14px 0; border-radius: 12px; overflow: hidden; }
-.swipe-wrap > .card { margin: 0; position: relative; z-index: 1; touch-action: pan-y; -webkit-user-select: none; user-select: none; }
+.swipe-wrap { position: relative; border-radius: 14px; overflow: hidden; }
+.swipe-wrap > .srow-card { position: relative; z-index: 1; touch-action: pan-y; -webkit-user-select: none; user-select: none; }
 .swipe-bg { position: absolute; top: 0; bottom: 0; display: flex; align-items: stretch; }
-.swipe-next { left: 0; width: 176px; background: var(--sold-edge); color: #ffffff; align-items: center; padding-left: 14px; font-weight: 800; font-size: 15px; }
+.swipe-lead { left: 0; }
 .swipe-actions { right: 0; }
-.swipe-btn { flex: none; width: 76px; min-height: 0; border: 0; border-radius: 0; margin: 0; padding: 0 4px; font-size: 13px; font-weight: 800; color: #ffffff; }
-.swipe-btn:first-child { width: 102px; padding-left: 26px; }
-.swipe-btn.edit { background: #0b5cad; }
+.swipe-btn { flex: none; width: 76px; min-height: 0; border: 0; border-radius: 0; margin: 0; padding: 0 4px; font-size: 13px; font-weight: 800; line-height: 1.15; color: #ffffff; display: flex; align-items: center; justify-content: center; text-align: center; }
+.swipe-btn.sold { background: var(--sold-edge); }
+.swipe-btn.next { background: #0b5cad; }
+.swipe-btn.archive { background: #5b6770; }
 .swipe-btn.lower { background: #b26a00; }
+.swipe-btn.locked { background: #8a6a3b; opacity: 0.85; }
+.swipe-btn.bump { background: #6a3fb5; }
+.swipe-btn.edit { background: #0b5cad; }
 .swipe-btn.dismiss { background: #5b6770; }
 .swipe-btn.delete { background: #b42318; }
+.picker-list { margin-top: 4px; }
 #menu-qr[hidden] { display: none; }
 .look-note { margin-top: 6px; }
 /* Color styles: two extra light looks and two extra dark looks */
@@ -912,6 +917,8 @@ progress::-moz-progress-bar { background: var(--primary); border-radius: 5px; }
 .srow-card { background: var(--surface); border: 1px solid var(--line-soft); border-radius: 14px; overflow: hidden; }
 .srow-card.row-overdue { border-color: #f0b8b0; border-left: 5px solid #d92d20; }
 .srow-card.row-shipped { opacity: 0.8; }
+.swipe-wrap > .srow-card.row-shipped { opacity: 1; }
+.swipe-wrap > .srow-card.row-shipped > * { opacity: 0.8; }
 .select-row { display: flex; align-items: center; gap: 10px; margin: 10px 0 0; }
 .srow-card.picked { border-color: var(--primary); box-shadow: 0 0 0 2px var(--primary); }
 .pick-box { flex: none; width: 28px; height: 28px; border-radius: 8px; border: 2px solid var(--muted); display: flex; align-items: center; justify-content: center; color: #ffffff; font-weight: 800; font-size: 18px; }
@@ -1165,6 +1172,18 @@ progress::-moz-progress-bar { background: var(--primary); border-radius: 5px; }
 /* time log sheet */
 #scan-body .filters-panel button.primary { display: block; width: 100%; margin-top: 8px; }
 
+/* ---- lighter first screens: Money opens with Balance and Profit, Home keeps just the balance ---- */
+.profit-card { margin-top: 10px; background: var(--surface); color: var(--text); border: 1px solid var(--line-soft); }
+#money-more { margin-top: 14px; }
+#money-more > summary { list-style: none; cursor: pointer; min-height: 48px; display: flex; align-items: center; justify-content: space-between; padding: 0 14px; background: var(--surface); border: 1px solid var(--line-soft); border-radius: 14px; font-weight: 700; }
+#money-more > summary::-webkit-details-marker { display: none; }
+#money-more > summary::after { content: "\25BE"; color: var(--muted); }
+#money-more[open] > summary::after { content: "\25B4"; }
+#summary-box .stats .stat:not(.main) { display: none; }
+#summary-box #goals-mini { display: none !important; }
+/* a pop-up message (Undo) must not sit on top of an open menu or sheet */
+body.modal-open #undo-bar { visibility: hidden; }
+
 </style>
 </head>
 <body>
@@ -1286,6 +1305,14 @@ progress::-moz-progress-bar { background: var(--primary); border-radius: 5px; }
       </div>
       <button type="button" id="withdraw-button2" class="bal-btn">Withdraw</button>
     </section>
+    <section class="bal-card profit-card" id="profit-card" aria-label="Total profit">
+      <div class="bal-text">
+        <span class="bal-label">Total profit</span>
+        <span class="bal-big">$<span id="profit2">0.00</span></span>
+      </div>
+    </section>
+    <details id="money-more">
+      <summary>More money details</summary>
     <div id="inv-wrap">
       <div id="inv-card"></div>
       <section id="goals-box" class="msec">
@@ -1330,6 +1357,7 @@ progress::-moz-progress-bar { background: var(--primary); border-radius: 5px; }
       <h2 class="msec-title">Platforms and fees</h2>
       <div id="money-platforms"></div>
     </section>
+    </details>
   </section>
 
   <!-- PLAN: your week -->
@@ -1468,7 +1496,7 @@ progress::-moz-progress-bar { background: var(--primary); border-radius: 5px; }
                 </select>
               </label>
               <label class="field">Bump started <input id="bump-date" type="date"></label>
-              <div class="small" style="margin-top:6px">The lower-price reminder comes after the bump has run its length.</div>
+              <div class="small" style="margin-top:6px">The price can't be lowered during a Vinted bump, so the lower-price reminder stays quiet until the bump's last day (the day you start counts as day 1).</div>
             </div>
             <label class="field" id="bump-amount-row">Bump cost ($) <input id="bump-amount" type="number" inputmode="decimal" step="0.01" min="0" placeholder="0.00"></label>
             <div id="bump-note"></div>
@@ -1489,7 +1517,7 @@ progress::-moz-progress-bar { background: var(--primary); border-radius: 5px; }
     <div class="tabbar-in">
       <button type="button" class="bar-tab on" id="tab-home" data-view="home"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 11l9-7 9 7v9a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1v-9z"/></svg>Home</button>
       <button type="button" class="bar-tab" id="tab-stock" data-view="stock"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21 8 12 3 3 8v8l9 5 9-5V8z"/><path d="M3 8l9 5 9-5M12 13v8"/></svg>Stock</button>
-      <button type="button" class="tab-add" id="tab-add" aria-label="Add item"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg></button>
+      <button type="button" class="tab-add" id="tab-add" aria-label="Add or log"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg></button>
       <button type="button" class="bar-tab" id="tab-money" data-view="money"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20V10M10 20V4M16 20v-8M22 20H2"/></svg>Money</button>
       <button type="button" class="bar-tab" id="tab-plan" data-view="plan"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="5" width="16" height="15" rx="2"/><path d="M4 10h16M8 3v4M16 3v4"/></svg>Plan</button>
     </div>
@@ -1497,13 +1525,24 @@ progress::-moz-progress-bar { background: var(--primary); border-radius: 5px; }
 
   <div id="add-menu" hidden>
     <div class="modal-panel">
-      <h3>How do you want to add it?</h3>
-      <button type="button" class="menu-option" id="menu-manual"><b>Type it in</b><span>Fill in the details yourself</span></button>
-      <button type="button" class="menu-option" id="menu-bulk"><b>Bulk upload</b><span>Add many items fast: a picture and a title each, with an optional lot cost</span></button>
-      <button type="button" class="menu-option" id="menu-shot"><b>From a screenshot</b><span>Pick a screenshot of a listing and the app reads it</span></button>
-      <button type="button" class="menu-option" id="menu-qr"><b>Scan a QR code</b><span id="menu-qr-sub">Point the camera at a slot label</span></button>
-      <div class="menu-warning" id="menu-qr-warning" hidden></div>
-      <button type="button" class="block" id="menu-cancel">Cancel</button>
+      <div id="menu-main">
+        <h3>What do you want to do?</h3>
+        <button type="button" class="menu-option" id="menu-add"><b>Add an item</b><span>Type it in, bulk upload, a screenshot or a QR code</span></button>
+        <button type="button" class="menu-option" id="menu-sale"><b>Log a sale</b><span>Pick a listed item that sold</span></button>
+        <button type="button" class="menu-option" id="menu-ship"><b>Log a shipment</b><span>Pick a sold item you shipped</span></button>
+        <button type="button" class="menu-option" id="menu-bump"><b>Start a bump</b><span>Bump a Vinted item or boost a Depop one</span></button>
+        <button type="button" class="menu-option" id="menu-withdraw"><b>Withdraw</b><span>Cash out one platform or everything</span></button>
+        <button type="button" class="block" id="menu-cancel">Cancel</button>
+      </div>
+      <div id="menu-adding" hidden>
+        <h3>How do you want to add it?</h3>
+        <button type="button" class="menu-option" id="menu-manual"><b>Type it in</b><span>Fill in the details yourself</span></button>
+        <button type="button" class="menu-option" id="menu-bulk"><b>Bulk upload</b><span>Add many items fast: a picture and a title each, with an optional lot cost</span></button>
+        <button type="button" class="menu-option" id="menu-shot"><b>From a screenshot</b><span>Pick a screenshot of a listing and the app reads it</span></button>
+        <button type="button" class="menu-option" id="menu-qr"><b>Scan a QR code</b><span id="menu-qr-sub">Point the camera at a slot label</span></button>
+        <div class="menu-warning" id="menu-qr-warning" hidden></div>
+        <button type="button" class="block" id="menu-back">Back</button>
+      </div>
     </div>
   </div>
 
@@ -1512,7 +1551,6 @@ progress::-moz-progress-bar { background: var(--primary); border-radius: 5px; }
       <div class="tools-head"><button type="button" id="tools-close" class="icon-btn" aria-label="Back"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg></button><div class="tools-titles"><h3 id="tools-title">Settings</h3><span id="tools-sub" class="small" hidden></span></div><span aria-hidden="true"></span></div>
       <div class="tools-body">
       <div id="settings-home"></div>
-  <div id="tools-box" class="filters-box"><div class="switch-card" id="feature-switches"></div></div>
   <div class="tools-group" id="storage-group">Storage</div>
   <details class="filters-box" id="bins-box">
     <summary id="bins-summary">Manage storage and labels</summary>
@@ -1823,7 +1861,8 @@ progress::-moz-progress-bar { background: var(--primary); border-radius: 5px; }
 // The money and date rules live in js/logic.js (tested with: node tests/logic.test.js).
 const { money, salePrice, isDone, feeTotal, platformFee, shipCostOf, costsTotal, profitOf, bundlePrice, bulkCosts, feeText, bumpText, feeExample,
   parseDate, formatDate, dayDiff, addDays, isWeekend, shipByDate, capWords, wordCount, isQuickNameOk, backupDue, backupAge, themeParts, themeForMode, themeForLook,
-  withdrawPlan, applyWithdrawal, undoWithdrawal, monthOf, monthLabel, periodStart, isDueOn, periodLabel, repeatText, resetInvestment, rolloverInvestments } = window.ResaleLogic;
+  withdrawPlan, applyWithdrawal, undoWithdrawal, monthOf, monthLabel, periodStart, isDueOn, periodLabel, repeatText, resetInvestment, rolloverInvestments,
+  bumpLastDay, boostCost } = window.ResaleLogic;
 
 // The browser's own alert and confirm pop-ups are blocked in some browsers, so the app shows its own.
 const msgModal = document.getElementById("msg-modal");
@@ -1901,9 +1940,10 @@ const NEXT_STEP = { "In progress": "Mark as Listed", "Listed": "Mark as Sold", "
 // Optional tools (each gets a button) and which extra details every item shows. Both are chosen in Settings.
 const FEATURE_KEYS = ["balance", "summary", "timeline", "investments", "storage", "platforms", "planner", "sales"];
 const CARD_KEYS = ["profit", "weight", "cost", "photos", "notes"];
-function cleanFeatures(obj) {
+// Every feature is always on now. (Older saves may hold switches that were turned off; they are ignored.)
+function cleanFeatures() {
   const out = {};
-  FEATURE_KEYS.forEach(function (k) { out[k] = !obj || obj[k] === undefined ? true : !!obj[k]; });
+  FEATURE_KEYS.forEach(function (k) { out[k] = true; });
   return out;
 }
 function cleanCardFields(obj) {
@@ -1916,7 +1956,6 @@ function loadSetting(key) {
 }
 let features = cleanFeatures(loadSetting("features"));
 let cardFields = cleanCardFields(loadSetting("cardFields"));
-let swipeOn = false;
 const openCards = new Set();
 
 // The bin you start with the first time the app opens. You can add bins and change slot counts in the app.
@@ -2283,6 +2322,10 @@ function migrateItem(item) {
   item.shipped = item.status === "Shipped" && typeof item.shipped === "string" ? item.shipped : "";
   item.bumpDays = Number(item.bumpDays) === 7 ? 7 : 3;
   item.bumpDate = typeof item.bumpDate === "string" ? item.bumpDate : "";
+  // Older bumps on the same item (the newest one lives in bump, bumpAmount, bumpDays and bumpDate).
+  item.bumpPast = (Array.isArray(item.bumpPast) ? item.bumpPast : []).filter(function (b) { return b && typeof b === "object"; }).map(function (b) {
+    return { date: typeof b.date === "string" ? b.date : "", days: Number(b.days) === 7 ? 7 : 3, amount: Number(b.amount) > 0 ? Number(b.amount) : 0 };
+  });
   item.noReduce = !!item.noReduce;
   // Archived items remember what they were (Listed or In progress) and the day they were archived, so Restore can put them back.
   item.archivedFrom = item.status === "Archived" && item.archivedFrom === "Listed" ? "Listed" : "In progress";
@@ -3003,14 +3046,13 @@ function updateBumpUI(clearAmount) {
     return;
   }
   const typedIn = config.bumpAsk;
-  document.getElementById("bump-label").textContent = config.bumpLabel;
+  document.getElementById("bump-label").textContent = config.bumpPercent !== null ? "I boosted this listing on " + siteInput.value : config.bumpLabel;
   if (clearAmount && typedIn) bumpAmountInput.value = "";
   bumpAmountRow.style.display = bumpInput.checked && typedIn ? "block" : "none";
   bumpVintedRow.hidden = !(bumpInput.checked && config.bumpLengths);
   if (bumpInput.checked && !typedIn) {
     if (config.bumpPercent !== null) {
-      const cost = Math.round(formCurrent() * config.bumpPercent) / 100;
-      bumpNote.textContent = "Bump cost: $" + cost.toFixed(2) + " (" + config.bumpPercent + "% of the current price)";
+      bumpNote.textContent = "Boost cost: " + config.bumpPercent + "% of the price it sells for. It is counted when you mark the item as sold, so it costs nothing if it never sells.";
     } else {
       bumpNote.textContent = "Bump cost: $" + (config.bumpFlat || 0).toFixed(2) + " (the fixed cost set for " + siteInput.value + " in Tools)";
     }
@@ -3090,12 +3132,23 @@ function prettyDay(text) {
 }
 
 // ---- lower-price reminders ----
-// A Vinted bump runs for 3 or 7 days. While it is on, it replaces the normal reminder:
-// the reminder comes when the bump has run its length (counted from the day the bump started).
+// A Vinted bump runs for 3 or 7 days and the price can't be lowered while it runs. While it is on, it replaces the normal
+// reminder: the reminder stays quiet until the last day of the bump (the day you start it counts as day 1).
 function bumpRuleApplies(item) {
   const config = platformConfig(item.site);
   const start = item.priceChanged || item.posted;
   return !!(item.bump && config && config.bumpLengths && item.bumpDate && item.bumpDays > 0 && start && item.bumpDate >= start);
+}
+
+// The last day of the item's Vinted bump ("" if no bump rule applies).
+function bumpEndDay(item) {
+  return bumpRuleApplies(item) ? bumpLastDay(item.bumpDate, item.bumpDays) : "";
+}
+
+// True while a Vinted bump is still running (today is before its last day). Vinted won't let the price change then.
+function bumpLocked(item) {
+  const end = bumpEndDay(item);
+  return item.status === "Listed" && end !== "" && todayText() < end;
 }
 
 // The day the "lower the price" reminder turns on for a Listed item ("" if it never does).
@@ -3103,7 +3156,7 @@ function reminderDueDate(item) {
   if (!remindersOn || remindDays < 1 || item.noReduce || item.status !== "Listed") return "";
   const start = item.priceChanged || item.posted;
   if (!start) return "";
-  if (bumpRuleApplies(item)) return addDays(item.bumpDate, item.bumpDays);
+  if (bumpRuleApplies(item)) return bumpLastDay(item.bumpDate, item.bumpDays);
   return addDays(start, remindDays);
 }
 
@@ -3342,6 +3395,8 @@ function openAddMenu() {
     });
     warn.appendChild(ol);
   }
+  document.getElementById("menu-main").hidden = false;
+  document.getElementById("menu-adding").hidden = true;
   addMenu.hidden = false;
   syncModalLock();
 }
@@ -3351,6 +3406,30 @@ function closeAddMenu() {
 }
 addItemButton.addEventListener("click", openAddMenu);
 document.getElementById("menu-cancel").addEventListener("click", closeAddMenu);
+document.getElementById("menu-add").addEventListener("click", function () {
+  document.getElementById("menu-main").hidden = true;
+  document.getElementById("menu-adding").hidden = false;
+});
+document.getElementById("menu-back").addEventListener("click", function () {
+  document.getElementById("menu-main").hidden = false;
+  document.getElementById("menu-adding").hidden = true;
+});
+document.getElementById("menu-sale").addEventListener("click", function () {
+  closeAddMenu();
+  openItemPicker("Which item sold?", items.filter(function (it) { return it.status === "Listed"; }), "You have no listed items to mark as sold.", openSoldSheet);
+});
+document.getElementById("menu-ship").addEventListener("click", function () {
+  closeAddMenu();
+  openItemPicker("Which item did you ship?", items.filter(function (it) { return it.status === "Sold"; }), "No sold items are waiting to ship.", markShipped);
+});
+document.getElementById("menu-bump").addEventListener("click", function () {
+  closeAddMenu();
+  openItemPicker("Which item do you want to bump?", items.filter(function (it) { return it.status === "Listed"; }), "You have no listed items to bump.", openBumpSheet);
+});
+document.getElementById("menu-withdraw").addEventListener("click", function () {
+  closeAddMenu();
+  openWithdrawSheet();
+});
 addMenu.addEventListener("click", function (event) { if (event.target === addMenu) closeAddMenu(); });
 document.getElementById("menu-manual").addEventListener("click", function () { closeAddMenu(); openNewForm(); });
 document.getElementById("menu-bulk").addEventListener("click", function () { closeAddMenu(); openBulkSetup(); });
@@ -4309,6 +4388,11 @@ function openDueSheet() {
 }
 
 function lowerPrice(item) {
+  // Vinted won't change the price while a bump runs, so wait for the bump's last day.
+  if (bumpLocked(item)) {
+    openScanMessage("Price locked during the bump", "Vinted doesn't let you lower the price while a bump is running. This bump's last day is " + prettyDay(bumpEndDay(item)) + ", and the price reminder comes back then.");
+    return;
+  }
   priceTarget = item;
   document.getElementById("price-modal-title").textContent = item.name;
   document.getElementById("price-modal-now").textContent = "Now " + money(item.current);
@@ -4761,13 +4845,23 @@ function openSoldSheet(item) {
   scanBody.appendChild(bundle.label);
   const bundleNote = el("p", "small", "");
   scanBody.appendChild(bundleNote);
+  // A percent boost (Depop) is paid now, on what it actually sold for.
+  const boostNote = el("p", "small", "");
+  scanBody.appendChild(boostNote);
   function showBundle() {
     const base = Number(price.input.value);
     const pct = Number(bundle.input.value);
     bundleNote.textContent = pct > 0 && base > 0 ? "After " + pct + "% off it sells for " + money(bundlePrice(base, pct)) + "." : "";
+    if (item.bump && item.bumpRate > 0 && base > 0) {
+      const finalPrice = pct > 0 && pct <= 100 ? bundlePrice(base, pct) : base;
+      boostNote.textContent = item.site + " boost: " + item.bumpRate + "% of " + money(finalPrice) + " = " + money(boostCost(finalPrice, item.bumpRate)) + ". It comes off your profit.";
+    } else {
+      boostNote.textContent = "";
+    }
   }
   price.input.addEventListener("input", showBundle);
   bundle.input.addEventListener("input", showBundle);
+  showBundle();
   const postage = numberBox("Postage label you paid ($, optional)", item.shipCost > 0 ? item.shipCost : "");
   scanBody.appendChild(postage.label);
   const dateLabel = el("label", "field", "Date sold");
@@ -4919,6 +5013,174 @@ function nextStep(item) {
   if (item.status === "In progress") openListSheet(item);
   else if (item.status === "Listed") openSoldSheet(item);
   else if (item.status === "Sold") markShipped(item);
+}
+
+// ---- start a bump or boost ----
+// Vinted: pick 3 or 7 days and type the cost. It is paid when you start it, and the price can't change until the last day.
+// Depop: a percent boost has no cost until the item sells, so this just switches it on or off.
+function openBumpSheet(item) {
+  const config = platformConfig(item.site);
+  if (item.status !== "Listed") {
+    openScanMessage("Bump a listed item", item.name + " isn't listed right now, so there is nothing to bump.");
+    return;
+  }
+  if (!config) {
+    openScanMessage("Pick a platform first", "Edit " + item.name + " and choose where it is listed, then you can bump it.");
+    return;
+  }
+  scanBody.innerHTML = "";
+  if (config.bumpPercent !== null) {
+    scanBody.appendChild(el("h3", "", "Boost: " + item.name));
+    if (!(config.bumpPercent > 0)) {
+      scanBody.appendChild(el("p", "", "No boost cost is set for " + item.site + " yet. Set it in Platforms and fees first."));
+      scanBody.appendChild(modalButton("Close", "primary", closeScanModal));
+      scanModal.hidden = false;
+      return;
+    }
+    const on = !!(item.bump && item.bumpRate > 0);
+    scanBody.appendChild(el("p", "", on
+      ? "This listing is boosted. The cost, " + item.bumpRate + "% of the price it sells for, is counted when you mark it as sold."
+      : "A boost on " + item.site + " costs " + config.bumpPercent + "% of the price it sells for. It is counted when you mark the item as sold, so it costs nothing if it never sells."));
+    scanBody.appendChild(modalButton(on ? "Turn boost off" : "Turn boost on", "primary", function () {
+      const snap = captureState();
+      item.bump = !on;
+      item.bumpRate = on ? 0 : config.bumpPercent;
+      if (on) { item.bumpAmount = 0; }
+      save();
+      render();
+      closeScanModal();
+      showUndo(item.name + (on ? ": boost turned off." : ": boosted."), snap);
+    }));
+    scanBody.appendChild(modalButton("Cancel", "", closeScanModal));
+    scanModal.hidden = false;
+    return;
+  }
+  const running = config.bumpLengths && item.bump && bumpEndDay(item) !== "" && todayText() <= bumpEndDay(item);
+  scanBody.appendChild(el("h3", "", "Start a bump: " + item.name));
+  if (running) {
+    scanBody.appendChild(el("p", "", "A bump is already running. Its last day is " + prettyDay(bumpEndDay(item)) + ". You can start a new one after that."));
+    scanBody.appendChild(modalButton("Close", "primary", closeScanModal));
+    scanModal.hidden = false;
+    return;
+  }
+  let days = 3;
+  let seg = null;
+  if (config.bumpLengths) {
+    seg = el("div", "seg");
+    [3, 7].forEach(function (n) {
+      const b = el("button", n === days ? "on" : "", n + " days");
+      b.type = "button";
+      b.onclick = function () {
+        days = n;
+        Array.prototype.forEach.call(seg.children, function (c) { c.classList.toggle("on", c === b); });
+        showEnd();
+      };
+      seg.appendChild(b);
+    });
+    scanBody.appendChild(seg);
+  }
+  let cost = null;
+  if (config.bumpAsk) {
+    cost = numberBox("Bump cost ($)", "");
+    scanBody.appendChild(cost.label);
+    scanBody.appendChild(el("div", "small", config.bumpLengths ? "Vinted shows the exact price (usually $1 to $3) when you ask. Type 0 if it was free." : "Type 0 if it was free."));
+  } else {
+    scanBody.appendChild(el("p", "", "Bump cost: " + money(config.bumpFlat || 0) + " (the fixed cost set for " + item.site + ")."));
+  }
+  const dateLabel = el("label", "field", "Started");
+  const dateBox = document.createElement("input");
+  dateBox.type = "date";
+  dateBox.value = todayText();
+  dateLabel.appendChild(dateBox);
+  scanBody.appendChild(dateLabel);
+  const endNote = el("p", "small", "");
+  scanBody.appendChild(endNote);
+  function showEnd() {
+    endNote.textContent = config.bumpLengths && dateBox.value
+      ? "The price can't be lowered until the last day, " + prettyDay(bumpLastDay(dateBox.value, days)) + ". The price reminder comes back that day."
+      : "";
+  }
+  dateBox.addEventListener("input", showEnd);
+  showEnd();
+  scanBody.appendChild(modalButton("Start bump", "primary", function () {
+    let amount = config.bumpFlat || 0;
+    if (cost) {
+      const value = readPrice(cost);
+      if (value === undefined) return;
+      if (value === null) {
+        alert("Type the bump cost (type 0 if it was free).");
+        return;
+      }
+      amount = value;
+    }
+    const date = dateBox.value || todayText();
+    if (item.posted && date < item.posted) {
+      alert("The bump can't start before the posted date.");
+      return;
+    }
+    const snap = captureState();
+    if (!Array.isArray(item.bumpPast)) item.bumpPast = [];
+    if (item.bump && item.bumpAmount > 0) item.bumpPast.push({ date: item.bumpDate || "", days: item.bumpDays === 7 ? 7 : 3, amount: item.bumpAmount });
+    item.bump = true;
+    item.bumpRate = 0;
+    item.bumpAmount = amount;
+    item.bumpDays = days;
+    item.bumpDate = config.bumpLengths ? date : "";
+    save();
+    render();
+    closeScanModal();
+    showUndo(item.name + ": bump started" + (config.bumpLengths ? ", last day " + prettyDay(bumpLastDay(date, days)) : "") + ".", snap);
+  }));
+  scanBody.appendChild(modalButton("Cancel", "", closeScanModal));
+  scanModal.hidden = false;
+}
+
+// ---- pick an item (used by the + menu's log options) ----
+function pickerMeta(item) {
+  const parts = [];
+  if (item.site) parts.push(item.site);
+  if (item.status === "Sold") parts.push("Sold " + money(salePrice(item)));
+  else if (item.current > 0) parts.push(money(item.current));
+  return parts.join(" · ");
+}
+function openItemPicker(title, list, emptyText, onPick) {
+  scanBody.innerHTML = "";
+  scanBody.appendChild(el("h3", "", title));
+  if (list.length === 0) {
+    scanBody.appendChild(el("p", "", emptyText));
+    scanBody.appendChild(modalButton("Close", "primary", closeScanModal));
+    scanModal.hidden = false;
+    return;
+  }
+  const search = document.createElement("input");
+  search.type = "search";
+  search.placeholder = "Search your items";
+  search.setAttribute("aria-label", "Search your items");
+  search.autocomplete = "off";
+  scanBody.appendChild(search);
+  const box = el("div", "picker-list");
+  scanBody.appendChild(box);
+  const sorted = list.slice().sort(function (a, b) { return a.name.localeCompare(b.name, undefined, { sensitivity: "base", numeric: true }); });
+  function paint() {
+    const q = search.value.trim().toLowerCase();
+    box.innerHTML = "";
+    let shown = 0;
+    sorted.forEach(function (item) {
+      if (q !== "" && [item.name, item.site].join(" ").toLowerCase().indexOf(q) === -1) return;
+      shown++;
+      const b = el("button", "menu-option");
+      b.type = "button";
+      b.appendChild(el("b", "", item.name));
+      b.appendChild(el("span", "", pickerMeta(item)));
+      b.onclick = function () { closeScanModal(); onPick(item); };
+      box.appendChild(b);
+    });
+    if (shown === 0) box.appendChild(el("p", "small", "No items match your search."));
+  }
+  search.addEventListener("input", paint);
+  paint();
+  scanBody.appendChild(modalButton("Cancel", "", closeScanModal));
+  scanModal.hidden = false;
 }
 
 // ---- bulk upload ----
@@ -5185,7 +5447,7 @@ function bulkFinish(spots, note) {
       bin: spot ? spot.bin : "", slot: spot ? spot.slot : 0, weight: 0,
       photos: photos, picture: entry.picture,
       posted: "", sold: "", shipped: "", original: 0, current: 0, soldFor: null, priceChanged: "",
-      noReduce: false, bump: false, bumpAmount: 0, bumpDays: 3, bumpDate: "", withdrawn: 0,
+      noReduce: false, bump: false, bumpAmount: 0, bumpDays: 3, bumpDate: "", bumpPast: [], withdrawn: 0,
       cost: costs[i], bulkId: b.id
     };
     migrateItem(item);
@@ -6000,11 +6262,14 @@ function askDeleteItem(item) {
 }
 
 // ---- swipe on an item (like Gmail) ----
+// Swiping right shows the "next step" button on the left (Sold, Shipped...). Swiping left shows housekeeping buttons on the right
+// (Archive, Lower price, Bump). Nothing happens when you let go: the buttons just wait, and you tap the one you want.
 let openSwipe = null;
 let swipeJustDragged = false;
 const SWIPE_BUTTON = 76;
-function attachSwipe(card, buttonCount, onSwipeRight) {
-  const openPx = buttonCount * SWIPE_BUTTON;
+function attachSwipe(card, leadCount, trailCount) {
+  const leadPx = leadCount * SWIPE_BUTTON;
+  const trailPx = trailCount * SWIPE_BUTTON;
   let startX = 0, startY = 0, base = 0, dx = 0, dragging = false, decided = false, pid = null;
   function setX(x, animate) {
     card.style.transition = animate ? "transform 0.18s ease" : "none";
@@ -6043,7 +6308,9 @@ function attachSwipe(card, buttonCount, onSwipeRight) {
     }
     if (!dragging) return;
     dx = mx;
-    setX(Math.max(-openPx - 30, Math.min(150, base + dx)), false);
+    const low = trailPx > 0 ? -trailPx - 24 : 0;
+    const high = leadPx > 0 ? leadPx + 24 : 0;
+    setX(Math.max(low, Math.min(high, base + dx)), false);
   });
   function end(event) {
     if (pid === null || (event && event.pointerId !== pid)) return;
@@ -6053,12 +6320,12 @@ function attachSwipe(card, buttonCount, onSwipeRight) {
     swipeJustDragged = true;
     setTimeout(function () { swipeJustDragged = false; }, 80);
     const x = base + dx;
-    if (x > 100) {
-      base = 0;
-      setX(0, true);
-      onSwipeRight();
-    } else if (x < -openPx / 2) {
-      base = -openPx;
+    if (leadPx > 0 && x > leadPx / 2) {
+      base = leadPx;
+      setX(base, true);
+      openSwipe = { card: card, close: closeIt };
+    } else if (trailPx > 0 && x < -trailPx / 2) {
+      base = -trailPx;
       setX(base, true);
       openSwipe = { card: card, close: closeIt };
     } else {
@@ -6072,6 +6339,63 @@ function attachSwipe(card, buttonCount, onSwipeRight) {
     if (swipeJustDragged) { event.stopPropagation(); event.preventDefault(); return; }
     if (base !== 0) { event.stopPropagation(); event.preventDefault(); closeIt(); }
   }, true);
+  return { close: closeIt };
+}
+// Tapping anywhere else closes a swiped-open item.
+document.addEventListener("pointerdown", function (event) {
+  if (openSwipe && openSwipe.card.parentNode && !openSwipe.card.parentNode.contains(event.target)) openSwipe.close();
+});
+
+// The buttons for one item, by status. lead = shown by swiping right, trail = shown by swiping left.
+function swipeSides(item) {
+  const lead = [];
+  const trail = [];
+  function add(list, label, cls, fn) { list.push({ label: label, cls: cls, fn: fn }); }
+  if (item.status === "In progress") {
+    add(lead, "Mark listed", "next", function () { openListSheet(item); });
+    add(trail, "Archive", "archive", function () { askArchive(item); });
+  } else if (item.status === "Listed") {
+    add(lead, "Sold", "sold", function () { openSoldSheet(item); });
+    add(trail, "Archive", "archive", function () { askArchive(item); });
+    const locked = bumpLocked(item);
+    add(trail, locked ? "Price locked" : "Lower price", locked ? "locked" : "lower", function () { lowerPrice(item); });
+    const config = platformConfig(item.site);
+    const boost = !!config && config.bumpPercent !== null;
+    add(trail, boost ? (item.bump && item.bumpRate > 0 ? "Boosted" : "Boost") : "Bump", "bump", function () { openBumpSheet(item); });
+  } else if (item.status === "Sold") {
+    add(lead, "Mark shipped", "next", function () { markShipped(item); });
+  } else if (item.status === "Archived") {
+    add(lead, "Restore", "next", function () { restoreArchived(item); });
+  }
+  return { lead: lead, trail: trail };
+}
+// Puts the swipe buttons behind a row. Rows with nothing to show, and every row while you are selecting items, stay as they are.
+function withSwipe(card, item) {
+  if (selectMode) return card;
+  const sides = swipeSides(item);
+  if (!sides.lead.length && !sides.trail.length) return card;
+  const wrap = el("div", "swipe-wrap");
+  let api = null;
+  function side(list, cls) {
+    if (!list.length) return;
+    const bg = el("div", "swipe-bg " + cls);
+    list.forEach(function (b) {
+      const btn = el("button", "swipe-btn " + b.cls, b.label);
+      btn.type = "button";
+      btn.onclick = function (event) {
+        event.stopPropagation();
+        api.close();
+        b.fn();
+      };
+      bg.appendChild(btn);
+    });
+    wrap.appendChild(bg);
+  }
+  side(sides.lead, "swipe-lead");
+  side(sides.trail, "swipe-actions");
+  wrap.appendChild(card);
+  api = attachSwipe(card, sides.lead.length, sides.trail.length);
+  return wrap;
 }
 
 document.getElementById("archive-toggle").addEventListener("click", function () {
@@ -6261,6 +6585,7 @@ function render() {
   document.getElementById("balance").textContent = balance.toFixed(2);
   document.getElementById("balance2").textContent = balance.toFixed(2);
   document.getElementById("total2").textContent = total.toFixed(2);
+  document.getElementById("profit2").textContent = total.toFixed(2);
   paintBalancePanel();
   renderPlatformLinks();
   renderGoals(balance);
@@ -6423,6 +6748,7 @@ form.addEventListener("submit", function (event) {
     feeFlat: 0,
     bumpDays: Number(bumpDaysInput.value) === 7 ? 7 : 3,
     bumpDate: bumped && config.bumpLengths ? bumpDateInput.value : "",
+    bumpPast: editingIndex !== null && Array.isArray(items[editingIndex].bumpPast) ? items[editingIndex].bumpPast : [],
     withdrawn: editingIndex !== null ? (items[editingIndex].withdrawn || 0) : 0,
     bulkId: editingIndex !== null ? (items[editingIndex].bulkId || 0) : 0
   };
@@ -8179,7 +8505,9 @@ document.addEventListener("keydown", function (event) {
 
 // ---- Tools window and pin settings ----
 const toolsModal = document.getElementById("tools-modal");
-function openSettings() {
+function openSettings(scope) {
+  settingsScope = typeof scope === "string" ? scope : "all";
+  settingsParent = "";
   renderBulkHistory();
   renderPlatformEditor();
   renderPhotoTypeEditor();
@@ -8189,7 +8517,7 @@ function openSettings() {
   toolsModal.hidden = false;
   toolsModal.querySelector(".tools-panel").scrollTop = 0;
 }
-document.getElementById("tools-button").addEventListener("click", openSettings);
+document.getElementById("tools-button").addEventListener("click", function () { openSettings(scopeForView()); });
 document.getElementById("manage-storage-btn").addEventListener("click", function () { openSettings(); openSettingsPage("storage"); });
 document.getElementById("tools-close").addEventListener("click", function () { settingsBack(); });
 document.addEventListener("keydown", function (event) {
@@ -8295,17 +8623,10 @@ function storageHowTo() {
   return box;
 }
 function buildSettingsSwitches() {
-  const featureBox = document.getElementById("feature-switches");
-  featureBox.innerHTML = "";
-  FEATURE_KEYS.forEach(function (key) {
-    featureBox.appendChild(switchRow(FEATURE_TEXT[key][0], FEATURE_TEXT[key][1], !!features[key], function (on) {
-      features[key] = on;
-      saveSetting("features", features);
-      applyFeatures();
-      render();
-    }));
-    if (key === "storage") featureBox.appendChild(storageHowTo());
-  });
+  const binsBox = document.getElementById("bins-box");
+  const how = storageHowTo();
+  how.style.marginBottom = "10px";
+  binsBox.insertBefore(how, binsBox.querySelector(".filters-panel"));
   const cardBox = document.getElementById("card-switches");
   cardBox.innerHTML = "";
   CARD_KEYS.forEach(function (key) {
@@ -8697,7 +9018,7 @@ function buildStockRow(item, index) {
   });
   card.appendChild(row);
   if (expanded) card.appendChild(buildItemDetail(item, index, done, profit, ship, shipAlerting));
-  return card;
+  return withSwipe(card, item);
 }
 // What opens under a row: every detail, and the buttons.
 function buildItemDetail(item, index, done, profit, ship, shipAlerting) {
@@ -8737,11 +9058,11 @@ function buildItemDetail(item, index, done, profit, ship, shipAlerting) {
     if (d !== null) {
       const due = reminderDueDate(item);
       if (isDue(item)) {
-        box.appendChild(elWithIcon("div", "due", "clock", (bumpRuleApplies(item) ? "Bump finished. Reduce price? (" : "Reduce price (") + dayWord(d) + ")"));
+        box.appendChild(elWithIcon("div", "due", "clock", (bumpRuleApplies(item) ? (todayText() === bumpEndDay(item) ? "Last day of the bump. Reduce price? (" : "Bump finished. Reduce price? (") : "Reduce price (") + dayWord(d) + ")"));
       } else {
         box.appendChild(el("div", "small", dayWord(d) + " at this price"));
         if (item.noReduce) box.appendChild(el("div", "small", "No price-drop reminders for this item"));
-        else if (due && bumpRuleApplies(item)) box.appendChild(el("div", "small bump-wait", "Vinted bump running. Reminder on " + prettyDay(due)));
+        else if (due && bumpRuleApplies(item)) box.appendChild(el("div", "small bump-wait", "Vinted bump running. Its last day is " + prettyDay(due) + ", when the price reminder comes back."));
       }
     }
   }
@@ -9387,7 +9708,6 @@ function renderPlanner() { renderPlanView(); }
 var settingsPage = "home";
 var SETTINGS_PAGES = {
   look: { box: "look-box", title: "Appearance" },
-  features: { box: "tools-box", title: "Features you use", sub: "Turn off what you don't need" },
   reminders: { box: "alerts-details", title: "Reminders" },
   time: { box: "plan-box", title: "Time estimates" },
   storage: { box: "bins-box", title: "Storage" },
@@ -9418,7 +9738,7 @@ function openSettingsPage(key) {
     b.hidden = k !== key;
     if (k === key && b.tagName === "DETAILS") b.open = true;
   });
-  $("tools-title").textContent = key === "home" ? "Settings" : SETTINGS_PAGES[key].title;
+  $("tools-title").textContent = key === "home" ? SCOPE_TITLES[settingsScope] : SETTINGS_PAGES[key].title;
   const sub = $("tools-sub");
   sub.hidden = key === "home" || !SETTINGS_PAGES[key].sub;
   sub.textContent = key === "home" ? "" : (SETTINGS_PAGES[key].sub || "");
@@ -9428,7 +9748,9 @@ function openSettingsPage(key) {
   toolsModal.querySelector(".tools-panel").scrollTop = 0;
 }
 function settingsBack() {
-  if (settingsPage === "home") toolsModal.hidden = true; else openSettingsPage("home");
+  if (settingsPage !== "home") { openSettingsPage("home"); return; }
+  if (settingsParent) { openSettingsScope(settingsParent, ""); return; }
+  toolsModal.hidden = true;
 }
 var CHEV = '<svg class="chev" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg>';
 // One row: a colored icon, the name, a short value on the right, and an arrow. tone: "", "shop", "help" or "data".
@@ -9450,35 +9772,93 @@ function settingsGroup(box, title, rows) {
   g.appendChild(card);
   box.appendChild(g);
 }
+// Settings by page. The gear on Home opens all settings. The gear on Money, Stock or Plan opens just that page's settings,
+// with an "All settings" row at the bottom. Every setting lives in one place, so both doors lead to the same switches.
+var settingsScope = "all";      // "all", "money", "stock" or "plan"
+var settingsParent = "";        // set when a page's settings were opened from the All settings list, so Back returns there
+var SCOPE_TITLES = { all: "Settings", money: "Money settings", stock: "Stock settings", plan: "Plan settings" };
+function scopeForView() {
+  return currentView === "money" || currentView === "stock" || currentView === "plan" ? currentView : "all";
+}
+function openSettingsScope(scope, parent) {
+  settingsScope = scope;
+  settingsParent = parent || "";
+  openSettingsPage("home");
+}
 function renderSettingsHome() {
   const box = $("settings-home");
   box.innerHTML = "";
-  const on = FEATURE_KEYS.filter(function (k) { return features[k]; }).length;
-  settingsGroup(box, "Your app", [
-    settingsRow('<circle cx="12" cy="12" r="9"/><circle cx="8.5" cy="11" r="1"/><circle cx="12" cy="7.5" r="1"/><circle cx="15.5" cy="11" r="1"/>', "Appearance", themeLabel(), function () { openSettingsPage("look"); }),
-    settingsRow('<path d="M4 7h9M17 7h3M4 17h3M11 17h9"/><circle cx="15" cy="7" r="2"/><circle cx="9" cy="17" r="2"/>', "Features you use", on + " on", function () { openSettingsPage("features"); })
-  ]);
-  const shop = [];
-  shop.push(settingsRow('<path d="M3 12V4h8l10 10-8 8z"/><circle cx="7.5" cy="8.5" r="1"/>', "Platforms and fees", (function (names) { return names.length > 2 ? names.length + " platforms" : names.join(", "); })(enabledPlatformNames()), function () { openSettingsPage("platforms"); }, "shop"));
-  shop.push(settingsRow('<rect x="3" y="5" width="18" height="14" rx="2"/><path d="M7 10h10M7 14h6"/>', "What each item shows", (function (n) { return n === 0 ? "Basics" : n + " extra"; })(CARD_KEYS.filter(function (k) { return cardFields[k]; }).length), function () { openSettingsPage("cards"); }, "shop"));
-  if (features.storage) {
+  const scope = settingsScope;
+  const ICON_LOOK = '<circle cx="12" cy="12" r="9"/><circle cx="8.5" cy="11" r="1"/><circle cx="12" cy="7.5" r="1"/><circle cx="15.5" cy="11" r="1"/>';
+  const ICON_PLATFORMS = '<path d="M3 12V4h8l10 10-8 8z"/><circle cx="7.5" cy="8.5" r="1"/>';
+  const ICON_CARDS = '<rect x="3" y="5" width="18" height="14" rx="2"/><path d="M7 10h10M7 14h6"/>';
+  const ICON_STORAGE = '<path d="M3 8l9-5 9 5v9l-9 5-9-5z"/><path d="M3 8l9 5 9-5M12 13v9"/>';
+  const ICON_ARCHIVE = '<rect x="3" y="4" width="18" height="5" rx="1"/><path d="M5 9v10h14V9M10 13h4"/>';
+  const ICON_BELL = '<path d="M6 16v-5a6 6 0 0 1 12 0v5l1.5 2h-15z"/><path d="M10 21a2 2 0 0 0 4 0"/>';
+  const ICON_CLOCK = '<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>';
+  const platformsRow = function () {
+    return settingsRow(ICON_PLATFORMS, "Platforms and fees", (function (names) { return names.length > 2 ? names.length + " platforms" : names.join(", "); })(enabledPlatformNames()), function () { openSettingsPage("platforms"); }, "shop");
+  };
+  const cardsRow = function () {
+    return settingsRow(ICON_CARDS, "What each item shows", (function (n) { return n === 0 ? "Basics" : n + " extra"; })(CARD_KEYS.filter(function (k) { return cardFields[k]; }).length), function () { openSettingsPage("cards"); }, "shop");
+  };
+  const storageRow = function () {
     const slots = bins.reduce(function (sum, b) { return sum + (Number(b.slots) || 0); }, 0);
-    shop.push(settingsRow('<path d="M3 8l9-5 9 5v9l-9 5-9-5z"/><path d="M3 8l9 5 9-5M12 13v9"/>', "Storage bins and slots", slots + (slots === 1 ? " slot" : " slots"), function () { openSettingsPage("storage"); }, "shop"));
+    return settingsRow(ICON_STORAGE, "Storage bins and slots", slots + (slots === 1 ? " slot" : " slots"), function () { openSettingsPage("storage"); }, "shop");
+  };
+  const archiveRow = function () {
+    const archived = items.filter(function (it) { return it.status === "Archived"; }).length;
+    return settingsRow(ICON_ARCHIVE, "Archive", archived === 0 ? "Nothing yet" : archived + (archived === 1 ? " item" : " items"), function () {
+      toolsModal.hidden = true;
+      showView("stock");
+      showStockPane("items");
+      stockTab = "archive";
+      render();
+    }, "shop");
+  };
+  const remindersRow = function () {
+    const alertsOn = (remindersOn ? 1 : 0) + (shipAlertsOn ? 1 : 0);
+    return settingsRow(ICON_BELL, "Reminders", alertsOn === 0 ? "All off" : alertsOn + (alertsOn === 1 ? " alert on" : " alerts on"), function () { openSettingsPage("reminders"); }, "help");
+  };
+  const timeRow = function () {
+    return settingsRow(ICON_CLOCK, "Time estimates", "Per step", function () { openSettingsPage("time"); }, "help");
+  };
+  const allRow = function () {
+    return settingsRow('<path d="M4 7h9M17 7h3M4 17h3M11 17h9"/><circle cx="15" cy="7" r="2"/><circle cx="9" cy="17" r="2"/>', "All settings", "", function () { openSettingsScope("all", ""); });
+  };
+
+  if (scope === "money") {
+    settingsGroup(box, "Your shop", [platformsRow()]);
+    settingsGroup(box, "More", [allRow()]);
+    return;
   }
-  const archived = items.filter(function (it) { return it.status === "Archived"; }).length;
-  shop.push(settingsRow('<rect x="3" y="4" width="18" height="5" rx="1"/><path d="M5 9v10h14V9M10 13h4"/>', "Archive", archived === 0 ? "Nothing yet" : archived + (archived === 1 ? " item" : " items"), function () {
-    toolsModal.hidden = true;
-    showView("stock");
-    showStockPane("items");
-    stockTab = "archive";
-    render();
-  }, "shop"));
-  settingsGroup(box, "Your shop", shop);
-  const alertsOn = (remindersOn ? 1 : 0) + (shipAlertsOn ? 1 : 0);
-  settingsGroup(box, "Plan and alerts", [
-    settingsRow('<path d="M6 16v-5a6 6 0 0 1 12 0v5l1.5 2h-15z"/><path d="M10 21a2 2 0 0 0 4 0"/>', "Reminders", alertsOn === 0 ? "All off" : alertsOn + (alertsOn === 1 ? " alert on" : " alerts on"), function () { openSettingsPage("reminders"); }, "help"),
-    settingsRow('<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>', "Time estimates", "Per step", function () { openSettingsPage("time"); }, "help")
+  if (scope === "stock") {
+    const shop = [cardsRow()];
+    if (features.storage) shop.push(storageRow());
+    shop.push(archiveRow());
+    settingsGroup(box, "Your items", shop);
+    settingsGroup(box, "Alerts", [remindersRow()]);
+    settingsGroup(box, "More", [allRow()]);
+    return;
+  }
+  if (scope === "plan") {
+    settingsGroup(box, "Your week", [timeRow()]);
+    settingsGroup(box, "More", [allRow()]);
+    return;
+  }
+  settingsGroup(box, "Your app", [
+    settingsRow(ICON_LOOK, "Appearance", themeLabel(), function () { openSettingsPage("look"); })
   ]);
+  settingsGroup(box, "Pages", [
+    settingsRow('<path d="M4 20V10M10 20V4M16 20v-8M22 20H2"/>', "Money", "Platforms and fees", function () { openSettingsScope("money", "all"); }),
+    settingsRow('<path d="M21 8 12 3 3 8v8l9 5 9-5V8z"/><path d="M3 8l9 5 9-5M12 13v8"/>', "Stock", "Items, storage, alerts", function () { openSettingsScope("stock", "all"); }),
+    settingsRow('<rect x="4" y="5" width="16" height="15" rx="2"/><path d="M4 10h16M8 3v4M16 3v4"/>', "Plan", "Time estimates", function () { openSettingsScope("plan", "all"); })
+  ]);
+  const shop = [platformsRow(), cardsRow()];
+  if (features.storage) shop.push(storageRow());
+  shop.push(archiveRow());
+  settingsGroup(box, "Your shop", shop);
+  settingsGroup(box, "Plan and alerts", [remindersRow(), timeRow()]);
   let last = "";
   try { last = localStorage.getItem("lastBackup") || ""; } catch (e) {}
   const age = backupAge(last, todayText());
