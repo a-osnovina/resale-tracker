@@ -912,6 +912,14 @@ progress::-moz-progress-bar { background: var(--primary); border-radius: 5px; }
 .srow-card { background: var(--surface); border: 1px solid var(--line-soft); border-radius: 14px; overflow: hidden; }
 .srow-card.row-overdue { border-color: #f0b8b0; border-left: 5px solid #d92d20; }
 .srow-card.row-shipped { opacity: 0.8; }
+.select-row { display: flex; align-items: center; gap: 10px; margin: 10px 0 0; }
+.srow-card.picked { border-color: var(--primary); box-shadow: 0 0 0 2px var(--primary); }
+.pick-box { flex: none; width: 28px; height: 28px; border-radius: 8px; border: 2px solid var(--muted); display: flex; align-items: center; justify-content: center; color: #ffffff; font-weight: 800; font-size: 18px; }
+.srow-card.picked .pick-box { background: var(--primary); border-color: var(--primary); }
+#select-bar { position: fixed; left: 12px; right: 12px; bottom: calc(80px + env(safe-area-inset-bottom)); z-index: 70; max-width: 560px; margin: 0 auto; display: flex; align-items: center; gap: 10px; background: var(--surface); border: 1px solid var(--line-soft); padding: 8px 8px 8px 14px; border-radius: 12px; box-shadow: 0 4px 14px rgba(0,0,0,.25); }
+#select-bar[hidden] { display: none; }
+#select-bar span { flex: 1; font-weight: 700; }
+#select-bar button { min-height: 44px; padding: 0 16px; font-weight: 800; }
 .srow { display: flex; align-items: center; gap: 12px; min-height: 72px; padding: 10px 12px; cursor: pointer; }
 .sthumb { flex: none; width: 52px; height: 52px; border-radius: 10px; object-fit: cover; object-position: top; background: var(--thumb-bg); display: flex; align-items: center; justify-content: center; color: var(--muted); }
 .sthumb .ico { width: 20px; height: 20px; }
@@ -1258,6 +1266,7 @@ progress::-moz-progress-bar { background: var(--primary); border-radius: 5px; }
   </div>
     </div>
   </details>
+  <div class="select-row"><button type="button" id="select-btn" class="small-btn">Select items</button><span class="small" id="select-hint" hidden>Tap the Listed items you sold.</span></div>
   <div class="seg tabs3" id="stock-tabs"></div>
   <div id="list"></div>
   <div id="list-count" class="small count-right"></div>
@@ -2820,6 +2829,7 @@ function restoreState(snap) {
     try { localStorage.setItem(t[2], JSON.stringify(t[0])); } catch (e) {}
   });
   openCards.clear(); openMenus.clear(); expandedSold.clear();
+  selectMode = false; selected.clear();
   editingGoal = null; openGoal = null;
   save();
   buildBalanceBlocks();
@@ -4797,6 +4807,114 @@ function openSoldSheet(item) {
   scanModal.hidden = false;
 }
 
+// Several Listed items sold at once. "One buyer" applies the bundle discount and splits one postage label;
+// "Separate sales" keeps each item's own price and postage.
+function openMultiSoldSheet(list) {
+  if (!list.length) return;
+  let together = list.length > 1;
+  scanBody.innerHTML = "";
+  scanBody.appendChild(el("h3", "", "Sold: " + list.length + (list.length === 1 ? " item" : " items")));
+  const seg = el("div", "seg");
+  const bundleBtn = el("button", "", "One buyer (bundle)");
+  const sepBtn = el("button", "", "Separate sales");
+  bundleBtn.type = sepBtn.type = "button";
+  seg.appendChild(bundleBtn);
+  seg.appendChild(sepBtn);
+  scanBody.appendChild(seg);
+  const pct = numberBox("Bundle discount (%)", 20);
+  pct.input.step = "1";
+  pct.input.max = "100";
+  scanBody.appendChild(pct.label);
+  const rows = list.map(function (item) {
+    const price = numberBox(item.name + ": sold for ($)", item.current);
+    scanBody.appendChild(price.label);
+    return price;
+  });
+  const total = numberBox("Postage label total ($, optional)", "");
+  scanBody.appendChild(total.label);
+  const posts = list.map(function (item) {
+    const box = numberBox(item.name + ": postage label ($, optional)", item.shipCost > 0 ? item.shipCost : "");
+    scanBody.appendChild(box.label);
+    return box;
+  });
+  const note = el("p", "small", "");
+  scanBody.appendChild(note);
+  const dateLabel = el("label", "field", "Date sold");
+  const dateBox = document.createElement("input");
+  dateBox.type = "date";
+  const latestPosted = list.reduce(function (a, it) { return it.posted && it.posted > a ? it.posted : a; }, "");
+  dateBox.value = soldDateFor(latestPosted);
+  dateLabel.appendChild(dateBox);
+  scanBody.appendChild(dateLabel);
+  function discounted() {
+    const p = Number(pct.input.value);
+    return together && p > 0 && p <= 100 ? p : 0;
+  }
+  function refill() {
+    const p = discounted();
+    rows.forEach(function (box, i) { box.input.value = p > 0 ? bundlePrice(list[i].current, p) : list[i].current; });
+    paint();
+  }
+  function paint() {
+    bundleBtn.classList.toggle("on", together);
+    sepBtn.classList.toggle("on", !together);
+    pct.label.style.display = together ? "" : "none";
+    total.label.style.display = together ? "" : "none";
+    posts.forEach(function (box) { box.label.style.display = together ? "none" : ""; });
+    let sum = 0;
+    rows.forEach(function (box) { sum += Number(box.input.value) || 0; });
+    note.textContent = "Together they sell for " + money(sum) + ".";
+  }
+  rows.forEach(function (box) { box.input.addEventListener("input", paint); });
+  pct.input.addEventListener("input", refill);
+  bundleBtn.onclick = function () { together = true; refill(); };
+  sepBtn.onclick = function () { together = false; refill(); };
+  refill();
+  scanBody.appendChild(modalButton("Mark all as sold", "primary", function () {
+    const prices = [];
+    for (let i = 0; i < rows.length; i++) {
+      const v = readPrice(rows[i]);
+      if (v === undefined) return;
+      prices.push(v === null ? list[i].current : v);
+    }
+    let labels = [];
+    if (together) {
+      const t = readPrice(total);
+      if (t === undefined) return;
+      labels = bulkCosts(list.length, t || 0);
+    } else {
+      for (let i = 0; i < posts.length; i++) {
+        const v = readPrice(posts[i]);
+        if (v === undefined) return;
+        labels.push(v || 0);
+      }
+    }
+    const date = dateBox.value || todayText();
+    for (let i = 0; i < list.length; i++) {
+      if (list[i].posted && date < list[i].posted) {
+        alert("The sold date can't be earlier than the posted date of " + list[i].name + ".");
+        return;
+      }
+    }
+    const snap = captureState();
+    list.forEach(function (item, i) {
+      applySaleFees(item);
+      item.shipCost = labels[i];
+      item.status = "Sold";
+      item.sold = date;
+      item.soldFor = prices[i];
+    });
+    selectMode = false;
+    selected.clear();
+    save();
+    render();
+    closeScanModal();
+    showUndo(list.length + (list.length === 1 ? " item" : " items") + " marked as sold.", snap);
+  }));
+  scanBody.appendChild(modalButton("Cancel", "", closeScanModal));
+  scanModal.hidden = false;
+}
+
 function nextStep(item) {
   if (item.status === "In progress") openListSheet(item);
   else if (item.status === "Listed") openSoldSheet(item);
@@ -6054,11 +6172,13 @@ function render() {
       return;
     }
     if (searchText === "" && (stockTab === "all" ? tabKey === "archive" : tabKey !== stockTab)) return;
+    if (selectMode && item.status !== "Listed") return;
     shown++;
     list.appendChild(buildStockRow(item, index));
   });
 
   paintStockTabs(tabCounts);
+  paintSelectBar();
 
   if (items.length === 0) {
     list.appendChild(el("div", "empty-state", "No items yet. Tap the + button to start. A quick name needs at least 2 words, like \"Nike hoodie\"."));
@@ -8413,6 +8533,7 @@ function showView(name) {
     }
   });
   document.body.setAttribute("data-view", name);
+  if (name !== "stock" && selectMode) { selectMode = false; selected.clear(); render(); }
   $("view-title").textContent = VIEW_TITLES[name];
   updateEyebrow();
   if (name !== "money" && !salesModal.hidden) closeSales();
@@ -8430,6 +8551,34 @@ function showStockPane(which) {
 }
 
 // ---- Stock: Listed / In progress / Sold tabs and the item rows ----
+var selectMode = false;            // true while you are ticking items to mark as sold together
+var selected = new Set();          // the items ticked so far
+function setSelectMode(on) {
+  selectMode = on;
+  selected.clear();
+  if (on) { stockTab = "listed"; openCards.clear(); openMenus.clear(); }
+  render();
+}
+function paintSelectBar() {
+  let bar = document.getElementById("select-bar");
+  const show = selectMode && currentView === "stock";
+  $("select-btn").textContent = selectMode ? "Cancel" : "Select items";
+  $("select-hint").hidden = !selectMode;
+  if (!bar) {
+    bar = el("div", "");
+    bar.id = "select-bar";
+    document.body.appendChild(bar);
+  }
+  bar.hidden = !show;
+  bar.innerHTML = "";
+  if (!show) return;
+  bar.appendChild(el("span", "", selected.size === 0 ? "Nothing selected" : selected.size + (selected.size === 1 ? " item selected" : " items selected")));
+  const go = el("button", "primary", "Mark as sold");
+  go.type = "button";
+  go.disabled = selected.size === 0;
+  go.onclick = function () { openMultiSoldSheet(items.filter(function (it) { return selected.has(it); })); };
+  bar.appendChild(go);
+}
 var stockTab = "all";   // "all" shows every active item; tapping a tab filters, tapping it again clears the filter
 var STOCK_TABS = [["listed", "Listed"], ["progress", "In progress"], ["sold", "Sold"]];
 function stockTabOf(item) {
@@ -8483,13 +8632,19 @@ function buildStockRow(item, index) {
   const ship = shipInfo(item);
   const shipAlerting = !!(ship && ship.late && !shipDismissed[shipKey(item)]);
   const expanded = openCards.has(item);
-  const card = el("div", "srow-card" + (item.status === "Shipped" || item.status === "Archived" ? " row-shipped" : "") + (shipAlerting ? " row-overdue" : "") + (expanded ? " open" : " closed"));
+  const picked = selectMode && selected.has(item);
+  const card = el("div", "srow-card" + (picked ? " picked" : "") + (item.status === "Shipped" || item.status === "Archived" ? " row-shipped" : "") + (shipAlerting ? " row-overdue" : "") + (expanded ? " open" : " closed"));
   card.dataset.idx = String(index);
 
   const row = el("div", "srow");
   row.setAttribute("role", "button");
   row.tabIndex = 0;
   row.setAttribute("aria-expanded", expanded ? "true" : "false");
+  if (selectMode) {
+    const box = el("div", "pick-box", picked ? "\u2713" : "");
+    box.setAttribute("aria-hidden", "true");
+    row.appendChild(box);
+  }
   if (item.picture) {
     const pic = el("img", "sthumb");
     pic.src = item.picture;
@@ -8528,6 +8683,11 @@ function buildStockRow(item, index) {
     row.appendChild(chip);
   }
   function toggle() {
+    if (selectMode) {
+      if (selected.has(item)) selected.delete(item); else selected.add(item);
+      render();
+      return;
+    }
     if (openCards.has(item)) openCards.delete(item); else openCards.add(item);
     render();
   }
@@ -9389,6 +9549,7 @@ document.querySelectorAll(".bar-tab").forEach(function (button) {
   button.addEventListener("click", function () { showView(button.getAttribute("data-view")); });
 });
 $("tab-add").addEventListener("click", function () { addItemButton.click(); });
+$("select-btn").addEventListener("click", function () { setSelectMode(!selectMode); });
 $("seg-stock-items").addEventListener("click", function () { showStockPane("items"); });
 $("seg-stock-storage").addEventListener("click", function () { showStockPane("storage"); });
 $("top-bell").addEventListener("click", openNotifSheet);
