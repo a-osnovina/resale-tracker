@@ -509,6 +509,96 @@
     return out;
   }
 
+  // ---- Plan: shipping days and money goal ----
+  // Weekdays are numbered 0 = Monday ... 6 = Sunday.
+  // How many business days (Mon to Fri) a parcel waits if it sells on each weekday, after you have shipped that day.
+  // It leaves on the next shipping day. Returns 7 numbers, or null when no shipping days are chosen.
+  function shipWaits(shipDays) {
+    const days = (shipDays || []).filter(function (d) { return d >= 0 && d <= 6; });
+    if (!days.length) return null;
+    const out = [];
+    for (let w = 0; w < 7; w++) {
+      let wait = 0;
+      for (let step = 1; step <= 7; step++) {
+        const d = (w + step) % 7;
+        if (d < 5) wait++;
+        if (days.indexOf(d) !== -1) break;
+      }
+      out.push(wait);
+    }
+    return out;
+  }
+
+  // Which sale days would be late, and which single extra day (Mon to Fri) would fix them.
+  function shipCoverage(shipDays, limit) {
+    const waits = shipWaits(shipDays);
+    if (!waits) return { waits: null, late: [], fixes: [] };
+    const max = Math.max(1, Math.round(Number(limit)) || 2);
+    function lateOf(list) { const w = shipWaits(list); const r = []; w.forEach(function (n, i) { if (n > max) r.push(i); }); return r; }
+    const late = lateOf(shipDays);
+    const fixes = [];
+    if (late.length) {
+      for (let d = 0; d < 5; d++) {
+        if (shipDays.indexOf(d) !== -1) continue;
+        if (lateOf(shipDays.concat([d])).length === 0) fixes.push(d);
+      }
+    }
+    return { waits: waits, late: late, fixes: fixes };
+  }
+
+  // What you sell like, from your sold items in the last `days` days (default 90).
+  // sellRate = the share of items that ended up sold, daysToSell = the typical days from posting to selling.
+  function salesStats(items, todayText, days, listedNow) {
+    const span = days || 90;
+    const sold = items.filter(function (it) {
+      return isDone(it) && it.sold && dayDiff(it.sold, todayText) >= 0 && dayDiff(it.sold, todayText) <= span;
+    });
+    const prices = sold.map(function (it) { return Number(salePrice(it)) || 0; }).filter(function (p) { return p > 0; });
+    const avg = prices.length ? prices.reduce(function (a, b) { return a + b; }, 0) / prices.length : 0;
+    const waits = sold.filter(function (it) { return it.posted; }).map(function (it) { return Math.max(0, dayDiff(it.posted, it.sold)); }).sort(function (a, b) { return a - b; });
+    const mid = waits.length ? (waits.length % 2 ? waits[(waits.length - 1) / 2] : (waits[waits.length / 2 - 1] + waits[waits.length / 2]) / 2) : 21;
+    const listed = Math.max(0, Number(listedNow) || 0);
+    const rate = sold.length + listed > 0 && sold.length >= 3 ? Math.min(1, Math.max(0.1, sold.length / (sold.length + listed))) : 1 / 3;
+    return { count: sold.length, avgPrice: Math.round(avg * 100) / 100, daysToSell: Math.max(1, Math.round(mid)), sellRate: rate, enough: sold.length >= 3 };
+  }
+
+  // How much sold since the goal started (sales, in dollars).
+  function earnedSince(items, startText, todayText) {
+    let cents = 0;
+    items.forEach(function (it) {
+      if (isDone(it) && it.sold && it.sold >= startText && it.sold <= todayText) cents += toCents(salePrice(it));
+    });
+    return fromCents(cents);
+  }
+
+  // The goal estimate: how many sales, how many items to list, and by when.
+  function goalPlan(o) {
+    const goal = Number(o.goal) || 0;
+    const remaining = Math.max(0, goal - (Number(o.earned) || 0));
+    const avg = Number(o.avgPrice) > 0 ? Number(o.avgPrice) : 0;
+    const rate = Number(o.sellRate) > 0 ? Number(o.sellRate) : 1 / 3;
+    const salesNeeded = avg > 0 ? Math.ceil(remaining / avg - 1e-9) : 0;
+    const expected = Math.floor((Number(o.listedNow) || 0) * rate + 1e-9);
+    const stillToSell = Math.max(0, salesNeeded - expected);
+    const listingsNeeded = Math.ceil(stillToSell / rate - 1e-9);
+    const listBy = addDays(o.by, -Math.max(0, Math.round(Number(o.daysToSell) || 0)));
+    const daysLeft = dayDiff(o.today, listBy);
+    const weeksLeft = daysLeft > 0 ? Math.max(1, Math.ceil(daysLeft / 7)) : 0;
+    const perWeek = listingsNeeded === 0 ? 0 : weeksLeft > 0 ? Math.ceil(listingsNeeded / weeksLeft) : listingsNeeded;
+    const mins = Number(o.minutesPerItem) > 0 ? Number(o.minutesPerItem) : 0;
+    return {
+      remaining: remaining, salesNeeded: salesNeeded, expected: expected, listingsNeeded: listingsNeeded,
+      listBy: listBy, daysLeft: daysLeft, weeksLeft: weeksLeft, perWeek: perWeek,
+      hours: Math.round(listingsNeeded * mins / 6) / 10, tooLate: listingsNeeded > 0 && weeksLeft === 0,
+      done: remaining === 0
+    };
+  }
+
+  // "What if my items sold for this much": sales needed at each price.
+  function priceOptions(remaining, prices) {
+    return prices.filter(function (p) { return p > 0; }).map(function (p) { return { price: p, sales: Math.ceil(remaining / p - 1e-9) }; });
+  }
+
   return {
     feeText: feeText, bumpText: bumpText, feeExample: feeExample,
     toCents: toCents, money: money, salePrice: salePrice, isDone: isDone, feeTotal: feeTotal,
@@ -523,6 +613,7 @@
     monthOf: monthOf, monthLabel: monthLabel, periodStart: periodStart, isDueOn: isDueOn, periodLabel: periodLabel, repeatText: repeatText,
     resetInvestment: resetInvestment, rolloverInvestments: rolloverInvestments,
     prevMonth: prevMonth, nextMonth: nextMonth, daysIn: daysIn, soldInMonth: soldInMonth,
-    profitTable: profitTable, cumulativeProfit: cumulativeProfit
+    profitTable: profitTable, cumulativeProfit: cumulativeProfit,
+    shipWaits: shipWaits, shipCoverage: shipCoverage, salesStats: salesStats, earnedSince: earnedSince, goalPlan: goalPlan, priceOptions: priceOptions
   };
 });

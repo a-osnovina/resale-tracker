@@ -1170,6 +1170,53 @@ progress::-moz-progress-bar { background: var(--primary); border-radius: 5px; }
 #plan-more .planner-sec { margin-top: 8px; background: var(--surface); border: 1px solid var(--line-soft); border-radius: 14px; }
 #plan-more .planner-sec > summary { min-height: 48px; display: flex; align-items: center; padding: 0 14px; font-weight: 800; color: var(--accent-text); }
 .clear-done { margin-top: 10px; }
+.pl-alert { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-top: 12px; padding: 8px 8px 8px 14px; border-radius: 12px; background: #fff3cc; color: #3d2e00; font-weight: 700; font-size: 14px; }
+.pl-alert button { min-height: 40px; padding: 0 14px; border: 0; border-radius: 10px; background: #14181f; color: #ffffff; font-size: 14px; font-weight: 800; }
+.pl-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 8px; }
+.pl-grid.three { grid-template-columns: repeat(3, minmax(0, 1fr)); margin-top: 10px; }
+.pl-tile { display: flex; flex-direction: column; align-items: flex-start; gap: 2px; min-height: 84px; padding: 12px 14px; border: 1px solid var(--line-soft); border-radius: 14px; background: var(--surface); color: var(--text); text-align: left; }
+.pl-tile.static { align-items: center; text-align: center; justify-content: center; min-height: 76px; }
+.pl-tile.ship { background: #fff3cc; color: #3d2e00; border-color: #e3c56a; }
+.pl-n { font-size: 28px; font-weight: 800; line-height: 1.1; font-variant-numeric: tabular-nums; }
+.pl-l { font-size: 15px; font-weight: 700; }
+.pl-s { font-size: 12px; color: var(--muted); font-weight: 600; }
+.pl-tile.ship .pl-s { color: #5b4300; }
+.pl-card { margin-top: 10px; padding: 14px 16px; border: 1px solid var(--line-soft); border-radius: 14px; background: var(--surface); display: flex; flex-direction: column; gap: 6px; }
+.pl-card.warn { background: #fff3cc; color: #3d2e00; border-color: #e3c56a; }
+.pl-card.warn .small { color: #5b4300; }
+.pl-big { font-size: 24px; font-weight: 800; }
+.pl-warn { color: var(--danger); font-weight: 700; }
+.pl-ok { margin-top: 10px; padding: 12px 14px; border-radius: 12px; background: var(--sold-bg); font-weight: 700; font-size: 14px; }
+.pl-form { display: flex; flex-direction: column; gap: 8px; }
+.pl-opts { display: flex; gap: 8px; flex-wrap: wrap; }
+.pl-opts button { flex: 1; min-width: 90px; min-height: 52px; padding: 6px 10px; border: 1px solid var(--line-soft); border-radius: 12px; background: var(--surface-2); color: var(--text); display: flex; flex-direction: column; align-items: center; justify-content: center; font-size: 14px; }
+.pl-opts button.on { background: var(--primary); color: #ffffff; border-color: var(--primary); }
+.pl-card.warn .pl-opts button { background: #14181f; color: #ffffff; border: 0; font-weight: 800; }
+#plan-days-page { position: fixed; inset: 0; z-index: 70; background: var(--summary-bg); display: flex; flex-direction: column; overflow-y: auto; }
+#plan-days-page[hidden] { display: none; }
+.pd-bar { position: sticky; top: 0; z-index: 2; display: grid; grid-template-columns: 90px 1fr 90px; align-items: center; padding: calc(8px + env(safe-area-inset-top)) 8px 8px; background: var(--surface); border-bottom: 1px solid var(--line-soft); }
+.pd-bar h3 { margin: 0; font-size: 17px; text-align: center; }
+.pd-link { min-height: 44px; border: 0; background: none; color: var(--accent-text); font-size: 16px; font-weight: 600; }
+.pd-link.strong { font-weight: 800; text-align: right; }
+.pd-body { width: 100%; max-width: 760px; margin: 0 auto; padding: 4px 16px 40px; box-sizing: border-box; }
+.pd-days { display: flex; justify-content: space-between; }
+.pd-day { width: 44px; height: 44px; padding: 0; border: 0; background: none; display: flex; align-items: center; justify-content: center; }
+.pd-c { width: 34px; height: 34px; border-radius: 17px; background: var(--surface-2); color: var(--muted); display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 800; }
+.pd-day.on .pd-c { background: #3b4350; color: #ffffff; }
+.pd-waits { display: flex; justify-content: space-between; margin-top: 6px; }
+.pd-waits > div { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 6px; }
+.pd-wd { font-size: 12px; font-weight: 700; color: var(--muted); }
+.pd-w { width: 40px; height: 44px; border-radius: 10px; background: var(--surface-2); display: flex; align-items: center; justify-content: center; font-size: 18px; font-weight: 800; box-sizing: border-box; }
+.pd-w.late { background: #fff3cc; color: #5b4300; border: 2px solid #7a5a00; }
+.pd-lt { height: 14px; font-size: 12px; font-weight: 800; color: #7a5a00; line-height: 14px; }
+.pd-line { display: flex; align-items: center; justify-content: space-between; gap: 12px; min-height: 60px; font-weight: 700; font-size: 15px; }
+.pd-line + .pd-line { border-top: 1px solid var(--line-soft); }
+.pd-line .small { font-weight: 600; margin-top: 2px; }
+.pd-step { display: flex; align-items: center; gap: 4px; flex: none; }
+.pd-step button { width: 44px; height: 44px; border: 0; border-radius: 22px; background: var(--surface-2); color: var(--text); font-size: 22px; font-weight: 800; padding: 0; }
+.pd-step b { min-width: 56px; text-align: center; font-size: 17px; }
+.pd-job { font-size: 14px; font-weight: 700; margin-top: 6px; }
+
 
 #backup-section .export-row2 .dl { width: 22px; height: 22px; flex: none; fill: none; stroke: var(--accent-text, #0b5cad); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
 /* ---- Settings (full screen: grey page, white title bar, grouped cards, Done button) ---- */
@@ -2225,6 +2272,7 @@ let remindersOn = true;   // the lower-price reminders switch
 let lowerPercents = [10, 15];   // the percent-off buttons in the Lower price pop-up
 let bulks = [];      // one record per bulk upload: { id, date, name, count, totalCost }
 let plan = JSON.parse(JSON.stringify(DEFAULT_PLAN));   // planner time estimates and the weekly plan
+let planPrefs = null; // Plan tab choices: shipping days, limit, repeating jobs, money goal
 let timeLog = [];    // time you logged: { id, date, step, minutes, items }
 let todos = [];      // your own to-dos: { id, text, day (-1 = any, 0 = Monday ... 6 = Sunday), done }
 let showShipped = false;   // shipped items are hidden from the list unless you ask
@@ -2421,6 +2469,7 @@ try { bulks = cleanBulks(JSON.parse(localStorage.getItem("bulks"))); } catch (e)
 try { plan = cleanPlan(JSON.parse(localStorage.getItem("planSettings"))); } catch (e) { plan = cleanPlan(null); }
 try { timeLog = cleanTimeLog(JSON.parse(localStorage.getItem("timeLog"))); } catch (e) { timeLog = []; }
 try { todos = cleanTodos(JSON.parse(localStorage.getItem("todos"))); } catch (e) { todos = []; }
+try { planPrefs = cleanPlanPrefs(JSON.parse(localStorage.getItem("planPrefs"))); } catch (e) { planPrefs = cleanPlanPrefs(null); }
 try {
   const rawPercents = localStorage.getItem("lowerPercents");
   if (rawPercents !== null) lowerPercents = cleanPercents(JSON.parse(rawPercents));
@@ -2635,6 +2684,27 @@ const bumpVintedRow = document.getElementById("bump-vinted-row");
 const bumpDaysInput = document.getElementById("bump-days");
 const bumpDateInput = document.getElementById("bump-date");
 
+function cleanPlanPrefs(raw) {
+  const o = raw && typeof raw === "object" ? raw : {};
+  const days = function (a) { return Array.isArray(a) ? a.filter(function (d, i) { return Number.isInteger(d) && d >= 0 && d <= 6 && a.indexOf(d) === i; }).sort() : []; };
+  const jd = o.jobDays && typeof o.jobDays === "object" ? o.jobDays : {};
+  const dateOk = function (v) { return /^\d{4}-\d{2}-\d{2}$/.test(String(v)); };
+  let goal = null;
+  if (o.goal && Number(o.goal.amount) > 0 && dateOk(o.goal.by)) goal = { amount: Number(o.goal.amount), by: o.goal.by, start: dateOk(o.goal.start) ? o.goal.start : todayText() };
+  const doneJobs = {};
+  if (o.doneJobs && typeof o.doneJobs === "object") Object.keys(o.doneJobs).forEach(function (k) { if (o.doneJobs[k] === true && dateOk(k.slice(0, 10)) && k.slice(0, 10) >= addDays(todayText(), -14)) doneJobs[k] = true; });
+  return {
+    tab: o.tab === "calendar" || o.tab === "goal" ? o.tab : "overview",
+    calMode: o.calMode === "month" ? "month" : "week",
+    shipDays: days(o.shipDays),
+    limit: Math.min(5, Math.max(1, Math.round(Number(o.limit)) || 2)),
+    dueTask: o.dueTask !== false,
+    jobDays: { photos: days(jd.photos), research: days(jd.research), upload: days(jd.upload) },
+    goal: goal,
+    doneJobs: doneJobs
+  };
+}
+
 function save() {
   try {
     localStorage.setItem("items", JSON.stringify(items));
@@ -2654,6 +2724,7 @@ function save() {
     localStorage.setItem("planSettings", JSON.stringify(plan));
     localStorage.setItem("timeLog", JSON.stringify(timeLog));
     localStorage.setItem("todos", JSON.stringify(todos));
+    localStorage.setItem("planPrefs", JSON.stringify(planPrefs));
     localStorage.setItem("lowerPercents", JSON.stringify(lowerPercents));
   } catch (e) {
     alert("Your browser is full, so the latest change could not be saved. Export a CSV and remove some pictures or old items.");
@@ -7288,6 +7359,7 @@ function backupData() {
     plan: plan,
     timeLog: timeLog,
     todos: todos,
+    planPrefs: planPrefs,
     lowerPercents: lowerPercents,
     remindersOn: remindersOn
   });
@@ -7366,6 +7438,7 @@ function restoreFromText(text, skipAsk) {
     if (data.plan) plan = cleanPlan(data.plan);
     if (Array.isArray(data.timeLog)) timeLog = cleanTimeLog(data.timeLog);
     if (Array.isArray(data.todos)) todos = cleanTodos(data.todos);
+    if (data.planPrefs) planPrefs = cleanPlanPrefs(data.planPrefs);
     if (Array.isArray(data.lowerPercents)) lowerPercents = cleanPercents(data.lowerPercents);
     if (typeof data.appTitle === "string" && data.appTitle.trim() !== "") {
       appTitle = data.appTitle.trim().slice(0, 30);
@@ -9448,7 +9521,7 @@ document.getElementById("example-backup").addEventListener("click", function () 
 
 // Everything this app keeps in your browser. Only these are removed when you start from zero.
 const APP_STORAGE_KEYS = ["items", "goals", "balances", "bins", "freed", "filter", "statusFilter", "remindDays", "withdrawals",
-  "shipAlerts", "showShipped", "remindersOn", "platforms", "bulks", "planSettings", "timeLog", "todos", "lowerPercents",
+  "shipAlerts", "showShipped", "remindersOn", "platforms", "bulks", "planSettings", "planPrefs", "timeLog", "todos", "lowerPercents",
   "shipPulse", "theme", "dueDismissed", "shipDismissed", "qrUsed", "shipIntro", "lastBackup", "backupSnooze", "pinChoice",
   "pinGoals", "summaryCollapsed", "planTimer", "appTitle", "photoTypes", "features", "cardFields", "swipeOn"];
 function wipeEverything() {
@@ -10086,6 +10159,8 @@ function todoRowEl(r) {
     box.setAttribute("aria-label", "Done: " + r.title);
     box.addEventListener("change", function () {
       if (r.kind === "todo") { r.todo.done = box.checked; save(); refreshTodoViews(); return; }
+      if (r.kind === "job") { if (box.checked) planPrefs.doneJobs[r.doneKey] = true; else delete planPrefs.doneJobs[r.doneKey]; savePlanPrefs(); refreshTodoViews(); return; }
+      if (r.kind === "goal") { box.checked = !!r.done; return; }
       box.checked = false;
       if (r.kind === "ship") markShipped(r.item);
       else if (r.kind === "photo") takeAllPhotos(r.item);
@@ -10098,6 +10173,8 @@ function todoRowEl(r) {
   text.appendChild(el("span", "trow-sub", r.sub));
   text.onclick = function () {
     if (r.kind === "todo") openTodoSheet(r.todo);
+    else if (r.kind === "job") openStageSheet(r.stage);
+    else if (r.kind === "goal") showPlanTab("goal");
     else if (r.item) showCard(r.item);
   };
   row.appendChild(text);
@@ -10445,7 +10522,7 @@ function renderMoney() {
 // ---- Plan ----
 function planDots(day) {
   const ev = eventsOn(day);
-  return ev.todos.length || ev.ships.length || ev.bills.length;
+  return ev.todos.length || ev.ships.length || ev.bills.length || jobRowsFor(day).length;
 }
 function stopTimer() {
   const t = timerState();
@@ -10468,56 +10545,150 @@ function openTimeSheet() {
   timeSheetOpen = true;
   startTimerTick();
 }
-function renderPlanView() {
-  const box = $("plan-view");
-  if (!box || currentView !== "plan") return;
-  box.innerHTML = "";
-  const today = todayText();
-  if (!calDay) calDay = today;
-  if (!calMonth) calMonth = monthOf(today);
-
-  // the week
-  const monday = mondayOf(calDay);
-  const head = el("div", "wk-head");
-  const monthName = MONTHS[new Date(parseDate(calDay)).getUTCMonth()];
-  head.appendChild(el("h2", "msec-title", "Planner · " + monthName));
-  const nav = el("div", "wk-nav");
-  [["‹", -7, "Earlier week"], ["›", 7, "Later week"]].forEach(function (t) {
-    const b = el("button", "", t[0]);
-    b.type = "button";
-    b.setAttribute("aria-label", t[2]);
-    b.onclick = function () { calDay = addDays(calDay, t[1]); calMonth = monthOf(calDay); renderPlanView(); };
-    nav.appendChild(b);
+// ---- Plan tabs: Overview / Calendar / Money goal ----
+var PLAN_JOBS = [
+  { key: "ship", label: "Shipping", stage: "ship", verb: function (n) { return "Ship " + n + (n === 1 ? " parcel" : " parcels"); } },
+  { key: "photos", label: "Photos", stage: "photos", verb: function (n) { return "Take photos for " + n + (n === 1 ? " item" : " items"); } },
+  { key: "research", label: "Research", stage: "describe", verb: function (n) { return "Research prices for " + n + (n === 1 ? " item" : " items"); } },
+  { key: "upload", label: "Upload", stage: "describe", verb: function (n) { return "Upload " + n + (n === 1 ? " item" : " items"); } }
+];
+var goalPriceSel = null;
+function jobDaysOf(key) { return key === "ship" ? planPrefs.shipDays : planPrefs.jobDays[key] || []; }
+function jobCount(key, need) {
+  need = need || planNeeds();
+  if (key === "ship") return need.ship.count;
+  if (key === "photos") return need.photos.count;
+  if (key === "research") return need.research.count;
+  return need.upload.count;
+}
+// The repeating jobs you chose for a weekday, with how much is waiting right now.
+function jobRowsFor(day) {
+  const need = planNeeds();
+  const wd = weekdayIndex(day);
+  const rows = [];
+  PLAN_JOBS.forEach(function (j) {
+    if (jobDaysOf(j.key).indexOf(wd) === -1) return;
+    const n = jobCount(j.key, need);
+    const doneKey = day + ":" + j.key;
+    const done = !!planPrefs.doneJobs[doneKey];
+    if (n === 0 && !done) return;
+    rows.push({ kind: "job", job: j.key, stage: j.stage, doneKey: doneKey, title: j.verb(n), sub: j.label + (day === todayText() ? " · today" : " · " + prettyDay(day)), done: done });
   });
-  head.appendChild(nav);
-  box.appendChild(head);
-  const strip = el("div", "wk");
-  for (let i = 0; i < 7; i++) {
-    const day = addDays(monday, i);
-    const b = el("button", "wk-day" + (day === calDay ? " sel" : "") + (day === today ? " today" : "") + (planDots(day) ? " has" : ""));
-    b.type = "button";
-    b.appendChild(el("span", "dn", DAY_NAMES[i]));
-    b.appendChild(el("span", "dd", String(Number(day.slice(8)))));
-    b.appendChild(el("span", "dot"));
-    b.onclick = function () { calDay = day; calMonth = monthOf(day); renderPlanView(); };
-    strip.appendChild(b);
-  }
-  box.appendChild(strip);
+  return rows;
+}
+function listedThisWeek() {
+  const mon = mondayOf(todayText());
+  return items.filter(function (it) { return it.posted && it.posted >= mon && it.status !== "In progress"; }).length;
+}
+function goalNumbers() {
+  const g = planPrefs.goal;
+  if (!g) return null;
+  const today = todayText();
+  const listedNow = items.filter(function (it) { return it.status === "Listed"; }).length;
+  const stats = ResaleLogic.salesStats(items, today, 90, listedNow);
+  const avg = goalPriceSel || stats.avgPrice || 25;
+  const gp = ResaleLogic.goalPlan({
+    goal: g.amount, earned: ResaleLogic.earnedSince(items, g.start, today), avgPrice: avg, sellRate: stats.sellRate, listedNow: listedNow,
+    daysToSell: stats.daysToSell, by: g.by, today: today, minutesPerItem: plan.photoPerItem + plan.researchPerItem + plan.uploadPerItem
+  });
+  return { g: g, stats: stats, gp: gp, avg: avg, earned: g.amount - gp.remaining, listedNow: listedNow };
+}
+function goalRowFor(day) {
+  if (day !== todayText()) return null;
+  const n = goalNumbers();
+  if (!n || n.gp.done || n.gp.perWeek === 0) return null;
+  const have = listedThisWeek();
+  const left = Math.max(0, n.gp.perWeek - have);
+  return { kind: "goal", title: left > 0 ? "List " + left + (left === 1 ? " more item" : " more items") + " this week" : "Goal pace met this week", sub: "Goal pace · " + moneyShort(n.g.amount) + " by " + prettyDay(n.g.by), done: left === 0 };
+}
+function savePlanPrefs() { try { localStorage.setItem("planPrefs", JSON.stringify(planPrefs)); } catch (e) {} }
+function showPlanTab(name) { planPrefs.tab = name; savePlanPrefs(); renderPlanView(); }
 
-  // to-dos for that day
-  const rows = planRows(calDay, false);
-  const doneCount = rows.filter(function (r) { return r.done; }).length;
-  const dayName = calDay === today ? "today" : prettyDay(calDay);
+function planSeg(options, current, onPick, label) {
+  const seg = el("div", "seg");
+  seg.setAttribute("role", "tablist");
+  seg.setAttribute("aria-label", label);
+  options.forEach(function (o) {
+    const b = el("button", current === o[0] ? "on" : "", o[1]);
+    b.type = "button";
+    b.setAttribute("role", "tab");
+    b.setAttribute("aria-selected", current === o[0] ? "true" : "false");
+    b.onclick = function () { onPick(o[0]); };
+    seg.appendChild(b);
+  });
+  return seg;
+}
+function dayCircles(selected, onToggle, nameFor) {
+  const row = el("div", "pd-days");
+  ["M", "T", "W", "T", "F", "S", "S"].forEach(function (letter, i) {
+    const b = el("button", "pd-day" + (selected.indexOf(i) !== -1 ? " on" : ""));
+    b.appendChild(el("span", "pd-c", letter));
+    b.type = "button";
+    b.setAttribute("aria-pressed", selected.indexOf(i) !== -1 ? "true" : "false");
+    b.setAttribute("aria-label", nameFor + " on " + ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"][i]);
+    b.onclick = function () { onToggle(i); };
+    row.appendChild(b);
+  });
+  return row;
+}
+
+function renderPlanOverview(box) {
+  const today = todayText();
+  const need = planNeeds();
+  // slim shipping alert
+  if (currentOverdue.length) {
+    const a = el("div", "pl-alert");
+    a.appendChild(el("span", "", currentOverdue.length + (currentOverdue.length === 1 ? " parcel is late" : " parcels are late")));
+    const b = el("button", "", "Ship today");
+    b.type = "button";
+    b.onclick = function () { openStageSheet("ship"); };
+    a.appendChild(b);
+    box.appendChild(a);
+  }
+  // what's waiting
+  const head = el("div", "sec-head");
+  head.appendChild(el("h2", "msec-title", "What's waiting"));
+  const setDays = el("button", "small-btn", "Choose days");
+  setDays.type = "button";
+  setDays.onclick = openPlanDays;
+  head.appendChild(setDays);
+  box.appendChild(head);
+  const grid = el("div", "pl-grid");
+  PLAN_JOBS.forEach(function (j) {
+    const tile = el("button", "pl-tile" + (j.key === "ship" && need.ship.count ? " ship" : ""));
+    tile.type = "button";
+    tile.appendChild(el("span", "pl-n", String(jobCount(j.key, need))));
+    tile.appendChild(el("span", "pl-l", j.label));
+    const days = jobDaysOf(j.key);
+    tile.appendChild(el("span", "pl-s", days.length ? days.map(function (d) { return DAY_NAMES[d]; }).join(" · ") : "Any day"));
+    tile.onclick = function () { openStageSheet(j.stage); };
+    grid.appendChild(tile);
+  });
+  box.appendChild(grid);
+
+  // today
+  let rows = planRows(today, false).filter(function (r) { return r.kind !== "photo"; });
+  const shipToday = planPrefs.shipDays.indexOf(weekdayIndex(today)) !== -1;
+  rows = rows.filter(function (r) {
+    if (r.kind !== "ship") return true;
+    if (r.sub.indexOf("late") !== -1) return planPrefs.dueTask;
+    return !shipToday && planPrefs.dueTask;
+  });
+  const jobs = jobRowsFor(today);
+  const gr = goalRowFor(today);
+  const all = jobs.concat(rows);
+  if (gr) all.push(gr);
+  const left = all.filter(function (r) { return !r.done; }).length;
   const th = el("div", "sec-head");
-  th.appendChild(el("h2", "msec-title", "To-dos for " + dayName + " (" + doneCount + " of " + rows.length + " done)"));
+  th.appendChild(el("h2", "msec-title", "Today (" + left + " left)"));
   box.appendChild(th);
   const list = el("div");
-  rows.forEach(function (r) { list.appendChild(todoRowEl(r)); });
-  if (!rows.length) list.appendChild(el("div", "todo-empty", "Nothing planned for this day."));
+  all.forEach(function (r) { list.appendChild(todoRowEl(r)); });
+  if (!all.length) list.appendChild(el("div", "todo-empty", "Nothing planned for today."));
   box.appendChild(list);
   const add = el("button", "dash-btn", "+ Add a to-do");
   add.type = "button";
-  add.onclick = function () { openTodoSheet(null, calDay); };
+  add.onclick = function () { openTodoSheet(null, today); };
   box.appendChild(add);
   if (todos.some(function (t) { return t.done; })) {
     const clear = el("button", "small-btn clear-done", "Clear finished to-dos");
@@ -10525,8 +10696,11 @@ function renderPlanView() {
     clear.onclick = function () { todos = todos.filter(function (t) { return !t.done; }); save(); refreshTodoViews(); };
     box.appendChild(clear);
   }
+  renderPlanTimeAndTools(box);
+}
 
-  // the time log
+function renderPlanTimeAndTools(box) {
+  const today = todayText();
   const tl = el("div", "sec-head");
   tl.appendChild(el("h2", "msec-title", "Timeline"));
   box.appendChild(tl);
@@ -10555,8 +10729,6 @@ function renderPlanView() {
     card.appendChild(start);
   }
   box.appendChild(card);
-
-  // everything else the old planner had
   const mh = el("div", "sec-head");
   mh.appendChild(el("h2", "msec-title", "More planning tools"));
   box.appendChild(mh);
@@ -10565,13 +10737,267 @@ function renderPlanView() {
   box.appendChild(more);
   plannerTarget = more;
   try {
-    plannerSection("cal", "Month calendar", buildCalendar);
     plannerSection("week", "Work waiting and time needed", buildWorkWaiting);
     plannerSection("calc", "Planning a new batch?", buildBatchCalc);
   } finally {
     plannerTarget = null;
   }
   startTimerTick();
+}
+
+function renderPlanCalendar(box) {
+  const today = todayText();
+  box.appendChild(planSeg([["week", "Week"], ["month", "Month"]], planPrefs.calMode, function (m) { planPrefs.calMode = m; savePlanPrefs(); renderPlanView(); }, "Calendar view"));
+  if (planPrefs.calMode === "month") {
+    const panel = el("div", "cal-panel");
+    buildCalendar(panel);
+    box.appendChild(panel);
+    return;
+  }
+  const monday = mondayOf(calDay);
+  const head = el("div", "wk-head");
+  head.appendChild(el("h2", "msec-title", MONTHS[new Date(parseDate(calDay)).getUTCMonth()]));
+  const nav = el("div", "wk-nav");
+  [["‹", -7, "Earlier week"], ["›", 7, "Later week"]].forEach(function (t) {
+    const b = el("button", "", t[0]);
+    b.type = "button";
+    b.setAttribute("aria-label", t[2]);
+    b.onclick = function () { calDay = addDays(calDay, t[1]); calMonth = monthOf(calDay); renderPlanView(); };
+    nav.appendChild(b);
+  });
+  head.appendChild(nav);
+  box.appendChild(head);
+  const strip = el("div", "wk");
+  for (let i = 0; i < 7; i++) {
+    const day = addDays(monday, i);
+    const b = el("button", "wk-day" + (day === calDay ? " sel" : "") + (day === today ? " today" : "") + (planDots(day) ? " has" : ""));
+    b.type = "button";
+    b.appendChild(el("span", "dn", DAY_NAMES[i]));
+    b.appendChild(el("span", "dd", String(Number(day.slice(8)))));
+    b.appendChild(el("span", "dot"));
+    b.onclick = function () { calDay = day; calMonth = monthOf(day); renderPlanView(); };
+    strip.appendChild(b);
+  }
+  box.appendChild(strip);
+  const rows = jobRowsFor(calDay).concat(planRows(calDay, false).filter(function (r) { return r.kind !== "photo"; }));
+  const doneCount = rows.filter(function (r) { return r.done; }).length;
+  const th = el("div", "sec-head");
+  th.appendChild(el("h2", "msec-title", (calDay === today ? "Today" : prettyDay(calDay)) + " (" + doneCount + " of " + rows.length + " done)"));
+  box.appendChild(th);
+  const list = el("div");
+  rows.forEach(function (r) { list.appendChild(todoRowEl(r)); });
+  if (!rows.length) list.appendChild(el("div", "todo-empty", "Nothing planned for this day."));
+  box.appendChild(list);
+  const add = el("button", "dash-btn", "+ Add a to-do");
+  add.type = "button";
+  add.onclick = function () { openTodoSheet(null, calDay); };
+  box.appendChild(add);
+}
+
+function renderPlanGoal(box) {
+  const n = goalNumbers();
+  if (!n) {
+    const card = el("div", "pl-card");
+    card.appendChild(el("div", "msec-title", "Set a money goal"));
+    card.appendChild(el("div", "small", "Say how much you want to sell and by when. The app works out how many items to list from your own past sales."));
+    const f = el("div", "pl-form");
+    const a = document.createElement("input");
+    a.type = "number"; a.inputMode = "decimal"; a.min = "1"; a.placeholder = "Amount, like 200";
+    a.setAttribute("aria-label", "Goal amount in dollars");
+    const d = document.createElement("input");
+    d.type = "date"; d.value = addDays(todayText(), 35);
+    d.setAttribute("aria-label", "Goal date");
+    f.appendChild(a); f.appendChild(d);
+    card.appendChild(f);
+    const go = el("button", "dash-btn", "Start goal");
+    go.type = "button";
+    go.onclick = function () {
+      const amount = Number(a.value);
+      if (!(amount > 0)) { showToast("Type how much you want to make."); return; }
+      if (!d.value || d.value <= todayText()) { showToast("Pick a date after today."); return; }
+      planPrefs.goal = { amount: amount, by: d.value, start: todayText() };
+      goalPriceSel = null;
+      savePlanPrefs();
+      renderPlanView();
+    };
+    card.appendChild(go);
+    box.appendChild(card);
+    return;
+  }
+  const g = n.g, gp = n.gp;
+  const card = el("div", "pl-card");
+  card.appendChild(el("div", "pl-big", money(n.earned) + " of " + moneyShort(g.amount)));
+  card.appendChild(el("div", "small", gp.done ? "Goal reached. Nice work." : "Sales by " + prettyDay(g.by) + " · " + dayWord(Math.max(0, dayDiff(todayText(), g.by))) + " left"));
+  const bar = el("div", "inv-bar");
+  const fill = document.createElement("i");
+  fill.style.width = Math.min(100, g.amount > 0 ? n.earned / g.amount * 100 : 0) + "%";
+  bar.appendChild(fill);
+  card.appendChild(bar);
+  box.appendChild(card);
+  if (!gp.done) {
+    const tiles = el("div", "pl-grid three");
+    [[gp.salesNeeded, "sales needed"], [gp.listingsNeeded, "items to list"], [gp.perWeek, "per week"]].forEach(function (t) {
+      const c = el("div", "pl-tile static");
+      c.appendChild(el("span", "pl-n", String(t[0])));
+      c.appendChild(el("span", "pl-l", t[1]));
+      tiles.appendChild(c);
+    });
+    box.appendChild(tiles);
+    const why = el("div", "pl-card");
+    if (gp.tooLate) why.appendChild(el("div", "pl-warn", "There is not enough time to list that many items before " + prettyDay(g.by) + ". Try a later date or a smaller goal."));
+    else why.appendChild(el("div", "", "List " + gp.listingsNeeded + " items by " + prettyDay(gp.listBy) + " so they have time to sell. That is about " + gp.hours + " hours of work."));
+    why.appendChild(el("div", "small", n.stats.enough
+      ? "From your last 90 days: " + n.stats.count + " sales, about " + money(n.avg) + " each, roughly 1 in " + Math.round(1 / n.stats.sellRate) + " items sells, about " + n.stats.daysToSell + " days to sell."
+      : "You have fewer than 3 sales in the last 90 days, so this uses sample numbers (about " + money(n.avg) + " per sale, 1 in 3 sells, 3 weeks to sell). It gets more exact as you sell."));
+    box.appendChild(why);
+    const opt = el("div", "pl-card");
+    opt.appendChild(el("div", "msec-title", "If your items sell for about"));
+    const base = n.stats.avgPrice || 25;
+    const prices = [Math.max(5, Math.round(base * 0.6 / 5) * 5), Math.round(base / 5) * 5 || 25, Math.round(base * 1.6 / 5) * 5];
+    const uniq = prices.filter(function (p, i) { return prices.indexOf(p) === i; });
+    const row = el("div", "pl-opts");
+    ResaleLogic.priceOptions(gp.remaining, uniq).forEach(function (o) {
+      const b = el("button", goalPriceSel === o.price ? "on" : "");
+      b.type = "button";
+      b.appendChild(el("b", "", "$" + o.price));
+      b.appendChild(el("span", "", o.sales + (o.sales === 1 ? " sale" : " sales")));
+      b.onclick = function () { goalPriceSel = goalPriceSel === o.price ? null : o.price; renderPlanView(); };
+      row.appendChild(b);
+    });
+    opt.appendChild(row);
+    box.appendChild(opt);
+    const wk = el("div", "pl-card");
+    wk.appendChild(el("div", "msec-title", "This week"));
+    wk.appendChild(el("div", "", listedThisWeek() + " of " + gp.perWeek + " items listed"));
+    box.appendChild(wk);
+  }
+  const again = el("button", "dash-btn", "New goal");
+  again.type = "button";
+  again.onclick = function () { planPrefs.goal = null; goalPriceSel = null; savePlanPrefs(); renderPlanView(); };
+  box.appendChild(again);
+}
+
+// ---- Plan days page (shipping days, the 2 day limit, repeating jobs) ----
+var planDraft = null;
+function openPlanDays() {
+  planDraft = JSON.parse(JSON.stringify(planPrefs));
+  let page = $("plan-days-page");
+  if (!page) { page = el("div"); page.id = "plan-days-page"; document.body.appendChild(page); }
+  page.hidden = false;
+  renderPlanDays();
+}
+function closePlanDays() { const p = $("plan-days-page"); if (p) p.hidden = true; planDraft = null; }
+function toggleDay(list, i) {
+  const at = list.indexOf(i);
+  if (at === -1) list.push(i); else list.splice(at, 1);
+  list.sort();
+}
+function renderPlanDays() {
+  const page = $("plan-days-page");
+  if (!page || !planDraft) return;
+  page.innerHTML = "";
+  const bar = el("div", "pd-bar");
+  const cancel = el("button", "pd-link", "Cancel");
+  cancel.type = "button";
+  cancel.onclick = closePlanDays;
+  const save2 = el("button", "pd-link strong", "Save");
+  save2.type = "button";
+  save2.onclick = function () { planPrefs = cleanPlanPrefs(planDraft); savePlanPrefs(); closePlanDays(); renderPlanView(); showToast("Plan days saved."); };
+  bar.appendChild(cancel);
+  bar.appendChild(el("h3", "", "Plan days"));
+  bar.appendChild(save2);
+  page.appendChild(bar);
+  const body = el("div", "pd-body");
+
+  const c1 = el("div", "pl-card");
+  c1.appendChild(el("div", "msec-title", "I ship on"));
+  c1.appendChild(dayCircles(planDraft.shipDays, function (i) { toggleDay(planDraft.shipDays, i); renderPlanDays(); }, "Ship"));
+  body.appendChild(c1);
+
+  const cov = ResaleLogic.shipCoverage(planDraft.shipDays, planDraft.limit);
+  const c2 = el("div", "pl-card");
+  c2.appendChild(el("div", "msec-title", "How long a parcel would wait"));
+  c2.appendChild(el("div", "small", "If it sells on that day, after you've shipped. Business days, Mon to Fri."));
+  if (!cov.waits) {
+    c2.appendChild(el("div", "small", "Pick at least one shipping day to see this."));
+  } else {
+    const wr = el("div", "pd-waits");
+    cov.waits.forEach(function (w, i) {
+      const col = el("div");
+      col.appendChild(el("span", "pd-wd", DAY_NAMES[i]));
+      col.appendChild(el("span", "pd-w" + (cov.late.indexOf(i) !== -1 ? " late" : ""), String(w)));
+      col.appendChild(el("span", "pd-lt", cov.late.indexOf(i) !== -1 ? "late" : ""));
+      wr.appendChild(col);
+    });
+    c2.appendChild(wr);
+  }
+  body.appendChild(c2);
+  if (cov.waits && cov.late.length) {
+    const c3 = el("div", "pl-card warn");
+    const names = cov.late.map(function (i) { return DAY_NAMES[i]; }).join(", ");
+    c3.appendChild(el("div", "msec-title", "A " + names + " sale would be late"));
+    c3.appendChild(el("div", "small", cov.fixes.length ? "It would wait longer than your " + planDraft.limit + " day limit. Adding one of these days fixes it." : "It would wait longer than your " + planDraft.limit + " day limit. Add more days or raise the limit."));
+    if (cov.fixes.length) {
+      const r = el("div", "pl-opts");
+      cov.fixes.forEach(function (d) {
+        const b = el("button", "", "Add " + ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"][d]);
+        b.type = "button";
+        b.onclick = function () { toggleDay(planDraft.shipDays, d); renderPlanDays(); };
+        r.appendChild(b);
+      });
+      c3.appendChild(r);
+    }
+    body.appendChild(c3);
+  } else if (cov.waits) {
+    body.appendChild(el("div", "pl-ok", "No sale day waits longer than " + planDraft.limit + " business days."));
+  }
+
+  const c4 = el("div", "pl-card");
+  const lr = el("div", "pd-line");
+  lr.appendChild(el("span", "", "Warn me if a parcel waits more than"));
+  const step = el("div", "pd-step");
+  const minus = el("button", "", "−"); minus.type = "button"; minus.setAttribute("aria-label", "Decrease days");
+  const plus = el("button", "", "+"); plus.type = "button"; plus.setAttribute("aria-label", "Increase days");
+  minus.onclick = function () { planDraft.limit = Math.max(1, planDraft.limit - 1); renderPlanDays(); };
+  plus.onclick = function () { planDraft.limit = Math.min(5, planDraft.limit + 1); renderPlanDays(); };
+  step.appendChild(minus); step.appendChild(el("b", "", planDraft.limit + (planDraft.limit === 1 ? " day" : " days"))); step.appendChild(plus);
+  lr.appendChild(step);
+  c4.appendChild(lr);
+  const sw = el("label", "pd-line");
+  const swt = el("span");
+  swt.appendChild(document.createTextNode("Add a ship task on the due day"));
+  swt.appendChild(el("div", "small", "If a parcel would be late, it gets its own task, even on a day you don't usually ship."));
+  sw.appendChild(swt);
+  const sp = el("span", "switch");
+  const cb = document.createElement("input");
+  cb.type = "checkbox"; cb.checked = planDraft.dueTask;
+  cb.onchange = function () { planDraft.dueTask = cb.checked; };
+  sp.appendChild(cb); sp.appendChild(el("span", "track"));
+  sw.appendChild(sp);
+  c4.appendChild(sw);
+  body.appendChild(c4);
+
+  const c5 = el("div", "pl-card");
+  c5.appendChild(el("div", "msec-title", "Other repeating jobs"));
+  [["photos", "Photos"], ["research", "Research"], ["upload", "Upload"]].forEach(function (j) {
+    c5.appendChild(el("div", "pd-job", j[1]));
+    c5.appendChild(dayCircles(planDraft.jobDays[j[0]], function (i) { toggleDay(planDraft.jobDays[j[0]], i); renderPlanDays(); }, j[1]));
+  });
+  body.appendChild(c5);
+  page.appendChild(body);
+}
+
+function renderPlanView() {
+  const box = $("plan-view");
+  if (!box || currentView !== "plan") return;
+  box.innerHTML = "";
+  const today = todayText();
+  if (!calDay) calDay = today;
+  if (!calMonth) calMonth = monthOf(today);
+  box.appendChild(planSeg([["overview", "Overview"], ["calendar", "Calendar"], ["goal", "Money goal"]], planPrefs.tab, showPlanTab, "Plan sections"));
+  if (planPrefs.tab === "calendar") renderPlanCalendar(box);
+  else if (planPrefs.tab === "goal") renderPlanGoal(box);
+  else renderPlanOverview(box);
 }
 function renderPlanner() { renderPlanView(); }
 
