@@ -368,6 +368,17 @@ body.goals-unpinned #goals-mini { display: none !important; }
 .add-methods { display: flex; gap: 8px; margin: 6px 0 4px; }
 .add-methods[hidden] { display: none; }
 .add-methods button { flex: 1; min-width: 0; min-height: 44px; padding: 0 6px; font-size: 14px; font-weight: 700; }
+.opt-list { margin: 10px 0 0; border-radius: 14px; background: var(--surface-2); overflow: hidden; }
+.opt-list.editing { background: transparent; border-radius: 0; overflow: visible; }
+.opt-row { display: flex; align-items: center; width: 100%; min-height: 52px; margin: 0; padding: 0 14px; border: 0; border-bottom: 1px solid var(--line-soft); border-radius: 0; background: transparent; color: var(--text); font-size: 16px; font-weight: 600; text-align: left; }
+.opt-row[hidden] { display: none; }
+.opt-val { margin-left: auto; color: var(--accent-text); font-weight: 700; }
+.opt-val.set { color: var(--text); font-weight: 600; }
+.opt-chev { flex: none; width: 16px; height: 16px; margin-left: 4px; fill: none; stroke: var(--muted); stroke-width: 2.4; stroke-linecap: round; stroke-linejoin: round; transition: transform 0.15s; }
+.opt-row.open .opt-chev { transform: rotate(90deg); }
+.opt-list:not(.editing) .opt-panel { padding: 0 14px 14px; border-bottom: 1px solid var(--line-soft); background: var(--surface); }
+.opt-list:not(.editing) .opt-panel .field { margin-top: 8px; }
+.opt-list:not(.editing) .opt-panel .form-section { margin-top: 10px; }
 .weight-unit-label { flex: none; display: flex; align-items: center; padding: 0 6px; font-size: 16px; font-weight: 700; color: var(--muted); }
 .menu-option { display: block; width: 100%; text-align: left; margin-top: 10px; padding: 12px 14px; min-height: 64px; }
 .menu-option b { display: block; font-size: 16px; }
@@ -1442,20 +1453,12 @@ body.modal-open #undo-bar { visibility: hidden; }
         <div class="menu-warning" id="add-qr-warning" hidden></div>
 
         <div class="form-section" style="margin-top:6px">The item</div>
-        <label class="field">Status
-          <select id="status">
-            <option>In progress</option>
-            <option>Listed</option>
-            <option>Sold</option>
-            <option>Shipped</option>
-          </select>
-        </label>
-
-        <div class="field-hint" id="status-hint"></div>
-
         <label class="field" id="name-row">Item name <input id="name" autocomplete="off" placeholder="e.g. Nike hoodie"></label>
         <div class="field-hint" id="name-hint"></div>
 
+        <div class="opt-list" id="opt-wrap">
+        <button type="button" class="opt-row" id="opt-photo" aria-expanded="false"><span>Photos</span><span class="opt-val" id="opt-photo-val">Add</span><svg class="opt-chev" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></button>
+        <div class="opt-panel" id="panel-photo" hidden>
         <div class="field">
           Picture shown in your list
           <div><img id="pic-preview" alt="Item picture"></div>
@@ -1465,10 +1468,9 @@ body.modal-open #undo-bar { visibility: hidden; }
           </div>
           <input type="file" id="pic-file" accept="image/*" hidden>
         </div>
-
-        <div class="form-section">Price and platform</div>
-        <label class="field">Price ($) <input id="original" type="number" inputmode="decimal" step="0.01" min="0" placeholder="0.00"></label>
-
+        </div>
+        <button type="button" class="opt-row" id="opt-site" aria-expanded="false"><span>Listed on</span><span class="opt-val" id="opt-site-val">Add</span><svg class="opt-chev" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></button>
+        <div class="opt-panel" id="panel-site" hidden>
         <div id="site-main-holder">
           <label class="field" id="site-row"><span id="site-label">Listed on</span>
             <select id="site">
@@ -1476,13 +1478,13 @@ body.modal-open #undo-bar { visibility: hidden; }
             </select>
           </label>
         </div>
-
-        <div id="sold-main" hidden>
-          <label class="field">Date sold <input id="sold" type="date"></label>
-          <label class="field" id="sold-for-row">Sold for ($) <input id="sold-for" type="number" inputmode="decimal" step="0.01" min="0" placeholder="same as price"></label>
-          <label class="field" id="shipped-date-row">Date shipped <input id="shipped" type="date"></label>
         </div>
-
+        <button type="button" class="opt-row" id="opt-price" aria-expanded="false"><span>Price</span><span class="opt-val" id="opt-price-val">Add</span><svg class="opt-chev" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></button>
+        <div class="opt-panel" id="panel-price" hidden>
+        <label class="field">Price ($) <input id="original" type="number" inputmode="decimal" step="0.01" min="0" placeholder="0.00"></label>
+        </div>
+        <button type="button" class="opt-row" id="opt-spot" aria-expanded="false"><span>Spot</span><span class="opt-val" id="opt-spot-val">Add</span><svg class="opt-chev" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></button>
+        <div class="opt-panel" id="panel-spot" hidden>
         <div id="storage-section">
           <div class="form-section">Where it is stored</div>
         <div id="slot-fields">
@@ -1508,7 +1510,9 @@ body.modal-open #undo-bar { visibility: hidden; }
           <div id="slot-suggest" class="small" style="grid-column: 1 / -1; margin-top: 6px;"></div>
         </div>
         </div>
-
+        </div>
+        <button type="button" class="opt-row" id="opt-weight" aria-expanded="false"><span>Weight</span><span class="opt-val" id="opt-weight-val">Add</span><svg class="opt-chev" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></button>
+        <div class="opt-panel" id="panel-weight" hidden>
         <div class="field" id="weight-field">Weight
           <div class="weight-row">
             <input id="weight" type="number" inputmode="decimal" step="any" min="0" placeholder="0" aria-label="Weight">
@@ -1523,6 +1527,25 @@ body.modal-open #undo-bar { visibility: hidden; }
             </select>
           </div>
         </div>
+        </div>
+        </div>
+
+        <div id="sold-main" hidden>
+          <label class="field">Date sold <input id="sold" type="date"></label>
+          <label class="field" id="sold-for-row">Sold for ($) <input id="sold-for" type="number" inputmode="decimal" step="0.01" min="0" placeholder="same as price"></label>
+          <label class="field" id="shipped-date-row">Date shipped <input id="shipped" type="date"></label>
+        </div>
+
+        <label class="field">Status
+          <select id="status">
+            <option>In progress</option>
+            <option>Listed</option>
+            <option>Sold</option>
+            <option>Shipped</option>
+          </select>
+        </label>
+
+        <div class="field-hint" id="status-hint"></div>
 
         <button type="button" id="advanced-toggle" class="advanced-toggle">Advanced options</button>
 
@@ -3334,6 +3357,7 @@ function setFormPhoto(dataUrl) {
   formPhoto = dataUrl || "";
   picPreview.src = formPhoto;
   picPreview.style.display = formPhoto ? "block" : "none";
+  updateOptRows();
 }
 
 function loadImage(file) {
@@ -3455,6 +3479,8 @@ function showForm() {
   syncSlotUI();
   updateAddMethods();
   updateStatusUI();
+  applyOptLayout();
+  updateOptRows();
   itemSheet.hidden = false;
   document.querySelector(".sheet-body").scrollTop = 0;
 }
@@ -3463,6 +3489,7 @@ function closeForm() {
   editingIndex = null;
   statusTouched = false;
   autoPostedSet = false;
+  optOpen = {};
   advancedOpen = false;
   binInput.disabled = false;
   form.reset();
@@ -3477,6 +3504,8 @@ function closeForm() {
   updateBumpUI(true);
   updateAdvancedUI();
   submitButton.textContent = "Add item";
+  applyOptLayout();
+  updateOptRows();
   itemSheet.hidden = true;
 }
 
@@ -3508,6 +3537,48 @@ function updateAddMethods() {
   document.getElementById("add-qr").hidden = !(features.storage && bins.length > 0);
   document.getElementById("add-qr-warning").hidden = true;
 }
+// ---- Add window: Photos, Listed on, Price, Spot and Weight are rows. Tap one to open its box. ----
+// Editing an item shows every box open, as before.
+var optOpen = {};
+const OPT_KEYS = ["photo", "site", "price", "spot", "weight"];
+function applyOptLayout() {
+  const editing = editingIndex !== null;
+  document.getElementById("opt-wrap").classList.toggle("editing", editing);
+  OPT_KEYS.forEach(function (key) {
+    const row = document.getElementById("opt-" + key);
+    const open = !!optOpen[key];
+    row.hidden = editing;
+    row.classList.toggle("open", open);
+    row.setAttribute("aria-expanded", open ? "true" : "false");
+    document.getElementById("panel-" + key).hidden = editing ? false : !open;
+  });
+}
+function updateOptRows() {
+  function put(key, text, isSet) {
+    const v = document.getElementById("opt-" + key + "-val");
+    v.textContent = text;
+    v.classList.toggle("set", isSet);
+  }
+  put("photo", formPhoto ? "1 photo" : "Add", !!formPhoto);
+  put("site", siteInput.value || "Add", siteInput.value !== "");
+  const price = Number(originalInput.value);
+  put("price", price > 0 ? money(price) : "Add", price > 0);
+  const slotNo = Number(slotInput.value) || 0;
+  const spot = binInput.value && slotNo > 0 && !noSlotBox.checked ? slotLabel(binInput.value, slotNo) : "";
+  put("spot", spot || "Add", spot !== "");
+  const oz = readWeightOz();
+  put("weight", oz > 0 ? formatWeight(oz) : "Add", oz > 0);
+}
+OPT_KEYS.forEach(function (key) {
+  document.getElementById("opt-" + key).addEventListener("click", function () {
+    optOpen[key] = !optOpen[key];
+    applyOptLayout();
+    const focusId = { price: "original", weight: "weight" }[key];
+    if (optOpen[key] && focusId) document.getElementById(focusId).focus();
+  });
+});
+form.addEventListener("input", updateOptRows);
+form.addEventListener("change", updateOptRows);
 addItemButton.addEventListener("click", function () { openNewForm(); });
 document.getElementById("add-bulk").addEventListener("click", function () { closeForm(); openBulkSetup(); });
 document.getElementById("add-shot").addEventListener("click", function () { importTarget = null; importFile.click(); });
@@ -6710,6 +6781,8 @@ function showFormProblems(list, intro) {
         advancedOpen = true;
         updateAdvancedUI();
       }
+      const optBox = field.closest(".opt-panel");
+      if (optBox && optBox.hidden) { optOpen[optBox.id.replace("panel-", "")] = true; applyOptLayout(); }
       field.classList.add("has-error");
       const label = field.closest("label");
       if (label) label.classList.add("has-error");
