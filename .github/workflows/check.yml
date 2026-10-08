@@ -38,3 +38,6 @@ jobs:
 
       - name: Run the Profit tab tests
         run: node tests/profit.test.js
+
+      - name: Run the partial withdrawal tests
+        run: node tests/partial.test.js

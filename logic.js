@@ -190,24 +190,87 @@
     (goals || []).forEach(function (g) { if (g.purchased && !g.settled) cents += toCents(g.amount); });
     return cents;
   }
+  // ---- partial withdrawals ----
+  // Taking out only some of the money is saved as a record with `parts`, like { Depop: 30, Vinted: 20 }.
+  // The sales themselves stay as they are; the record just subtracts that money from what you can still withdraw.
+  // A later full withdrawal "settles" those parts (w.settled = [{ site, by }]) so they are not subtracted twice.
+  function takenMoney(withdrawals, site) {
+    let cents = 0;
+    (withdrawals || []).forEach(function (w) {
+      if (!w || !w.parts) return;
+      Object.keys(w.parts).forEach(function (s) {
+        if (site !== undefined && site !== null && s !== site) return;
+        if ((w.settled || []).some(function (x) { return x.site === s; })) return;
+        cents += toCents(w.parts[s]);
+      });
+    });
+    return cents;
+  }
+  // The money held on each platform right now (never below zero), in cents.
+  function platformCents(items, balances, platform, withdrawals) {
+    return Math.max(0, startMoney(balances, platform) + itemMoney(items, platform) - takenMoney(withdrawals, platform));
+  }
+  function sitesOf(items, balances) {
+    const seen = {};
+    Object.keys(balances || {}).forEach(function (n) { seen[n] = 1; });
+    items.forEach(function (it) { if (it.site) seen[it.site] = 1; });
+    return Object.keys(seen).sort();
+  }
   // What a withdrawal would pay out. platform = null means everything ("Total").
+  // `withdrawals` (the history) is optional; pass it so earlier partial withdrawals are taken off.
   // Returns { amount, blocked } where blocked is "" or a plain-words reason it can't be done.
-  function withdrawPlan(items, balances, goals, platform) {
+  function withdrawPlan(items, balances, goals, platform, withdrawals) {
     const spent = goalsSpent(goals);
-    const everything = startMoney(balances) + itemMoney(items) - spent;
+    const everything = startMoney(balances) + itemMoney(items) - spent - takenMoney(withdrawals);
     if (platform === null || platform === undefined) {
       return { amount: fromCents(Math.max(0, everything)), blocked: everything > 0 ? "" : "There is nothing to withdraw yet." };
     }
-    const mine = startMoney(balances, platform) + itemMoney(items, platform);
+    const mine = startMoney(balances, platform) + itemMoney(items, platform) - takenMoney(withdrawals, platform);
     if (mine <= 0) return { amount: 0, blocked: "Nothing to withdraw from " + platform + " yet." };
     if (everything - mine < 0) {
       return { amount: fromCents(mine), blocked: "Investments you marked paid come out of your overall balance, so withdrawing all of " + platform + " would leave them unpaid. Use Total instead." };
     }
     return { amount: fromCents(mine), blocked: "" };
   }
+  // The most you can take as a chosen amount: from one platform, or (null) from everything.
+  function withdrawMax(items, balances, goals, platform, withdrawals) {
+    const everything = Math.max(0, startMoney(balances) + itemMoney(items) - goalsSpent(goals) - takenMoney(withdrawals));
+    if (platform === null || platform === undefined) return fromCents(everything);
+    return fromCents(Math.min(everything, platformCents(items, balances, platform, withdrawals)));
+  }
+  // Checks a chosen amount. Returns { ok, reason, parts } where parts says how much comes from each platform.
+  // From "All platforms" the money is taken from the platform holding the most first.
+  function partialPlan(items, balances, goals, platform, amount, withdrawals) {
+    const cents = toCents(amount);
+    const max = toCents(withdrawMax(items, balances, goals, platform, withdrawals));
+    const where = platform ? platform : "your balance";
+    if (!(cents > 0)) return { ok: false, reason: "Type an amount above $0.00.", parts: {} };
+    if (cents > max) return { ok: false, reason: max > 0 ? "You can take at most " + money(fromCents(max)) + " from " + where + "." : "There is nothing to withdraw from " + where + " yet.", parts: {} };
+    const parts = {};
+    if (platform) {
+      parts[platform] = fromCents(cents);
+    } else {
+      let left = cents;
+      sitesOf(items, balances).map(function (s) { return { s: s, c: platformCents(items, balances, s, withdrawals) }; })
+        .sort(function (x, y) { return y.c - x.c || (x.s < y.s ? -1 : 1); })
+        .forEach(function (p) {
+          if (left <= 0 || p.c <= 0) return;
+          const take = Math.min(left, p.c);
+          parts[p.s] = fromCents(take);
+          left -= take;
+        });
+    }
+    return { ok: true, reason: "", parts: parts };
+  }
+  // Takes out a chosen amount. Changes nothing but returns the record to add to the history (or null if it can't be done).
+  function partialWithdrawal(items, balances, goals, platform, amount, id, dateText, withdrawals) {
+    const plan = partialPlan(items, balances, goals, platform, amount, withdrawals);
+    if (!plan.ok) return null;
+    return { id: id, date: dateText, amount: fromCents(toCents(amount)), platform: platform || "", balances: {}, parts: plan.parts, settled: [] };
+  }
   // Does the withdrawal. Changes items, balances and goals, and returns the record to keep in the history.
-  function applyWithdrawal(items, balances, goals, platform, id, dateText) {
-    const plan = withdrawPlan(items, balances, goals, platform);
+  function applyWithdrawal(items, balances, goals, platform, id, dateText, withdrawals) {
+    const plan = withdrawPlan(items, balances, goals, platform, withdrawals);
     const record = { id: id, date: dateText, amount: plan.amount, platform: platform || "", balances: {} };
     Object.keys(balances).forEach(function (name) { record.balances[name] = balances[name] || 0; });
     const total = platform === null || platform === undefined;
@@ -216,13 +279,23 @@
     });
     if (total) goals.forEach(function (g) { if (g.purchased && !g.settled) g.settled = id; });
     Object.keys(balances).forEach(function (name) { if (total || name === platform) balances[name] = 0; });
+    (withdrawals || []).forEach(function (w) {
+      if (!w || !w.parts) return;
+      if (!Array.isArray(w.settled)) w.settled = [];
+      Object.keys(w.parts).forEach(function (s) {
+        if ((total || s === platform) && !w.settled.some(function (x) { return x.site === s; })) w.settled.push({ site: s, by: id });
+      });
+    });
     return record;
   }
   // Puts everything back the way it was before that withdrawal.
-  function undoWithdrawal(items, balances, goals, record) {
+  function undoWithdrawal(items, balances, goals, record, withdrawals) {
     items.forEach(function (it) { if (it.withdrawn === record.id) it.withdrawn = 0; });
     goals.forEach(function (g) { if (g.settled === record.id) g.settled = 0; });
     Object.keys(record.balances).forEach(function (name) { balances[name] = record.balances[name]; });
+    (withdrawals || []).forEach(function (w) {
+      if (w && Array.isArray(w.settled)) w.settled = w.settled.filter(function (x) { return x.by !== record.id; });
+    });
   }
 
   // ---- investments that repeat (rent every month, a subscription every week, and so on) ----
@@ -446,6 +519,7 @@
     capWords: capWords, backupDue: backupDue, backupAge: backupAge,
     themeParts: themeParts, themeForMode: themeForMode, themeForLook: themeForLook,
     withdrawPlan: withdrawPlan, applyWithdrawal: applyWithdrawal, undoWithdrawal: undoWithdrawal,
+    takenMoney: takenMoney, withdrawMax: withdrawMax, partialPlan: partialPlan, partialWithdrawal: partialWithdrawal,
     monthOf: monthOf, monthLabel: monthLabel, periodStart: periodStart, isDueOn: isDueOn, periodLabel: periodLabel, repeatText: repeatText,
     resetInvestment: resetInvestment, rolloverInvestments: rolloverInvestments,
     prevMonth: prevMonth, nextMonth: nextMonth, daysIn: daysIn, soldInMonth: soldInMonth,

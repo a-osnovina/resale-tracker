@@ -338,6 +338,27 @@ body.summary-loose .summary { position: relative; }
 .withdraw-btn { align-self: flex-start; min-height: 32px; padding: 0 14px; margin-top: 4px; font-size: 13px; font-weight: 700; color: var(--accent-text); background: var(--surface); border: 1px solid var(--accent-line); border-radius: 999px; }
 .withdraw-amount { font-size: 34px; font-weight: 800; color: var(--accent-text); margin-top: 4px; }
 .withdraw-note { font-size: 14px; color: var(--muted); margin: 8px 0 4px; }
+
+/* ---- Withdraw pop-up: everything, or a different amount ---- */
+.wd-choice { width: 100%; margin-top: 10px; min-height: 72px; padding: 14px 16px; border-radius: 16px; display: flex; flex-direction: column; align-items: flex-start; gap: 4px; text-align: left; background: var(--surface); border: 1px solid var(--line); color: var(--text); }
+.wd-choice b { font-size: 18px; }
+.wd-choice span { font-size: 14px; opacity: 0.85; }
+.wd-choice.primary { background: var(--primary); border-color: var(--primary); color: #ffffff; }
+.wd-choice:disabled { opacity: 0.5; }
+.wd-head { margin: -4px 0 4px; }
+.wd-back { min-height: 44px; padding: 0 12px 0 0; border: 0; background: none; color: var(--accent-text); font-size: 16px; font-weight: 700; }
+.wd-amount-box { display: flex; align-items: center; gap: 6px; margin-top: 10px; padding: 0 16px; min-height: 72px; border-radius: 16px; background: var(--bg); border: 1.5px solid var(--accent-line); }
+.wd-dollar { font-size: 32px; color: var(--muted); font-weight: 500; }
+.wd-amount-input { flex: 1; min-width: 0; border: 0; background: none; color: var(--text); font-size: 36px; font-weight: 800; font-variant-numeric: tabular-nums; outline: none; padding: 0; }
+.wd-stays { margin: 10px 2px 0; font-size: 14px; color: var(--muted); }
+.wd-stays b { color: var(--text); }
+.wd-from-row { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-top: 14px; min-height: 52px; padding: 0 12px 0 16px; border-radius: 14px; border: 1px solid var(--line-soft); color: var(--muted); font-size: 16px; }
+.wd-from { flex: 1; min-width: 0; min-height: 44px; border: 0; background: none; color: var(--text); font-size: 16px; font-weight: 700; text-align: right; }
+.wd-max { margin-top: 8px; min-height: 44px; padding: 0 4px; border: 0; background: none; color: var(--accent-text); font-size: 15px; font-weight: 700; }
+.wd-go { width: 100%; margin-top: 10px; min-height: 56px; border-radius: 28px; font-size: 17px; font-weight: 800; }
+.wd-go:disabled { opacity: 0.45; }
+.wd-warn:empty { display: none; }
+
 .wd-row { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 8px 0; border-top: 1px solid var(--line-soft); font-size: 14px; }
 .wd-row button { min-height: 36px; padding: 0 12px; font-size: 13px; }
 /* Tools window and switches */
@@ -1991,7 +2012,7 @@ body.modal-open #undo-bar { visibility: hidden; }
 // The money and date rules live in js/logic.js (tested with: node tests/logic.test.js).
 const { money, salePrice, isDone, feeTotal, platformFee, shipCostOf, costsTotal, profitOf, bundlePrice, bulkCosts, feeText, bumpText, feeExample,
   parseDate, formatDate, dayDiff, addDays, isWeekend, shipByDate, capWords, wordCount, isQuickNameOk, backupDue, backupAge, themeParts, themeForMode, themeForLook,
-  withdrawPlan, applyWithdrawal, undoWithdrawal, monthOf, monthLabel, periodStart, isDueOn, periodLabel, repeatText, resetInvestment, rolloverInvestments,
+  withdrawPlan, applyWithdrawal, undoWithdrawal, takenMoney, withdrawMax, partialPlan, partialWithdrawal, monthOf, monthLabel, periodStart, isDueOn, periodLabel, repeatText, resetInvestment, rolloverInvestments,
   bumpLastDay, boostCost, autoStatus } = window.ResaleLogic;
 
 // The browser's own alert and confirm pop-ups are blocked in some browsers, so the app shows its own.
@@ -2228,7 +2249,13 @@ function cleanWithdrawals(list) {
   return list.filter(function (w) { return w && typeof w === "object" && Number(w.id) > 0; }).map(function (w) {
     const b = {};
     Object.keys((w && w.balances) || {}).forEach(function (n) { b[n] = Number(w.balances[n]) || 0; });
-    return { id: Number(w.id), date: String(w.date || ""), amount: Number(w.amount) || 0, platform: String(w.platform || ""), balances: b };
+    const rec = { id: Number(w.id), date: String(w.date || ""), amount: Number(w.amount) || 0, platform: String(w.platform || ""), balances: b };
+    if (w.parts && typeof w.parts === "object") {
+      rec.parts = {};
+      Object.keys(w.parts).forEach(function (n) { rec.parts[n] = Number(w.parts[n]) || 0; });
+      rec.settled = (Array.isArray(w.settled) ? w.settled : []).filter(function (x) { return x && typeof x.site === "string"; }).map(function (x) { return { site: x.site, by: Number(x.by) || 0 }; });
+    }
+    return rec;
   });
 }
 try { withdrawals = cleanWithdrawals(JSON.parse(localStorage.getItem("withdrawals"))); } catch (e) { withdrawals = []; }
@@ -4148,7 +4175,7 @@ function paintBalances() {
     const start = balances[name] || 0;
     const made = lastItemByPlatform[name] || 0;
     balanceRefs[name].item.textContent = money(made);
-    balanceRefs[name].sum.textContent = money(start + made);
+    balanceRefs[name].sum.textContent = money(start + made - takenMoney(withdrawals, name) / 100);
   });
 }
 // The starting balance box, shown inside each platform's card in Settings.
@@ -4446,10 +4473,10 @@ function setStartingBalances(values) {
 }
 // Cashes out one platform (name) or everything (null).
 function doWithdraw(platform) {
-  const plan = withdrawPlan(items, balances, goals, platform);
+  const plan = withdrawPlan(items, balances, goals, platform, withdrawals);
   if (plan.blocked) { showToast(plan.blocked); return; }
   const snap = captureState();
-  const record = applyWithdrawal(items, balances, goals, platform, Date.now(), todayText());
+  const record = applyWithdrawal(items, balances, goals, platform, Date.now(), todayText(), withdrawals);
   buildBalanceBlocks();
   withdrawals.push(record);
   save();
@@ -4460,81 +4487,158 @@ function doWithdraw(platform) {
 function undoWithdraw() {
   const last = withdrawals[withdrawals.length - 1];
   if (!last) return;
-  undoWithdrawal(items, balances, goals, last);
+  undoWithdrawal(items, balances, goals, last, withdrawals);
   buildBalanceBlocks();
   withdrawals.pop();
   save();
   render();
   openWithdrawSheet();
 }
-let withdrawMode = "total";   // "total" or "platform": what the Withdraw pop-up shows first
+// The Withdraw pop-up has two steps: "everything or a different amount", then the amount itself.
+let wdStep = "choose";   // "choose" or "amount"
+let wdFrom = null;       // null = all platforms, or one platform's name
+let wdText = "";         // what is typed in the amount box
+function openWithdraw(step, from) {
+  wdStep = step;
+  wdFrom = from === undefined ? null : from;
+  wdText = "";
+  openWithdrawSheet();
+}
+function doPartialWithdraw(platform, amount) {
+  const record = partialWithdrawal(items, balances, goals, platform, amount, Date.now(), todayText(), withdrawals);
+  if (!record) { showToast("That amount can't be withdrawn."); return; }
+  const snap = captureState();
+  withdrawals.push(record);
+  save();
+  render();
+  closeScanModal();
+  showUndo("Withdrew " + money(record.amount) + (platform ? " from " + platform + "." : "."), snap);
+}
+function wdHistory() {
+  if (withdrawals.length === 0) return;
+  scanBody.appendChild(el("div", "slot-item-name", "Past withdrawals"));
+  withdrawals.slice().reverse().forEach(function (w, i) {
+    const row = el("div", "wd-row");
+    row.appendChild(el("span", "", prettyDay(w.date) + " · " + (w.platform ? w.platform + " · " : "Total · ") + money(w.amount)));
+    if (i === 0) {
+      const undo = el("button", "", "Undo");
+      undo.type = "button";
+      undo.onclick = undoWithdraw;
+      row.appendChild(undo);
+    }
+    scanBody.appendChild(row);
+  });
+  scanBody.appendChild(el("div", "small", "Withdrawn in total: " + money(withdrawals.reduce(function (sum, w) { return sum + w.amount; }, 0))));
+}
 function openWithdrawSheet() {
   scanBody.innerHTML = "";
-  scanBody.appendChild(el("h3", "", "Withdraw money"));
-
-  const seg = el("div", "seg");
-  [["total", "Total"], ["platform", "Per platform"]].forEach(function (pair) {
-    const b = el("button", withdrawMode === pair[0] ? "on" : "", pair[1]);
-    b.type = "button";
-    b.addEventListener("click", function () { withdrawMode = pair[0]; openWithdrawSheet(); });
-    seg.appendChild(b);
-  });
-  scanBody.appendChild(seg);
-
-  if (withdrawMode === "total") {
-    const plan = withdrawPlan(items, balances, goals, null);
-    scanBody.appendChild(el("div", "small", "Available balance"));
-    scanBody.appendChild(el("div", "withdraw-amount", money(plan.amount)));
-    if (!plan.blocked) {
-      scanBody.appendChild(el("div", "withdraw-note", "This cashes out everything on every platform. Your balance goes back to $0.00, the starting balances reset to $0, and the sales so far stop counting toward your balance. They stay in your item list and Weekly sales. You can undo the latest withdrawal below."));
-      scanBody.appendChild(modalButton("Withdraw " + money(plan.amount) + " and start from $0", "primary", function () { doWithdraw(null); }));
-    } else {
-      scanBody.appendChild(el("div", "withdraw-note", plan.blocked + " Your available balance is $0.00."));
-    }
-  } else {
-    scanBody.appendChild(el("div", "withdraw-note", "Pick the platform you cashed out. Only that platform's money goes back to $0. The others stay as they are."));
-    let shown = 0;
+  if (wdStep === "amount") {
+    // Step 2: type the amount
+    const head = el("div", "wd-head");
+    const back = el("button", "wd-back", "‹ Back");
+    back.type = "button";
+    back.onclick = function () { wdStep = "choose"; openWithdrawSheet(); };
+    head.appendChild(back);
+    scanBody.appendChild(head);
+    scanBody.appendChild(el("h3", "", "Withdraw a different amount"));
+    const input = document.createElement("input");
+    input.type = "text";
+    input.inputMode = "decimal";
+    input.className = "wd-amount-input";
+    input.placeholder = "0.00";
+    input.value = wdText;
+    input.setAttribute("aria-label", "Amount to withdraw in dollars");
+    const box = el("div", "wd-amount-box");
+    box.appendChild(el("span", "wd-dollar", "$"));
+    box.appendChild(input);
+    scanBody.appendChild(box);
+    const stays = el("div", "wd-stays");
+    scanBody.appendChild(stays);
+    const from = document.createElement("select");
+    from.className = "wd-from";
+    from.setAttribute("aria-label", "Take it from");
+    const allOpt = document.createElement("option");
+    allOpt.value = "";
+    allOpt.textContent = "All platforms · " + money(withdrawMax(items, balances, goals, null, withdrawals));
+    from.appendChild(allOpt);
     platformNames().forEach(function (name) {
-      const plan = withdrawPlan(items, balances, goals, name);
       const platform = findPlatform(name);
-      if (plan.amount === 0 && !(platform && platform.enabled)) return;
-      shown++;
-      const row = el("div", "wd-platform");
-      row.appendChild(el("div", "wd-platform-name", name));
-      row.appendChild(el("div", "wd-platform-amount", money(plan.amount)));
-      const btn = el("button", plan.blocked ? "" : "primary", plan.blocked ? (plan.amount === 0 ? "Nothing yet" : "Can't withdraw") : "Withdraw");
-      btn.type = "button";
-      btn.disabled = !!plan.blocked && plan.amount === 0;
-      btn.addEventListener("click", function () { doWithdraw(name); });
-      row.appendChild(btn);
-      if (plan.blocked && plan.amount > 0) row.appendChild(el("div", "small wd-platform-why", plan.blocked));
-      scanBody.appendChild(row);
+      const max = withdrawMax(items, balances, goals, name, withdrawals);
+      if (max === 0 && !(platform && platform.enabled)) return;
+      const o = document.createElement("option");
+      o.value = name;
+      o.textContent = name + " · " + money(max);
+      from.appendChild(o);
     });
-    if (shown === 0) scanBody.appendChild(el("div", "withdraw-note", "No platforms yet."));
+    from.value = wdFrom || "";
+    if (from.value !== (wdFrom || "")) { wdFrom = null; from.value = ""; }
+    const fromRow = el("label", "wd-from-row");
+    fromRow.appendChild(el("span", "", "From"));
+    fromRow.appendChild(from);
+    scanBody.appendChild(fromRow);
+    const maxBtn = el("button", "wd-max", "");
+    maxBtn.type = "button";
+    scanBody.appendChild(maxBtn);
+    const go = el("button", "primary wd-go", "Withdraw");
+    go.type = "button";
+    scanBody.appendChild(go);
+    const warn = el("div", "withdraw-note wd-warn");
+    scanBody.appendChild(warn);
+    const update = function () {
+      wdFrom = from.value || null;
+      const max = withdrawMax(items, balances, goals, wdFrom, withdrawals);
+      const text = input.value.replace(/[^0-9.]/g, "");
+      const amount = text === "" ? 0 : Number(text);
+      const plan = partialPlan(items, balances, goals, wdFrom, amount, withdrawals);
+      wdText = input.value;
+      const left = withdrawMax(items, balances, goals, wdFrom, withdrawals) - (plan.ok ? amount : 0);
+      stays.textContent = "";
+      stays.appendChild(el("b", "", money(Math.max(0, left))));
+      stays.appendChild(document.createTextNode(wdFrom ? " stays in " + wdFrom : " stays in your balance"));
+      maxBtn.textContent = "Use all " + money(max);
+      maxBtn.hidden = max <= 0;
+      go.textContent = plan.ok ? "Withdraw " + money(amount) : "Withdraw";
+      go.disabled = !plan.ok;
+      warn.textContent = text !== "" && !plan.ok ? plan.reason : "";
+    };
+    input.addEventListener("input", update);
+    from.addEventListener("change", update);
+    maxBtn.onclick = function () { input.value = String(withdrawMax(items, balances, goals, from.value || null, withdrawals).toFixed(2)); update(); input.focus(); };
+    go.onclick = function () {
+      const amount = Number(input.value.replace(/[^0-9.]/g, ""));
+      doPartialWithdraw(from.value || null, amount);
+    };
+    update();
+    scanBody.appendChild(modalButton("Close", "", closeScanModal));
+    scanModal.hidden = false;
+    setTimeout(function () { try { input.focus(); } catch (e) {} }, 50);
+    return;
   }
-
-  if (withdrawals.length > 0) {
-    scanBody.appendChild(el("div", "slot-item-name", "Past withdrawals"));
-    withdrawals.slice().reverse().forEach(function (w, i) {
-      const row = el("div", "wd-row");
-      row.appendChild(el("span", "", prettyDay(w.date) + " \u00B7 " + (w.platform ? w.platform + " \u00B7 " : "Total \u00B7 ") + money(w.amount)));
-      if (i === 0) {
-        const undo = el("button", "", "Undo");
-        undo.type = "button";
-        undo.onclick = undoWithdraw;
-        row.appendChild(undo);
-      }
-      scanBody.appendChild(row);
-    });
-    scanBody.appendChild(el("div", "small", "Withdrawn in total: " + money(withdrawals.reduce(function (sum, w) { return sum + w.amount; }, 0))));
-  }
+  // Step 1: everything, or a different amount
+  scanBody.appendChild(el("h3", "", "Withdraw"));
+  const plan = withdrawPlan(items, balances, goals, null, withdrawals);
+  const all = el("button", "wd-choice primary");
+  all.type = "button";
+  all.appendChild(el("b", "", "Withdraw everything"));
+  all.appendChild(el("span", "", plan.blocked ? plan.blocked : money(plan.amount) + " from all platforms"));
+  all.disabled = !!plan.blocked;
+  all.onclick = function () { doWithdraw(null); };
+  scanBody.appendChild(all);
+  const some = el("button", "wd-choice");
+  some.type = "button";
+  some.appendChild(el("b", "", "Withdraw a different amount"));
+  some.appendChild(el("span", "", "Pick how much to take"));
+  some.disabled = !!plan.blocked;
+  some.onclick = function () { wdStep = "amount"; wdFrom = null; wdText = ""; openWithdrawSheet(); };
+  scanBody.appendChild(some);
+  wdHistory();
   scanBody.appendChild(modalButton("Close", "", closeScanModal));
   scanModal.hidden = false;
 }
-document.getElementById("withdraw-button").addEventListener("click", openWithdrawSheet);
+document.getElementById("withdraw-button").addEventListener("click", function () { openWithdraw("choose"); });
 document.getElementById("withdraw-button2").addEventListener("click", function () {
   document.getElementById("balance-drop").open = false;
-  openWithdrawSheet();
+  openWithdraw("choose");
 });
 
 // ---- lower-price alert: a window listing the items, and a way to dismiss it ----
@@ -6794,7 +6898,7 @@ function render() {
   goals.forEach(function (goal) {
     if (goal.purchased && !goal.settled) spent += goal.amount;
   });
-  const balance = total - spent;
+  const balance = total - spent - takenMoney(withdrawals) / 100;
 
   lastBalance = balance;
   lastTotal = total;
@@ -10255,7 +10359,7 @@ function renderProfitTab() {
 function renderWithdrawalsTab() {
   const box = $("wd-panel");
   box.innerHTML = "";
-  const all = withdrawPlan(items, balances, goals, null);
+  const all = withdrawPlan(items, balances, goals, null, withdrawals);
   const top = el("div", "bal-card");
   const text = el("div", "bal-text");
   text.appendChild(el("span", "bal-label", "You can withdraw"));
@@ -10263,7 +10367,7 @@ function renderWithdrawalsTab() {
   top.appendChild(text);
   const go = el("button", "bal-btn", "Withdraw");
   go.type = "button";
-  go.onclick = function () { withdrawMode = "total"; openWithdrawSheet(); };
+  go.onclick = function () { openWithdraw("choose"); };
   top.appendChild(go);
   box.appendChild(top);
 
@@ -10271,7 +10375,7 @@ function renderWithdrawalsTab() {
   per.appendChild(el("div", "msec-title", "By platform"));
   const names = enabledPlatformNames();
   names.forEach(function (name) {
-    const plan = withdrawPlan(items, balances, goals, name);
+    const plan = withdrawPlan(items, balances, goals, name, withdrawals);
     const line = el("button", "wd-line");
     line.type = "button";
     line.style.cssText = "width:100%;background:none;border:0;padding:0;text-align:left;color:var(--text)";
@@ -10283,7 +10387,7 @@ function renderWithdrawalsTab() {
     left.appendChild(document.createTextNode(name));
     line.appendChild(left);
     line.appendChild(el("b", "", money(plan.amount)));
-    line.onclick = function () { withdrawMode = "platform"; openWithdrawSheet(); };
+    line.onclick = function () { openWithdraw("amount", name); };
     per.appendChild(line);
   });
   if (!names.length) per.appendChild(el("div", "small", "No platforms are switched on yet."));
