@@ -942,7 +942,8 @@ svg { flex: none; }
 .acard.price .acard-btn { background: #fff8e1; border: 1.5px solid #c9a13a; color: #6b4a00; }
 .acard-x { position: absolute; top: 2px; right: 2px; min-height: 32px; width: 32px; padding: 0; border: 0; background: transparent; color: var(--muted); font-size: 18px; line-height: 1; }
 #legacy, #legacy * { display: none !important; }
-#pipeline-panel { padding: 14px 10px 12px; }
+#pipeline-panel, #plan-pipeline-panel { padding: 14px 10px 12px; }
+#plan-pipeline-panel { position: static; border-radius: 14px; max-height: none; box-shadow: none; }
 .pipe { padding: 2px 0 8px; }
 .pipe-step::before { top: 22px; height: 3px; }
 .pipe-node { width: 36px; height: 36px; background: var(--surface); border: 2px solid var(--accent-line); color: var(--accent-text); font-size: 15px; }
@@ -10914,8 +10915,18 @@ function renderPlanOverview(box) {
 
 function renderPlanTimeAndTools(box) {
   const today = todayText();
+  if (pipelineOn) {
+    const pl = el("div", "sec-head");
+    pl.appendChild(el("h2", "msec-title", "Timeline"));
+    pl.appendChild(el("span", "sec-note", "Tap a step"));
+    box.appendChild(pl);
+    const ppanel = el("div", "dropdown-panel");
+    ppanel.id = "plan-pipeline-panel";
+    drawPipeline(ppanel, planNeeds());
+    box.appendChild(ppanel);
+  }
   const tl = el("div", "sec-head");
-  tl.appendChild(el("h2", "msec-title", "Timeline"));
+  tl.appendChild(el("h2", "msec-title", "Time log"));
   box.appendChild(tl);
   const card = el("div", "time-card");
   const text = el("div", "time-text");
