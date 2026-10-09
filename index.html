@@ -1497,6 +1497,7 @@ progress::-moz-progress-bar { background: var(--primary); border-radius: 5px; }
 .sp-toggle .ico { width: 20px; height: 20px; transition: transform .15s; }
 .sp-toggle.open .ico { transform: rotate(180deg); }
 .sp-more { flex-basis: 100%; display: flex; flex-direction: column; gap: 8px; padding-top: 10px; margin-top: 2px; border-top: 1px solid var(--line-soft); cursor: default; }
+.sp-line.tap { cursor: pointer; }
 .sp-line { display: flex; align-items: center; gap: 10px; }
 .sp-line .sthumb { width: 40px; height: 40px; }
 .sp-line-name { flex: 1; min-width: 0; font-weight: 700; font-size: 15px; overflow-wrap: anywhere; }
@@ -8533,18 +8534,23 @@ function renderStockTakeout() {
       const more = el("div", "sp-more");
       more.onclick = function (event) { event.stopPropagation(); };
       g.items.forEach(function (i) {
-        const line = el("div", "sp-line");
+        const line = el("div", "sp-line tap");
         line.appendChild(itemThumb(i));
         line.appendChild(el("div", "sp-line-name", i.name));
         const spot = el("div", "sp-spot");
         spot.appendChild(el("span", "", "SPOT"));
         spot.appendChild(el("b", "", slotLabel(i.bin, i.slot)));
         line.appendChild(spot);
+        line.onclick = function (event) { event.stopPropagation(); showCard(i); };
         more.appendChild(line);
       });
       row.appendChild(more);
     }
-    row.onclick = function () { showCard(it); };
+    row.onclick = function () {
+      if (!many) { showCard(it); return; }
+      if (takeoutOpen.has(g.key)) takeoutOpen.delete(g.key); else takeoutOpen.add(g.key);
+      renderStockTakeout();
+    };
     box.appendChild(row);
   });
 }
@@ -10896,11 +10902,21 @@ function renderShipPage() {
       };
       row.appendChild(tog);
     }
+    if (many) {
+      // Tapping a parcel opens or closes it. The checkbox is what ticks it.
+      row.onclick = function (event) {
+        if (event.target === box) return;
+        event.preventDefault();
+        if (shipPage.open.has(g.key)) shipPage.open.delete(g.key); else shipPage.open.add(g.key);
+        renderShipPage();
+      };
+    }
     if (isOpen) {
       const more = el("div", "sp-more");
       more.onclick = function (event) { event.preventDefault(); event.stopPropagation(); };
       g.items.forEach(function (it) {
-        const line = el("div", "sp-line");
+        const line = el("div", "sp-line tap");
+        line.onclick = function (event) { event.preventDefault(); event.stopPropagation(); showCard(it); };
         line.appendChild(itemThumb(it));
         const nm = el("div", "sp-line-name", it.name);
         line.appendChild(nm);
