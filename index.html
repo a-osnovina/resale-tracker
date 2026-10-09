@@ -1321,6 +1321,7 @@ progress::-moz-progress-bar { background: var(--primary); border-radius: 5px; }
 .to-row { width: 100%; min-height: 60px; margin-top: 8px; padding: 8px 12px; display: flex; align-items: center; gap: 12px; text-align: left; background: var(--sold-bg); border: 1px solid var(--line-soft); border-left: 5px solid var(--sold-edge); border-radius: 14px; color: var(--text); }
 .to-slot { flex: 0 1 auto; min-width: 44px; max-width: 36%; padding: 6px 8px; border-radius: 10px; background: var(--surface); font-weight: 800; line-height: 1.15; text-align: center; overflow-wrap: anywhere; }
 .sp-name, .to-text b { display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+.to-x { flex: none; width: 36px; height: 36px; min-height: 36px; padding: 0; border: 0; border-radius: 18px; background: var(--surface); color: var(--muted); display: flex; align-items: center; justify-content: center; }
 .to-row .sthumb { width: 52px; height: 52px; }
 .to-row .sp-spot { background: var(--surface); }
 .to-text { flex: 1 1 0; min-width: 90px; display: flex; flex-direction: column; gap: 1px; }
@@ -8448,15 +8449,16 @@ function renderStockTakeout() {
   const box = $("stock-takeout");
   if (!box) return;
   box.innerHTML = "";
-  const list = features.storage ? items.filter(function (it) { return it.status === "Sold" && it.bin && it.slot > 0; }) : [];
+  const list = features.storage ? items.filter(function (it) { return it.status === "Sold" && it.bin && it.slot > 0 && !it.takenOut; }) : [];
   box.hidden = list.length === 0;
   if (!list.length) return;
   const head = el("div", "sec-head");
   head.appendChild(el("h2", "msec-title", "Take out of storage"));
   box.appendChild(head);
   list.slice().sort(function (a, b) { return slotLabel(a.bin, a.slot).localeCompare(slotLabel(b.bin, b.slot), undefined, { numeric: true }); }).forEach(function (it) {
-    const row = el("button", "to-row");
-    row.type = "button";
+    const row = el("div", "to-row");
+    row.setAttribute("role", "button");
+    row.tabIndex = 0;
     row.appendChild(itemThumb(it));
     const text = el("span", "to-text");
     text.appendChild(el("b", "", it.name));
@@ -8467,6 +8469,19 @@ function renderStockTakeout() {
     spot.appendChild(el("span", "", "SPOT"));
     spot.appendChild(el("b", "", slotLabel(it.bin, it.slot)));
     row.appendChild(spot);
+    const x = el("button", "to-x");
+    x.type = "button";
+    x.setAttribute("aria-label", "Hide " + it.name + ": already out of storage");
+    x.innerHTML = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>';
+    x.onclick = function (event) {
+      event.stopPropagation();
+      const snap = captureState();
+      it.takenOut = true;
+      save();
+      render();
+      showUndo(it.name + " hidden here. It still has to ship.", snap);
+    };
+    row.appendChild(x);
     row.onclick = function () { showCard(it); };
     box.appendChild(row);
   });
