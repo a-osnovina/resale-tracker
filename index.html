@@ -1052,7 +1052,7 @@ progress::-moz-progress-bar { background: var(--primary); border-radius: 5px; }
 .trow.done .trow-title { text-decoration: line-through; color: var(--muted); }
 .trow-icon { flex: none; width: 28px; height: 28px; border-radius: 8px; background: var(--tint); color: var(--accent-text); display: grid; place-items: center; font-weight: 800; font-size: 14px; }
 .todo-empty { padding: 4px 2px; font-size: 14px; color: var(--muted); }
-#view-home .banner { margin-top: 18px; }
+#stock-overview .banner { margin-top: 18px; }
 
 /* ---- bottom bar ---- */
 #tabbar { position: fixed; left: 0; right: 0; bottom: 0; z-index: 35; background: var(--surface); border-top: 1px solid var(--line-soft); padding-bottom: env(safe-area-inset-bottom); }
@@ -1642,8 +1642,15 @@ body.modal-open #undo-bar { visibility: hidden; }
     <div id="platforms-drop-panel"></div>
   </div>
 
-  <!-- HOME: what needs doing today -->
-  <section class="view" id="view-home" aria-label="Today">
+
+  <!-- STOCK: your items, and where they are stored -->
+  <section class="view" id="view-stock" aria-label="Stock" hidden>
+    <div class="seg" id="stock-seg">
+      <button type="button" id="seg-stock-overview">Overview</button>
+      <button type="button" id="seg-stock-items" class="on">Items</button>
+      <button type="button" id="seg-stock-storage">Storage</button>
+    </div>
+    <div id="stock-overview" hidden>
     <div class="summary" id="summary-box">
       <div class="stats">
         <div class="stat main" id="home-balance-tile" role="button" tabindex="0" aria-label="Balance. Tap to open Money.">
@@ -1679,16 +1686,6 @@ body.modal-open #undo-bar { visibility: hidden; }
       <button type="button" id="backup-banner-later" class="small-btn">Later</button>
     </div>
   </div>
-  </section>
-
-  <!-- STOCK: your items, and where they are stored -->
-  <section class="view" id="view-stock" aria-label="Stock" hidden>
-    <div class="seg" id="stock-seg">
-      <button type="button" id="seg-stock-overview">Overview</button>
-      <button type="button" id="seg-stock-items" class="on">Items</button>
-      <button type="button" id="seg-stock-storage">Storage</button>
-    </div>
-    <div id="stock-overview" hidden>
     <div id="stock-takeout"></div>
     <div id="overview-off" class="small" hidden>Timeline is off.</div>
     <section id="pipeline-box" class="msec" hidden>
@@ -1994,8 +1991,7 @@ body.modal-open #undo-bar { visibility: hidden; }
   <button type="button" id="scroll-top" class="primary" aria-label="Back to top"></button>
   <nav id="tabbar" aria-label="Main">
     <div class="tabbar-in">
-      <button type="button" class="bar-tab on" id="tab-home" data-view="home"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 11l9-7 9 7v9a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1v-9z"/></svg>Home</button>
-      <button type="button" class="bar-tab" id="tab-stock" data-view="stock"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21 8 12 3 3 8v8l9 5 9-5V8z"/><path d="M3 8l9 5 9-5M12 13v8"/></svg>Stock</button>
+      <button type="button" class="bar-tab" id="tab-stock" data-view="stock"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 11l9-7 9 7v9a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1v-9z"/></svg>Home</button>
       <button type="button" class="tab-add" id="tab-add" aria-label="Add item"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg></button>
       <button type="button" class="bar-tab" id="tab-money" data-view="money"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20V10M10 20V4M16 20v-8M22 20H2"/></svg>Money</button>
       <button type="button" class="bar-tab" id="tab-plan" data-view="plan"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="5" width="16" height="15" rx="2"/><path d="M4 10h16M8 3v4M16 3v4"/></svg>Plan</button>
@@ -9837,7 +9833,7 @@ function closePlanner() {
   plannerModal.hidden = true;
   if (timerTick) clearInterval(timerTick);
   timerTick = null;
-  if (currentView === "plan") showView("home");
+  if (currentView === "plan") showView("stock");
 }
 document.getElementById("planner-button").addEventListener("click", openPlanner);
 document.getElementById("planner-close").addEventListener("click", closePlanner);
@@ -9905,7 +9901,7 @@ function applyFeatures() {
   document.getElementById("overview-off").hidden = true;
   document.getElementById("planner-button").hidden = !features.planner;
   document.getElementById("tab-plan").hidden = !features.planner;
-  if (!features.planner && currentView === "plan") showView("home");
+  if (!features.planner && currentView === "plan") showView("stock");
   document.getElementById("seg-stock-storage").hidden = !features.storage;
   if (!features.storage && !$("stock-storage").hidden) showStockPane("items");
   document.getElementById("inv-wrap").hidden = !features.investments;
@@ -10174,18 +10170,21 @@ function moneyShort(v) {
 }
 
 // ---- Bottom bar: Home, Stock, Money, Plan ----
-var currentView = "home";
-var VIEW_TITLES = { home: "Today", stock: "Stock", money: "Money", plan: "Plan" };
+var currentView = "stock";
+var stockPane = "overview";
+var VIEW_TITLES = { stock: "Today", money: "Money", plan: "Plan" };
 var VIEW_EYEBROW = { stock: "Your items", money: "Balance, sales and fees", plan: "Your week" };
 var MONTHS = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
 var WEEKDAYS = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
 function updateEyebrow() {
   const d = new Date();
-  $("app-title").textContent = currentView === "home" ? WEEKDAYS[d.getDay()] + ", " + d.getDate() + " " + MONTHS[d.getMonth()] : VIEW_EYEBROW[currentView];
+  const homeLook = currentView === "stock" && stockPane === "overview";
+  $("app-title").textContent = homeLook ? WEEKDAYS[d.getDay()] + ", " + d.getDate() + " " + MONTHS[d.getMonth()] : (currentView === "stock" ? "Your items" : VIEW_EYEBROW[currentView]);
+  $("view-title").textContent = currentView === "stock" ? (homeLook ? "Today" : "Stock") : VIEW_TITLES[currentView];
 }
 function showView(name) {
-  if (!VIEW_TITLES[name]) name = "home";
-  if (name === "plan" && !features.planner) name = "home";
+  if (!VIEW_TITLES[name]) name = "stock";
+  if (name === "plan" && !features.planner) name = "stock";
   currentView = name;
   Object.keys(VIEW_TITLES).forEach(function (key) {
     const section = $("view-" + key);
@@ -10209,12 +10208,14 @@ function showView(name) {
 function showStockPane(which) {
   if (which === "storage" && !features.storage) which = "items";
   if (which !== "overview" && which !== "storage") which = "items";
+  stockPane = which;
   $("stock-overview").hidden = which !== "overview";
   $("seg-stock-overview").classList.toggle("on", which === "overview");
   $("stock-items").hidden = which !== "items";
   $("stock-storage").hidden = which !== "storage";
   $("seg-stock-items").classList.toggle("on", which === "items");
   $("seg-stock-storage").classList.toggle("on", which === "storage");
+  updateEyebrow();
 }
 
 // ---- Stock: Listed / In progress / Sold tabs and the item rows ----
@@ -12411,8 +12412,8 @@ document.querySelectorAll("#money-tabs button").forEach(function (b) {
   b.addEventListener("click", function () { showMoneyTab(b.getAttribute("data-t")); });
 });
 $("pm-select").addEventListener("change", function () { profitMonth = this.value; renderProfitTab(); });
-showView("home");
-showStockPane("items");
+showView("stock");
+showStockPane("overview");
 
 applyTitle();
 renderPhotoTypeEditor();
