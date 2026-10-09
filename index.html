@@ -8555,6 +8555,17 @@ function renderStockTakeout() {
   if (!groups.length) return;
   const head = el("div", "sec-head");
   head.appendChild(el("h2", "msec-title", "Take out of storage"));
+  const dismissAll = el("button", "sec-link", "Dismiss");
+  dismissAll.type = "button";
+  dismissAll.setAttribute("aria-label", "Dismiss all: they are already out of storage");
+  dismissAll.onclick = function () {
+    const snap = captureState();
+    stored.forEach(function (it) { it.takenOut = true; });
+    save();
+    render();
+    showUndo("Take out of storage dismissed. Everything still has to ship.", snap);
+  };
+  head.appendChild(dismissAll);
   box.appendChild(head);
   function firstSpot(g) { const f = g.items.filter(waiting)[0] || g.items[0]; return slotLabel(f.bin || "~", f.slot || 0); }
   groups.sort(function (a, b) { return firstSpot(a).localeCompare(firstSpot(b), undefined, { numeric: true }); }).forEach(function (g) {
@@ -10866,7 +10877,6 @@ function renderShipPage() {
     scanBody.appendChild(body);
     return;
   }
-  body.appendChild(el("div", "ap-intro", features.storage ? "Grab them from storage, pack, then tap each one you have packed." : "Pack each one, then tap it."));
   const listBox = el("div", "sp-list");
   parcels.forEach(function (g) {
     const first = g.items[0];
@@ -10937,18 +10947,6 @@ function renderShipPage() {
     showUndo(n === 1 && picked.length === 1 ? picked[0].name + " marked as shipped." : n + (n === 1 ? " parcel" : " parcels") + " marked as shipped.", snap);
   };
   body.appendChild(go);
-  const one = parcels.filter(function (g) { return shipPage.ticked.has(g.key); });
-  if (one.length === 1 && one[0].items.length > 1) {
-    const split = el("button", "ap-textbtn", "Split this parcel up");
-    split.type = "button";
-    split.onclick = function () {
-      one[0].items.forEach(function (it) { it.parcel = ""; });
-      shipPage.ticked.clear();
-      save();
-      renderShipPage();
-    };
-    body.appendChild(split);
-  }
   scanBody.appendChild(body);
 }
 
@@ -12261,7 +12259,9 @@ function renderViews() {
 document.querySelectorAll(".bar-tab").forEach(function (button) {
   button.addEventListener("click", function () {
     const name = button.getAttribute("data-view");
-    if (name === "stock" && currentView !== "stock") showStockPane("overview");
+    // Tapping a tab always brings you to that part's overview, even if you were already inside it.
+    if (name === "stock") showStockPane("overview");
+    if (name === "money") { if (!salesModal.hidden) closeSales(); showMoneyTab("overview"); }
     showView(name);
   });
 });
