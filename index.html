@@ -1496,6 +1496,36 @@ progress::-moz-progress-bar { background: var(--primary); border-radius: 5px; }
 #home-alerts { margin-top: 18px; }
 #home-alerts:empty { display: none; }
 .need-title { margin: 0 2px 8px; }
+.find-row { display: flex; gap: 8px; margin: 12px 0 0; }
+.find-box { flex: 1; min-width: 0; height: 48px; display: flex; align-items: center; gap: 8px; padding: 0 12px; background: var(--card, #fff); border: 1px solid var(--line, #cdd6c9); border-radius: 12px; color: var(--primary); }
+.find-box input { flex: 1; min-width: 0; border: 0; background: transparent; font-size: 16px; color: var(--text, #1f2a22); outline: none; height: 44px; padding: 0; }
+.find-sold { flex: none; height: 48px; padding: 0 16px; border: 0; border-radius: 12px; background: var(--primary); color: #fff; font-weight: 800; font-size: 15px; display: flex; align-items: center; gap: 6px; }
+.fl-sec { display: flex; justify-content: space-between; margin: 16px 2px 8px; font-size: 13px; font-weight: 800; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
+.fl-sec.bad { color: #b3261e; }
+.fl-row { display: flex; align-items: center; gap: 12px; margin: 0 0 8px; padding: 10px 12px; background: var(--card, #fff); border: 1px solid var(--line, #cdd6c9); border-radius: 14px; width: 100%; text-align: left; font: inherit; color: inherit; }
+.fl-row.late { border-color: #e6b4b0; }
+.fl-row .sthumb { width: 44px; height: 44px; border-radius: 10px; }
+.fl-main { min-width: 0; flex: 1; }
+.fl-name { font-weight: 700; font-size: 15px; line-height: 1.25; }
+.fl-name { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; word-break: break-word; }
+.fl-spot { max-width: 96px; font-size: 12px !important; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.fl-sub { font-size: 12px; font-weight: 700; margin-top: 1px; color: var(--muted); }
+.fl-sub.bad { color: #b3261e; }
+.fl-sub.warn { color: #7a5a00; }
+.fl-spot { flex: none; background: #e0efe6; color: var(--primary); font-weight: 800; font-size: 13px; padding: 6px 10px; border-radius: 10px; text-align: center; }
+.fl-ck { flex: none; width: 26px; height: 26px; border-radius: 8px; border: 2px solid #b9c3b6; box-sizing: border-box; background: #fff; display: flex; align-items: center; justify-content: center; color: #fff; }
+.fl-row.on { border-color: var(--primary); background: #e0efe6; }
+.fl-row.on .fl-ck { background: var(--primary); border-color: var(--primary); }
+.fl-btn { flex: none; height: 36px; padding: 0 14px; border: 0; border-radius: 10px; background: var(--primary); color: #fff; font-weight: 800; font-size: 14px; }
+.fl-pack { width: 100%; height: 44px; border: 0; border-radius: 12px; background: #e0efe6; color: var(--primary); font-weight: 800; font-size: 15px; }
+.fl-pack:disabled { opacity: .45; }
+.fl-empty { margin: 14px 2px; color: var(--muted); font-size: 14px; }
+.fl-foot { position: sticky; bottom: 0; background: var(--card, #fff); padding: 12px 0 4px; margin-top: 8px; border-top: 1px solid var(--line, #e6ece3); }
+.fl-foot > div { display: flex; justify-content: space-between; font-weight: 700; font-size: 14px; margin-bottom: 10px; }
+#stock-takeout, #pipeline-box, #overview-off { display: none !important; }
+#alerts-box .alerts-inner > .switch-row:first-child, #remind-row, #lower-options { display: none !important; }
+#summary-box .hero-months, #summary-box .stat:not(.main) { display: none !important; }
+#summary-box { margin-top: 18px; }
 .need-grid { display: flex; gap: 10px; }
 .need-tile { flex: 1; min-width: 0; min-height: 104px; padding: 12px 14px; display: flex; flex-direction: column; align-items: flex-start; gap: 2px; text-align: left; background: var(--surface); color: var(--text); border: 1px solid var(--line-soft); border-left-width: 5px; border-radius: 16px; }
 .need-tile.ship { border-left-color: var(--alert-bg); }
@@ -1659,6 +1689,11 @@ body.modal-open #undo-bar { visibility: hidden; }
       <button type="button" id="seg-stock-storage">Storage</button>
     </div>
     <div id="stock-overview" hidden>
+    <div class="find-row">
+      <label class="find-box"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/></svg><input id="home-find" type="search" placeholder="Where is…" aria-label="Find an item" autocomplete="off"></label>
+      <button type="button" id="home-sold-btn" class="find-sold"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12l5 5 9-10"/></svg>Mark sold</button>
+    </div>
+    <div id="home-alerts"></div>
     <div class="summary" id="summary-box">
       <div class="stats">
         <div class="stat main" id="home-balance-tile" role="button" tabindex="0" aria-label="Balance. Tap to open Money.">
@@ -1685,7 +1720,6 @@ body.modal-open #undo-bar { visibility: hidden; }
         <progress id="mini-bar" value="0" max="1"></progress>
       </div>
     </div>
-    <div id="home-alerts"></div>
     <section id="home-cal" class="msec" hidden></section>
   <div id="backup-banner" class="banner" hidden>
     <div id="backup-banner-text"></div>
@@ -2536,10 +2570,10 @@ let remindersOn = true;   // the lower-price reminders switch
 let lowerPercents = [10, 15];   // the percent-off buttons in the Lower price pop-up
 let bulks = [];      // one record per bulk upload: { id, date, name, count, totalCost }
 let plan = JSON.parse(JSON.stringify(DEFAULT_PLAN));   // planner time estimates and the weekly plan
-let timeEstOn = true;   // show time estimates (minutes of work) around the app
+let timeEstOn = false; /* time estimates removed */ let _unusedTimeEst = true;   // show time estimates (minutes of work) around the app
 let pipelineOn = true;  // show Where your items are in Stock
 let homeCal = "none";   // calendar on Home: "none", "week" or "month"
-try { pipelineOn = localStorage.getItem("pipelineOn") !== "0"; timeEstOn = localStorage.getItem("timeEst") !== "0"; const hc = localStorage.getItem("homeCal"); homeCal = hc === "week" || hc === "month" ? hc : "none"; } catch (e) {}
+try { pipelineOn = localStorage.getItem("pipelineOn") !== "0"; timeEstOn = false; const hc = localStorage.getItem("homeCal"); homeCal = hc === "week" || hc === "month" ? hc : "none"; } catch (e) {}
 function savePlanOptions() { try { localStorage.setItem("pipelineOn", pipelineOn ? "1" : "0"); localStorage.setItem("timeEst", timeEstOn ? "1" : "0"); localStorage.setItem("homeCal", homeCal); } catch (e) {} }
 let planPrefs = null; // Plan tab choices: shipping days, limit, repeating jobs, money goal
 let timeLog = [];    // time you logged: { id, date, step, minutes, items }
@@ -3752,8 +3786,7 @@ function reminderDueDate(item) {
 }
 
 function isDue(item) {
-  const due = reminderDueDate(item);
-  return due !== "" && todayText() >= due;
+  return false;  // the lower price reminder was removed
 }
 
 // ---- shipping reminders (business days are Monday to Friday) ----
@@ -7078,7 +7111,6 @@ function swipeSides(item) {
     add(lead, "Sold", "sold", function () { openSoldSheet(item); });
     add(trail, "Archive", "archive", function () { askArchive(item); });
     const locked = bumpLocked(item);
-    add(trail, locked ? "Price locked" : "Lower price", locked ? "locked" : "lower", function () { lowerPrice(item); });
     const config = platformConfig(item.site);
     const boost = !!config && config.bumpPercent !== null;
     add(trail, boost ? (item.bump && item.bumpRate > 0 ? "Boosted" : "Boost") : "Bump", "bump", function () { openBumpSheet(item); });
@@ -7807,7 +7839,7 @@ function restoreFromText(text, skipAsk) {
     if (Array.isArray(data.timeLog)) timeLog = cleanTimeLog(data.timeLog);
     if (Array.isArray(data.todos)) todos = cleanTodos(data.todos);
     if (data.planPrefs) planPrefs = cleanPlanPrefs(data.planPrefs);
-    if (typeof data.timeEstOn === "boolean") timeEstOn = data.timeEstOn;
+    timeEstOn = false;
     if (typeof data.pipelineOn === "boolean") pipelineOn = data.pipelineOn;
     if (data.homeCal === "week" || data.homeCal === "month" || data.homeCal === "none") homeCal = data.homeCal;
     savePlanOptions();
@@ -10502,7 +10534,6 @@ function buildItemDetail(item, index, done, profit, ship, shipAlerting) {
     }
     if (nextLabel) add("Edit", "", function () { startEdit(index); });
     if (item.status === "In progress" || item.status === "Listed") add("Archive", "", function () { askArchive(item); });
-    if (item.status === "Listed" && !isDue(item)) add("Lower price", "", function () { lowerPrice(item); });
     if (item.status === "Listed") {
       const platform = platformConfig(item.site);
       const isBoost = !!platform && platform.bumpPercent !== null;
@@ -10742,35 +10773,198 @@ function needTile(kind, count, label, sub, subClass, onClick) {
   t.onclick = onClick;
   return t;
 }
+const flowTicked = new Set();
+function flowSpot(group) {
+  const spots = group.filter(function (it) { return it.bin && it.slot; }).map(function (it) { return slotLabel(it.bin, it.slot); });
+  if (!spots.length) return null;
+  const d = el("span", "fl-spot");
+  spots.forEach(function (t, k) { if (k) d.appendChild(document.createElement("br")); d.appendChild(document.createTextNode(t)); });
+  return d;
+}
+function flowName(group) {
+  if (group.length === 1) return group[0].name;
+  return group.slice(0, 2).map(function (it) { return it.name; }).join(" + ") + (group.length > 2 ? " + " + (group.length - 2) + " more" : "");
+}
+function flowShipText(group) {
+  const info = shipInfo(group[0]);
+  if (!info || info.unknown) return { text: "", cls: "" };
+  const day = new Date(parseDate(info.by)).toLocaleDateString(undefined, { weekday: "short", timeZone: "UTC" });
+  if (info.late || info.pastDue) return { text: "PAST DUE · ship by " + day, cls: "bad" };
+  if (info.today) return { text: "Ship today", cls: "warn" };
+  return { text: "Ship by " + day, cls: "" };
+}
+function flowRow(group, tag) {
+  const row = el(tag || "div", "fl-row");
+  const st = flowShipText(group);
+  if (st.cls === "bad") row.classList.add("late");
+  const main = el("div", "fl-main");
+  row.appendChild(itemThumb(group[0]));
+  main.appendChild(el("div", "fl-name", flowName(group)));
+  const sub = (group.length > 1 ? "One parcel · " + group.length + " items" + (st.text ? " · " : "") : "") + st.text;
+  if (sub) main.appendChild(el("div", "fl-sub " + st.cls, sub));
+  row.appendChild(main);
+  return { row: row, main: main };
+}
+function homeFindResults(q) {
+  const box = el("div");
+  const words = q.toLowerCase().split(/\s+/).filter(Boolean);
+  const hits = items.filter(function (it) {
+    if (it.status === "Archived") return false;
+    const hay = (it.name + " " + (it.site || "") + " " + (it.bin && it.slot ? slotLabel(it.bin, it.slot) : "")).toLowerCase();
+    return words.every(function (w) { return hay.indexOf(w) >= 0; });
+  }).slice(0, 20);
+  if (!hits.length) { box.appendChild(el("p", "fl-empty", "Nothing found for \u201c" + q + "\u201d.")); return box; }
+  hits.forEach(function (it) {
+    const r = flowRow([it], "button");
+    r.row.type = "button";
+    const where = it.bin && it.slot ? "At " + slotLabel(it.bin, it.slot) : "No spot";
+    r.main.appendChild(el("div", "fl-sub", it.status + (it.site ? " · " + it.site : "") + " · " + where));
+    const sp = flowSpot([it]);
+    if (sp) r.row.appendChild(sp);
+    r.row.onclick = function () { startEdit(items.indexOf(it)); };
+    box.appendChild(r.row);
+  });
+  return box;
+}
 function renderHomeAlerts() {
   const box = $("home-alerts");
   box.innerHTML = "";
-  if (!items.length) return;
-  const toShip = shipParcels();
-  const late = toShip.filter(function (g) { const s = shipInfo(g.items[0]); return s && (s.late || s.pastDue); }).length;
-  const due = currentDue.length;
-  box.appendChild(el("h2", "msec-title need-title", "Needs you"));
-  if (!toShip.length && !due) {
-    const ok = el("div", "need-ok");
-    ok.appendChild(icon("check"));
-    const text = el("div");
-    text.appendChild(el("b", "", "All caught up"));
-    text.appendChild(el("span", "", "Nothing to ship and no prices to check."));
-    ok.appendChild(text);
-    box.appendChild(ok);
+  const q = ($("home-find").value || "").trim();
+  if (q) { box.appendChild(homeFindResults(q)); return; }
+  const parcels = shipParcels();
+  const toPack = parcels.filter(function (g) { return !g.items[0].takenOut; });
+  const packed = parcels.filter(function (g) { return g.items[0].takenOut; });
+  const listed = items.filter(function (it) { return it.status === "Listed"; }).length;
+  if (!toPack.length && !packed.length) {
+    box.appendChild(el("p", "fl-empty", listed ? "Nothing to pack. When something sells, tap Mark sold." : "Nothing to pack yet. Add an item to get started."));
     return;
   }
-  const grid = el("div", "need-grid");
-  if (toShip.length) {
-    grid.appendChild(needTile("ship", toShip.length, "to ship", late ? late + " late" : "On time", late ? "bad" : "", function () { openShipPage(); }));
+  if (toPack.length) {
+    const late = toPack.some(function (g) { return flowShipText(g.items).cls === "bad"; });
+    const h = el("div", "fl-sec" + (late ? " bad" : ""));
+    h.appendChild(el("span", "", "To pack \u00b7 " + toPack.length));
+    h.appendChild(el("span", "", "sold, still in storage"));
+    box.appendChild(h);
+    const keys = toPack.map(function (g) { return g.key; });
+    Array.from(flowTicked).forEach(function (k) { if (keys.indexOf(k) < 0) flowTicked.delete(k); });
+    const btn = el("button", "fl-pack", "");
+    btn.type = "button";
+    toPack.forEach(function (g) {
+      const r = flowRow(g.items, "button");
+      r.row.type = "button";
+      const ck = el("span", "fl-ck");
+      ck.appendChild(icon("check"));
+      r.row.insertBefore(ck, r.row.firstChild);
+      if (flowTicked.has(g.key)) r.row.classList.add("on");
+      const sp = flowSpot(g.items);
+      if (sp) r.row.appendChild(sp);
+      r.row.onclick = function () {
+        if (flowTicked.has(g.key)) flowTicked.delete(g.key); else flowTicked.add(g.key);
+        r.row.classList.toggle("on", flowTicked.has(g.key));
+        paintBtn();
+      };
+      box.appendChild(r.row);
+    });
+    function paintBtn() {
+      const n = flowTicked.size;
+      btn.disabled = !n;
+      btn.textContent = n ? "Mark " + n + " as packed" : "Mark ticked as packed";
+    }
+    btn.onclick = function () {
+      const snap = captureState();
+      let n = 0;
+      toPack.forEach(function (g) { if (flowTicked.has(g.key)) { g.items.forEach(function (it) { it.takenOut = true; }); n++; } });
+      flowTicked.clear();
+      save();
+      render();
+      showUndo(n + (n === 1 ? " parcel" : " parcels") + " packed. Ready to ship.", snap);
+    };
+    paintBtn();
+    box.appendChild(btn);
   }
-  if (due) {
-    grid.appendChild(needTile("price", due, due === 1 ? "lower price" : "lower prices", "Not selling lately", "", function () {
-      openPricePage(currentDue.map(function (it) { return items.indexOf(it); }), 0);
-    }));
+  if (packed.length) {
+    const h = el("div", "fl-sec");
+    h.appendChild(el("span", "", "Packed \u00b7 ready to ship \u00b7 " + packed.length));
+    box.appendChild(h);
+    packed.forEach(function (g) {
+      const r = flowRow(g.items);
+      const b = el("button", "fl-btn", "Shipped");
+      b.type = "button";
+      b.onclick = function () { markShipped(g.items[0]); };
+      r.row.appendChild(b);
+      box.appendChild(r.row);
+    });
   }
-  box.appendChild(grid);
 }
+// Mark sold: tick everything one buyer bought, then set the price. Ticked items ship as one parcel.
+function openMarkSoldPicker() {
+  const listed = items.filter(function (it) { return it.status === "Listed"; });
+  openSheet("Mark sold");
+  if (!listed.length) {
+    scanBody.appendChild(el("p", "fl-empty", "You have no listed items yet."));
+    return;
+  }
+  const picked = new Set();
+  const find = document.createElement("input");
+  find.type = "search";
+  find.placeholder = "Search your listed items";
+  find.className = "wd-search";
+  find.style.cssText = "width:100%;height:46px;box-sizing:border-box;margin:6px 0 10px;padding:0 12px;border:1px solid var(--line,#cdd6c9);border-radius:12px;font-size:16px";
+  scanBody.appendChild(find);
+  scanBody.appendChild(el("p", "small", "Tick everything one buyer bought. Ticked items ship together as one parcel."));
+  const list = el("div");
+  scanBody.appendChild(list);
+  const foot = el("div", "fl-foot");
+  const info = el("div");
+  const sum = el("span", "", "");
+  const sum2 = el("span", "", "");
+  info.appendChild(sum);
+  info.appendChild(sum2);
+  foot.appendChild(info);
+  const go = modalButton("Mark as sold", "primary", function () {
+    const chosen = listed.filter(function (it) { return picked.has(it); });
+    if (chosen.length) openMultiSoldSheet(chosen);
+  });
+  foot.appendChild(go);
+  scanBody.appendChild(foot);
+  function paint() {
+    const n = picked.size;
+    let t = 0;
+    picked.forEach(function (it) { t += Number(it.current) || 0; });
+    sum.textContent = n ? n + (n === 1 ? " item" : " items") + (n > 1 ? " \u00b7 one parcel" : "") : "Nothing ticked";
+    sum2.textContent = n ? "Listed for " + money(t) : "";
+    go.disabled = !n;
+  }
+  function fill() {
+    list.innerHTML = "";
+    const words = find.value.toLowerCase().split(/\s+/).filter(Boolean);
+    listed.filter(function (it) {
+      const hay = (it.name + " " + (it.site || "")).toLowerCase();
+      return words.every(function (w) { return hay.indexOf(w) >= 0; });
+    }).forEach(function (it) {
+      const r = flowRow([it], "button");
+      r.row.type = "button";
+      const ck = el("span", "fl-ck");
+      ck.appendChild(icon("check"));
+      r.row.insertBefore(ck, r.row.firstChild);
+      r.row.classList.toggle("on", picked.has(it));
+      r.main.appendChild(el("div", "fl-sub", (it.site ? it.site + " \u00b7 " : "") + money(Number(it.current) || 0)));
+      const sp = flowSpot([it]);
+      if (sp) r.row.appendChild(sp);
+      r.row.onclick = function () {
+        if (picked.has(it)) picked.delete(it); else picked.add(it);
+        r.row.classList.toggle("on", picked.has(it));
+        paint();
+      };
+      list.appendChild(r.row);
+    });
+  }
+  find.addEventListener("input", fill);
+  fill();
+  paint();
+}
+$("home-find").addEventListener("input", renderHomeAlerts);
+$("home-sold-btn").addEventListener("click", openMarkSoldPicker);
 // The green card: this month, last month, and the first investment.
 function paintHero() {
   const box = $("hero-months");
@@ -12279,7 +12473,7 @@ function renderSettingsHome() {
     return;
   }
   if (scope === "plan") {
-    settingsGroup(box, "Your week", [timeRow()]);
+    
     settingsGroup(box, "More", [allRow()]);
     return;
   }
@@ -12289,7 +12483,7 @@ function renderSettingsHome() {
   const shop = [platformsRow()];
   shop.push(archiveRow());
   settingsGroup(box, "Your shop", shop);
-  settingsGroup(box, "Plan and alerts", [remindersRow(), timeRow()]);
+  settingsGroup(box, "Alerts", [remindersRow()]);
   let last = "";
   try { last = localStorage.getItem("lastBackup") || ""; } catch (e) {}
   const age = backupAge(last, todayText());
