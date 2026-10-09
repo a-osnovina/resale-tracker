@@ -1319,8 +1319,8 @@ progress::-moz-progress-bar { background: var(--primary); border-radius: 5px; }
 .pv { display: flex; align-items: center; gap: 12px; padding: 12px; background: var(--tint); border: 1px solid var(--line-soft); border-radius: 14px; }
 .pv-pic { flex: none; width: 48px; height: 48px; border-radius: 10px; background: var(--thumb-bg); }
 .to-row { width: 100%; min-height: 60px; margin-top: 8px; padding: 8px 12px; display: flex; align-items: center; gap: 12px; text-align: left; background: var(--sold-bg); border: 1px solid var(--line-soft); border-left: 5px solid var(--sold-edge); border-radius: 14px; color: var(--text); }
-.to-slot { flex: none; min-width: 44px; padding: 6px 8px; border-radius: 10px; background: var(--surface); font-weight: 800; text-align: center; }
-.to-text { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 1px; }
+.to-slot { flex: 0 1 auto; min-width: 44px; max-width: 36%; padding: 6px 8px; border-radius: 10px; background: var(--surface); font-weight: 800; line-height: 1.15; text-align: center; overflow-wrap: anywhere; }
+.to-text { flex: 1 1 0; min-width: 100px; display: flex; flex-direction: column; gap: 1px; }
 .to-text b { font-size: 16px; overflow-wrap: anywhere; }
 .to-text span { font-size: 13px; color: var(--muted); }
 .sp2-row { display: flex; align-items: stretch; gap: 8px; margin-top: 8px; }
