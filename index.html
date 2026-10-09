@@ -11719,6 +11719,22 @@ function dayCircles(selected, onToggle, nameFor) {
 function renderPlanOverview(box) {
   const today = todayText();
   const need = planNeeds();
+  // where your items are
+  if (pipelineOn) {
+    const pl = el("div", "sec-head");
+    pl.appendChild(el("h2", "msec-title", "Where your items are"));
+    box.appendChild(pl);
+    const ppanel = el("div", "dropdown-panel");
+    ppanel.id = "plan-pipeline-panel";
+    drawPipeline(ppanel, need);
+    box.appendChild(ppanel);
+  }
+  if (todos.some(function (t) { return false && t.done; })) {
+    const clear = el("button", "small-btn clear-done", "Clear finished to-dos");
+    clear.type = "button";
+    clear.onclick = function () { todos = todos.filter(function (t) { return !t.done; }); save(); refreshTodoViews(); };
+    box.appendChild(clear);
+  }
   // what's waiting
   const head = el("div", "sec-head");
   head.appendChild(el("h2", "msec-title", "What's waiting"));
@@ -11739,23 +11755,6 @@ function renderPlanOverview(box) {
     grid.appendChild(tile);
   });
   box.appendChild(grid);
-
-  // where your items are
-  if (pipelineOn) {
-    const pl = el("div", "sec-head");
-    pl.appendChild(el("h2", "msec-title", "Where your items are"));
-    box.appendChild(pl);
-    const ppanel = el("div", "dropdown-panel");
-    ppanel.id = "plan-pipeline-panel";
-    drawPipeline(ppanel, need);
-    box.appendChild(ppanel);
-  }
-  if (todos.some(function (t) { return false && t.done; })) {
-    const clear = el("button", "small-btn clear-done", "Clear finished to-dos");
-    clear.type = "button";
-    clear.onclick = function () { todos = todos.filter(function (t) { return !t.done; }); save(); refreshTodoViews(); };
-    box.appendChild(clear);
-  }
 }
 
 function renderPlanTimeAndTools(box) {
