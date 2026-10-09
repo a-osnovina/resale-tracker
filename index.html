@@ -1145,7 +1145,9 @@ progress::-moz-progress-bar { background: var(--primary); border-radius: 5px; }
 .inv-btn { flex: none; min-height: 40px; padding: 0 16px; border: 1.5px solid var(--accent-line); border-radius: 10px; background: var(--surface); color: var(--accent-text); font-size: 14px; font-weight: 800; }
 .inv-bar { height: 8px; border-radius: 4px; background: var(--surface-2); overflow: hidden; }
 .inv-bar i { display: block; height: 100%; background: var(--primary); }
-#goals-box:not(.shown) { display: none; }
+#inv-card { display: none; }
+#goals-box { display: block; }
+#money-tabs + #money-overview, #money-tabs + #money-overview .bal-card { margin-top: 14px; }
 #goals-box { margin-top: 10px; }
 #sales-section > .seg { margin-top: 0; }
 
@@ -1744,7 +1746,6 @@ body.modal-open #undo-bar { visibility: hidden; }
   <section class="view" id="view-money" aria-label="Money" hidden>
     <div class="seg" id="money-tabs" role="tablist" aria-label="Money sections">
       <button type="button" role="tab" id="mtab-overview" data-t="overview" class="on">Overview</button>
-      <button type="button" role="tab" id="mtab-profit" data-t="profit">Profit</button>
       <button type="button" role="tab" id="mtab-withdrawals" data-t="withdrawals">Withdrawals</button>
     </div>
 
@@ -6635,6 +6636,8 @@ function renderOverall(balance, activeTotal, activeCount) {
   const overall = document.getElementById("overall-box");
   const text = document.getElementById("overall-text");
   const hint = document.getElementById("priority-hint");
+  // one investment for now: once there is one, hide the add button
+  addGoalButton.style.display = activeCount >= 1 ? "none" : "";
 
   if (activeCount === 0) {
     mini.style.display = "none";
@@ -9902,7 +9905,6 @@ function applyFeatures() {
   if (!features.storage && !$("stock-storage").hidden) showStockPane("items");
   document.getElementById("inv-wrap").hidden = !features.investments;
   document.getElementById("sales-section").hidden = !features.sales;
-  document.getElementById("mtab-profit").hidden = !features.sales;
   document.body.classList.toggle("no-invest", !features.investments);
   updateSummaryBox();
 }
@@ -11739,10 +11741,6 @@ function renderPlanOverview(box) {
   // what's waiting
   const head = el("div", "sec-head");
   head.appendChild(el("h2", "msec-title", "What's waiting"));
-  const setDays = el("button", "small-btn", "Choose days");
-  setDays.type = "button";
-  setDays.onclick = openPlanDays;
-  head.appendChild(setDays);
   box.appendChild(head);
   const grid = el("div", "pl-grid");
   PLAN_JOBS.forEach(function (j) {
@@ -11750,8 +11748,6 @@ function renderPlanOverview(box) {
     tile.type = "button";
     tile.appendChild(el("span", "pl-n", String(jobCount(j.key, need))));
     tile.appendChild(el("span", "pl-l", j.label));
-    const days = jobDaysOf(j.key);
-    tile.appendChild(el("span", "pl-s", days.length ? days.map(function (d) { return DAY_NAMES[d]; }).join(" · ") : "Any day"));
     tile.onclick = function () { openStageSheet(j.stage); };
     grid.appendChild(tile);
   });
