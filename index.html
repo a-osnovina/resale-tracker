@@ -1328,6 +1328,10 @@ progress::-moz-progress-bar { background: var(--primary); border-radius: 5px; }
 .to-group-tag .sp-status { margin: 0; }
 .to-group .to-wrap { margin-top: 0; border-radius: 0; }
 .to-group .to-wrap + .to-wrap { border-top: 1px solid var(--line-soft); }
+.to-quiet { opacity: 0.65; cursor: pointer; }
+.to-chip { flex: none; display: inline-flex; align-items: center; gap: 4px; font-size: 13px; font-weight: 800; color: var(--profit); }
+.to-chip .ico { width: 16px; height: 16px; }
+.to-group .to-quiet { border-top: 1px solid var(--line-soft); }
 .to-group .to-row { border: 0; border-radius: 0; background: var(--sold-bg); }
 
 .to-wrap > .to-row { position: relative; z-index: 1; margin-top: 0; touch-action: pan-y; -webkit-user-select: none; user-select: none; }
@@ -8511,18 +8515,35 @@ function takeoutLine(it, showStatus) {
   });
   return wrap;
 }
+// A line for a parcel member that is not waiting in storage any more (already taken out, or never had a spot).
+function takeoutDoneLine(it) {
+  const line = el("div", "to-row to-quiet");
+  line.appendChild(itemThumb(it));
+  const text = el("span", "to-text");
+  text.appendChild(el("b", "", it.name));
+  line.appendChild(text);
+  const chip = el("span", "to-chip");
+  chip.appendChild(icon("check"));
+  chip.appendChild(document.createTextNode(it.takenOut ? " Taken out" : " No spot"));
+  line.appendChild(chip);
+  line.onclick = function () { showCard(it); };
+  return line;
+}
 function renderStockTakeout() {
   const box = $("stock-takeout");
   if (!box) return;
   box.innerHTML = "";
-  const stored = features.storage ? items.filter(function (it) { return it.status === "Sold" && it.bin && it.slot > 0 && !it.takenOut; }) : [];
+  const waiting = function (it) { return it.status === "Sold" && it.bin && it.slot > 0 && !it.takenOut; };
+  const stored = features.storage ? items.filter(waiting) : [];
   // Items sold together are one parcel: they sit in one joined card, and each one can still be swiped away on its own.
+  // Members that are already out stay in the card (dimmed) so you can still see it was a bundle.
   const groups = [];
   const seen = {};
   stored.forEach(function (it) {
     if (it.parcel) {
-      if (seen[it.parcel]) { seen[it.parcel].items.push(it); return; }
-      seen[it.parcel] = { items: [it] };
+      if (seen[it.parcel]) return;
+      const members = parcelOf(it);
+      seen[it.parcel] = { items: members };
       groups.push(seen[it.parcel]);
     } else {
       groups.push({ items: [it] });
@@ -8533,7 +8554,7 @@ function renderStockTakeout() {
   const head = el("div", "sec-head");
   head.appendChild(el("h2", "msec-title", "Take out of storage"));
   box.appendChild(head);
-  function firstSpot(g) { return slotLabel(g.items[0].bin, g.items[0].slot); }
+  function firstSpot(g) { const f = g.items.filter(waiting)[0] || g.items[0]; return slotLabel(f.bin || "~", f.slot || 0); }
   groups.sort(function (a, b) { return firstSpot(a).localeCompare(firstSpot(b), undefined, { numeric: true }); }).forEach(function (g) {
     if (g.items.length === 1) { box.appendChild(takeoutLine(g.items[0], true)); return; }
     const card = el("div", "to-group");
@@ -8542,7 +8563,7 @@ function renderStockTakeout() {
     tag.appendChild(el("span", "", "ONE PARCEL \u00B7 " + g.items.length + " ITEMS"));
     tag.appendChild(el("span", "sp-status " + st.cls, st.text));
     card.appendChild(tag);
-    g.items.forEach(function (it) { card.appendChild(takeoutLine(it, false)); });
+    g.items.forEach(function (it) { card.appendChild(waiting(it) ? takeoutLine(it, false) : takeoutDoneLine(it)); });
     box.appendChild(card);
   });
 }
