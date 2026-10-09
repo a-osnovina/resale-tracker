@@ -397,6 +397,39 @@ body.goals-unpinned #goals-mini { display: none !important; }
 .add-methods { display: flex; gap: 8px; margin: 6px 0 4px; }
 .add-methods[hidden] { display: none; }
 .add-methods button { flex: 1; min-width: 0; min-height: 44px; padding: 0 6px; font-size: 14px; font-weight: 700; }
+/* Add item sheet: shortcuts first */
+#item-form.adding .sheet-head { background: var(--surface); color: var(--text); border-bottom: 1px solid var(--line-soft); }
+#item-form.adding .sheet-head h2 { color: var(--text); }
+#item-form.adding .sheet-head button { width: 44px; min-height: 44px; padding: 0; border-radius: 50%; background: var(--surface-2); border-color: var(--line); color: var(--text); font-size: 18px; }
+#item-form.adding .add-methods { gap: 10px; margin: 14px 0 4px; }
+#item-form.adding .add-methods button { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; min-height: 108px; padding: 10px 4px; border-radius: 16px; background: var(--tint); border: 1.5px solid var(--accent-line); color: var(--text); }
+#item-form.adding .add-methods b { font-size: 14px; }
+#item-form.adding .add-methods small { font-size: 12px; font-weight: 500; color: var(--muted); }
+.am-ico { display: flex; align-items: center; justify-content: center; width: 40px; height: 40px; margin-bottom: 6px; border-radius: 50%; background: var(--surface); }
+.am-ico svg { width: 22px; height: 22px; fill: none; stroke: var(--primary); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.or-divider { display: none; align-items: center; gap: 10px; margin: 18px 0 4px; color: var(--muted); font-size: 13px; }
+.or-divider::before, .or-divider::after { content: ""; flex: 1; border-top: 1px solid var(--line); }
+#item-form.adding .or-divider { display: flex; }
+.name-lab em { font-style: normal; font-weight: 500; color: var(--muted); font-size: 13px; }
+#item-form.adding #name { min-height: 54px; font-size: 18px; border: 2px solid var(--primary); border-radius: 12px; }
+#more-toggle { display: none; width: 100%; margin-top: 18px; min-height: 44px; padding: 0 2px; align-items: center; background: transparent; border: 0; border-radius: 0; font-size: 12px; font-weight: 800; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); text-align: left; }
+#more-toggle span { flex: 1; }
+#item-form.adding #more-toggle { display: flex; }
+#more-toggle[aria-expanded="true"] .opt-chev { transform: rotate(90deg); }
+#item-form.adding .opt-list { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; background: transparent; overflow: visible; margin-top: 4px; }
+#item-form.adding .opt-list.collapsed { display: none; }
+#item-form.adding .opt-row { flex-direction: column; align-items: flex-start; justify-content: center; gap: 2px; min-height: 68px; padding: 8px 14px; border: 1.5px solid var(--line); border-radius: 14px; background: var(--surface); font-size: 13px; color: var(--muted); font-weight: 600; }
+#item-form.adding .opt-row .opt-chev { display: none; }
+#item-form.adding .opt-row .opt-val { margin: 0; font-size: 17px; }
+#item-form.adding .opt-row.open { border-color: var(--primary); }
+#item-form.adding #opt-weight { grid-column: 1 / -1; }
+#item-form.adding .opt-panel { grid-column: 1 / -1; order: 20; border: 1px solid var(--line-soft); border-radius: 12px; }
+.foot-hint { flex: none; padding: 8px 16px 0; text-align: center; font-size: 13px; color: var(--muted); background: var(--tint); border-top: 3px solid var(--accent-line); }
+.foot-hint + .sheet-foot { border-top: 0; }
+#item-form:not(.adding) .foot-hint, #item-form:not(.adding) #add-next { display: none; }
+#item-form.adding #cancel-edit { display: none; }
+#item-form.adding .sheet-foot #add-next { flex: 1; }
+#item-form.adding .sheet-foot #submit-button { flex: 1.3; }
 .opt-list { margin: 10px 0 0; border-radius: 14px; background: var(--surface-2); overflow: hidden; }
 .opt-list.editing { background: transparent; border-radius: 0; overflow: visible; }
 .opt-row { display: flex; align-items: center; width: 100%; min-height: 52px; margin: 0; padding: 0 14px; border: 0; border-bottom: 1px solid var(--line-soft); border-radius: 0; background: transparent; color: var(--text); font-size: 16px; font-weight: 600; text-align: left; }
@@ -1754,7 +1787,7 @@ body.modal-open #undo-bar { visibility: hidden; }
     <form id="item-form">
       <div class="sheet-head">
         <h2 id="sheet-title">Add item</h2>
-        <button type="button" id="sheet-close">Close</button>
+        <button type="button" id="sheet-close" aria-label="Close">&#10005;</button>
       </div>
 
       <div class="sheet-body">
@@ -1766,16 +1799,17 @@ body.modal-open #undo-bar { visibility: hidden; }
         <input type="file" id="import-file" accept="image/*" hidden>
 
         <div class="add-methods" id="add-methods">
-          <button type="button" id="add-qr">Scan QR</button>
-          <button type="button" id="add-shot">Screenshot</button>
-          <button type="button" id="add-bulk">Bulk upload</button>
+          <button type="button" id="add-qr"><span class="am-ico"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 4h6v6H4zM14 4h6v6h-6zM4 14h6v6H4zM14 14h2v2h-2zM18 14h2v6h-4M14 18h2"/></svg></span><b>Scan QR</b><small>Slot label</small></button>
+          <button type="button" id="add-shot"><span class="am-ico"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M8 8h8M8 12h8M8 16h5"/></svg></span><b>Screenshot</b><small>Read a listing</small></button>
+          <button type="button" id="add-bulk"><span class="am-ico"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 16V5M7 10l5-5 5 5M5 19h14"/></svg></span><b>Bulk upload</b><small>Many at once</small></button>
         </div>
         <div class="menu-warning" id="add-qr-warning" hidden></div>
 
-        <div class="form-section" style="margin-top:6px">The item</div>
-        <label class="field" id="name-row">Item name <input id="name" autocomplete="off" placeholder="e.g. Nike hoodie"></label>
+        <div class="or-divider" id="or-divider"><span>or type it in</span></div>
+        <label class="field" id="name-row"><span class="name-lab">Item name <em>&middot; required</em></span> <input id="name" autocomplete="off" placeholder="e.g. Nike hoodie"></label>
         <div class="field-hint" id="name-hint"></div>
 
+        <button type="button" id="more-toggle" aria-expanded="true"><span>More details &middot; all optional</span><svg class="opt-chev" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></button>
         <div class="opt-list" id="opt-wrap">
         <button type="button" class="opt-row" id="opt-photo" aria-expanded="false"><span>Photos</span><span class="opt-val" id="opt-photo-val">Add</span><svg class="opt-chev" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></button>
         <div class="opt-panel" id="panel-photo" hidden>
@@ -1910,7 +1944,9 @@ body.modal-open #undo-bar { visibility: hidden; }
       </div>
 
       <div id="form-msg" role="alert" hidden></div>
+      <div class="foot-hint" id="foot-hint">With just a name it saves as In progress</div>
       <div class="sheet-foot">
+        <button type="button" id="add-next">Add &amp; next</button>
         <button type="submit" id="submit-button" class="primary">Add item</button>
         <button type="button" id="cancel-edit">Cancel</button>
       </div>
@@ -3830,6 +3866,8 @@ const advancedFields = document.getElementById("advanced-fields");
 const advancedToggle = document.getElementById("advanced-toggle");
 const sheetTitle = document.getElementById("sheet-title");
 let advancedOpen = false;
+var moreOpen = true;
+var addNext = false;
 
 // In the add window the extra boxes are tucked under "Advanced options". When editing they are always open.
 function updateAdvancedUI() {
@@ -3846,6 +3884,10 @@ advancedToggle.addEventListener("click", function () {
 
 function showForm() {
   sheetTitle.textContent = editingIndex === null ? "Add item" : "Edit item";
+  document.getElementById("item-form").classList.toggle("adding", editingIndex === null);
+  document.getElementById("more-toggle").hidden = editingIndex !== null;
+  document.getElementById("opt-wrap").classList.toggle("collapsed", editingIndex === null && !moreOpen);
+  document.getElementById("more-toggle").setAttribute("aria-expanded", moreOpen ? "true" : "false");
   updateAdvancedUI();
   if (editingIndex === null) noSlotBox.checked = bins.length === 0;
   syncSlotUI();
@@ -3952,6 +3994,15 @@ OPT_KEYS.forEach(function (key) {
 form.addEventListener("input", updateOptRows);
 form.addEventListener("change", updateOptRows);
 addItemButton.addEventListener("click", function () { openNewForm(); });
+document.getElementById("more-toggle").addEventListener("click", function () {
+  moreOpen = !moreOpen;
+  document.getElementById("opt-wrap").classList.toggle("collapsed", !moreOpen);
+  this.setAttribute("aria-expanded", moreOpen ? "true" : "false");
+});
+document.getElementById("add-next").addEventListener("click", function () {
+  addNext = true;
+  if (form.requestSubmit) form.requestSubmit(); else form.dispatchEvent(new Event("submit", { cancelable: true }));
+});
 document.getElementById("add-bulk").addEventListener("click", function () { closeForm(); openBulkSetup(); });
 document.getElementById("add-shot").addEventListener("click", function () { importTarget = null; importFile.click(); });
 document.getElementById("add-qr").addEventListener("click", function () {
@@ -7281,6 +7332,8 @@ function showFormProblems(list, intro) {
 
 form.addEventListener("submit", function (event) {
   event.preventDefault();
+  const goNext = addNext && editingIndex === null;
+  addNext = false;
 
   const status = statusInput.value;
   const site = siteInput.value;
@@ -7410,6 +7463,10 @@ form.addEventListener("submit", function (event) {
   closeForm();
   save();
   render();
+  if (goNext) {
+    openNewForm();
+    showToast("Added " + item.name);
+  }
 });
 
 // The percent bump rate is saved on the item, so changing a platform's setting later does not change old profits.
