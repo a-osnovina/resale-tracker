@@ -1490,6 +1490,16 @@ progress::-moz-progress-bar { background: var(--primary); border-radius: 5px; }
 .sp-spot b { font-size: 18px; line-height: 1.15; letter-spacing: 0.02em; color: var(--accent-text); overflow-wrap: anywhere; }
 .sp-thumbwrap { position: relative; flex: none; }
 .sp-badge { position: absolute; right: -6px; top: -6px; min-width: 22px; height: 22px; padding: 0 5px; box-sizing: border-box; border-radius: 11px; background: var(--primary); color: #ffffff; font-size: 12px; font-weight: 800; display: flex; align-items: center; justify-content: center; border: 2px solid var(--surface); }
+.sp-row { flex-wrap: wrap; }
+.sp-toggle { flex: none; width: 40px; height: 40px; min-height: 40px; padding: 0; border: 0; border-radius: 20px; background: var(--surface-2); color: var(--text); display: flex; align-items: center; justify-content: center; }
+.sp-toggle .ico { width: 20px; height: 20px; transition: transform .15s; }
+.sp-toggle.open .ico { transform: rotate(180deg); }
+.sp-more { flex-basis: 100%; display: flex; flex-direction: column; gap: 8px; padding-top: 10px; margin-top: 2px; border-top: 1px solid var(--line-soft); cursor: default; }
+.sp-line { display: flex; align-items: center; gap: 10px; }
+.sp-line .sthumb { width: 40px; height: 40px; }
+.sp-line-name { flex: 1; min-width: 0; font-weight: 700; font-size: 15px; overflow-wrap: anywhere; }
+.sp-line .sp-spot { width: 88px; padding: 4px 8px; }
+.sp-line .sp-spot b { font-size: 16px; }
 .sp-names { display: flex; flex-direction: column; gap: 2px; }
 .sp-names:has(.sp-name + .sp-name) .sp-name { -webkit-line-clamp: 1; }
 .sp-spot b + b { margin-top: 2px; font-size: 16px; }
@@ -2429,7 +2439,7 @@ let planPrefs = null; // Plan tab choices: shipping days, limit, repeating jobs,
 let timeLog = [];    // time you logged: { id, date, step, minutes, items }
 let todos = [];      // your own to-dos: { id, text, day (-1 = any, 0 = Monday ... 6 = Sunday), done }
 var pricePage = { active: false, queue: [], at: 0, mode: "choose" };   // the Lower price page
-var shipPage = { active: false, ticked: new Set() };   // ticked holds parcel keys               // the Pack and ship page
+var shipPage = { active: false, ticked: new Set(), open: new Set() };   // ticked holds parcel keys               // the Pack and ship page
 let showShipped = false;   // shipped items are hidden from the list unless you ask
 let showAllWeeks = false;  // the weekly sales table shows the last 12 weeks unless you ask for all
 let formPhoto = "";
@@ -10805,18 +10815,53 @@ function renderShipPage() {
     row.appendChild(wrap);
     const text = el("div", "sp-text");
     const names = el("div", "sp-names");
-    g.items.forEach(function (it) { names.appendChild(el("div", "sp-name", it.name)); });
+    const many = g.items.length > 1;
+    const isOpen = many && shipPage.open.has(g.key);
+    if (many) names.appendChild(el("div", "sp-name", g.items[0].name + " + " + (g.items.length - 1) + " more"));
+    else names.appendChild(el("div", "sp-name", first.name));
     text.appendChild(names);
     const weight = g.items.reduce(function (sum, it) { return sum + (Number(it.weight) || 0); }, 0);
     if (weight > 0) text.appendChild(el("div", "sp-meta", formatWeight(weight)));
     text.appendChild(el("div", "sp-status " + st.cls, st.text));
     row.appendChild(text);
     const spotItems = g.items.filter(function (it) { return it.bin && it.slot > 0; });
-    if (spotItems.length) {
+    if (!many && spotItems.length) {
       const spot = el("div", "sp-spot");
       spot.appendChild(el("span", "", "SPOT"));
-      spotItems.forEach(function (it) { spot.appendChild(el("b", "", slotLabel(it.bin, it.slot))); });
+      spot.appendChild(el("b", "", slotLabel(first.bin, first.slot)));
       row.appendChild(spot);
+    }
+    if (many) {
+      const tog = el("button", "sp-toggle" + (isOpen ? " open" : ""));
+      tog.type = "button";
+      tog.setAttribute("aria-label", (isOpen ? "Hide" : "Show") + " the items in this parcel");
+      tog.setAttribute("aria-expanded", isOpen ? "true" : "false");
+      tog.appendChild(icon("down"));
+      tog.onclick = function (event) {
+        event.preventDefault();
+        event.stopPropagation();
+        if (shipPage.open.has(g.key)) shipPage.open.delete(g.key); else shipPage.open.add(g.key);
+        renderShipPage();
+      };
+      row.appendChild(tog);
+    }
+    if (isOpen) {
+      const more = el("div", "sp-more");
+      more.onclick = function (event) { event.preventDefault(); event.stopPropagation(); };
+      g.items.forEach(function (it) {
+        const line = el("div", "sp-line");
+        line.appendChild(itemThumb(it));
+        const nm = el("div", "sp-line-name", it.name);
+        line.appendChild(nm);
+        if (it.bin && it.slot > 0) {
+          const spot = el("div", "sp-spot");
+          spot.appendChild(el("span", "", "SPOT"));
+          spot.appendChild(el("b", "", slotLabel(it.bin, it.slot)));
+          line.appendChild(spot);
+        }
+        more.appendChild(line);
+      });
+      row.appendChild(more);
     }
     listBox.appendChild(row);
   });
