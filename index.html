@@ -1406,8 +1406,11 @@ progress::-moz-progress-bar { background: var(--primary); border-radius: 5px; }
 .need-ok.big { margin-top: 8px; }
 
 /* ---- Lower price page and Pack and ship page ---- */
-.apage { position: fixed; left: 0; right: 0; top: 0; bottom: calc(var(--bar-h) + env(safe-area-inset-bottom)); z-index: 40; background: var(--summary-bg); overflow-y: auto; -webkit-overflow-scrolling: touch; }
-.apage[hidden] { display: none; }
+#scan-body .ap-body { min-height: 0; padding: 0; max-width: none; }
+.ap-status-top .sthumb { width: 56px; height: 56px; }
+.ap-status-main { flex: 1; min-width: 0; }
+.ap-name { font-weight: 800; font-size: 16px; overflow-wrap: anywhere; }
+.sp-row .sthumb { width: 52px; height: 52px; }
 .ap-body { max-width: 560px; min-height: 100%; margin: 0 auto; padding: calc(12px + env(safe-area-inset-top)) 16px 24px; box-sizing: border-box; display: flex; flex-direction: column; gap: 14px; }
 .ap-spacer { flex: 1; }
 .ap-head { display: flex; align-items: center; gap: 8px; }
@@ -4673,11 +4676,12 @@ function closePriceModal() {
   priceReturn = null;
   priceModal.hidden = true;
   priceTarget = null;
+  pricePage.custom = false;
   if (back) openStageSheet(back);
 }
 
 function setPrice(item, value) {
-  const fromPage = pricePage.active;
+  const fromPage = !!pricePage.custom;
   if (value !== item.current) {
     const snap = captureState();
     const idx = items.indexOf(item);
@@ -4741,10 +4745,10 @@ function doPartialWithdraw(platform, amount) {
   closeScanModal();
   showUndo("Withdrew " + money(record.amount) + (platform ? " from " + platform + "." : "."), snap);
 }
-function wdTop() {
+function wdTop(title) {
   scanBody.appendChild(el("div", "wd-grab"));
   const top = el("div", "wd-top");
-  top.appendChild(el("h3", "wd-title", "Withdraw"));
+  top.appendChild(el("h3", "wd-title", title || "Withdraw"));
   const x = el("button", "wd-x");
   x.type = "button";
   x.setAttribute("aria-label", "Close");
@@ -5007,7 +5011,7 @@ new MutationObserver(syncModalLock).observe(scanModal, { attributes: true, attri
 // Closing this window also ends any bulk upload that was in progress.
 // Each kind of pop-up gets its own color so you can tell at a glance what you are doing:
 // the pop-up's data-kind is picked from its title.
-const SHEET_KINDS = [[/^List /, "list"], [/^Sold/, "sold"], [/ship/i, "ship"], [/lower the price/i, "price"],
+const SHEET_KINDS = [[/^Pack and ship|^Lower price/, "money"], [/^List /, "list"], [/^Sold/, "sold"], [/ship/i, "ship"], [/lower the price/i, "price"],
   [/^Withdraw/, "money"], [/^Bulk|^Where do|^Item \d/, "bulk"], [/^Slot|^Storage /, "slot"]];
 new MutationObserver(function () {
   const heading = scanBody.querySelector("h3");
@@ -5022,6 +5026,8 @@ new MutationObserver(function () {
 var timeSheetOpen = false;
 function closeScanModal() {
   timeSheetOpen = false;
+  pricePage.active = false;
+  shipPage.active = false;
   const back = stageReturn;
   stageReturn = null;
   bulk = null;
@@ -9894,7 +9900,6 @@ function showView(name) {
   if (!VIEW_TITLES[name]) name = "home";
   if (name === "plan" && !features.planner) name = "home";
   currentView = name;
-  closeActionPages();
   Object.keys(VIEW_TITLES).forEach(function (key) {
     const section = $("view-" + key);
     if (section) section.hidden = key !== name;
@@ -10445,39 +10450,7 @@ function paintHero() {
   goalBox.hidden = false;
 }
 
-// ---- Home action pages: Lower price and Pack and ship ----
-// Full-screen pages that sit above the screens but leave the bottom bar usable.
-function ensureActionPage(id) {
-  let page = $(id);
-  if (!page) { page = el("div", "apage"); page.id = id; page.hidden = true; document.body.appendChild(page); }
-  return page;
-}
-function closeActionPages() {
-  pricePage.active = false;
-  shipPage.active = false;
-  const a = $("price-page"), b = $("ship-page");
-  if (a) a.hidden = true;
-  if (b) b.hidden = true;
-  document.body.classList.remove("apage-open");
-}
-function refreshActionPages() {
-  if (pricePage.active && pricePage.mode === "choose") renderPricePage();
-  if (shipPage.active) renderShipPage();
-}
-function apageHead(title, sub, onBack) {
-  const head = el("div", "ap-head");
-  const back = el("button", "ap-back");
-  back.type = "button";
-  back.setAttribute("aria-label", "Back to Today");
-  back.appendChild(icon("back"));
-  back.onclick = onBack;
-  head.appendChild(back);
-  const h = el("div", "ap-title");
-  h.appendChild(el("h1", "", title));
-  if (sub) h.appendChild(el("span", "", sub));
-  head.appendChild(h);
-  return head;
-}
+// ---- Home pop-ups: Lower price and Pack and ship (bottom sheets, like Withdraw) ----
 function appLinkFor(item) {
   const p = findPlatform(item.site);
   return (p && p.url) || platformLink(item.site) || "";
@@ -10494,8 +10467,25 @@ function openAppButton(item, cls) {
   a.appendChild(icon("external"));
   return a;
 }
+// The item's photo, the same small picture the Stock list shows.
+function itemThumb(item) {
+  if (item.picture) {
+    const pic = el("img", "sthumb");
+    pic.src = item.picture;
+    pic.alt = "";
+    return pic;
+  }
+  const empty = el("div", "sthumb");
+  empty.appendChild(icon("camera"));
+  return empty;
+}
+function openSheet(title) {
+  scanBody.innerHTML = "";
+  wdTop(title);
+  scanModal.hidden = false;
+}
 
-// ---- Lower price page ----
+// ---- Lower price pop-up ----
 function pgItem() { return items[pricePage.queue[pricePage.at]]; }
 function openPricePage(queue, at) {
   const list = queue.filter(function (i) { return i >= 0 && items[i]; });
@@ -10505,33 +10495,20 @@ function openPricePage(queue, at) {
     openScanMessage("Price locked during the bump", "Vinted doesn't let you lower the price while a bump is running. This bump's last day is " + prettyDay(bumpEndDay(item)) + ", and the price reminder comes back then.");
     return;
   }
-  closeActionPages();
-  ensureActionPage("price-page");
-  pricePage.active = true;
   pricePage.queue = list;
   pricePage.at = Math.min(at || 0, list.length - 1);
-  pricePage.mode = "choose";
-  document.body.classList.add("apage-open");
   renderPricePage();
-  const page = ensureActionPage("price-page");
-  page.hidden = false;
-  page.scrollTop = 0;
+  pricePage.active = true;
 }
-function closePricePage() {
-  pricePage.active = false;
-  const page = $("price-page");
-  if (page) page.hidden = true;
-  document.body.classList.remove("apage-open");
-}
+function closePricePage() { closeScanModal(); }
 // Moves on to the next item that still needs a price check, or closes.
 function pricePageNext() {
   const rest = pricePage.queue.slice(pricePage.at + 1).filter(function (i) { return items[i] && items[i].status === "Listed"; });
-  if (!rest.length) { closePricePage(); return; }
+  if (!rest.length) { closeScanModal(); return; }
   pricePage.queue = rest;
   pricePage.at = 0;
-  pricePage.mode = "choose";
   renderPricePage();
-  ensureActionPage("price-page").scrollTop = 0;
+  pricePage.active = true;
 }
 function priceCard(opts) {
   const c = el("div", "pc-card" + (opts.main ? " main" : ""));
@@ -10552,25 +10529,23 @@ function priceCard(opts) {
   return c;
 }
 function renderPricePage() {
-  const page = ensureActionPage("price-page");
   const item = pgItem();
-  if (!item) { closePricePage(); return; }
-  page.innerHTML = "";
-  pricePage.mode = "choose";
+  if (!item) { closeScanModal(); return; }
+  openSheet("Lower price");
   const cfg = findPlatform(item.site);
   const p = cfg || {};
   const pct = lowerPercents[0] || 10;
   const ch = ResaleLogic.priceChoices(p, item.current, pct);
-  const many = pricePage.queue.length > 1 ? "Price check " + (pricePage.at + 1) + " of " + pricePage.queue.length : "";
   const body = el("div", "ap-body");
-  body.appendChild(apageHead(item.name, many, closePricePage));
 
   const now = el("div", "ap-status warn");
   const top = el("div", "ap-status-top");
-  const left = el("div");
-  left.appendChild(el("div", "ap-eyebrow", "NOT SELLING"));
+  top.appendChild(itemThumb(item));
+  const left = el("div", "ap-status-main");
+  left.appendChild(el("div", "ap-name", item.name));
   const days = daysAtPrice(item);
   left.appendChild(el("div", "ap-sub", (item.site ? item.site + " · " : "") + (days !== null ? dayWord(days) + " at this price" : "listed")));
+  if (pricePage.queue.length > 1) left.appendChild(el("div", "ap-sub", "Price check " + (pricePage.at + 1) + " of " + pricePage.queue.length));
   top.appendChild(left);
   const right = el("div", "ap-status-right");
   right.appendChild(el("div", "ap-price", money(item.current)));
@@ -10588,7 +10563,7 @@ function renderPricePage() {
   body.appendChild(el("div", "ap-eyebrow dim", boostKind === "setup" ? "PICK ONE" : "TAP ONE AND IT'S DONE"));
   const grid = el("div", "pc-grid" + (boostKind === "none" || locked ? " one" : ""));
 
-  if (item.current > 0) {
+  if (item.current > 0 && !locked) {
     grid.appendChild(priceCard({
       main: true, name: "Lower price", sees: money(ch.lower.price),
       cost: money(ch.lower.off) + " less (" + pct + "% off)", keep: money(ch.lower.keep), button: "Lower it",
@@ -10640,7 +10615,7 @@ function renderPricePage() {
   if (item.current > 0 && !locked) {
     const other = el("button", "ap-textbtn", "Different amount…");
     other.type = "button";
-    other.onclick = function () { openPriceModal(item); };
+    other.onclick = function () { closeScanModal(); pricePage.custom = true; openPriceModal(item); };
     body.appendChild(other);
   }
   const arch = el("button", "ap-archive");
@@ -10655,26 +10630,22 @@ function renderPricePage() {
     archiveNow(item);
     save();
     render();
+    closeScanModal();
     showUndo(item.name + " archived.", snap);
-    pricePageNext();
   };
   body.appendChild(arch);
   const later = el("button", "ap-textbtn", "Not now, remind me later");
   later.type = "button";
   later.onclick = pricePageNext;
   body.appendChild(later);
-  page.appendChild(body);
+  scanBody.appendChild(body);
 }
 // What you see right after a one-tap choice.
 function showPriceDone(kind, idx, snap) {
   const item = items[idx];
   if (!item) return;
-  pricePage.mode = "done";
+  openSheet("Lower price");
   pricePage.active = true;
-  document.body.classList.add("apage-open");
-  const page = ensureActionPage("price-page");
-  page.hidden = false;
-  page.innerHTML = "";
   const p = findPlatform(item.site) || {};
   const body = el("div", "ap-body");
   const hero = el("div", "ap-done");
@@ -10698,21 +10669,6 @@ function showPriceDone(kind, idx, snap) {
   const open = openAppButton(item, "big");
   if (open) step.appendChild(open);
   body.appendChild(step);
-  body.appendChild(el("div", "ap-spacer"));
-  const row = el("div", "ap-row");
-  const undo = el("button", "ap-sec", "Undo");
-  undo.type = "button";
-  undo.onclick = function () {
-    restoreState(snap);
-    pricePage.mode = "choose";
-    renderPricePage();
-    showToast("Undone.");
-  };
-  const back = el("button", "ap-sec", "Back to Today");
-  back.type = "button";
-  back.onclick = closePricePage;
-  row.appendChild(undo);
-  row.appendChild(back);
   const rest = pricePage.queue.slice(pricePage.at + 1).filter(function (i) { return items[i] && items[i].status === "Listed" && isDue(items[i]); });
   if (rest.length) {
     const next = el("button", "ap-next", "Next price check (" + rest.length + " left)");
@@ -10720,27 +10676,28 @@ function showPriceDone(kind, idx, snap) {
     next.onclick = pricePageNext;
     body.appendChild(next);
   }
+  const row = el("div", "ap-row");
+  const undo = el("button", "ap-sec", "Undo");
+  undo.type = "button";
+  undo.onclick = function () {
+    restoreState(snap);
+    renderPricePage();
+    pricePage.active = true;
+    showToast("Undone.");
+  };
+  const back = el("button", "ap-sec", "Back to Today");
+  back.type = "button";
+  back.onclick = closeScanModal;
+  row.appendChild(undo);
+  row.appendChild(back);
   body.appendChild(row);
-  page.appendChild(body);
-  page.scrollTop = 0;
+  scanBody.appendChild(body);
 }
 
-// ---- Pack and ship page ----
+// ---- Pack and ship pop-up ----
 function openShipPage() {
-  closeActionPages();
-  shipPage.active = true;
   shipPage.ticked = new Set();
-  document.body.classList.add("apage-open");
   renderShipPage();
-  const page = ensureActionPage("ship-page");
-  page.hidden = false;
-  page.scrollTop = 0;
-}
-function closeShipPage() {
-  shipPage.active = false;
-  const page = $("ship-page");
-  if (page) page.hidden = true;
-  document.body.classList.remove("apage-open");
 }
 function shipStatus(item) {
   const info = shipInfo(item);
@@ -10751,13 +10708,12 @@ function shipStatus(item) {
   return { text: "DUE IN " + dayWord(Math.max(1, dayDiff(todayText(), info.by))).toUpperCase(), cls: "warn" };
 }
 function renderShipPage() {
-  const page = ensureActionPage("ship-page");
-  page.innerHTML = "";
+  openSheet("Pack and ship");
+  shipPage.active = true;
   const list = shipList();
   const idxs = list.map(function (it) { return items.indexOf(it); });
   shipPage.ticked.forEach(function (i) { if (idxs.indexOf(i) === -1) shipPage.ticked.delete(i); });
   const body = el("div", "ap-body");
-  body.appendChild(apageHead("Pack and ship", "", closeShipPage));
   if (!list.length) {
     const ok = el("div", "need-ok big");
     ok.appendChild(icon("check"));
@@ -10768,9 +10724,9 @@ function renderShipPage() {
     body.appendChild(ok);
     const done = el("button", "ap-next", "Back to Today");
     done.type = "button";
-    done.onclick = closeShipPage;
+    done.onclick = closeScanModal;
     body.appendChild(done);
-    page.appendChild(body);
+    scanBody.appendChild(body);
     return;
   }
   body.appendChild(el("div", "ap-intro", features.storage ? "Grab them from storage, pack, then tick each one off." : "Pack each one, then tick it off."));
@@ -10788,12 +10744,10 @@ function renderShipPage() {
       renderShipPage();
     };
     row.appendChild(box);
+    row.appendChild(itemThumb(item));
     const text = el("div", "sp-text");
     text.appendChild(el("div", "sp-name", item.name));
-    const meta = [];
-    if (item.site) meta.push(item.site);
-    if (Number(item.weight) > 0) meta.push(formatWeight(item.weight));
-    if (meta.length) text.appendChild(el("div", "sp-meta", meta.join(" · ")));
+    if (Number(item.weight) > 0) text.appendChild(el("div", "sp-meta", formatWeight(item.weight)));
     text.appendChild(el("div", "sp-status " + st.cls, st.text));
     row.appendChild(text);
     if (item.bin && item.slot > 0) {
@@ -10809,7 +10763,6 @@ function renderShipPage() {
   count.appendChild(el("span", "", "Parcels ticked"));
   count.appendChild(el("b", "", shipPage.ticked.size + " of " + list.length));
   body.appendChild(count);
-  body.appendChild(el("div", "ap-spacer"));
   const go = el("button", "ap-next", shipPage.ticked.size ? "Mark " + shipPage.ticked.size + " as shipped" : "Mark ticked as shipped");
   go.type = "button";
   go.disabled = shipPage.ticked.size === 0;
@@ -10821,16 +10774,17 @@ function renderShipPage() {
     shipPage.ticked.clear();
     save();
     render();
+    closeScanModal();
     showUndo(picked.length === 1 ? picked[0].name + " marked as shipped." : picked.length + " parcels marked as shipped.", snap);
   };
   body.appendChild(go);
   if (features.storage && bins.length) {
     const store = el("button", "ap-textbtn", "Open storage view");
     store.type = "button";
-    store.onclick = function () { showView("stock"); showStockPane("storage"); };
+    store.onclick = function () { closeScanModal(); showView("stock"); showStockPane("storage"); };
     body.appendChild(store);
   }
-  page.appendChild(body);
+  scanBody.appendChild(body);
 }
 
 function paintGoalTile() {
@@ -12123,7 +12077,6 @@ function renderViews() {
     paintHero();
     renderHomeAlerts();
     renderHomeTodos();
-    refreshActionPages();
     renderHomeCalendar();
     renderStorage();
     renderMoney();
