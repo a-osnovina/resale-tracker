@@ -1345,7 +1345,6 @@ progress::-moz-progress-bar { background: var(--primary); border-radius: 5px; }
 .to-row .sthumb { width: 52px; height: 52px; }
 .to-row .sp-spot { background: var(--surface); }
 .to-row .sp-toggle { background: var(--surface); }
-.to-row .sp-line .sp-spot { width: 88px; }
 .to-text { flex: 1 1 0; min-width: 90px; display: flex; flex-direction: column; gap: 1px; }
 .to-text b { font-size: 16px; overflow-wrap: anywhere; }
 .to-text span { font-size: 13px; color: var(--muted); }
@@ -1507,9 +1506,18 @@ progress::-moz-progress-bar { background: var(--primary); border-radius: 5px; }
 .sp-status { margin-top: 6px; font-size: 12px; font-weight: 800; color: var(--muted); }
 .sp-status.bad { color: var(--danger); }
 .sp-status.warn { color: var(--warn-text); }
-.sp-spot { flex: none; width: 96px; box-sizing: border-box; display: flex; flex-direction: column; align-items: center; text-align: center; padding: 8px 10px; border-radius: 12px; background: var(--surface-2); }
-.sp-spot span { font-size: 11px; font-weight: 700; color: var(--muted); }
-.sp-spot b { font-size: 18px; line-height: 1.15; letter-spacing: 0.02em; color: var(--accent-text); overflow-wrap: anywhere; }
+.sp-spot { display: inline-flex; flex-direction: row; align-items: baseline; justify-self: start; gap: 6px; max-width: 100%; box-sizing: border-box; margin-top: 6px; padding: 4px 11px; border-radius: 999px; background: var(--surface-2); text-align: left; }
+.sp-spot span { flex: none; font-size: 11px; font-weight: 800; letter-spacing: 0.05em; color: var(--muted); }
+.sp-spot b { font-size: 15px; line-height: 1.25; letter-spacing: 0.02em; color: var(--accent-text); overflow-wrap: anywhere; }
+/* photo on the left; name, status and the spot tag stacked on the right, so every spot lines up the same way */
+.sp-row:not(.sp-parcel), .to-row.has-spot { display: grid; grid-template-columns: auto minmax(0, 1fr); column-gap: 12px; row-gap: 0; align-items: center; }
+.sp-row:not(.sp-parcel) > .sthumb, .to-row.has-spot > .sthumb { grid-column: 1; grid-row: 1 / span 2; }
+.sp-row:not(.sp-parcel) > .sp-text, .to-row.has-spot > .to-text { grid-column: 2; grid-row: 1; min-width: 0; }
+.sp-row:not(.sp-parcel) > .sp-spot, .to-row.has-spot > .sp-spot { grid-column: 2; grid-row: 2; }
+.sp-line { display: grid; grid-template-columns: 40px minmax(0, 1fr); column-gap: 10px; align-items: center; }
+.sp-line > .sthumb { grid-column: 1; grid-row: 1 / span 2; }
+.sp-line > .sp-line-name { grid-column: 2; grid-row: 1; }
+.sp-line > .sp-spot { grid-column: 2; grid-row: 2; margin-top: 4px; }
 .sp-thumbwrap { position: relative; flex: none; }
 .sp-badge { position: absolute; right: -6px; top: -6px; min-width: 22px; height: 22px; padding: 0 5px; box-sizing: border-box; border-radius: 11px; background: var(--primary); color: #ffffff; font-size: 12px; font-weight: 800; display: flex; align-items: center; justify-content: center; border: 2px solid var(--surface); }
 .sp-row { flex-wrap: wrap; flex: 1; min-width: 0; }
@@ -1527,14 +1535,10 @@ progress::-moz-progress-bar { background: var(--primary); border-radius: 5px; }
 .sp-toggle.open .ico { transform: rotate(180deg); }
 .sp-more { flex-basis: 100%; display: flex; flex-direction: column; gap: 8px; padding-top: 10px; margin-top: 2px; border-top: 1px solid var(--line-soft); cursor: default; }
 .sp-line.tap { cursor: pointer; }
-.sp-line { display: flex; align-items: center; gap: 10px; }
 .sp-line .sthumb { width: 40px; height: 40px; }
 .sp-line-name { flex: 1; min-width: 0; font-weight: 700; font-size: 15px; overflow-wrap: anywhere; }
-.sp-line .sp-spot { width: 88px; padding: 4px 8px; }
-.sp-line .sp-spot b { font-size: 16px; }
 .sp-names { display: flex; flex-direction: column; gap: 2px; }
 .sp-names:has(.sp-name + .sp-name) .sp-name { -webkit-line-clamp: 1; }
-.sp-spot b + b { margin-top: 2px; font-size: 16px; }
 .sp-spots { flex: none; display: flex; flex-direction: column; gap: 6px; }
 .sp-parcel-tag { margin-top: 2px; font-size: 12px; font-weight: 800; color: var(--accent-text); }
 .sp-split { align-self: flex-start; min-height: 32px; padding: 0; border: 0; background: transparent; color: var(--muted); font-size: 13px; font-weight: 700; text-decoration: underline; }
@@ -8503,7 +8507,7 @@ function ackThen(wrap, text, change) {
 }
 // One line of Take out of storage: photo, name, spot. Swipe it to the left to say it is out of storage.
 function takeoutLine(it, showStatus) {
-  const row = el("div", "to-row");
+  const row = el("div", "to-row has-spot");
   row.setAttribute("role", "button");
   row.tabIndex = 0;
   row.appendChild(itemThumb(it));
