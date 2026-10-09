@@ -1566,7 +1566,6 @@ body.modal-open #undo-bar { visibility: hidden; }
     </div>
     <div id="stock-overview" hidden>
     <div id="stock-takeout"></div>
-    <div id="stock-platforms"></div>
     <div id="overview-off" class="small" hidden>Timeline is off.</div>
     <section id="pipeline-box" class="msec">
       <div class="sec-head"><h2 class="msec-title">Where your items are</h2></div>
@@ -8411,7 +8410,6 @@ function renderPipelineBox() {
   panel.innerHTML = "";
   drawPipeline(panel, planNeeds());
   renderStockTakeout();
-  renderStockPlatforms();
 }
 
 // ---- Stock > Overview: your platforms. Tap one to browse its items, or open its app ----
