@@ -9315,6 +9315,11 @@ function renderPlanSettings() {
 
 function renderPlanList(panel) {
   const pace = paceOf(plan);
+  const onCard = el("div", "set-card pad");
+  onCard.appendChild(switchRow("Show time estimates", "Show how long work will take: on the Where your items are steps, in Plan and in your goal.", timeEstOn, function (on) {
+    timeEstOn = on; savePlanOptions(); render(); renderPlanView(); renderPlanSettings();
+  }));
+  panel.appendChild(onCard);
   const running = estTimer();
   if (running && !running.done) {
     const list = el("div", "est-list");
@@ -12196,7 +12201,7 @@ function renderSettingsHome() {
     return settingsRow(ICON_BELL, "Reminders", alertsOn === 0 ? "All off" : alertsOn + (alertsOn === 1 ? " alert on" : " alerts on"), function () { openSettingsPage("reminders"); }, "help");
   };
   const timeRow = function () {
-    return settingsRow(ICON_CLOCK, "Time estimates", "Per step", function () { openSettingsPage("time"); }, "help");
+    return settingsRow(ICON_CLOCK, "Time estimates", timeEstOn ? "On" : "Off", function () { openSettingsPage("time"); }, "help");
   };
   const optsRow = function () {
     return settingsRow(ICON_CLOCK, "Plan options", (timeEstOn ? "Estimates on" : "Estimates off"), function () { openSettingsPage("planopts"); }, "help");
@@ -12212,7 +12217,6 @@ function renderSettingsHome() {
   }
   if (scope === "stock") {
     const shop = [cardsRow()];
-    if (features.storage) shop.push(storageRow());
     shop.push(archiveRow());
     settingsGroup(box, "Your items", shop);
     settingsGroup(box, "Alerts", [remindersRow()]);
@@ -12235,7 +12239,7 @@ function renderSettingsHome() {
     return;
   }
   if (scope === "plan") {
-    settingsGroup(box, "Your week", [optsRow(), timeRow()]);
+    settingsGroup(box, "Your week", [timeRow()]);
     settingsGroup(box, "More", [allRow()]);
     return;
   }
@@ -12243,10 +12247,9 @@ function renderSettingsHome() {
     settingsRow(ICON_LOOK, "Appearance", themeLabel() + " · " + unitsLabel(), function () { openSettingsPage("look"); })
   ]);
   const shop = [platformsRow(), cardsRow()];
-  if (features.storage) shop.push(storageRow());
   shop.push(archiveRow());
   settingsGroup(box, "Your shop", shop);
-  settingsGroup(box, "Plan and alerts", [remindersRow(), optsRow(), timeRow()]);
+  settingsGroup(box, "Plan and alerts", [remindersRow(), timeRow()]);
   let last = "";
   try { last = localStorage.getItem("lastBackup") || ""; } catch (e) {}
   const age = backupAge(last, todayText());
