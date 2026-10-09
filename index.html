@@ -1039,6 +1039,7 @@ progress::-moz-progress-bar { background: var(--primary); border-radius: 5px; }
 /* ---- Stock: storage ---- */
 .slot-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px; }
 .slot-cell { min-height: 66px; padding: 8px; border: 1.5px dashed var(--line); border-radius: 12px; background: transparent; color: var(--muted); display: flex; flex-direction: column; align-items: flex-start; justify-content: flex-start; gap: 6px; text-align: left; }
+.slot-pic { width: 100%; aspect-ratio: 1; object-fit: cover; border-radius: 8px; display: block; background: var(--surface-2); }
 .slot-code { font-size: 14px; font-weight: 800; letter-spacing: 0.02em; }
 .slot-name { max-width: 100%; font-size: 12px; font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .slot-cell.empty .slot-name { font-weight: 400; }
@@ -10096,6 +10097,14 @@ function renderStorage() {
       const picked = selSlot && selSlot.bin === bin.name && selSlot.slot === n;
       const cell = el("button", "slot-cell " + (it ? (it.status === "Sold" ? "sold" : "full") : "empty") + (picked ? " sel" : ""));
       cell.type = "button";
+      if (it && it.picture) {
+        const pic = el("img", "slot-pic");
+        pic.src = it.picture;
+        pic.alt = "";
+        pic.loading = "eager";
+        pic.decoding = "async";
+        cell.appendChild(pic);
+      }
       cell.appendChild(el("span", "slot-code", slotLabel(bin.name, n)));
       cell.appendChild(el("span", "slot-name", it ? it.name : "empty"));
       cell.onclick = function () { selSlot = { bin: bin.name, slot: n }; renderStorage(); };
