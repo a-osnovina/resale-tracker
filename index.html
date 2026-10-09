@@ -10778,12 +10778,6 @@ function renderShipPage() {
     showUndo(picked.length === 1 ? picked[0].name + " marked as shipped." : picked.length + " parcels marked as shipped.", snap);
   };
   body.appendChild(go);
-  if (features.storage && bins.length) {
-    const store = el("button", "ap-textbtn", "Open storage view");
-    store.type = "button";
-    store.onclick = function () { closeScanModal(); showView("stock"); showStockPane("storage"); };
-    body.appendChild(store);
-  }
   scanBody.appendChild(body);
 }
 
