@@ -1328,7 +1328,9 @@ progress::-moz-progress-bar { background: var(--primary); border-radius: 5px; }
 .to-group-tag .sp-status { margin: 0; }
 .to-group .to-wrap { margin-top: 0; border-radius: 0; }
 .to-group .to-wrap + .to-wrap { border-top: 1px solid var(--line-soft); }
-.to-quiet { opacity: 0.65; cursor: pointer; }
+.to-quiet { cursor: pointer; }
+.to-quiet > * { opacity: 0.6; }
+.to-done.back { background: var(--muted); }
 .to-chip { flex: none; display: inline-flex; align-items: center; gap: 4px; font-size: 13px; font-weight: 800; color: var(--profit); }
 .to-chip .ico { width: 16px; height: 16px; }
 .to-group .to-quiet { border-top: 1px solid var(--line-soft); }
@@ -8529,7 +8531,19 @@ function takeoutDoneLine(it) {
   chip.appendChild(document.createTextNode(it.takenOut ? " Taken out" : " No spot"));
   line.appendChild(chip);
   line.onclick = function () { showCard(it); };
-  return line;
+  if (!it.takenOut) return line;
+  // Swipe a "Taken out" line to the left to put it back in the list.
+  const wrap = el("div", "swipe-wrap to-wrap");
+  wrap.appendChild(el("div", "swipe-bg to-done back", "Put back"));
+  wrap.appendChild(line);
+  attachSwipe(line, 0, 0, function () {
+    const snap = captureState();
+    it.takenOut = false;
+    save();
+    render();
+    showUndo(it.name + " put back in Take out of storage.", snap);
+  });
+  return wrap;
 }
 function renderStockTakeout() {
   const box = $("stock-takeout");
