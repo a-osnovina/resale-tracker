@@ -1320,7 +1320,10 @@ progress::-moz-progress-bar { background: var(--primary); border-radius: 5px; }
 .pv-pic { flex: none; width: 48px; height: 48px; border-radius: 10px; background: var(--thumb-bg); }
 .to-row { width: 100%; min-height: 60px; margin-top: 8px; padding: 8px 12px; display: flex; align-items: center; gap: 12px; text-align: left; background: var(--sold-bg); border: 1px solid var(--line-soft); border-left: 5px solid var(--sold-edge); border-radius: 14px; color: var(--text); }
 .to-slot { flex: 0 1 auto; min-width: 44px; max-width: 36%; padding: 6px 8px; border-radius: 10px; background: var(--surface); font-weight: 800; line-height: 1.15; text-align: center; overflow-wrap: anywhere; }
-.to-text { flex: 1 1 0; min-width: 100px; display: flex; flex-direction: column; gap: 1px; }
+.sp-name, .to-text b { display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+.to-row .sthumb { width: 52px; height: 52px; }
+.to-row .sp-spot { background: var(--surface); }
+.to-text { flex: 1 1 0; min-width: 90px; display: flex; flex-direction: column; gap: 1px; }
 .to-text b { font-size: 16px; overflow-wrap: anywhere; }
 .to-text span { font-size: 13px; color: var(--muted); }
 .sp2-row { display: flex; align-items: stretch; gap: 8px; margin-top: 8px; }
@@ -1481,7 +1484,7 @@ progress::-moz-progress-bar { background: var(--primary); border-radius: 5px; }
 .sp-status { margin-top: 6px; font-size: 12px; font-weight: 800; color: var(--muted); }
 .sp-status.bad { color: var(--danger); }
 .sp-status.warn { color: var(--warn-text); }
-.sp-spot { flex: 0 1 auto; max-width: 36%; min-width: 0; display: flex; flex-direction: column; align-items: center; text-align: center; padding: 8px 10px; border-radius: 12px; background: var(--surface-2); }
+.sp-spot { flex: none; width: 96px; box-sizing: border-box; display: flex; flex-direction: column; align-items: center; text-align: center; padding: 8px 10px; border-radius: 12px; background: var(--surface-2); }
 .sp-spot span { font-size: 11px; font-weight: 700; color: var(--muted); }
 .sp-spot b { font-size: 18px; line-height: 1.15; letter-spacing: 0.02em; color: var(--accent-text); overflow-wrap: anywhere; }
 .sp-count { display: flex; align-items: center; justify-content: space-between; padding: 12px 14px; border-radius: 12px; background: var(--info-bg); color: var(--info-text); font-size: 14px; }
@@ -8438,11 +8441,16 @@ function renderStockTakeout() {
   list.slice().sort(function (a, b) { return slotLabel(a.bin, a.slot).localeCompare(slotLabel(b.bin, b.slot), undefined, { numeric: true }); }).forEach(function (it) {
     const row = el("button", "to-row");
     row.type = "button";
-    row.appendChild(el("span", "to-slot", slotLabel(it.bin, it.slot)));
+    row.appendChild(itemThumb(it));
     const text = el("span", "to-text");
     text.appendChild(el("b", "", it.name));
-    text.appendChild(el("span", "", (it.site ? it.site + " · " : "") + "sold " + money(salePrice(it)) + (it.sold ? " · " + prettyDay(it.sold) : "")));
+    const st = shipStatus(it);
+    text.appendChild(el("span", "sp-status " + st.cls, st.text));
     row.appendChild(text);
+    const spot = el("span", "sp-spot");
+    spot.appendChild(el("span", "", "SPOT"));
+    spot.appendChild(el("b", "", slotLabel(it.bin, it.slot)));
+    row.appendChild(spot);
     row.onclick = function () { showCard(it); };
     box.appendChild(row);
   });
