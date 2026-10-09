@@ -1323,6 +1323,13 @@ progress::-moz-progress-bar { background: var(--primary); border-radius: 5px; }
 .sp-name, .to-text b { display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
 .to-x { flex: none; width: 36px; height: 36px; min-height: 36px; padding: 0; border: 0; border-radius: 18px; background: var(--surface); color: var(--muted); display: flex; align-items: center; justify-content: center; }
 .to-wrap { margin-top: 8px; }
+.to-group { margin-top: 8px; border: 1px solid var(--line-soft); border-left: 5px solid var(--sold-edge); border-radius: 14px; background: var(--sold-bg); overflow: hidden; }
+.to-group-tag { display: flex; align-items: baseline; justify-content: space-between; gap: 8px; padding: 10px 12px 2px; font-size: 12px; font-weight: 800; letter-spacing: 0.04em; color: var(--accent-text); }
+.to-group-tag .sp-status { margin: 0; }
+.to-group .to-wrap { margin-top: 0; border-radius: 0; }
+.to-group .to-wrap + .to-wrap { border-top: 1px solid var(--line-soft); }
+.to-group .to-row { border: 0; border-radius: 0; background: var(--sold-bg); }
+
 .to-wrap > .to-row { position: relative; z-index: 1; margin-top: 0; touch-action: pan-y; -webkit-user-select: none; user-select: none; }
 .to-done { left: 0; right: 0; justify-content: flex-end; align-items: center; padding-right: 20px; background: var(--sold-edge); color: #ffffff; font-weight: 800; font-size: 15px; }
 .to-row .sthumb { width: 52px; height: 52px; }
@@ -8471,22 +8478,51 @@ function openPlatformLink(name) {
   if (url) window.open(url, "_blank", "noopener");
 }
 // Sold items still sitting in storage: they need to be taken out and packed.
-var takeoutOpen = new Set();   // parcels expanded in Take out of storage
+// One line of Take out of storage: photo, name, spot. Swipe it to the left to say it is out of storage.
+function takeoutLine(it, showStatus) {
+  const row = el("div", "to-row");
+  row.setAttribute("role", "button");
+  row.tabIndex = 0;
+  row.appendChild(itemThumb(it));
+  const text = el("span", "to-text");
+  text.appendChild(el("b", "", it.name));
+  if (showStatus) {
+    const st = shipStatus(it);
+    text.appendChild(el("span", "sp-status " + st.cls, st.text));
+  }
+  row.appendChild(text);
+  const spot = el("span", "sp-spot");
+  spot.appendChild(el("span", "", "SPOT"));
+  spot.appendChild(el("b", "", slotLabel(it.bin, it.slot)));
+  row.appendChild(spot);
+  row.onclick = function () { showCard(it); };
+  const wrap = el("div", "swipe-wrap to-wrap");
+  wrap.appendChild(el("div", "swipe-bg to-done", "Taken out"));
+  wrap.appendChild(row);
+  attachSwipe(row, 0, 0, function () {
+    const snap = captureState();
+    it.takenOut = true;
+    save();
+    render();
+    showUndo(it.name + " taken out. It still has to ship.", snap);
+  });
+  return wrap;
+}
 function renderStockTakeout() {
   const box = $("stock-takeout");
   if (!box) return;
   box.innerHTML = "";
   const stored = features.storage ? items.filter(function (it) { return it.status === "Sold" && it.bin && it.slot > 0 && !it.takenOut; }) : [];
-  // Items sold together are one parcel, so they are one card.
+  // Items sold together are one parcel: they sit in one joined card, and each one can still be swiped away on its own.
   const groups = [];
   const seen = {};
   stored.forEach(function (it) {
     if (it.parcel) {
       if (seen[it.parcel]) { seen[it.parcel].items.push(it); return; }
-      seen[it.parcel] = { key: it.parcel, items: [it] };
+      seen[it.parcel] = { items: [it] };
       groups.push(seen[it.parcel]);
     } else {
-      groups.push({ key: "", items: [it] });
+      groups.push({ items: [it] });
     }
   });
   box.hidden = groups.length === 0;
@@ -8496,60 +8532,15 @@ function renderStockTakeout() {
   box.appendChild(head);
   function firstSpot(g) { return slotLabel(g.items[0].bin, g.items[0].slot); }
   groups.sort(function (a, b) { return firstSpot(a).localeCompare(firstSpot(b), undefined, { numeric: true }); }).forEach(function (g) {
-    const it = g.items[0];
-    const many = g.items.length > 1;
-    const isOpen = many && takeoutOpen.has(g.key);
-    const row = el("div", "to-row");
-    row.setAttribute("role", "button");
-    row.tabIndex = 0;
-    const wrap = el("div", "sp-thumbwrap");
-    wrap.appendChild(itemThumb(it));
-    if (many) wrap.appendChild(el("span", "sp-badge", String(g.items.length)));
-    row.appendChild(wrap);
-    const text = el("span", "to-text");
-    text.appendChild(el("b", "", many ? it.name + " + " + (g.items.length - 1) + " more" : it.name));
-    const st = shipStatus(it);
-    text.appendChild(el("span", "sp-status " + st.cls, st.text));
-    row.appendChild(text);
-    if (!many) {
-      const spot = el("span", "sp-spot");
-      spot.appendChild(el("span", "", "SPOT"));
-      spot.appendChild(el("b", "", slotLabel(it.bin, it.slot)));
-      row.appendChild(spot);
-    }
-    if (isOpen) {
-      const more = el("div", "sp-more");
-      more.onclick = function (event) { event.stopPropagation(); };
-      g.items.forEach(function (i) {
-        const line = el("div", "sp-line tap");
-        line.appendChild(itemThumb(i));
-        line.appendChild(el("div", "sp-line-name", i.name));
-        const spot = el("div", "sp-spot");
-        spot.appendChild(el("span", "", "SPOT"));
-        spot.appendChild(el("b", "", slotLabel(i.bin, i.slot)));
-        line.appendChild(spot);
-        line.onclick = function (event) { event.stopPropagation(); showCard(i); };
-        more.appendChild(line);
-      });
-      row.appendChild(more);
-    }
-    row.onclick = function () {
-      if (!many) { showCard(it); return; }
-      if (takeoutOpen.has(g.key)) takeoutOpen.delete(g.key); else takeoutOpen.add(g.key);
-      renderStockTakeout();
-    };
-    // Swipe the card to the left to say it is out of storage. It still has to ship.
-    const wrapSwipe = el("div", "swipe-wrap to-wrap");
-    wrapSwipe.appendChild(el("div", "swipe-bg to-done", "Taken out"));
-    wrapSwipe.appendChild(row);
-    attachSwipe(row, 0, 0, function () {
-      const snap = captureState();
-      g.items.forEach(function (i) { i.takenOut = true; });
-      save();
-      render();
-      showUndo((many ? "Parcel of " + g.items.length + " items" : it.name) + " taken out. It still has to ship.", snap);
-    });
-    box.appendChild(wrapSwipe);
+    if (g.items.length === 1) { box.appendChild(takeoutLine(g.items[0], true)); return; }
+    const card = el("div", "to-group");
+    const st = shipStatus(g.items[0]);
+    const tag = el("div", "to-group-tag");
+    tag.appendChild(el("span", "", "ONE PARCEL \u00B7 " + g.items.length + " ITEMS"));
+    tag.appendChild(el("span", "sp-status " + st.cls, st.text));
+    card.appendChild(tag);
+    g.items.forEach(function (it) { card.appendChild(takeoutLine(it, false)); });
+    box.appendChild(card);
   });
 }
 function renderStockPlatforms() {
