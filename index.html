@@ -1487,6 +1487,13 @@ progress::-moz-progress-bar { background: var(--primary); border-radius: 5px; }
 .sp-spot { flex: none; width: 96px; box-sizing: border-box; display: flex; flex-direction: column; align-items: center; text-align: center; padding: 8px 10px; border-radius: 12px; background: var(--surface-2); }
 .sp-spot span { font-size: 11px; font-weight: 700; color: var(--muted); }
 .sp-spot b { font-size: 18px; line-height: 1.15; letter-spacing: 0.02em; color: var(--accent-text); overflow-wrap: anywhere; }
+.sp-thumbwrap { position: relative; flex: none; }
+.sp-badge { position: absolute; right: -6px; top: -6px; min-width: 22px; height: 22px; padding: 0 5px; box-sizing: border-box; border-radius: 11px; background: var(--primary); color: #ffffff; font-size: 12px; font-weight: 800; display: flex; align-items: center; justify-content: center; border: 2px solid var(--surface); }
+.sp-names { display: flex; flex-direction: column; gap: 2px; }
+.sp-spots { flex: none; display: flex; flex-direction: column; gap: 6px; }
+.sp-parcel-tag { margin-top: 2px; font-size: 12px; font-weight: 800; color: var(--accent-text); }
+.sp-split { align-self: flex-start; min-height: 32px; padding: 0; border: 0; background: transparent; color: var(--muted); font-size: 13px; font-weight: 700; text-decoration: underline; }
+.sp-combine { width: 100%; min-height: 48px; border-radius: 14px; border: 1.5px solid var(--primary); background: var(--surface); color: var(--accent-text); font-size: 15px; font-weight: 800; }
 .sp-count { display: flex; align-items: center; justify-content: space-between; padding: 12px 14px; border-radius: 12px; background: var(--info-bg); color: var(--info-text); font-size: 14px; }
 /* a pop-up message (Undo) must not sit on top of an open menu or sheet */
 body.modal-open #undo-bar { visibility: hidden; }
@@ -2420,7 +2427,7 @@ let planPrefs = null; // Plan tab choices: shipping days, limit, repeating jobs,
 let timeLog = [];    // time you logged: { id, date, step, minutes, items }
 let todos = [];      // your own to-dos: { id, text, day (-1 = any, 0 = Monday ... 6 = Sunday), done }
 var pricePage = { active: false, queue: [], at: 0, mode: "choose" };   // the Lower price page
-var shipPage = { active: false, ticked: new Set() };               // the Pack and ship page
+var shipPage = { active: false, ticked: new Set() };   // ticked holds parcel keys               // the Pack and ship page
 let showShipped = false;   // shipped items are hidden from the list unless you ask
 let showAllWeeks = false;  // the weekly sales table shows the last 12 weeks unless you ask for all
 let formPhoto = "";
@@ -3376,19 +3383,28 @@ function applyShipped(item) {
   item.slot = 0;
 }
 
-// Asks inside the app (not with the browser's own pop-up, which some browsers block) and then ships the item.
+// Items sold together to one buyer share a parcel id (item.parcel) and ship as one parcel.
+function parcelOf(item) {
+  if (!item.parcel) return [item];
+  const group = items.filter(function (it) { return it.status === "Sold" && it.parcel === item.parcel; });
+  return group.length ? group : [item];
+}
+
+// Asks inside the app (not with the browser's own pop-up, which some browsers block) and then ships the item (or the whole parcel).
 function markShipped(item) {
-  const spot = item.bin && item.slot ? slotLabel(item.bin, item.slot) : "";
+  const group = parcelOf(item);
+  const spots = group.filter(function (it) { return it.bin && it.slot; }).map(function (it) { return slotLabel(it.bin, it.slot); });
   scanBody.innerHTML = "";
   scanBody.appendChild(el("h3", "", "Mark as shipped?"));
-  scanBody.appendChild(el("p", "", item.name + (spot ? ". This frees slot " + spot + "." : ".")));
+  const names = group.length > 1 ? "One parcel with " + group.length + " items: " + group.map(function (it) { return it.name; }).join(", ") : item.name;
+  scanBody.appendChild(el("p", "", names + (spots.length ? ". This frees " + (spots.length > 1 ? "slots " : "slot ") + spots.join(", ") + "." : ".")));
   scanBody.appendChild(modalButton("Yes, it shipped", "primary", function () {
     const snap = captureState();
-    applyShipped(item);
+    group.forEach(applyShipped);
     save();
     render();
     closeScanModal();
-    showUndo(item.name + " marked as shipped" + (showShipped ? "." : ". It moved out of the list."), snap);
+    showUndo((group.length > 1 ? "Parcel of " + group.length + " items" : item.name) + " marked as shipped" + (showShipped ? "." : ". It moved out of the list."), snap);
   }));
   scanBody.appendChild(modalButton("Not yet", "", closeScanModal));
   scanModal.hidden = false;
@@ -5543,8 +5559,10 @@ function openMultiSoldSheet(list) {
       }
     }
     const snap = captureState();
+    const parcelId = together && list.length > 1 ? "b" + Date.now().toString(36) : "";
     list.forEach(function (item, i) {
       applySaleFees(item);
+      item.parcel = parcelId;
       item.shipCost = labels[i];
       item.status = "Sold";
       item.sold = date;
@@ -10393,6 +10411,21 @@ function shipList() {
     return x < y ? -1 : x > y ? 1 : 0;
   });
 }
+// The things to pack: one entry per parcel (items sold together are one), soonest deadline first.
+function shipParcels() {
+  const seen = {};
+  const out = [];
+  shipList().forEach(function (it) {
+    if (it.parcel) {
+      if (seen[it.parcel]) return;
+      seen[it.parcel] = 1;
+      out.push({ key: "p:" + it.parcel, items: parcelOf(it) });
+    } else {
+      out.push({ key: "i:" + items.indexOf(it), items: [it] });
+    }
+  });
+  return out;
+}
 function needTile(kind, count, label, sub, subClass, onClick) {
   const t = el("button", "need-tile " + kind);
   t.type = "button";
@@ -10406,8 +10439,8 @@ function renderHomeAlerts() {
   const box = $("home-alerts");
   box.innerHTML = "";
   if (!items.length) return;
-  const toShip = shipList();
-  const late = toShip.filter(function (it) { const s = shipInfo(it); return s && (s.late || s.pastDue); }).length;
+  const toShip = shipParcels();
+  const late = toShip.filter(function (g) { const s = shipInfo(g.items[0]); return s && (s.late || s.pastDue); }).length;
   const due = currentDue.length;
   box.appendChild(el("h2", "msec-title need-title", "Needs you"));
   if (!toShip.length && !due) {
@@ -10716,11 +10749,11 @@ function shipStatus(item) {
 function renderShipPage() {
   openSheet("Pack and ship");
   shipPage.active = true;
-  const list = shipList();
-  const idxs = list.map(function (it) { return items.indexOf(it); });
-  shipPage.ticked.forEach(function (i) { if (idxs.indexOf(i) === -1) shipPage.ticked.delete(i); });
+  const parcels = shipParcels();
+  const keys = parcels.map(function (g) { return g.key; });
+  shipPage.ticked.forEach(function (k) { if (keys.indexOf(k) === -1) shipPage.ticked.delete(k); });
   const body = el("div", "ap-body");
-  if (!list.length) {
+  if (!parcels.length) {
     const ok = el("div", "need-ok big");
     ok.appendChild(icon("check"));
     const t = el("div");
@@ -10737,51 +10770,92 @@ function renderShipPage() {
   }
   body.appendChild(el("div", "ap-intro", features.storage ? "Grab them from storage, pack, then tick each one off." : "Pack each one, then tick it off."));
   const listBox = el("div", "sp-list");
-  list.forEach(function (item, n) {
-    const idx = idxs[n];
-    const st = shipStatus(item);
-    const row = el("label", "sp-row" + (st.cls === "bad" ? " late" : "") + (shipPage.ticked.has(idx) ? " on" : ""));
+  parcels.forEach(function (g) {
+    const first = g.items[0];
+    const st = shipStatus(first);
+    const row = el("label", "sp-row" + (st.cls === "bad" ? " late" : "") + (shipPage.ticked.has(g.key) ? " on" : ""));
     const box = document.createElement("input");
     box.type = "checkbox";
-    box.checked = shipPage.ticked.has(idx);
-    box.setAttribute("aria-label", "Packed: " + item.name);
+    box.checked = shipPage.ticked.has(g.key);
+    box.setAttribute("aria-label", "Packed: " + g.items.map(function (it) { return it.name; }).join(" and "));
     box.onchange = function () {
-      if (box.checked) shipPage.ticked.add(idx); else shipPage.ticked.delete(idx);
+      if (box.checked) shipPage.ticked.add(g.key); else shipPage.ticked.delete(g.key);
       renderShipPage();
     };
     row.appendChild(box);
-    row.appendChild(itemThumb(item));
+    const wrap = el("div", "sp-thumbwrap");
+    wrap.appendChild(itemThumb(first));
+    if (g.items.length > 1) wrap.appendChild(el("span", "sp-badge", String(g.items.length)));
+    row.appendChild(wrap);
     const text = el("div", "sp-text");
-    text.appendChild(el("div", "sp-name", item.name));
-    if (Number(item.weight) > 0) text.appendChild(el("div", "sp-meta", formatWeight(item.weight)));
+    const names = el("div", "sp-names");
+    g.items.forEach(function (it) { names.appendChild(el("div", "sp-name", it.name)); });
+    text.appendChild(names);
+    if (g.items.length > 1) text.appendChild(el("div", "sp-parcel-tag", "ONE PARCEL · " + g.items.length + " ITEMS"));
+    const weight = g.items.reduce(function (sum, it) { return sum + (Number(it.weight) || 0); }, 0);
+    if (weight > 0) text.appendChild(el("div", "sp-meta", formatWeight(weight)));
     text.appendChild(el("div", "sp-status " + st.cls, st.text));
+    if (g.items.length > 1) {
+      const split = el("button", "sp-split", "Split up");
+      split.type = "button";
+      split.onclick = function (event) {
+        event.preventDefault();
+        event.stopPropagation();
+        g.items.forEach(function (it) { it.parcel = ""; });
+        shipPage.ticked.delete(g.key);
+        save();
+        renderShipPage();
+      };
+      text.appendChild(split);
+    }
     row.appendChild(text);
-    if (item.bin && item.slot > 0) {
-      const spot = el("div", "sp-spot");
-      spot.appendChild(el("span", "", "SPOT"));
-      spot.appendChild(el("b", "", slotLabel(item.bin, item.slot)));
-      row.appendChild(spot);
+    const spotItems = g.items.filter(function (it) { return it.bin && it.slot > 0; });
+    if (spotItems.length) {
+      const spots = el("div", "sp-spots");
+      spotItems.forEach(function (it) {
+        const spot = el("div", "sp-spot");
+        spot.appendChild(el("span", "", "SPOT"));
+        spot.appendChild(el("b", "", slotLabel(it.bin, it.slot)));
+        spots.appendChild(spot);
+      });
+      row.appendChild(spots);
     }
     listBox.appendChild(row);
   });
   body.appendChild(listBox);
   const count = el("div", "sp-count");
   count.appendChild(el("span", "", "Parcels ticked"));
-  count.appendChild(el("b", "", shipPage.ticked.size + " of " + list.length));
+  count.appendChild(el("b", "", shipPage.ticked.size + " of " + parcels.length));
   body.appendChild(count);
-  const go = el("button", "ap-next", shipPage.ticked.size ? "Mark " + shipPage.ticked.size + " as shipped" : "Mark ticked as shipped");
+  if (shipPage.ticked.size >= 2) {
+    const join = el("button", "sp-combine", "Combine ticked into one parcel");
+    join.type = "button";
+    join.onclick = function () {
+      const id = "b" + Date.now().toString(36);
+      const chosen = parcels.filter(function (g) { return shipPage.ticked.has(g.key); });
+      chosen.forEach(function (g) { g.items.forEach(function (it) { it.parcel = id; }); });
+      shipPage.ticked = new Set(["p:" + id]);
+      save();
+      render();
+      renderShipPage();
+    };
+    body.appendChild(join);
+  }
+  const go = el("button", "ap-next", shipPage.ticked.size ? "Mark " + shipPage.ticked.size + (shipPage.ticked.size === 1 ? " parcel" : " parcels") + " as shipped" : "Mark ticked as shipped");
   go.type = "button";
   go.disabled = shipPage.ticked.size === 0;
   go.onclick = function () {
-    const picked = Array.from(shipPage.ticked).map(function (i) { return items[i]; }).filter(Boolean);
+    const picked = [];
+    parcels.forEach(function (g) { if (shipPage.ticked.has(g.key)) g.items.forEach(function (it) { picked.push(it); }); });
     if (!picked.length) return;
     const snap = captureState();
+    const n = shipPage.ticked.size;
     picked.forEach(applyShipped);
     shipPage.ticked.clear();
     save();
     render();
     closeScanModal();
-    showUndo(picked.length === 1 ? picked[0].name + " marked as shipped." : picked.length + " parcels marked as shipped.", snap);
+    showUndo(n === 1 && picked.length === 1 ? picked[0].name + " marked as shipped." : n + (n === 1 ? " parcel" : " parcels") + " marked as shipped.", snap);
   };
   body.appendChild(go);
   scanBody.appendChild(body);
@@ -10817,14 +10891,17 @@ function planRows(day, forHome) {
     if (t.date) sub = t.date < today && !t.done ? "Late: " + prettyDay(t.date) : dayLabel(t.date);
     rows.push({ kind: "todo", todo: t, title: t.text, sub: sub, done: t.done });
   });
+  const parcelSeen = {};
   items.forEach(function (it) {
     if (it.status !== "Sold" || !it.sold) return;
+    if (it.parcel) { if (parcelSeen[it.parcel]) return; parcelSeen[it.parcel] = 1; }
     const by = shipByDate(it.sold);
     const late = by < today;
     if (!(by === day || (isToday && late))) return;
     if (forHome && late) return;
     const sub = late ? dayWord(dayDiff(by, today)) + " late" : (by === today ? "Due today" : "Due " + prettyDay(by));
-    rows.push({ kind: "ship", item: it, title: "Ship " + it.name, sub: sub + (it.site ? " · " + it.site : "") });
+    const more = it.parcel ? parcelOf(it).length - 1 : 0;
+    rows.push({ kind: "ship", item: it, title: "Ship " + it.name + (more > 0 ? " + " + more + " more" : ""), sub: sub + (it.site ? " · " + it.site : "") });
   });
   if (!forHome) {
     eventsOn(day).bills.forEach(function (g) {
