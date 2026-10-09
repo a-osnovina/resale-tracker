@@ -1322,6 +1322,9 @@ progress::-moz-progress-bar { background: var(--primary); border-radius: 5px; }
 .to-slot { flex: 0 1 auto; min-width: 44px; max-width: 36%; padding: 6px 8px; border-radius: 10px; background: var(--surface); font-weight: 800; line-height: 1.15; text-align: center; overflow-wrap: anywhere; }
 .sp-name, .to-text b { display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
 .to-x { flex: none; width: 36px; height: 36px; min-height: 36px; padding: 0; border: 0; border-radius: 18px; background: var(--surface); color: var(--muted); display: flex; align-items: center; justify-content: center; }
+.to-wrap { margin-top: 8px; }
+.to-wrap > .to-row { position: relative; z-index: 1; margin-top: 0; touch-action: pan-y; -webkit-user-select: none; user-select: none; }
+.to-done { left: 0; right: 0; justify-content: flex-end; align-items: center; padding-right: 20px; background: var(--sold-edge); color: #ffffff; font-weight: 800; font-size: 15px; }
 .to-row .sthumb { width: 52px; height: 52px; }
 .to-row .sp-spot { background: var(--surface); }
 .to-row .sp-toggle { background: var(--surface); }
@@ -1492,7 +1495,8 @@ progress::-moz-progress-bar { background: var(--primary); border-radius: 5px; }
 .sp-spot b { font-size: 18px; line-height: 1.15; letter-spacing: 0.02em; color: var(--accent-text); overflow-wrap: anywhere; }
 .sp-thumbwrap { position: relative; flex: none; }
 .sp-badge { position: absolute; right: -6px; top: -6px; min-width: 22px; height: 22px; padding: 0 5px; box-sizing: border-box; border-radius: 11px; background: var(--primary); color: #ffffff; font-size: 12px; font-weight: 800; display: flex; align-items: center; justify-content: center; border: 2px solid var(--surface); }
-.sp-row { flex-wrap: wrap; flex: 1; min-width: 0; cursor: pointer; }
+.sp-row { flex-wrap: wrap; flex: 1; min-width: 0; }
+.sp-row.tap { cursor: pointer; }
 .sp-item { display: flex; align-items: center; gap: 10px; }
 .sp-item > input { flex: none; width: 30px; height: 30px; margin: 0; accent-color: var(--primary); }
 .sp-toggle { flex: none; width: 40px; height: 40px; min-height: 40px; padding: 0; border: 0; border-radius: 20px; background: var(--surface-2); color: var(--text); display: flex; align-items: center; justify-content: center; }
@@ -6854,7 +6858,7 @@ function askDeleteItem(item) {
 let openSwipe = null;
 let swipeJustDragged = false;
 const SWIPE_BUTTON = 76;
-function attachSwipe(card, leadCount, trailCount) {
+function attachSwipe(card, leadCount, trailCount, onCommit) {
   const leadPx = leadCount * SWIPE_BUTTON;
   const trailPx = trailCount * SWIPE_BUTTON;
   let startX = 0, startY = 0, base = 0, dx = 0, dragging = false, decided = false, pid = null;
@@ -6897,7 +6901,7 @@ function attachSwipe(card, leadCount, trailCount) {
     }
     if (!dragging) return;
     dx = mx;
-    const low = trailPx > 0 ? -trailPx - 24 : 0;
+    const low = onCommit ? -card.offsetWidth : (trailPx > 0 ? -trailPx - 24 : 0);
     const high = leadPx > 0 ? leadPx + 24 : 0;
     setX(Math.max(low, Math.min(high, base + dx)), false);
   });
@@ -6909,6 +6913,12 @@ function attachSwipe(card, leadCount, trailCount) {
     swipeJustDragged = true;
     setTimeout(function () { swipeJustDragged = false; }, 80);
     const x = base + dx;
+    // A swipe all the way acts right away, with no button to tap.
+    if (onCommit && x < -Math.min(110, card.offsetWidth * 0.4)) {
+      setX(-card.offsetWidth - 20, true);
+      setTimeout(onCommit, 180);
+      return;
+    }
     if (leadPx > 0 && x > leadPx / 2) {
       base = leadPx;
       setX(base, true);
@@ -8507,19 +8517,6 @@ function renderStockTakeout() {
       spot.appendChild(el("b", "", slotLabel(it.bin, it.slot)));
       row.appendChild(spot);
     }
-    const x = el("button", "to-x");
-    x.type = "button";
-    x.setAttribute("aria-label", "Hide: already out of storage");
-    x.innerHTML = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>';
-    x.onclick = function (event) {
-      event.stopPropagation();
-      const snap = captureState();
-      g.items.forEach(function (i) { i.takenOut = true; });
-      save();
-      render();
-      showUndo((many ? "Parcel of " + g.items.length + " items" : it.name) + " hidden here. It still has to ship.", snap);
-    };
-    row.appendChild(x);
     if (isOpen) {
       const more = el("div", "sp-more");
       more.onclick = function (event) { event.stopPropagation(); };
@@ -8541,7 +8538,18 @@ function renderStockTakeout() {
       if (takeoutOpen.has(g.key)) takeoutOpen.delete(g.key); else takeoutOpen.add(g.key);
       renderStockTakeout();
     };
-    box.appendChild(row);
+    // Swipe the card to the left to say it is out of storage. It still has to ship.
+    const wrapSwipe = el("div", "swipe-wrap to-wrap");
+    wrapSwipe.appendChild(el("div", "swipe-bg to-done", "Taken out"));
+    wrapSwipe.appendChild(row);
+    attachSwipe(row, 0, 0, function () {
+      const snap = captureState();
+      g.items.forEach(function (i) { i.takenOut = true; });
+      save();
+      render();
+      showUndo((many ? "Parcel of " + g.items.length + " items" : it.name) + " taken out. It still has to ship.", snap);
+    });
+    box.appendChild(wrapSwipe);
   });
 }
 function renderStockPlatforms() {
@@ -10858,9 +10866,7 @@ function renderShipPage() {
       renderShipPage();
     };
     item.appendChild(box);
-    const row = el("div", "sp-row" + (st.cls === "bad" ? " late" : "") + (shipPage.ticked.has(g.key) ? " on" : ""));
-    row.setAttribute("role", "button");
-    row.tabIndex = 0;
+    const row = el("div", "sp-row" + (many ? " tap" : "") + (st.cls === "bad" ? " late" : "") + (shipPage.ticked.has(g.key) ? " on" : ""));
     const wrap = el("div", "sp-thumbwrap");
     wrap.appendChild(itemThumb(first));
     if (many) wrap.appendChild(el("span", "sp-badge", String(g.items.length)));
@@ -10883,8 +10889,7 @@ function renderShipPage() {
       const more = el("div", "sp-more");
       more.onclick = function (event) { event.stopPropagation(); };
       g.items.forEach(function (it) {
-        const line = el("div", "sp-line tap");
-        line.onclick = function (event) { event.stopPropagation(); showCard(it); };
+        const line = el("div", "sp-line");
         line.appendChild(itemThumb(it));
         line.appendChild(el("div", "sp-line-name", it.name));
         if (it.bin && it.slot > 0) {
@@ -10897,9 +10902,9 @@ function renderShipPage() {
       });
       row.appendChild(more);
     }
-    // Tap a parcel to open or close it, or a single item to see it in Stock. The checkbox outside ticks it.
+    // Tap a parcel to open or close it. The checkbox outside ticks it. A single item does nothing when tapped.
     row.onclick = function () {
-      if (!many) { showCard(first); return; }
+      if (!many) return;
       if (shipPage.open.has(g.key)) shipPage.open.delete(g.key); else shipPage.open.add(g.key);
       renderShipPage();
     };
@@ -10907,20 +10912,6 @@ function renderShipPage() {
     listBox.appendChild(item);
   });
   body.appendChild(listBox);
-  if (shipPage.ticked.size >= 2) {
-    const join = el("button", "sp-combine", "Combine ticked into one parcel");
-    join.type = "button";
-    join.onclick = function () {
-      const id = "b" + Date.now().toString(36);
-      const chosen = parcels.filter(function (g) { return shipPage.ticked.has(g.key); });
-      chosen.forEach(function (g) { g.items.forEach(function (it) { it.parcel = id; }); });
-      shipPage.ticked = new Set(["p:" + id]);
-      save();
-      render();
-      renderShipPage();
-    };
-    body.appendChild(join);
-  }
   const go = el("button", "ap-next", shipPage.ticked.size ? "Mark " + shipPage.ticked.size + (shipPage.ticked.size === 1 ? " parcel" : " parcels") + " as shipped" : "Mark ticked as shipped");
   go.type = "button";
   go.disabled = shipPage.ticked.size === 0;
