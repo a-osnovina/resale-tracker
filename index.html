@@ -10953,7 +10953,6 @@ function renderPlanTimeAndTools(box) {
   try {
     if (timeEstOn) {
       plannerSection("week", "Work waiting and time needed", buildWorkWaiting);
-      plannerSection("calc", "Planning a new batch?", buildBatchCalc);
     }
   } finally {
     plannerTarget = null;
@@ -11011,6 +11010,18 @@ function renderPlanCalendar(box) {
 }
 
 function renderPlanGoal(box) {
+  renderPlanGoalMain(box);
+  if (!timeEstOn) return;
+  const head = el("div", "sec-head");
+  head.appendChild(el("h2", "msec-title", "Planning a new batch?"));
+  box.appendChild(head);
+  const holder = el("div");
+  holder.id = "plan-more";
+  box.appendChild(holder);
+  plannerTarget = holder;
+  try { plannerSection("calc", "Batch calculator", buildBatchCalc); } finally { plannerTarget = null; }
+}
+function renderPlanGoalMain(box) {
   const n = goalNumbers();
   if (!n) {
     const card = el("div", "pl-card");
