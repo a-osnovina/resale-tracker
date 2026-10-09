@@ -1442,9 +1442,9 @@ body.modal-open #undo-bar { visibility: hidden; }
     <div id="stock-overview" hidden>
     <div id="stock-takeout"></div>
     <div id="stock-platforms"></div>
-    <div id="overview-off" class="small" hidden>The timeline is turned off. Turn it on in Stock settings.</div>
+    <div id="overview-off" class="small" hidden>Timeline is off.</div>
     <section id="pipeline-box" class="msec">
-      <div class="sec-head"><h2 class="msec-title">Where your items are</h2><span class="sec-note">Tap a step</span></div>
+      <div class="sec-head"><h2 class="msec-title">Where your items are</h2></div>
       <div class="dropdown-panel" id="pipeline-panel"></div>
     </section>
     </div>
@@ -8232,7 +8232,7 @@ function drawPipeline(panel, need) {
     if (cls === "ok") node.appendChild(icon("check"));
     step.appendChild(node);
     step.appendChild(el("div", "pipe-label", st.label));
-    step.appendChild(el("div", "pipe-time", st.wait ? "no work" : (st.n === 0 ? "done" : (timeEstOn ? fmtMin(st.m) : ""))));
+    step.appendChild(el("div", "pipe-time", st.wait || st.n === 0 ? "" : (timeEstOn ? fmtMin(st.m) : "")));
     pipe.appendChild(step);
   });
   total += need.upload.minutes;
@@ -8281,7 +8281,6 @@ function renderStockTakeout() {
   if (!list.length) return;
   const head = el("div", "sec-head");
   head.appendChild(el("h2", "msec-title", "Take out of storage"));
-  head.appendChild(el("span", "sec-note", list.length + (list.length === 1 ? " sold item" : " sold items")));
   box.appendChild(head);
   list.slice().sort(function (a, b) { return slotLabel(a.bin, a.slot).localeCompare(slotLabel(b.bin, b.slot), undefined, { numeric: true }); }).forEach(function (it) {
     const row = el("button", "to-row");
@@ -8304,7 +8303,6 @@ function renderStockPlatforms() {
   if (!names.length) return;
   const head = el("div", "sec-head");
   head.appendChild(el("h2", "msec-title", "Platforms"));
-  head.appendChild(el("span", "sec-note", "Tap to browse"));
   box.appendChild(head);
   names.forEach(function (name) {
     const list = platformItems(name);
@@ -8317,7 +8315,8 @@ function renderStockPlatforms() {
     main.appendChild(dot);
     const text = el("span", "spl-text");
     text.appendChild(el("b", "", name));
-    text.appendChild(el("span", "", count("Listed") + " listed · " + count("In progress") + " in progress · " + count("Sold") + " sold"));
+    const bits = [["Listed", "listed"], ["In progress", "in progress"], ["Sold", "sold"]].filter(function (g) { return count(g[0]) > 0; }).map(function (g) { return count(g[0]) + " " + g[1]; });
+    text.appendChild(el("span", "", bits.length ? bits.join(" · ") : "No items"));
     main.appendChild(text);
     main.insertAdjacentHTML("beforeend", '<svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" style="flex:none;fill:none;stroke:var(--muted);stroke-width:2;stroke-linecap:round;stroke-linejoin:round"><path d="M9 5l7 7-7 7"/></svg>');
     main.onclick = function () { openPlatformSheet(name); };
@@ -11546,7 +11545,11 @@ function renderViews() {
 
 // ---- wiring ----
 document.querySelectorAll(".bar-tab").forEach(function (button) {
-  button.addEventListener("click", function () { showView(button.getAttribute("data-view")); });
+  button.addEventListener("click", function () {
+    const name = button.getAttribute("data-view");
+    if (name === "stock" && currentView !== "stock") showStockPane("overview");
+    showView(name);
+  });
 });
 $("tab-add").addEventListener("click", function () { addItemButton.click(); });
 $("select-btn").addEventListener("click", function () { setSelectMode(!selectMode); });
