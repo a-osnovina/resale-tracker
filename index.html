@@ -1492,7 +1492,9 @@ progress::-moz-progress-bar { background: var(--primary); border-radius: 5px; }
 .sp-spot b { font-size: 18px; line-height: 1.15; letter-spacing: 0.02em; color: var(--accent-text); overflow-wrap: anywhere; }
 .sp-thumbwrap { position: relative; flex: none; }
 .sp-badge { position: absolute; right: -6px; top: -6px; min-width: 22px; height: 22px; padding: 0 5px; box-sizing: border-box; border-radius: 11px; background: var(--primary); color: #ffffff; font-size: 12px; font-weight: 800; display: flex; align-items: center; justify-content: center; border: 2px solid var(--surface); }
-.sp-row { flex-wrap: wrap; }
+.sp-row { flex-wrap: wrap; flex: 1; min-width: 0; cursor: pointer; }
+.sp-item { display: flex; align-items: center; gap: 10px; }
+.sp-item > input { flex: none; width: 30px; height: 30px; margin: 0; accent-color: var(--primary); }
 .sp-toggle { flex: none; width: 40px; height: 40px; min-height: 40px; padding: 0; border: 0; border-radius: 20px; background: var(--surface-2); color: var(--text); display: flex; align-items: center; justify-content: center; }
 .sp-toggle .ico { width: 20px; height: 20px; transition: transform .15s; }
 .sp-toggle.open .ico { transform: rotate(180deg); }
@@ -8504,18 +8506,6 @@ function renderStockTakeout() {
       spot.appendChild(el("span", "", "SPOT"));
       spot.appendChild(el("b", "", slotLabel(it.bin, it.slot)));
       row.appendChild(spot);
-    } else {
-      const tog = el("button", "sp-toggle" + (isOpen ? " open" : ""));
-      tog.type = "button";
-      tog.setAttribute("aria-label", (isOpen ? "Hide" : "Show") + " the items in this parcel");
-      tog.setAttribute("aria-expanded", isOpen ? "true" : "false");
-      tog.appendChild(icon("down"));
-      tog.onclick = function (event) {
-        event.stopPropagation();
-        if (takeoutOpen.has(g.key)) takeoutOpen.delete(g.key); else takeoutOpen.add(g.key);
-        renderStockTakeout();
-      };
-      row.appendChild(tog);
     }
     const x = el("button", "to-x");
     x.type = "button";
@@ -10856,7 +10846,9 @@ function renderShipPage() {
   parcels.forEach(function (g) {
     const first = g.items[0];
     const st = shipStatus(first);
-    const row = el("label", "sp-row" + (st.cls === "bad" ? " late" : "") + (shipPage.ticked.has(g.key) ? " on" : ""));
+    const many = g.items.length > 1;
+    const isOpen = many && shipPage.open.has(g.key);
+    const item = el("div", "sp-item");
     const box = document.createElement("input");
     box.type = "checkbox";
     box.checked = shipPage.ticked.has(g.key);
@@ -10865,61 +10857,36 @@ function renderShipPage() {
       if (box.checked) shipPage.ticked.add(g.key); else shipPage.ticked.delete(g.key);
       renderShipPage();
     };
-    row.appendChild(box);
+    item.appendChild(box);
+    const row = el("div", "sp-row" + (st.cls === "bad" ? " late" : "") + (shipPage.ticked.has(g.key) ? " on" : ""));
+    row.setAttribute("role", "button");
+    row.tabIndex = 0;
     const wrap = el("div", "sp-thumbwrap");
     wrap.appendChild(itemThumb(first));
-    if (g.items.length > 1) wrap.appendChild(el("span", "sp-badge", String(g.items.length)));
+    if (many) wrap.appendChild(el("span", "sp-badge", String(g.items.length)));
     row.appendChild(wrap);
     const text = el("div", "sp-text");
     const names = el("div", "sp-names");
-    const many = g.items.length > 1;
-    const isOpen = many && shipPage.open.has(g.key);
-    if (many) names.appendChild(el("div", "sp-name", g.items[0].name + " + " + (g.items.length - 1) + " more"));
-    else names.appendChild(el("div", "sp-name", first.name));
+    names.appendChild(el("div", "sp-name", many ? first.name + " + " + (g.items.length - 1) + " more" : first.name));
     text.appendChild(names);
     const weight = g.items.reduce(function (sum, it) { return sum + (Number(it.weight) || 0); }, 0);
     if (weight > 0) text.appendChild(el("div", "sp-meta", formatWeight(weight)));
     text.appendChild(el("div", "sp-status " + st.cls, st.text));
     row.appendChild(text);
-    const spotItems = g.items.filter(function (it) { return it.bin && it.slot > 0; });
-    if (!many && spotItems.length) {
+    if (!many && first.bin && first.slot > 0) {
       const spot = el("div", "sp-spot");
       spot.appendChild(el("span", "", "SPOT"));
       spot.appendChild(el("b", "", slotLabel(first.bin, first.slot)));
       row.appendChild(spot);
     }
-    if (many) {
-      const tog = el("button", "sp-toggle" + (isOpen ? " open" : ""));
-      tog.type = "button";
-      tog.setAttribute("aria-label", (isOpen ? "Hide" : "Show") + " the items in this parcel");
-      tog.setAttribute("aria-expanded", isOpen ? "true" : "false");
-      tog.appendChild(icon("down"));
-      tog.onclick = function (event) {
-        event.preventDefault();
-        event.stopPropagation();
-        if (shipPage.open.has(g.key)) shipPage.open.delete(g.key); else shipPage.open.add(g.key);
-        renderShipPage();
-      };
-      row.appendChild(tog);
-    }
-    if (many) {
-      // Tapping a parcel opens or closes it. The checkbox is what ticks it.
-      row.onclick = function (event) {
-        if (event.target === box) return;
-        event.preventDefault();
-        if (shipPage.open.has(g.key)) shipPage.open.delete(g.key); else shipPage.open.add(g.key);
-        renderShipPage();
-      };
-    }
     if (isOpen) {
       const more = el("div", "sp-more");
-      more.onclick = function (event) { event.preventDefault(); event.stopPropagation(); };
+      more.onclick = function (event) { event.stopPropagation(); };
       g.items.forEach(function (it) {
         const line = el("div", "sp-line tap");
-        line.onclick = function (event) { event.preventDefault(); event.stopPropagation(); showCard(it); };
+        line.onclick = function (event) { event.stopPropagation(); showCard(it); };
         line.appendChild(itemThumb(it));
-        const nm = el("div", "sp-line-name", it.name);
-        line.appendChild(nm);
+        line.appendChild(el("div", "sp-line-name", it.name));
         if (it.bin && it.slot > 0) {
           const spot = el("div", "sp-spot");
           spot.appendChild(el("span", "", "SPOT"));
@@ -10930,7 +10897,14 @@ function renderShipPage() {
       });
       row.appendChild(more);
     }
-    listBox.appendChild(row);
+    // Tap a parcel to open or close it, or a single item to see it in Stock. The checkbox outside ticks it.
+    row.onclick = function () {
+      if (!many) { showCard(first); return; }
+      if (shipPage.open.has(g.key)) shipPage.open.delete(g.key); else shipPage.open.add(g.key);
+      renderShipPage();
+    };
+    item.appendChild(row);
+    listBox.appendChild(item);
   });
   body.appendChild(listBox);
   if (shipPage.ticked.size >= 2) {
