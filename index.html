@@ -1491,6 +1491,8 @@ progress::-moz-progress-bar { background: var(--primary); border-radius: 5px; }
 .sp-thumbwrap { position: relative; flex: none; }
 .sp-badge { position: absolute; right: -6px; top: -6px; min-width: 22px; height: 22px; padding: 0 5px; box-sizing: border-box; border-radius: 11px; background: var(--primary); color: #ffffff; font-size: 12px; font-weight: 800; display: flex; align-items: center; justify-content: center; border: 2px solid var(--surface); }
 .sp-names { display: flex; flex-direction: column; gap: 2px; }
+.sp-names:has(.sp-name + .sp-name) .sp-name { -webkit-line-clamp: 1; }
+.sp-spot b + b { margin-top: 2px; font-size: 16px; }
 .sp-spots { flex: none; display: flex; flex-direction: column; gap: 6px; }
 .sp-parcel-tag { margin-top: 2px; font-size: 12px; font-weight: 800; color: var(--accent-text); }
 .sp-split { align-self: flex-start; min-height: 32px; padding: 0; border: 0; background: transparent; color: var(--muted); font-size: 13px; font-weight: 700; text-decoration: underline; }
@@ -10806,42 +10808,20 @@ function renderShipPage() {
     const names = el("div", "sp-names");
     g.items.forEach(function (it) { names.appendChild(el("div", "sp-name", it.name)); });
     text.appendChild(names);
-    if (g.items.length > 1) text.appendChild(el("div", "sp-parcel-tag", "ONE PARCEL · " + g.items.length + " ITEMS"));
     const weight = g.items.reduce(function (sum, it) { return sum + (Number(it.weight) || 0); }, 0);
     if (weight > 0) text.appendChild(el("div", "sp-meta", formatWeight(weight)));
     text.appendChild(el("div", "sp-status " + st.cls, st.text));
-    if (g.items.length > 1) {
-      const split = el("button", "sp-split", "Split up");
-      split.type = "button";
-      split.onclick = function (event) {
-        event.preventDefault();
-        event.stopPropagation();
-        g.items.forEach(function (it) { it.parcel = ""; });
-        shipPage.ticked.delete(g.key);
-        save();
-        renderShipPage();
-      };
-      text.appendChild(split);
-    }
     row.appendChild(text);
     const spotItems = g.items.filter(function (it) { return it.bin && it.slot > 0; });
     if (spotItems.length) {
-      const spots = el("div", "sp-spots");
-      spotItems.forEach(function (it) {
-        const spot = el("div", "sp-spot");
-        spot.appendChild(el("span", "", "SPOT"));
-        spot.appendChild(el("b", "", slotLabel(it.bin, it.slot)));
-        spots.appendChild(spot);
-      });
-      row.appendChild(spots);
+      const spot = el("div", "sp-spot");
+      spot.appendChild(el("span", "", "SPOT"));
+      spotItems.forEach(function (it) { spot.appendChild(el("b", "", slotLabel(it.bin, it.slot))); });
+      row.appendChild(spot);
     }
     listBox.appendChild(row);
   });
   body.appendChild(listBox);
-  const count = el("div", "sp-count");
-  count.appendChild(el("span", "", "Parcels ticked"));
-  count.appendChild(el("b", "", shipPage.ticked.size + " of " + parcels.length));
-  body.appendChild(count);
   if (shipPage.ticked.size >= 2) {
     const join = el("button", "sp-combine", "Combine ticked into one parcel");
     join.type = "button";
@@ -10873,6 +10853,18 @@ function renderShipPage() {
     showUndo(n === 1 && picked.length === 1 ? picked[0].name + " marked as shipped." : n + (n === 1 ? " parcel" : " parcels") + " marked as shipped.", snap);
   };
   body.appendChild(go);
+  const one = parcels.filter(function (g) { return shipPage.ticked.has(g.key); });
+  if (one.length === 1 && one[0].items.length > 1) {
+    const split = el("button", "ap-textbtn", "Split this parcel up");
+    split.type = "button";
+    split.onclick = function () {
+      one[0].items.forEach(function (it) { it.parcel = ""; });
+      shipPage.ticked.clear();
+      save();
+      renderShipPage();
+    };
+    body.appendChild(split);
+  }
   scanBody.appendChild(body);
 }
 
