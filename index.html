@@ -1517,6 +1517,7 @@ progress::-moz-progress-bar { background: var(--primary); border-radius: 5px; }
 .sp-parcel .to-group-tag { padding: 10px 12px 0; }
 .sp-parcel .sp-line { padding: 0 12px; }
 .sp-row.tap { cursor: pointer; }
+.sp-selbar { display: flex; justify-content: flex-end; margin-bottom: -6px; }
 .sp-item { display: block; }
 .sp-item > .sp-row { width: 100%; box-sizing: border-box; cursor: pointer; -webkit-tap-highlight-color: transparent; }
 .sp-item > .sp-row.on { border-color: var(--primary); box-shadow: inset 0 0 0 2px var(--primary); }
@@ -10915,6 +10916,19 @@ function renderShipPage() {
     body.appendChild(done);
     scanBody.appendChild(body);
     return;
+  }
+  if (parcels.length > 1) {
+    const all = shipPage.ticked.size === parcels.length;
+    const bar = el("div", "sp-selbar");
+    const btn = el("button", "sec-link", all ? "Clear selection" : "Select all");
+    btn.type = "button";
+    btn.onclick = function () {
+      if (all) shipPage.ticked.clear();
+      else parcels.forEach(function (g) { shipPage.ticked.add(g.key); });
+      renderShipPage();
+    };
+    bar.appendChild(btn);
+    body.appendChild(bar);
   }
   const listBox = el("div", "sp-list");
   parcels.forEach(function (g) {
