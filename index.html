@@ -11675,16 +11675,6 @@ function dayCircles(selected, onToggle, nameFor) {
 function renderPlanOverview(box) {
   const today = todayText();
   const need = planNeeds();
-  // slim shipping alert
-  if (currentOverdue.length) {
-    const a = el("div", "pl-alert");
-    a.appendChild(el("span", "", currentOverdue.length + (currentOverdue.length === 1 ? " parcel is late" : " parcels are late")));
-    const b = el("button", "", "Ship today");
-    b.type = "button";
-    b.onclick = function () { openStageSheet("ship"); };
-    a.appendChild(b);
-    box.appendChild(a);
-  }
   // what's waiting
   const head = el("div", "sec-head");
   head.appendChild(el("h2", "msec-title", "What's waiting"));
