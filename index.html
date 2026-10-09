@@ -268,9 +268,6 @@ legend { font-size: 14px; font-weight: 600; padding: 0 6px; }
 /* Filters */
 .list-tools { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 4px; }
 .list-tools .field { margin: 0; }
-.remind-row { grid-column: 1 / -1; display: flex; align-items: center; gap: 8px; font-size: 14px; }
-.remind-row { flex-wrap: wrap; }
-#remind-days { flex: 1; min-width: 150px; }
 #reduce-banner { display: none; align-items: stretch; gap: 6px; background: var(--warn-bg); color: var(--warn-text); border-radius: 10px; padding: 4px; margin-top: 10px; font-weight: 600; }
 #reduce-banner .due-open { flex: 1; min-width: 0; min-height: 44px; border: 0; background: transparent; color: var(--warn-text); font-weight: 700; font-size: 14px; text-align: left; line-height: 1.3; padding: 6px 8px; overflow-wrap: anywhere; }
 #reduce-banner .due-x { flex: none; min-height: 44px; padding: 0 12px; background: var(--surface); border: 1px solid var(--warn-edge); color: var(--warn-text); font-size: 13px; }
@@ -736,7 +733,6 @@ label.has-error { color: var(--danger); font-weight: 700; }
 .pane-title { font-weight: 800; font-size: 15px; margin: 4px 0 8px; color: var(--text); }
 .tools-group { margin: 18px 2px 2px; font-size: 13px; font-weight: 800; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); }
 .tools-group:first-of-type { margin-top: 8px; }
-#lower-options { margin-top: 10px; }
 .form-section { margin: 22px 0 -4px; padding-bottom: 4px; border-bottom: 2px solid var(--line-soft); font-size: 13px; font-weight: 800; letter-spacing: 0.06em; text-transform: uppercase; color: var(--accent-text); }
 .summary .tabs summary { min-height: 36px; }
 #filters-box > summary { display: none; }
@@ -918,7 +914,7 @@ body.no-storage #storage-section { display: none !important; }
 #undo-bar button { min-height: 40px; padding: 0 16px; font-weight: 800; }
 body.no-storage #storage-group, body.no-storage #bins-box { display: none !important; }
 #manage-storage-btn { width: 100%; margin-top: 10px; }
-#tools-box > .filters-panel, #alerts-details > .switch-card { margin-top: 8px; }
+#tools-box > .filters-panel { margin-top: 8px; }
 .goal-row { grid-template-columns: 1fr 40px; }
 /* ================= New layout (matches the design boards E to K) ================= */
 
@@ -1298,20 +1294,19 @@ progress::-moz-progress-bar { background: var(--primary); border-radius: 5px; }
 
 
 /* ---- Settings (full screen: grey page, white title bar, grouped cards, Done button) ---- */
-#tools-modal { top: 0; bottom: 0; z-index: 60; background: var(--summary-bg); align-items: stretch; }
-#tools-modal .modal-panel.tools-panel { max-height: none; height: 100%; min-height: 0; max-width: 760px; margin: 0 auto; border-radius: 0; background: var(--summary-bg); padding: 0; display: flex; flex-direction: column; }
-#tools-modal .tools-head { position: sticky; top: 0; z-index: 3; flex: none; display: grid; grid-template-columns: 44px 1fr 44px; align-items: center; gap: 8px; margin: 0; padding: calc(10px + env(safe-area-inset-top)) 16px 10px; background: var(--surface); border-bottom: 1px solid var(--line-soft); }
-#tools-modal #tools-close { width: 44px; margin-left: -8px; border: 0; background: transparent; }
-#tools-modal .tools-titles { display: flex; flex-direction: column; align-items: center; text-align: center; gap: 0; min-width: 0; }
-#tools-modal .tools-head h3 { margin: 0; font-size: 18px; font-weight: 800; }
-#tools-modal .tools-body { flex: 1 0 auto; padding: 16px 16px 28px; }
+#tools-modal { top: 0; bottom: 0; z-index: 60; background: rgba(0, 0, 0, 0.55); align-items: flex-end; }
+#tools-modal .modal-panel.tools-panel { max-height: 92vh; height: auto; min-height: 56vh; max-width: 760px; margin: 0 auto; border-radius: 28px 28px 0 0; background: var(--surface); padding: 0; display: flex; flex-direction: column; box-shadow: 0 -8px 30px rgba(0, 0, 0, 0.4); }
+#tools-modal .tools-head { align-items: stretch; position: sticky; top: 0; z-index: 3; flex: none; display: flex; flex-direction: column; gap: 8px; margin: 0; padding: 10px 20px 12px; background: var(--surface); }
+#tools-modal .tools-row { width: 100%; box-sizing: border-box; display: flex; align-items: center; gap: 8px; }
+#tools-modal #tools-close { flex: none; width: 44px; margin-left: -10px; border: 0; background: transparent; }
+#tools-modal .tools-titles { flex: 1; display: flex; flex-direction: column; align-items: stretch; text-align: left; gap: 0; min-width: 0; }
+#tools-modal .tools-head h3 { margin: 0; font-size: 22px; font-weight: 700; color: var(--text); text-align: left; width: 100%; }
+#tools-modal .tools-body { flex: 1 0 auto; padding: 4px 20px calc(28px + env(safe-area-inset-bottom)); }
 #tools-modal .tools-group { display: none; }
 #tools-modal .filters-box { margin-top: 0; background: transparent; }
 #tools-modal .filters-box > summary { display: none; }
-#tools-modal .filters-box > .filters-panel, #tools-modal #alerts-details > .switch-card { margin-top: 0; padding: 0; }
+#tools-modal .filters-box > .filters-panel { margin-top: 0; padding: 0; }
 #tools-modal .filters-box > .filters-panel { border: 0; border-radius: 0; background: transparent; }
-#settings-done-bar { position: sticky; bottom: 0; z-index: 3; flex: none; padding: 14px 16px calc(14px + env(safe-area-inset-bottom)); background: var(--surface); border-top: 1px solid var(--line-soft); }
-#settings-done { display: block; width: 100%; min-height: 52px; border-radius: 14px; font-size: 17px; font-weight: 700; }
 .sgroup { margin: 0 0 16px; }
 .sgroup > .msec-title { margin: 0 4px 6px; }
 .set-card { background: var(--surface); border: 1px solid var(--line-soft); border-radius: 14px; overflow: hidden; }
@@ -1456,7 +1451,6 @@ progress::-moz-progress-bar { background: var(--primary); border-radius: 5px; }
 #feature-switches .switch-text b { font-size: 16px; }
 #feature-switches .switch-text span { font-size: 13px; }
 #feature-switches .how-to { margin: 0; }
-#tools-modal #alerts-details > .switch-card { background: var(--surface); }
 
 /* the old planner window is replaced by the Plan tab */
 #planner-modal { display: none !important; }
@@ -1519,7 +1513,6 @@ progress::-moz-progress-bar { background: var(--primary); border-radius: 5px; }
 .fl-foot { position: sticky; bottom: 0; background: var(--card, #fff); padding: 12px 0 4px; margin-top: 8px; border-top: 1px solid var(--line, #e6ece3); }
 .fl-foot > div { display: flex; justify-content: space-between; font-weight: 700; font-size: 14px; margin-bottom: 10px; }
 #stock-takeout, #pipeline-box, #overview-off { display: none !important; }
-#alerts-box .alerts-inner > .switch-row:first-child, #remind-row, #lower-options { display: none !important; }
 #summary-box .hero-months, #summary-box .stat:not(.main) { display: none !important; }
 #summary-box { margin-top: 18px; }
 .need-grid { display: flex; gap: 10px; }
@@ -2037,7 +2030,14 @@ body.modal-open #undo-bar { visibility: hidden; }
 
   <div id="tools-modal" hidden>
     <div class="modal-panel tools-panel">
-      <div class="tools-head"><button type="button" id="tools-close" class="icon-btn" aria-label="Back"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg></button><div class="tools-titles"><h3 id="tools-title">Settings</h3><span id="tools-sub" class="small" hidden></span></div><span aria-hidden="true"></span></div>
+      <div class="tools-head">
+        <div class="wd-grab" aria-hidden="true"></div>
+        <div class="tools-row">
+          <button type="button" id="tools-close" class="icon-btn" aria-label="Back" hidden><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg></button>
+          <div class="tools-titles"><h3 id="tools-title">Settings</h3><span id="tools-sub" class="small" hidden></span></div>
+          <button type="button" id="tools-x" class="wd-x" aria-label="Close"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+        </div>
+      </div>
       <div class="tools-body">
       <div id="settings-home"></div>
   <div class="tools-group" id="storage-group">Storage</div>
@@ -2096,37 +2096,6 @@ body.modal-open #undo-bar { visibility: hidden; }
   <details class="filters-box" id="plan-box">
     <summary>My time estimates</summary>
     <div class="filters-panel" id="plan-settings-body"></div>
-  </details>
-  <div class="tools-group">Reminders and alerts</div>
-  <details class="filters-box" id="alerts-details">
-  <summary>Reminder and alert options</summary>
-  <div class="switch-card" id="alerts-box">
-    <div class="alerts-inner">
-      <div class="switch-row">
-        <div class="switch-text"><b>Reminders to lower prices</b><span>When on, listed items get a reminder once they have sat unsold for the number of days below.</span></div>
-        <span class="switch"><input type="checkbox" id="reminders-on" aria-label="Reminders to lower prices"><span class="track"></span></span>
-      </div>
-      <label class="remind-row" id="remind-row">Remind me to lower prices after
-        <select id="remind-days"></select>
-      </label>
-      <div id="lower-options">
-        <div class="small">Percent buttons shown when you tap "Lower price". Leave a box empty to hide that button.</div>
-        <div class="set-grid">
-          <label class="field">Option 1 (%) <input id="lp-0" type="number" inputmode="decimal" min="1" max="90" step="1"></label>
-          <label class="field">Option 2 (%) <input id="lp-1" type="number" inputmode="decimal" min="1" max="90" step="1"></label>
-          <label class="field">Option 3 (%) <input id="lp-2" type="number" inputmode="decimal" min="1" max="90" step="1"></label>
-        </div>
-      </div>
-      <div class="switch-row">
-        <div class="switch-text"><b>Late shipping alerts</b><span>Red banner at the top and a red card. Off still shows the ship-by date on each sold item.</span></div>
-        <span class="switch"><input type="checkbox" id="ship-alerts-on" aria-label="Late shipping alerts"><span class="track"></span></span>
-      </div>
-      <div class="switch-row">
-        <div class="switch-text"><b>Pulse late alerts</b><span>Makes late alerts gently flash. Off by default. Phones set to reduce motion never flash.</span></div>
-        <span class="switch"><input type="checkbox" id="ship-pulse-on" aria-label="Pulse late alerts"><span class="track"></span></span>
-      </div>
-    </div>
-  </div>
   </details>
   <div class="tools-group">Appearance</div>
   <details class="filters-box" id="look-box">
@@ -2223,7 +2192,6 @@ body.modal-open #undo-bar { visibility: hidden; }
     </div>
   </details>
       </div>
-      <div id="settings-done-bar" hidden><button type="button" id="settings-done" class="primary">Done</button></div>
     </div>
   </div>
 
@@ -2955,7 +2923,6 @@ const bumpAmountRow = document.getElementById("bump-amount-row");
 const bumpNote = document.getElementById("bump-note");
 const filterInput = document.getElementById("filter");
 const statusFilterInput = document.getElementById("status-filter");
-const remindInput = document.getElementById("remind-days");
 const goalForm = document.getElementById("goal-form");
 const addGoalButton = document.getElementById("add-goal-button");
 const goalsBox = document.getElementById("goals-box");
@@ -4750,42 +4717,6 @@ document.getElementById("filters-clear").addEventListener("click", function () {
   applyFilters();
 });
 
-// The lower-price reminder: a switch, and the number of days. A saved number that isn't in the list is kept as a choice.
-const REMIND_CHOICES = [3, 5, 7, 10, 14, 21, 30];
-function fillRemindOptions() {
-  const choices = REMIND_CHOICES.slice();
-  if (choices.indexOf(remindDays) === -1) choices.push(remindDays);
-  choices.sort(function (a, b) { return a - b; });
-  remindInput.innerHTML = "";
-  choices.forEach(function (n) {
-    const option = document.createElement("option");
-    option.value = String(n);
-    option.textContent = n + " days";
-    remindInput.appendChild(option);
-  });
-  remindInput.value = String(remindDays);
-}
-const remindersBox = document.getElementById("reminders-on");
-function syncRemindersUI() {
-  remindersBox.checked = remindersOn;
-  document.getElementById("remind-row").style.display = remindersOn ? "flex" : "none";
-  document.getElementById("lower-options").style.display = remindersOn ? "block" : "none";
-}
-fillRemindOptions();
-syncRemindersUI();
-remindersBox.addEventListener("change", function () {
-  remindersOn = remindersBox.checked;
-  syncRemindersUI();
-  save();
-  render();
-});
-const shipPulseBox = document.getElementById("ship-pulse-on");
-shipPulseBox.checked = shipPulseOn;
-shipPulseBox.addEventListener("change", function () {
-  shipPulseOn = shipPulseBox.checked;
-  try { localStorage.setItem("shipPulse", shipPulseOn ? "1" : "0"); } catch (e) {}
-  document.body.classList.toggle("pulse-alerts", shipPulseOn);
-});
 // Appearance: follow the phone (auto), or force light or dark.
 const themeSelect = document.getElementById("theme-select");
 let themeChoice = "auto";
@@ -4807,19 +4738,6 @@ themeSelect.addEventListener("change", function () {
   applyTheme();
 });
 applyTheme();
-const shipAlertsBox = document.getElementById("ship-alerts-on");
-shipAlertsBox.checked = shipAlertsOn;
-shipAlertsBox.addEventListener("change", function () {
-  shipAlertsOn = shipAlertsBox.checked;
-  save();
-  render();
-});
-remindInput.addEventListener("change", function () {
-  remindDays = Number(remindInput.value) || 7;
-  save();
-  render();
-});
-
 document.getElementById("search").addEventListener("input", function () {
   searchText = this.value.trim().toLowerCase();
   render();
@@ -7768,8 +7686,6 @@ function restoreFromText(text, skipAsk) {
       remindDays = Math.floor(Number(data.remindDays));
       if (remindDays === 0) { remindDays = 7; if (data.remindersOn === undefined) remindersOn = false; }
     }
-    fillRemindOptions();
-    syncRemindersUI();
     if (Array.isArray(data.bulks)) bulks = cleanBulks(data.bulks);
     if (data.plan) plan = cleanPlan(data.plan);
     if (Array.isArray(data.timeLog)) timeLog = cleanTimeLog(data.timeLog);
@@ -7799,7 +7715,6 @@ function restoreFromText(text, skipAsk) {
     filter = "All";
     draftFilter = "All";
     platformsChanged();
-    fillLowerInputs();
     hideImportNote();
     closeForm();
     save();
@@ -8284,22 +8199,6 @@ document.addEventListener("keydown", function (event) {
     event.stopImmediatePropagation();
     closePlatformSheet();
   }
-});
-
-// ---- Tools: lower price options ----
-function fillLowerInputs() {
-  for (let i = 0; i < 3; i++) {
-    document.getElementById("lp-" + i).value = lowerPercents[i] !== undefined ? lowerPercents[i] : "";
-  }
-}
-[0, 1, 2].forEach(function (i) {
-  document.getElementById("lp-" + i).addEventListener("change", function () {
-    const raw = [0, 1, 2].map(function (j) { return document.getElementById("lp-" + j).value; })
-      .filter(function (v) { return String(v).trim() !== ""; });
-    lowerPercents = cleanPercents(raw);
-    fillLowerInputs();
-    save();
-  });
 });
 
 // ---- Tools: bulk history (what a lot cost against what it earned) ----
@@ -9862,7 +9761,6 @@ function openSettings(scope) {
   renderPhotoTypeEditor();
   planStep = null;
   renderPlanSettings();
-  fillLowerInputs();
   openSettingsPage("home");
   toolsModal.hidden = false;
   toolsModal.querySelector(".tools-panel").scrollTop = 0;
@@ -12204,7 +12102,6 @@ function renderPlanner() { renderPlanView(); }
 var settingsPage = "home";
 var SETTINGS_PAGES = {
   look: { box: "look-box", title: "Appearance" },
-  reminders: { box: "alerts-details", title: "Reminders" },
   time: { box: "plan-box", title: "Time estimates" },
   planopts: { box: "planopts-box", title: "Plan options" },
   storage: { box: "bins-box", title: "Storage" },
@@ -12231,7 +12128,7 @@ function openSettingsPage(key) {
   if (key === "time") { planStep = null; renderPlanSettings(); }
   settingsPage = key;
   $("settings-home").hidden = key !== "home";
-  $("settings-done-bar").hidden = key !== "home";
+  $("tools-close").hidden = key === "home" && !settingsParent;
   Object.keys(SETTINGS_PAGES).forEach(function (k) {
     const b = $(SETTINGS_PAGES[k].box);
     b.hidden = k !== key;
@@ -12295,7 +12192,6 @@ function renderSettingsHome() {
   const ICON_CARDS = '<rect x="3" y="5" width="18" height="14" rx="2"/><path d="M7 10h10M7 14h6"/>';
   const ICON_STORAGE = '<path d="M3 8l9-5 9 5v9l-9 5-9-5z"/><path d="M3 8l9 5 9-5M12 13v9"/>';
   const ICON_ARCHIVE = '<rect x="3" y="4" width="18" height="5" rx="1"/><path d="M5 9v10h14V9M10 13h4"/>';
-  const ICON_BELL = '<path d="M6 16v-5a6 6 0 0 1 12 0v5l1.5 2h-15z"/><path d="M10 21a2 2 0 0 0 4 0"/>';
   const ICON_CLOCK = '<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>';
   const ICON_UNITS = '<path d="M3 17l14-14 4 4L7 21z"/><path d="M7 13l2 2M10 10l2 2M13 7l2 2"/>';
   const platformsRow = function () {
@@ -12315,10 +12211,6 @@ function renderSettingsHome() {
       openArchiveSheet();
     }, "shop");
   };
-  const remindersRow = function () {
-    const alertsOn = (remindersOn ? 1 : 0) + (shipAlertsOn ? 1 : 0);
-    return settingsRow(ICON_BELL, "Reminders", alertsOn === 0 ? "All off" : alertsOn + (alertsOn === 1 ? " alert on" : " alerts on"), function () { openSettingsPage("reminders"); }, "help");
-  };
   const timeRow = function () {
     return settingsRow(ICON_CLOCK, "Time estimates", timeEstOn ? "On" : "Off", function () { openSettingsPage("time"); }, "help");
   };
@@ -12337,7 +12229,6 @@ function renderSettingsHome() {
   if (scope === "stock") {
     const shop = [archiveRow()];
     settingsGroup(box, "Your items", shop);
-    settingsGroup(box, "Alerts", [remindersRow()]);
     const tl = el("div", "sgroup");
     tl.appendChild(el("h2", "msec-title", "Timeline"));
     const tc = el("div", "set-card pad");
@@ -12367,7 +12258,6 @@ function renderSettingsHome() {
   const shop = [platformsRow()];
   shop.push(archiveRow());
   settingsGroup(box, "Your shop", shop);
-  settingsGroup(box, "Alerts", [remindersRow()]);
   let last = "";
   try { last = localStorage.getItem("lastBackup") || ""; } catch (e) {}
   const age = backupAge(last, todayText());
@@ -12461,7 +12351,9 @@ function renderAppearance() {
     row.appendChild(b);
   });
 }
-$("settings-done").addEventListener("click", function () { toolsModal.hidden = true; });
+$("tools-x").addEventListener("click", function () { toolsModal.hidden = true; });
+// Tapping the dark area outside the sheet closes it, like the withdraw popup.
+toolsModal.addEventListener("click", function (event) { if (event.target === toolsModal) toolsModal.hidden = true; });
 
 // ---- everything that is painted after render() ----
 function renderViews() {
@@ -12536,7 +12428,6 @@ applyTitle();
 renderPhotoTypeEditor();
 buildBalanceBlocks();
 renderPlatformEditor();
-fillLowerInputs();
 renderBulkHistory();
 updateBackupInfo();
 refreshBinOptions();
