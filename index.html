@@ -10910,7 +10910,6 @@ function renderPlanOverview(box) {
     clear.onclick = function () { todos = todos.filter(function (t) { return !t.done; }); save(); refreshTodoViews(); };
     box.appendChild(clear);
   }
-  renderPlanTimeAndTools(box);
 }
 
 function renderPlanTimeAndTools(box) {
