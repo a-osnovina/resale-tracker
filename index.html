@@ -430,6 +430,43 @@ body.goals-unpinned #goals-mini { display: none !important; }
 #item-form.adding #cancel-edit { display: none; }
 #item-form.adding .sheet-foot #add-next { flex: 1; }
 #item-form.adding .sheet-foot #submit-button { flex: 1.3; }
+/* match the shortcuts-first picture */
+#item-form.adding .sheet-head { position: relative; padding: 18px 16px 8px; background: var(--surface); border-bottom: 0; }
+#item-form.adding .sheet-head::before { content: ""; position: absolute; top: 8px; left: 50%; width: 40px; height: 4px; margin-left: -20px; border-radius: 2px; background: var(--line); }
+#item-form.adding .sheet-head h2 { font-size: 24px; }
+#item-form.adding .sheet-head button { width: 44px; min-height: 44px; border-radius: 12px; background: var(--surface); border: 1px solid var(--line); }
+#item-form.adding .add-methods { gap: 10px; margin: 8px 0 0; }
+#item-form.adding .add-methods button { min-height: 92px; padding: 8px 4px; border-radius: 14px; gap: 0; }
+#item-form.adding .am-ico { width: 32px; height: 32px; margin-bottom: 4px; }
+#item-form.adding .am-ico svg { width: 18px; height: 18px; }
+#item-form.adding .add-methods b { font-size: 15px; }
+#item-form.adding .add-methods small { font-size: 13px; }
+.or-divider { margin: 14px 0 12px; font-weight: 600; color: var(--text); font-size: 14px; }
+.name-lab { font-weight: 700; font-size: 15px; }
+.name-lab em { color: var(--primary); font-weight: 600; font-size: 15px; }
+#item-form.adding #name { margin-top: 6px; min-height: 52px; font-size: 18px; border-radius: 10px; }
+#item-form.adding #name-hint { margin-top: 6px; font-size: 13px; }
+#more-toggle { margin-top: 12px; min-height: 40px; }
+#more-toggle .opt-chev { width: 20px; height: 20px; transform: rotate(-90deg); }
+#more-toggle[aria-expanded="true"] .opt-chev { transform: rotate(-90deg); }
+#more-toggle[aria-expanded="false"] .opt-chev { transform: rotate(90deg); }
+#item-form.adding .opt-row { flex-direction: row; align-items: center; gap: 10px; min-height: 62px; padding: 10px 12px; border-radius: 12px; border: 1px solid var(--line); color: var(--text); font-size: 16px; }
+.opt-ico { flex: none; display: flex; align-items: center; justify-content: center; width: 38px; height: 38px; border-radius: 10px; background: var(--tint); }
+.opt-ico svg { width: 20px; height: 20px; fill: none; stroke: var(--primary); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.opt-txt { display: flex; flex-direction: column; min-width: 0; text-align: left; }
+.opt-name { font-size: 16px; font-weight: 700; color: var(--text); }
+#item-form.adding .opt-row .opt-val { margin: 0; font-size: 14px; font-weight: 500; color: var(--muted); }
+#item-form.adding .opt-row .opt-val.set { color: var(--text); }
+#item-form.adding .opt-row .opt-val.sugg { color: var(--primary); font-weight: 700; }
+#item-form:not(.adding) .opt-ico { display: none; }
+#item-form.adding #status-row, #item-form.adding #status-hint { display: none; }
+#item-form.adding .opt-row { justify-content: flex-start; text-align: left; }
+#item-form.adding #name { border-color: var(--primary); }
+#item-form.adding #advanced-toggle { margin-top: 12px; border: 0; background: transparent; color: var(--muted); font-size: 14px; font-weight: 600; min-height: 36px; }
+#item-form.adding #name:focus { outline: 0; box-shadow: 0 0 0 3px var(--tint); }
+.foot-hint { border-top: 1px solid var(--line-soft); background: var(--surface); }
+.foot-hint + .sheet-foot { background: var(--surface); }
+#item-form.adding .sheet-foot #add-next { background: var(--surface); color: var(--primary); border: 2px solid var(--primary); font-weight: 700; }
 .opt-list { margin: 10px 0 0; border-radius: 14px; background: var(--surface-2); overflow: hidden; }
 .opt-list.editing { background: transparent; border-radius: 0; overflow: visible; }
 .opt-row { display: flex; align-items: center; width: 100%; min-height: 52px; margin: 0; padding: 0 14px; border: 0; border-bottom: 1px solid var(--line-soft); border-radius: 0; background: transparent; color: var(--text); font-size: 16px; font-weight: 600; text-align: left; }
@@ -1801,7 +1838,7 @@ body.modal-open #undo-bar { visibility: hidden; }
         <div class="add-methods" id="add-methods">
           <button type="button" id="add-qr"><span class="am-ico"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 4h6v6H4zM14 4h6v6h-6zM4 14h6v6H4zM14 14h2v2h-2zM18 14h2v6h-4M14 18h2"/></svg></span><b>Scan QR</b><small>Slot label</small></button>
           <button type="button" id="add-shot"><span class="am-ico"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M8 8h8M8 12h8M8 16h5"/></svg></span><b>Screenshot</b><small>Read a listing</small></button>
-          <button type="button" id="add-bulk"><span class="am-ico"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 16V5M7 10l5-5 5 5M5 19h14"/></svg></span><b>Bulk upload</b><small>Many at once</small></button>
+          <button type="button" id="add-bulk"><span class="am-ico"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4l8 4-8 4-8-4zM4 12l8 4 8-4M4 16l8 4 8-4"/></svg></span><b>Bulk upload</b><small>Many at once</small></button>
         </div>
         <div class="menu-warning" id="add-qr-warning" hidden></div>
 
@@ -1811,7 +1848,7 @@ body.modal-open #undo-bar { visibility: hidden; }
 
         <button type="button" id="more-toggle" aria-expanded="true"><span>More details &middot; all optional</span><svg class="opt-chev" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></button>
         <div class="opt-list" id="opt-wrap">
-        <button type="button" class="opt-row" id="opt-photo" aria-expanded="false"><span>Photos</span><span class="opt-val" id="opt-photo-val">Add</span><svg class="opt-chev" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></button>
+        <button type="button" class="opt-row" id="opt-photo" aria-expanded="false"><span class="opt-ico"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 8h3l2-2h6l2 2h3v11H4z"/><circle cx="12" cy="13" r="3.5"/></svg></span><span class="opt-txt"><span class="opt-name">Photos</span><span class="opt-val" id="opt-photo-val">Add</span></span><svg class="opt-chev" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></button>
         <div class="opt-panel" id="panel-photo" hidden>
         <div class="field">
           Picture shown in your list
@@ -1823,7 +1860,7 @@ body.modal-open #undo-bar { visibility: hidden; }
           <input type="file" id="pic-file" accept="image/*" hidden>
         </div>
         </div>
-        <button type="button" class="opt-row" id="opt-site" aria-expanded="false"><span>Listed on</span><span class="opt-val" id="opt-site-val">Add</span><svg class="opt-chev" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></button>
+        <button type="button" class="opt-row" id="opt-site" aria-expanded="false"><span class="opt-ico"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 12V4h8l10 10-8 8z"/><circle cx="7.5" cy="8.5" r="1.3"/></svg></span><span class="opt-txt"><span class="opt-name">Listed on</span><span class="opt-val" id="opt-site-val">Add</span></span><svg class="opt-chev" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></button>
         <div class="opt-panel" id="panel-site" hidden>
         <div id="site-main-holder">
           <label class="field" id="site-row"><span id="site-label">Listed on</span>
@@ -1833,11 +1870,11 @@ body.modal-open #undo-bar { visibility: hidden; }
           </label>
         </div>
         </div>
-        <button type="button" class="opt-row" id="opt-price" aria-expanded="false"><span>Price</span><span class="opt-val" id="opt-price-val">Add</span><svg class="opt-chev" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></button>
+        <button type="button" class="opt-row" id="opt-price" aria-expanded="false"><span class="opt-ico"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v18M16.5 7.5C16 6 14.3 5.2 12 5.2c-2.6 0-4.2 1.2-4.2 3 0 4.2 8.4 2.2 8.4 6.6 0 1.8-1.7 3-4.2 3-2.4 0-4.2-.9-4.7-2.6"/></svg></span><span class="opt-txt"><span class="opt-name">Price</span><span class="opt-val" id="opt-price-val">Add</span></span><svg class="opt-chev" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></button>
         <div class="opt-panel" id="panel-price" hidden>
         <label class="field">Price ($) <input id="original" type="number" inputmode="decimal" step="0.01" min="0" placeholder="0.00"></label>
         </div>
-        <button type="button" class="opt-row" id="opt-spot" aria-expanded="false"><span>Spot</span><span class="opt-val" id="opt-spot-val">Add</span><svg class="opt-chev" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></button>
+        <button type="button" class="opt-row" id="opt-spot" aria-expanded="false"><span class="opt-ico"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s7-6.2 7-11.5A7 7 0 0 0 5 9.5C5 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></svg></span><span class="opt-txt"><span class="opt-name">Spot</span><span class="opt-val" id="opt-spot-val">Add</span></span><svg class="opt-chev" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></button>
         <div class="opt-panel" id="panel-spot" hidden>
         <div id="storage-section">
           <div class="form-section">Where it is stored</div>
@@ -1865,7 +1902,7 @@ body.modal-open #undo-bar { visibility: hidden; }
         </div>
         </div>
         </div>
-        <button type="button" class="opt-row" id="opt-weight" aria-expanded="false"><span>Weight</span><span class="opt-val" id="opt-weight-val">Add</span><svg class="opt-chev" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></button>
+        <button type="button" class="opt-row" id="opt-weight" aria-expanded="false"><span class="opt-ico"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 9h10l2 11H5z"/><circle cx="12" cy="6" r="2.5"/></svg></span><span class="opt-txt"><span class="opt-name">Weight</span><span class="opt-val" id="opt-weight-val">Add</span></span><svg class="opt-chev" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></button>
         <div class="opt-panel" id="panel-weight" hidden>
         <div class="field" id="weight-field">Weight
           <div class="weight-row">
@@ -1890,7 +1927,7 @@ body.modal-open #undo-bar { visibility: hidden; }
           <label class="field" id="shipped-date-row">Date shipped <input id="shipped" type="date"></label>
         </div>
 
-        <label class="field">Status
+        <label class="field" id="status-row">Status
           <select id="status">
             <option>In progress</option>
             <option>Listed</option>
@@ -3867,6 +3904,11 @@ const advancedToggle = document.getElementById("advanced-toggle");
 const sheetTitle = document.getElementById("sheet-title");
 let advancedOpen = false;
 var moreOpen = true;
+var spotTouched = false;
+["bin", "slot", "no-slot", "new-bin-name"].forEach(function (id) {
+  const e = document.getElementById(id);
+  if (e) e.addEventListener("change", function () { spotTouched = true; });
+});
 var addNext = false;
 
 // In the add window the extra boxes are tucked under "Advanced options". When editing they are always open.
@@ -3905,6 +3947,7 @@ function closeForm() {
   autoPostedSet = false;
   optOpen = {};
   advancedOpen = false;
+  spotTouched = false;
   binInput.disabled = false;
   form.reset();
   showWeightOz(0, weightUnit);
@@ -3974,14 +4017,15 @@ function updateOptRows() {
     v.classList.toggle("set", isSet);
   }
   put("photo", formPhoto ? "1 photo" : "Add", !!formPhoto);
-  put("site", siteInput.value || "Add", siteInput.value !== "");
+  put("site", siteInput.value || "Choose", siteInput.value !== "");
   const price = Number(originalInput.value);
-  put("price", price > 0 ? money(price) : "Add", price > 0);
+  put("price", price > 0 ? money(price) : "$0.00", price > 0);
   const slotNo = Number(slotInput.value) || 0;
   const spot = binInput.value && slotNo > 0 && !noSlotBox.checked ? slotLabel(binInput.value, slotNo) : "";
-  put("spot", spot || "Add", spot !== "");
+  put("spot", spot ? (editingIndex === null && !spotTouched ? spot + " suggested" : spot) : "Add", spot !== "");
+  document.getElementById("opt-spot-val").classList.toggle("sugg", !!spot && editingIndex === null && !spotTouched);
   const oz = readWeightOz();
-  put("weight", oz > 0 ? formatWeight(oz) : "Add", oz > 0);
+  put("weight", oz > 0 ? formatWeight(oz) : "Add, in the unit you chose in Settings", oz > 0);
 }
 OPT_KEYS.forEach(function (key) {
   document.getElementById("opt-" + key).addEventListener("click", function () {
@@ -11696,26 +11740,6 @@ function renderPlanOverview(box) {
   });
   box.appendChild(grid);
 
-  // today
-  let rows = planRows(today, false).filter(function (r) { return r.kind !== "photo"; });
-  const shipToday = planPrefs.shipDays.indexOf(weekdayIndex(today)) !== -1;
-  rows = rows.filter(function (r) {
-    if (r.kind !== "ship") return true;
-    if (r.sub.indexOf("late") !== -1) return planPrefs.dueTask;
-    return !shipToday && planPrefs.dueTask;
-  });
-  const jobs = jobRowsFor(today);
-  const gr = goalRowFor(today);
-  const all = jobs.concat(rows);
-  if (gr) all.push(gr);
-  const left = all.filter(function (r) { return !r.done; }).length;
-  const th = el("div", "sec-head");
-  th.appendChild(el("h2", "msec-title", "Today (" + left + " left)"));
-  box.appendChild(th);
-  const list = el("div");
-  all.forEach(function (r) { list.appendChild(todoRowEl(r)); });
-  if (!all.length) list.appendChild(el("div", "todo-empty", "Nothing planned for today."));
-  box.appendChild(list);
   // where your items are
   if (pipelineOn) {
     const pl = el("div", "sec-head");
