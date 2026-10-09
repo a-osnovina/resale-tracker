@@ -1592,7 +1592,6 @@ body.modal-open #undo-bar { visibility: hidden; }
     <section id="home-todo" class="msec">
       <div class="sec-head"><h2 class="msec-title">To do</h2><button type="button" id="home-todo-all" class="sec-link">See all in Plan</button></div>
       <div id="home-todo-list"></div>
-      <button type="button" id="home-todo-add" class="dash-btn">+ Add a to-do</button>
     </section>
   <div id="backup-banner" class="banner" hidden>
     <div id="backup-banner-text"></div>
@@ -8565,6 +8564,22 @@ function renderStockTakeout() {
       groups.push({ items: [it] });
     }
   });
+  // Everything dismissed (or taken out): say so instead of leaving a blank spot.
+  const dismissedSome = features.storage && items.some(function (it) { return it.status === "Sold" && it.bin && it.slot > 0 && it.takenOut; });
+  if (!groups.length && dismissedSome) {
+    box.hidden = false;
+    const h = el("div", "sec-head");
+    h.appendChild(el("h2", "msec-title", "Take out of storage"));
+    box.appendChild(h);
+    const ok = el("div", "need-ok");
+    ok.appendChild(icon("check"));
+    const t = el("div");
+    t.appendChild(el("b", "", "No need to pack anything right now"));
+    t.appendChild(el("span", "", "Everything waiting to ship is already out of storage."));
+    ok.appendChild(t);
+    box.appendChild(ok);
+    return;
+  }
   box.hidden = groups.length === 0;
   if (!groups.length) return;
   const head = el("div", "sec-head");
@@ -9022,7 +9037,7 @@ function shiftMonth(month, delta) {
 }
 function eventsOn(day) {
   return {
-    todos: todos.filter(function (t) { return t.date === day; }),
+    todos: [],
     ships: items.filter(function (it) { return it.status === "Sold" && it.sold && shipByDate(it.sold) === day; }),
     bills: goals.filter(function (g) { return g.repeat !== "none" && g.repeat !== "daily" && isDueOn(g, day); })
   };
@@ -9096,11 +9111,6 @@ function buildCalendar(panel) {
   });
   ev.todos.forEach(function (t) { agenda.appendChild(todoRow(t)); });
   if (!ev.ships.length && !ev.bills.length && !ev.todos.length) agenda.appendChild(el("div", "small", "Nothing planned for this day."));
-  const add = el("button", "small-btn primary", "+ Add a to-do on this day");
-  add.type = "button";
-  add.style.marginTop = "10px";
-  add.addEventListener("click", function () { openTodoSheet(null, calDay); });
-  agenda.appendChild(add);
   panel.appendChild(agenda);
 
   const loose = todos.filter(function (t) { return !t.done && (!t.date || t.date < today); });
@@ -10987,7 +10997,8 @@ function planRows(day, forHome) {
   const today = todayText();
   const isToday = day === today;
   const rows = [];
-  todos.forEach(function (t) {
+  // Your own typed to-dos are not shown any more (anything saved is kept, just hidden).
+  [].forEach(function (t) {
     const show = t.date === day || (isToday && !t.done && (!t.date || t.date < today));
     if (!show) return;
     let sub = "Any day";
@@ -11624,11 +11635,7 @@ function renderPlanOverview(box) {
   all.forEach(function (r) { list.appendChild(todoRowEl(r)); });
   if (!all.length) list.appendChild(el("div", "todo-empty", "Nothing planned for today."));
   box.appendChild(list);
-  const add = el("button", "dash-btn", "+ Add a to-do");
-  add.type = "button";
-  add.onclick = function () { openTodoSheet(null, today); };
-  box.appendChild(add);
-  if (todos.some(function (t) { return t.done; })) {
+  if (todos.some(function (t) { return false && t.done; })) {
     const clear = el("button", "small-btn clear-done", "Clear finished to-dos");
     clear.type = "button";
     clear.onclick = function () { todos = todos.filter(function (t) { return !t.done; }); save(); refreshTodoViews(); };
@@ -11737,10 +11744,6 @@ function renderPlanCalendar(box) {
   rows.forEach(function (r) { list.appendChild(todoRowEl(r)); });
   if (!rows.length) list.appendChild(el("div", "todo-empty", "Nothing planned for this day."));
   box.appendChild(list);
-  const add = el("button", "dash-btn", "+ Add a to-do");
-  add.type = "button";
-  add.onclick = function () { openTodoSheet(null, calDay); };
-  box.appendChild(add);
 }
 
 function renderPlanGoal(box) {
@@ -12313,7 +12316,6 @@ function goMoney() { showView("money"); showMoneyTab("overview"); }
 $("home-balance-tile").addEventListener("click", goMoney);
 $("goals-mini").addEventListener("click", goMoney);
 $("home-todo-all").addEventListener("click", function () { showView("plan"); });
-$("home-todo-add").addEventListener("click", function () { openTodoSheet(null, ""); });
 document.querySelectorAll("#money-tabs button").forEach(function (b) {
   b.addEventListener("click", function () { showMoneyTab(b.getAttribute("data-t")); });
 });
