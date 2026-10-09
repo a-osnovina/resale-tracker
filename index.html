@@ -576,9 +576,6 @@ body.goals-unpinned #goals-mini { display: none !important; }
 .export-card { margin-top: 14px; padding: 12px; background: var(--surface-2); border: 1px solid var(--line-soft); border-radius: 12px; }
 .export-text { display: flex; flex-direction: column; gap: 2px; }
 .export-text span { font-size: 14px; color: var(--muted); }
-.export-row { display: flex; gap: 8px; margin-top: 10px; }
-.export-row select { flex: 1; min-width: 0; min-height: 40px; font-size: 15px; }
-.export-row button { flex: none; background: var(--surface); color: var(--accent-text); font-weight: 700; }
 .export-panel { border-top: 0; padding-top: 0; }
 .check-line { display: flex; align-items: center; gap: 10px; margin-top: 12px; font-size: 15px; min-height: 44px; }
 .check-line input { width: 22px; height: 22px; flex: none; }
@@ -1300,7 +1297,6 @@ progress::-moz-progress-bar { background: var(--primary); border-radius: 5px; }
 .pd-job { font-size: 14px; font-weight: 700; margin-top: 6px; }
 
 
-#backup-section .export-row2 .dl { width: 22px; height: 22px; flex: none; fill: none; stroke: var(--accent-text, #0b5cad); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
 /* ---- Settings (full screen: grey page, white title bar, grouped cards, Done button) ---- */
 #tools-modal { top: 0; bottom: 0; z-index: 60; background: var(--summary-bg); align-items: stretch; }
 #tools-modal .modal-panel.tools-panel { max-height: none; height: 100%; min-height: 0; max-width: 760px; margin: 0 auto; border-radius: 0; background: var(--summary-bg); padding: 0; display: flex; flex-direction: column; }
@@ -2194,15 +2190,6 @@ body.modal-open #undo-bar { visibility: hidden; }
     </div>
 
     <div class="sgroup">
-      <h2 class="msec-title">Export as a spreadsheet</h2>
-      <div class="set-card">
-        <button type="button" class="srow2 export-row2" data-scope="all" aria-label="Download items"><span class="srow2-ico data"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21 8l-9-5-9 5 9 5 9-5zM3 8v8l9 5 9-5V8"/></svg></span><span class="srow2-text">Items<small>Everything in stock</small></span><svg class="dl" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4v11M7 11l5 5 5-5M5 20h14"/></svg></button>
-        <button type="button" class="srow2 export-row2" data-scope="sold" aria-label="Download sales and profit"><span class="srow2-ico data"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 19V9M10 19V5M16 19v-7M22 19H2"/></svg></span><span class="srow2-text">Sales and profit<small>What sold, and what you made</small></span><svg class="dl" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4v11M7 11l5 5 5-5M5 20h14"/></svg></button>
-      </div>
-      <div id="export-note" class="set-hint" hidden></div>
-    </div>
-
-    <div class="sgroup">
       <h2 class="msec-title">Restore</h2>
       <div class="set-card">
         <button type="button" id="restore-button" class="srow2"><span class="srow2-ico help"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21V9M8 13l4-4 4 4M4 5h16"/></svg></span><span class="srow2-text">Restore from a backup file<small>Replaces what's in the app right now</small></span><svg class="chev" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg></button>
@@ -2224,8 +2211,8 @@ body.modal-open #undo-bar { visibility: hidden; }
     <div class="sgroup">
       <h2 class="msec-title">More</h2>
       <div class="export-card" style="margin-top: 0">
-        <div class="export-text"><b>Example backup</b><span>Fills the app with a few made-up items, an investment and a storage so you can try it with data. It replaces what is in the app right now, so save your own backup first.</span></div>
-        <div class="toolbar"><button type="button" id="example-backup" class="small-btn">Load example data</button></div>
+        <div class="export-text"><b>Example backup</b><span>Example data isn't available right now.</span></div>
+        <div class="toolbar"><button type="button" id="example-backup" class="small-btn" disabled>Load example data</button></div>
       </div>
       <div class="danger-zone">
         <div class="export-text"><b>Start from zero</b><span>Deletes all your items, investments, balances, storage, planner data and settings from this copy of the app. Save a backup first if you might want anything back.</span></div>
@@ -3032,7 +3019,7 @@ function save() {
     localStorage.setItem("planPrefs", JSON.stringify(planPrefs));
     localStorage.setItem("lowerPercents", JSON.stringify(lowerPercents));
   } catch (e) {
-    alert("Your browser is full, so the latest change could not be saved. Export a CSV and remove some pictures or old items.");
+    alert("Your browser is full, so the latest change could not be saved. Save a backup and remove some pictures or old items.");
   }
 }
 
@@ -7614,57 +7601,6 @@ function checkMonthRollover() {
   }
 }
 
-function csvCell(value) {
-  let text = String(value);
-  if (/^[=+\-@]/.test(text)) text = "'" + text;
-  return '"' + text.replace(/"/g, '""') + '"';
-}
-
-function exportCsv(scope) {
-  const header = ["Item", "Site", "Status", "Storage", "Slot", "Weight (oz)"];
-  PHOTO_TYPES.forEach(function (type) { header.push("Photo: " + type.label); });
-  header.push("Date posted", "Date sold", "Date shipped", "Days to sell", "Days sold to shipped", "Original price", "Current price", "Last price change", "Sold for", "Bumped", "Bump %", "Bump cost", "Platform fee", "Postage label", "Purchase cost", "Profit", "Cashed out");
-  const rows = [header];
-
-  const exportItems = items.filter(function (it) { return scope === "all" || isDone(it); });
-  exportItems.forEach(function (item) {
-    const d = daysToSell(item);
-    const shipDays = daysToShip(item);
-    const row = [item.name, item.site, item.status, item.bin || "", item.slot || "", item.weight || ""];
-    PHOTO_TYPES.forEach(function (type) {
-      row.push(!photoNeeded(item, type) ? "N/A" : (item.photos && item.photos[type.key] ? "Yes" : "No"));
-    });
-    row.push(
-      item.posted || "", item.sold || "", item.shipped || "", d === null ? "" : d, shipDays === null ? "" : shipDays,
-      item.original.toFixed(2), item.current.toFixed(2),
-      item.priceChanged || "",
-      isDone(item) ? salePrice(item).toFixed(2) : "",
-      item.bump ? "Yes" : "No",
-      item.bump && item.bumpRate > 0 ? item.bumpRate : "",
-      feeTotal(item).toFixed(2),
-      platformFee(item).toFixed(2),
-      shipCostOf(item).toFixed(2),
-      (item.cost || 0).toFixed(2),
-      isDone(item) ? profitOf(item).toFixed(2) : "",
-      item.withdrawn ? "Yes" : ""
-    );
-    rows.push(row);
-  });
-
-  const csv = rows.map(function (r) { return r.map(csvCell).join(","); }).join("\n");
-  const blob = new Blob([csv], { type: "text/csv" });
-  const link = document.createElement("a");
-  link.href = URL.createObjectURL(blob);
-  link.download = "resale-items-" + todayText() + ".csv";
-  link.click();
-  const note = document.getElementById("export-note");
-  note.hidden = false;
-  note.textContent = exportItems.length === 0 ? "Nothing to download yet." : "Saved " + exportItems.length + (exportItems.length === 1 ? " item" : " items") + ". Look in your Downloads or the Files app.";
-}
-document.querySelectorAll(".export-row2").forEach(function (b) {
-  b.addEventListener("click", function () { exportCsv(b.dataset.scope); });
-});
-
 // ---- backup and restore ----
 // A backup is one small file holding your items (with pictures), goals, balances and bins.
 // Restoring replaces everything in this copy of the app with what is in the backup.
@@ -10125,59 +10061,7 @@ document.getElementById("add-photo-type").addEventListener("click", function () 
   savePhotoTypes();
 });
 
-// ---- Tools: example backup, and starting again from zero ----
-function exampleBackupData() {
-  const today = todayText();
-  const day = function (n) { return addDays(today, n); };
-  const allPhotos = {};
-  PHOTO_TYPES.forEach(function (type) { allPhotos[type.key] = true; });
-  const vestPhotos = {};
-  const vestNA = {};
-  PHOTO_TYPES.forEach(function (type) { vestPhotos[type.key] = type.key !== "sleeves"; vestNA[type.key] = type.key === "sleeves"; });
-  const somePhotos = {};
-  PHOTO_TYPES.forEach(function (type, i) { somePhotos[type.key] = i < 2; });
-  const ex = function (o) {
-    return Object.assign({ brand: "", color: "", type: "", picture: "", weight: 0, shipped: "", cost: 0, photosNA: {}, bin: "", slot: 0 }, o);
-  };
-  return JSON.stringify({
-    app: "resale-tracker",
-    version: 5,
-    example: true,
-    saved: new Date().toISOString(),
-    appTitle: DEFAULT_TITLE,
-    photoTypes: PHOTO_TYPES,
-    items: [
-      ex({ name: "Example Nike hoodie", site: "Depop", status: "Listed", bin: "A", slot: 1, photos: allPhotos, posted: day(-12), original: 40, current: 32, soldFor: null }),
-      ex({ name: "Example Levis jeans", site: "Vinted", status: "Sold", bin: "A", slot: 2, photos: allPhotos, posted: day(-20), sold: day(-1), original: 35, current: 35, soldFor: 28 }),
-      ex({ name: "Example Zara dress", site: "Depop", status: "Shipped", photos: allPhotos, posted: day(-30), sold: day(-10), shipped: day(-9), original: 30, current: 30, soldFor: 24 }),
-      ex({ name: "Example leather boots", site: "", status: "In progress", bin: "A", slot: 3, photos: somePhotos, original: 0, current: 0, soldFor: null }),
-      ex({ name: "Example vintage vest", site: "eBay", status: "Listed", bin: "A", slot: 4, photos: vestPhotos, photosNA: vestNA, posted: day(-3), original: 25, current: 25, soldFor: null })
-    ],
-    goals: [
-      { name: "Printer", amount: 89, purchased: false, settled: 0, repeat: "none", repeatDay: 1, repeatMonth: 1, autoReset: false, cycle: "" },
-      { name: "Rent", amount: 900, purchased: false, settled: 0, repeat: "monthly", repeatDay: 1, repeatMonth: 1, autoReset: true, cycle: periodStart({ repeat: "monthly", repeatDay: 1 }, today) }
-    ],
-    balances: {},
-    bins: [{ name: "A", slots: 12 }],
-    freed: {},
-    remindDays: 7,
-    withdrawals: [],
-    platforms: platforms,
-    bulks: [],
-    plan: plan,
-    timeLog: [],
-    todos: [],
-    lowerPercents: lowerPercents,
-    remindersOn: true
-  }, null, 2);
-}
-document.getElementById("example-backup").addEventListener("click", function () {
-  // One tap loads the sample. If you already have items, ask first so nothing is lost by accident.
-  const load = function () { restoreFromText(exampleBackupData(), true); showBackupNote("Example data loaded. Look at Home and Stock.", false); };
-  if (items.length > 0) askYesNo("Load the example data? It replaces everything in this app right now.", "Load example", load);
-  else load();
-});
-
+// ---- Tools: starting again from zero ----
 // Everything this app keeps in your browser. Only these are removed when you start from zero.
 const APP_STORAGE_KEYS = ["items", "goals", "balances", "bins", "freed", "filter", "statusFilter", "remindDays", "withdrawals",
   "shipAlerts", "showShipped", "remindersOn", "platforms", "bulks", "planSettings", "planPrefs", "timeEst", "pipelineOn", "homeCal", "timeLog", "todos", "lowerPercents",
