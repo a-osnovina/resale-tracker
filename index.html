@@ -1146,6 +1146,14 @@ progress::-moz-progress-bar { background: var(--primary); border-radius: 5px; }
 .inv-bar { height: 8px; border-radius: 4px; background: var(--surface-2); overflow: hidden; }
 .inv-bar i { display: block; height: 100%; background: var(--primary); }
 #inv-card { display: none; }
+.ar-list { display: flex; flex-direction: column; gap: 10px; margin-top: 8px; }
+.ar-row { display: flex; align-items: center; gap: 12px; padding: 10px 12px; border: 1px solid var(--line); border-radius: 14px; background: var(--surface); }
+.ar-row .sthumb, .ar-row img { flex: none; width: 48px; height: 48px; border-radius: 10px; object-fit: cover; }
+.ar-text { flex: 1; min-width: 0; display: flex; flex-direction: column; }
+.ar-text b { font-size: 16px; overflow-wrap: anywhere; }
+.ar-text span { font-size: 13px; color: var(--muted); }
+.ar-btn { flex: none; min-height: 40px; padding: 0 14px; border-radius: 12px; border: 2px solid var(--primary); background: var(--surface); color: var(--primary); font-weight: 700; }
+#platforms-box .filters-panel > :not(#plat-toggles) { display: none !important; }
 #goals-box { display: block; }
 #money-tabs + #money-overview, #money-tabs + #money-overview .bal-card { margin-top: 14px; }
 #goals-box { margin-top: 10px; }
@@ -2037,6 +2045,7 @@ body.modal-open #undo-bar { visibility: hidden; }
   <details class="filters-box" id="platforms-box">
     <summary>Platforms, fees and balances</summary>
     <div class="filters-panel">
+      <div id="plat-toggles"></div>
       <div class="small">Pick a platform to change its fees. Fees and bump costs come off your profit.</div>
       <button type="button" id="plat-picker" class="plat-picker" aria-haspopup="dialog" aria-expanded="false"></button>
       <div id="platforms-list"></div>
@@ -2122,12 +2131,7 @@ body.modal-open #undo-bar { visibility: hidden; }
           <span class="pv-pill">Listed</span>
         </div>
       </div>
-      <div class="sgroup">
-        <h2 class="msec-title">App name</h2>
-        <div class="set-card pad">
-          <label class="field" style="margin-top: 0">App title <input id="title-input" maxlength="30" autocomplete="off"></label>
-        </div>
-      </div>
+      <input id="title-input" hidden tabindex="-1" aria-hidden="true">
       <select id="theme-select" hidden aria-hidden="true" tabindex="-1">
         <option value="auto">Automatic</option>
         <option value="light">Light</option>
@@ -7153,6 +7157,30 @@ function archiveNow(item) {
   openCards.delete(item);
   openMenus.delete(item);
 }
+// Archive pop-up: same style as Withdraw. Lists archived items with a Restore button each.
+function openArchiveSheet() {
+  const archived = items.filter(function (it) { return it.status === "Archived"; });
+  openSheet("Archive");
+  if (!archived.length) {
+    scanBody.appendChild(el("p", "wd-sub", "Nothing archived yet. Archive an item from its menu and it waits here."));
+    return;
+  }
+  const list = el("div", "ar-list");
+  archived.forEach(function (item) {
+    const row = el("div", "ar-row");
+    row.appendChild(itemThumb(item));
+    const text = el("div", "ar-text");
+    text.appendChild(el("b", "", item.name));
+    text.appendChild(el("span", "", (item.archivedOn ? "Archived " + prettyDay(item.archivedOn) + " \u00B7 " : "") + "was " + item.archivedFrom));
+    row.appendChild(text);
+    const btn = el("button", "ar-btn", "Restore");
+    btn.type = "button";
+    btn.onclick = function () { restoreArchived(item); openArchiveSheet(); };
+    row.appendChild(btn);
+    list.appendChild(row);
+  });
+  scanBody.appendChild(list);
+}
 function restoreArchived(item) {
   const snap = captureState();
   item.status = item.archivedFrom === "Listed" ? "Listed" : "In progress";
@@ -8061,7 +8089,23 @@ function buildRemoveButton(p) {
   return remove;
 }
 
+// Settings > Platforms: just switch each platform on or off.
+function renderPlatformToggles() {
+  const box = document.getElementById("plat-toggles");
+  if (!box) return;
+  box.innerHTML = "";
+  const card = el("div", "set-card pad");
+  platforms.forEach(function (p) {
+    card.appendChild(switchRow(p.name, "", p.enabled, function (on) {
+      p.enabled = on;
+      platformsChanged();
+      if (!toolsModal.hidden && settingsPage === "home") renderSettingsHome();
+    }));
+  });
+  box.appendChild(card);
+}
 function renderPlatformEditor() {
+  renderPlatformToggles();
   const box = document.getElementById("platforms-list");
   box.innerHTML = "";
   Object.keys(balanceRefs).forEach(function (k) { delete balanceRefs[k]; });
@@ -9981,6 +10025,7 @@ applyFeatures();
 const appTitleEl = document.getElementById("app-title");
 const titleInput = document.getElementById("title-input");
 function applyTitle() {
+  appTitle = DEFAULT_TITLE;
   titleInput.value = appTitle;
   if (typeof updateEyebrow === "function") updateEyebrow();
 }
@@ -12086,7 +12131,7 @@ var SETTINGS_PAGES = {
   planopts: { box: "planopts-box", title: "Plan options" },
   storage: { box: "bins-box", title: "Storage" },
   cards: { box: "cards-box", title: "What each item shows" },
-  platforms: { box: "platforms-box", title: "Platforms and fees" },
+  platforms: { box: "platforms-box", title: "Platforms" },
   backup: { box: "backup-box", title: "Back up and export" }
 };
 var THEME_SWATCHES = [["classic", "#0b5cad", "Classic"], ["rose", "#d6457a", "Rose"], ["sage", "#2f6b4f", "Sage"], ["midnight", "#1b2238", "Midnight"], ["plum", "#8a3fc0", "Plum"]];
@@ -12156,7 +12201,7 @@ var settingsScope = "all";      // "all", "money", "stock" or "plan"
 var settingsParent = "";        // set when a page's settings were opened from the All settings list, so Back returns there
 var SCOPE_TITLES = { all: "Settings", home: "Home settings", money: "Money settings", stock: "Stock settings", plan: "Plan settings" };
 function scopeForView() {
-  return currentView === "money" || currentView === "stock" || currentView === "plan" ? currentView : "all";
+  return "all";
 }
 function openSettingsScope(scope, parent) {
   settingsScope = scope;
@@ -12176,7 +12221,7 @@ function renderSettingsHome() {
   const ICON_CLOCK = '<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>';
   const ICON_UNITS = '<path d="M3 17l14-14 4 4L7 21z"/><path d="M7 13l2 2M10 10l2 2M13 7l2 2"/>';
   const platformsRow = function () {
-    return settingsRow(ICON_PLATFORMS, "Platforms and fees", (function (names) { return names.length > 2 ? names.length + " platforms" : names.join(", "); })(enabledPlatformNames()), function () { openSettingsPage("platforms"); }, "shop");
+    return settingsRow(ICON_PLATFORMS, "Platforms", enabledPlatformNames().length + " on", function () { openSettingsPage("platforms"); }, "shop");
   };
   const cardsRow = function () {
     return settingsRow(ICON_CARDS, "What each item shows", (function (n) { return n === 0 ? "Basics" : n + " extra"; })(CARD_KEYS.filter(function (k) { return cardFields[k]; }).length), function () { openSettingsPage("cards"); }, "shop");
@@ -12189,10 +12234,7 @@ function renderSettingsHome() {
     const archived = items.filter(function (it) { return it.status === "Archived"; }).length;
     return settingsRow(ICON_ARCHIVE, "Archive", archived === 0 ? "Nothing yet" : archived + (archived === 1 ? " item" : " items"), function () {
       toolsModal.hidden = true;
-      showView("stock");
-      showStockPane("items");
-      stockTab = "archive";
-      render();
+      openArchiveSheet();
     }, "shop");
   };
   const remindersRow = function () {
@@ -12215,8 +12257,7 @@ function renderSettingsHome() {
     return;
   }
   if (scope === "stock") {
-    const shop = [cardsRow()];
-    shop.push(archiveRow());
+    const shop = [archiveRow()];
     settingsGroup(box, "Your items", shop);
     settingsGroup(box, "Alerts", [remindersRow()]);
     const tl = el("div", "sgroup");
@@ -12245,7 +12286,7 @@ function renderSettingsHome() {
   settingsGroup(box, "Your app", [
     settingsRow(ICON_LOOK, "Appearance", themeLabel() + " · " + unitsLabel(), function () { openSettingsPage("look"); })
   ]);
-  const shop = [platformsRow(), cardsRow()];
+  const shop = [platformsRow()];
   shop.push(archiveRow());
   settingsGroup(box, "Your shop", shop);
   settingsGroup(box, "Plan and alerts", [remindersRow(), timeRow()]);
