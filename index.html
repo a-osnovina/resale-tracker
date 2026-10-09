@@ -1511,7 +1511,9 @@ progress::-moz-progress-bar { background: var(--primary); border-radius: 5px; }
 .sp-parcel .to-group-tag { padding: 10px 12px 0; }
 .sp-parcel .sp-line { padding: 0 12px; }
 .sp-row.tap { cursor: pointer; }
-.sp-item { display: flex; align-items: center; gap: 10px; }
+.sp-item { display: block; }
+.sp-item > .sp-row { width: 100%; box-sizing: border-box; cursor: pointer; -webkit-tap-highlight-color: transparent; }
+.sp-item > .sp-row.on { border-color: var(--primary); box-shadow: inset 0 0 0 2px var(--primary); }
 .sp-item > input { flex: none; width: 30px; height: 30px; margin: 0; accent-color: var(--primary); }
 .sp-toggle { flex: none; width: 40px; height: 40px; min-height: 40px; padding: 0; border: 0; border-radius: 20px; background: var(--surface-2); color: var(--text); display: flex; align-items: center; justify-content: center; }
 .sp-toggle .ico { width: 20px; height: 20px; transition: transform .15s; }
@@ -5064,7 +5066,7 @@ new MutationObserver(syncModalLock).observe(scanModal, { attributes: true, attri
 // Closing this window also ends any bulk upload that was in progress.
 // Each kind of pop-up gets its own color so you can tell at a glance what you are doing:
 // the pop-up's data-kind is picked from its title.
-const SHEET_KINDS = [[/^Pack and ship|^Lower price/, "money"], [/^List /, "list"], [/^Sold/, "sold"], [/ship/i, "ship"], [/lower the price/i, "price"],
+const SHEET_KINDS = [[/^Ship$|^Lower price/, "money"], [/^List /, "list"], [/^Sold/, "sold"], [/ship/i, "ship"], [/lower the price/i, "price"],
   [/^Withdraw/, "money"], [/^Bulk|^Where do|^Item \d/, "bulk"], [/^Slot|^Storage /, "slot"]];
 new MutationObserver(function () {
   const heading = scanBody.querySelector("h3");
@@ -10843,7 +10845,7 @@ function shipStatus(item) {
   return { text: "DUE IN " + dayWord(Math.max(1, dayDiff(todayText(), info.by))).toUpperCase(), cls: "warn" };
 }
 function renderShipPage() {
-  openSheet("Pack and ship");
+  openSheet("Ship");
   shipPage.active = true;
   const parcels = shipParcels();
   const keys = parcels.map(function (g) { return g.key; });
@@ -10864,22 +10866,13 @@ function renderShipPage() {
     scanBody.appendChild(body);
     return;
   }
-  body.appendChild(el("div", "ap-intro", features.storage ? "Grab them from storage, pack, then tick each one off." : "Pack each one, then tick it off."));
+  body.appendChild(el("div", "ap-intro", features.storage ? "Grab them from storage, pack, then tap each one you have packed." : "Pack each one, then tap it."));
   const listBox = el("div", "sp-list");
   parcels.forEach(function (g) {
     const first = g.items[0];
     const st = shipStatus(first);
     const many = g.items.length > 1;
     const item = el("div", "sp-item");
-    const box = document.createElement("input");
-    box.type = "checkbox";
-    box.checked = shipPage.ticked.has(g.key);
-    box.setAttribute("aria-label", "Packed: " + g.items.map(function (it) { return it.name; }).join(" and "));
-    box.onchange = function () {
-      if (box.checked) shipPage.ticked.add(g.key); else shipPage.ticked.delete(g.key);
-      renderShipPage();
-    };
-    item.appendChild(box);
     let row;
     if (many) {
       // Items sold together: one joined card that always shows each item and its spot.
@@ -10915,6 +10908,14 @@ function renderShipPage() {
         row.appendChild(spot);
       }
     }
+    // Tap a card to pick it. Tap again to un-pick it.
+    row.setAttribute("role", "button");
+    row.tabIndex = 0;
+    row.setAttribute("aria-pressed", shipPage.ticked.has(g.key) ? "true" : "false");
+    row.onclick = function () {
+      if (shipPage.ticked.has(g.key)) shipPage.ticked.delete(g.key); else shipPage.ticked.add(g.key);
+      renderShipPage();
+    };
     item.appendChild(row);
     listBox.appendChild(item);
   });
