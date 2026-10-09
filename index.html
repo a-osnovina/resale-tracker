@@ -1652,7 +1652,7 @@ body.modal-open #undo-bar { visibility: hidden; }
     <div id="stock-overview" hidden>
     <div id="stock-takeout"></div>
     <div id="overview-off" class="small" hidden>Timeline is off.</div>
-    <section id="pipeline-box" class="msec">
+    <section id="pipeline-box" class="msec" hidden>
       <div class="sec-head"><h2 class="msec-title">Where your items are</h2></div>
       <div class="dropdown-panel" id="pipeline-panel"></div>
     </section>
@@ -9849,8 +9849,8 @@ function applyFeatures() {
   document.getElementById("platforms-drop").hidden = !features.platforms;
   document.body.classList.toggle("no-storage", !features.storage);
   binFilterInput.closest("label").hidden = !features.storage;
-  document.getElementById("pipeline-box").hidden = !pipelineOn;
-  document.getElementById("overview-off").hidden = pipelineOn;
+  document.getElementById("pipeline-box").hidden = true;  // Where your items are now lives in Plan > Overview
+  document.getElementById("overview-off").hidden = true;
   document.getElementById("planner-button").hidden = !features.planner;
   document.getElementById("tab-plan").hidden = !features.planner;
   if (!features.planner && currentView === "plan") showView("home");
@@ -11726,6 +11726,16 @@ function renderPlanOverview(box) {
   all.forEach(function (r) { list.appendChild(todoRowEl(r)); });
   if (!all.length) list.appendChild(el("div", "todo-empty", "Nothing planned for today."));
   box.appendChild(list);
+  // where your items are
+  if (pipelineOn) {
+    const pl = el("div", "sec-head");
+    pl.appendChild(el("h2", "msec-title", "Where your items are"));
+    box.appendChild(pl);
+    const ppanel = el("div", "dropdown-panel");
+    ppanel.id = "plan-pipeline-panel";
+    drawPipeline(ppanel, need);
+    box.appendChild(ppanel);
+  }
   if (todos.some(function (t) { return false && t.done; })) {
     const clear = el("button", "small-btn clear-done", "Clear finished to-dos");
     clear.type = "button";
