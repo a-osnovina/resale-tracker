@@ -456,6 +456,21 @@
     };
   }
 
+  // The two one-tap choices on the Lower price page: lower by pct, or boost at the same price.
+  // keep is the price minus the platform's fee (before the item's cost). boost is null unless the platform's boost is a percent.
+  function priceChoices(p, current, pct) {
+    p = p || {};
+    const now = feeExample(p, current);
+    const newPrice = fromCents(toCents(current) - Math.round(toCents(current) * pct / 100));
+    const low = feeExample(p, newPrice);
+    const canBoost = p.bumpType === "percent" && Number(p.bumpValue) > 0;
+    return {
+      now: { price: now.price, keep: now.keep },
+      lower: { pct: pct, price: low.price, off: fromCents(toCents(current) - toCents(newPrice)), keep: low.keep },
+      boost: canBoost ? { price: now.price, cost: now.bump, keep: now.keepWithBump } : null
+    };
+  }
+
   // ---- the Profit tab: one month, all platforms or one platform ----
   // month is "2026-10". site is a platform name, or "All" / "" / null for every platform.
   function prevMonth(month) {
@@ -600,7 +615,7 @@
   }
 
   return {
-    feeText: feeText, bumpText: bumpText, feeExample: feeExample,
+    feeText: feeText, bumpText: bumpText, feeExample: feeExample, priceChoices: priceChoices,
     toCents: toCents, money: money, salePrice: salePrice, isDone: isDone, feeTotal: feeTotal,
     platformFee: platformFee, shipCostOf: shipCostOf, costsTotal: costsTotal, profitOf: profitOf,
     bumpLastDay: bumpLastDay, boostCost: boostCost, pastBumpCents: pastBumpCents,

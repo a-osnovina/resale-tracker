@@ -1372,6 +1372,116 @@ progress::-moz-progress-bar { background: var(--primary); border-radius: 5px; }
 #money-more[open] > summary::after { content: "\25B4"; }
 #summary-box .stats .stat:not(.main) { display: none; }
 #summary-box #goals-mini { display: none !important; }
+
+/* ---- Home: green money card, "Needs you" tiles ---- */
+#summary-box .stat.main { gap: 14px; padding: 16px; }
+.hero-top { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.hero-bal { display: flex; flex-direction: column; min-width: 0; }
+#summary-box .main .stat-value { font-size: 34px; }
+.hero-withdraw { flex: none; min-height: 44px; padding: 0 18px; border: 1.5px solid rgba(255,255,255,.75); border-radius: 999px; background: rgba(255,255,255,.14); color: #ffffff; font-size: 15px; font-weight: 800; }
+.hero-months { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.hero-month { display: flex; flex-direction: column; gap: 1px; padding: 10px 12px; border-radius: 12px; background: rgba(255,255,255,.14); color: #ffffff; min-width: 0; }
+.hero-month-label { font-size: 12px; opacity: .85; }
+.hero-month-value { font-size: 20px; font-weight: 800; overflow-wrap: anywhere; }
+.hero-month-sub { font-size: 12px; opacity: .8; }
+.hero-goal[hidden] { display: none; }
+.hero-goal-text { margin-bottom: 6px; font-size: 13px; font-weight: 700; color: #ffffff; }
+.hero-goal-bar { height: 8px; border-radius: 4px; background: rgba(255,255,255,.28); overflow: hidden; }
+.hero-goal-bar i { display: block; height: 100%; border-radius: 4px; background: #ffffff; }
+#home-alerts { margin-top: 18px; }
+#home-alerts:empty { display: none; }
+.need-title { margin: 0 2px 8px; }
+.need-grid { display: flex; gap: 10px; }
+.need-tile { flex: 1; min-width: 0; min-height: 104px; padding: 12px 14px; display: flex; flex-direction: column; align-items: flex-start; gap: 2px; text-align: left; background: var(--surface); color: var(--text); border: 1px solid var(--line-soft); border-left-width: 5px; border-radius: 16px; }
+.need-tile.ship { border-left-color: var(--alert-bg); }
+.need-tile.price { border-left-color: var(--warn-edge); }
+.need-count { font-size: 34px; font-weight: 800; line-height: 1.05; }
+.need-label { font-size: 15px; font-weight: 700; }
+.need-sub { font-size: 13px; color: var(--muted); }
+.need-sub.bad { color: var(--danger); font-weight: 800; }
+.need-ok { display: flex; align-items: center; gap: 12px; padding: 14px; border-radius: 14px; background: var(--sold-bg); color: var(--text); }
+.need-ok .ico { width: 28px; height: 28px; flex: none; color: var(--profit); }
+.need-ok div { display: flex; flex-direction: column; gap: 1px; }
+.need-ok span { font-size: 13px; color: var(--muted); }
+.need-ok.big { margin-top: 8px; }
+
+/* ---- Lower price page and Pack and ship page ---- */
+.apage { position: fixed; left: 0; right: 0; top: 0; bottom: calc(var(--bar-h) + env(safe-area-inset-bottom)); z-index: 40; background: var(--summary-bg); overflow-y: auto; -webkit-overflow-scrolling: touch; }
+.apage[hidden] { display: none; }
+.ap-body { max-width: 560px; min-height: 100%; margin: 0 auto; padding: calc(12px + env(safe-area-inset-top)) 16px 24px; box-sizing: border-box; display: flex; flex-direction: column; gap: 14px; }
+.ap-spacer { flex: 1; }
+.ap-head { display: flex; align-items: center; gap: 8px; }
+.ap-back { flex: none; width: 44px; height: 44px; padding: 0; display: flex; align-items: center; justify-content: center; background: var(--surface); color: var(--text); border: 1px solid var(--line-soft); border-radius: 12px; }
+.ap-back .ico { width: 20px; height: 20px; }
+.ap-title { flex: 1; min-width: 0; display: flex; flex-direction: column; }
+.ap-title h1 { margin: 0; font-size: 24px; font-weight: 800; letter-spacing: -0.02em; overflow-wrap: anywhere; }
+.ap-title span { font-size: 13px; color: var(--muted); }
+.ap-intro { padding: 0 4px; font-size: 14px; color: var(--muted); }
+.ap-eyebrow { font-size: 12px; font-weight: 800; letter-spacing: 0.05em; color: var(--warn-text); }
+.ap-eyebrow.dim { color: var(--muted); margin-bottom: -6px; }
+.ap-sub { font-size: 13px; color: var(--muted); margin-top: 2px; }
+.ap-status { padding: 12px 14px; border-radius: 14px; background: var(--surface); border: 1px solid var(--line-soft); }
+.ap-status.warn { background: var(--warn-bg); border-color: var(--warn-edge); }
+.ap-status-top { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.ap-status-right { text-align: right; }
+.ap-price { font-size: 24px; font-weight: 800; line-height: 1.1; }
+.ap-open { display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%; box-sizing: border-box; min-height: 44px; margin-top: 10px; border-radius: 12px; border: 1.5px solid var(--primary); background: var(--surface); color: var(--accent-text); font-size: 15px; font-weight: 800; text-decoration: none; }
+.ap-open .ico { width: 18px; height: 18px; }
+.ap-open.big { min-height: 56px; margin-top: 14px; border-radius: 14px; background: var(--primary); color: #ffffff; font-size: 17px; }
+.ap-open.big .ico { width: 20px; height: 20px; }
+.pc-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+.pc-grid.one { grid-template-columns: 1fr; }
+.pc-card { display: flex; flex-direction: column; padding: 14px; background: var(--surface); border: 1px solid var(--line-soft); border-radius: 16px; }
+.pc-card.main { border: 2px solid var(--primary); }
+.pc-name { font-size: 17px; font-weight: 800; }
+.pc-k { margin-top: 10px; font-size: 12px; color: var(--muted); }
+.pc-big { font-size: 22px; font-weight: 800; }
+.pc-v { font-size: 14px; font-weight: 700; }
+.pc-keep { margin-top: 12px; padding: 8px 10px; border-radius: 10px; background: var(--surface-2); display: flex; flex-direction: column; }
+.pc-keep.main { background: var(--sold-bg); }
+.pc-keep span { font-size: 12px; font-weight: 700; color: var(--muted); }
+.pc-keep b { font-size: 22px; font-weight: 800; color: var(--text); }
+.pc-keep.main b { color: var(--profit); }
+.pc-keep b.txt { font-size: 16px; }
+.pc-btn { margin-top: auto; min-height: 48px; border-radius: 12px; border: 1.5px solid var(--primary); background: var(--surface); color: var(--accent-text); font-size: 15px; font-weight: 800; }
+.pc-card .pc-keep + .pc-btn { margin-top: 14px; }
+.pc-btn.main { background: var(--primary); color: #ffffff; }
+.pc-btn:disabled { opacity: .5; }
+.ap-note { padding: 0 4px; font-size: 12px; line-height: 1.4; color: var(--muted); }
+.ap-textbtn { min-height: 44px; border: 0; background: transparent; color: var(--muted); font-size: 14px; font-weight: 700; text-decoration: underline; }
+.ap-archive { display: flex; align-items: center; gap: 12px; width: 100%; min-height: 60px; padding: 0 16px; text-align: left; background: var(--surface-2); color: var(--text); border: 1px solid var(--line); border-radius: 14px; }
+.ap-archive .ico { width: 22px; height: 22px; flex: none; }
+.ap-archive-text { display: flex; flex-direction: column; gap: 1px; }
+.ap-archive-text b { font-size: 16px; }
+.ap-archive-text span { font-size: 13px; color: var(--muted); font-weight: 400; }
+.ap-done { display: flex; flex-direction: column; align-items: center; text-align: center; gap: 4px; padding-top: 16px; }
+.ap-done h1 { margin: 8px 0 0; font-size: 26px; font-weight: 800; letter-spacing: -0.02em; }
+.ap-done-ring { width: 64px; height: 64px; border-radius: 32px; display: flex; align-items: center; justify-content: center; background: var(--primary); color: #ffffff; }
+.ap-done-ring .ico { width: 32px; height: 32px; }
+.ap-keep { display: flex; align-items: center; justify-content: space-between; padding: 14px 16px; border-radius: 14px; background: var(--sold-bg); }
+.ap-keep span { font-size: 15px; font-weight: 700; color: var(--profit); }
+.ap-keep b { font-size: 24px; color: var(--profit); }
+.ap-step { padding: 16px; background: var(--surface); border: 1px solid var(--line-soft); border-radius: 16px; }
+.ap-step-text { margin-top: 4px; font-size: 16px; font-weight: 700; line-height: 1.35; }
+.ap-row { display: flex; gap: 8px; }
+.ap-sec { flex: 1; min-height: 52px; border: 1px solid var(--line); border-radius: 14px; background: var(--surface); color: var(--text); font-size: 15px; font-weight: 800; }
+.ap-next { width: 100%; min-height: 52px; border: 0; border-radius: 14px; background: var(--primary); color: #ffffff; font-size: 16px; font-weight: 800; }
+.ap-next:disabled { opacity: .45; }
+.sp-list { display: flex; flex-direction: column; gap: 10px; }
+.sp-row { display: flex; align-items: center; gap: 12px; padding: 12px; background: var(--surface); border: 1px solid var(--line-soft); border-radius: 14px; cursor: pointer; }
+.sp-row.late { border-color: var(--error-edge); }
+.sp-row.on { background: var(--sold-bg); }
+.sp-row input { flex: none; width: 28px; height: 28px; margin: 0; accent-color: var(--primary); }
+.sp-text { flex: 1; min-width: 0; }
+.sp-name { font-weight: 800; font-size: 16px; overflow-wrap: anywhere; }
+.sp-meta { margin-top: 2px; font-size: 13px; color: var(--muted); }
+.sp-status { margin-top: 6px; font-size: 12px; font-weight: 800; color: var(--muted); }
+.sp-status.bad { color: var(--danger); }
+.sp-status.warn { color: var(--warn-text); }
+.sp-spot { flex: none; display: flex; flex-direction: column; align-items: center; padding: 8px 12px; border-radius: 12px; background: var(--surface-2); }
+.sp-spot span { font-size: 11px; font-weight: 700; color: var(--muted); }
+.sp-spot b { font-size: 22px; letter-spacing: 0.02em; color: var(--accent-text); }
+.sp-count { display: flex; align-items: center; justify-content: space-between; padding: 12px 14px; border-radius: 12px; background: var(--info-bg); color: var(--info-text); font-size: 14px; }
 /* a pop-up message (Undo) must not sit on top of an open menu or sheet */
 body.modal-open #undo-bar { visibility: hidden; }
 
@@ -1399,13 +1509,21 @@ body.modal-open #undo-bar { visibility: hidden; }
 
   <!-- HOME: what needs doing today -->
   <section class="view" id="view-home" aria-label="Today">
-    <div id="home-alerts"></div>
     <div class="summary" id="summary-box">
       <div class="stats">
         <div class="stat main" id="home-balance-tile" role="button" tabindex="0" aria-label="Balance. Tap to open Money.">
-          <span class="stat-label">Balance</span>
-          <span class="stat-value balance">$<span id="balance">0.00</span></span>
-          <div class="stat-buttons"><button type="button" id="withdraw-button" class="withdraw-btn">Withdraw</button></div>
+          <div class="hero-top">
+            <div class="hero-bal">
+              <span class="stat-label">Balance</span>
+              <span class="stat-value balance">$<span id="balance">0.00</span></span>
+            </div>
+            <button type="button" id="withdraw-button" class="hero-withdraw">Withdraw</button>
+          </div>
+          <div class="hero-months" id="hero-months"></div>
+          <div class="hero-goal" id="hero-goal" hidden>
+            <div class="hero-goal-text" id="hero-goal-text"></div>
+            <div class="hero-goal-bar"><i id="hero-goal-fill"></i></div>
+          </div>
         </div>
         <div class="stat">
           <span class="stat-label">Total profit</span>
@@ -1417,6 +1535,7 @@ body.modal-open #undo-bar { visibility: hidden; }
         <progress id="mini-bar" value="0" max="1"></progress>
       </div>
     </div>
+    <div id="home-alerts"></div>
     <section id="home-cal" class="msec" hidden></section>
     <section id="home-todo" class="msec">
       <div class="sec-head"><h2 class="msec-title">To do</h2><button type="button" id="home-todo-all" class="sec-link">See all in Plan</button></div>
@@ -2055,7 +2174,10 @@ body.modal-open #undo-bar { visibility: hidden; }
     up: '<path d="M6 14.5l6-6 6 6"/>',
     down: '<path d="M6 9.5l6 6 6-6"/>',
     gear: '<circle cx="12" cy="12" r="3.2"/><path d="M12 2.8v3M12 18.2v3M2.8 12h3M18.2 12h3M5.5 5.5l2.1 2.1M16.4 16.4l2.1 2.1M18.5 5.5l-2.1 2.1M7.6 16.4l-2.1 2.1"/>',
-    pencil: '<path d="M4 20h4L18.5 9.5a2.1 2.1 0 0 0-3-3L5 17v3z"/><path d="M13.5 6.5l3 3"/>'
+    pencil: '<path d="M4 20h4L18.5 9.5a2.1 2.1 0 0 0-3-3L5 17v3z"/><path d="M13.5 6.5l3 3"/>',
+    archive: '<rect x="3" y="4" width="18" height="5" rx="1"/><path d="M5 9v10h14V9M10 13h4"/>',
+    external: '<path d="M14 4h6v6M20 4l-9 9M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5"/>',
+    back: '<path d="M15 6l-6 6 6 6"/>'
   };
   // Returns a small <span> holding the icon. Usage: node.appendChild(icon("alert")).
   window.icon = function (name) {
@@ -2292,6 +2414,8 @@ function savePlanOptions() { try { localStorage.setItem("pipelineOn", pipelineOn
 let planPrefs = null; // Plan tab choices: shipping days, limit, repeating jobs, money goal
 let timeLog = [];    // time you logged: { id, date, step, minutes, items }
 let todos = [];      // your own to-dos: { id, text, day (-1 = any, 0 = Monday ... 6 = Sunday), done }
+var pricePage = { active: false, queue: [], at: 0, mode: "choose" };   // the Lower price page
+var shipPage = { active: false, ticked: new Set() };               // the Pack and ship page
 let showShipped = false;   // shipped items are hidden from the list unless you ask
 let showAllWeeks = false;  // the weekly sales table shows the last 12 weeks unless you ask for all
 let formPhoto = "";
@@ -3236,6 +3360,17 @@ function applySaleFees(item) {
   item.feeFlat = p ? p.feeFlat || 0 : 0;
 }
 
+// The change itself when an item ships (no saving, no message). Used by the one-item and the many-items buttons.
+function applyShipped(item) {
+  markFreed(item.bin, item.slot);
+  if (!item.sold) item.sold = soldDateFor(item.posted);
+  if (!isDone(item)) applySaleFees(item);
+  item.status = "Shipped";
+  item.shipped = shipDateFor(item.sold);
+  item.bin = "";
+  item.slot = 0;
+}
+
 // Asks inside the app (not with the browser's own pop-up, which some browsers block) and then ships the item.
 function markShipped(item) {
   const spot = item.bin && item.slot ? slotLabel(item.bin, item.slot) : "";
@@ -3244,13 +3379,7 @@ function markShipped(item) {
   scanBody.appendChild(el("p", "", item.name + (spot ? ". This frees slot " + spot + "." : ".")));
   scanBody.appendChild(modalButton("Yes, it shipped", "primary", function () {
     const snap = captureState();
-    markFreed(item.bin, item.slot);
-    if (!item.sold) item.sold = soldDateFor(item.posted);
-    if (!isDone(item)) applySaleFees(item);
-    item.status = "Shipped";
-    item.shipped = shipDateFor(item.sold);
-    item.bin = "";
-    item.slot = 0;
+    applyShipped(item);
     save();
     render();
     closeScanModal();
@@ -4548,12 +4677,15 @@ function closePriceModal() {
 }
 
 function setPrice(item, value) {
+  const fromPage = pricePage.active;
   if (value !== item.current) {
     const snap = captureState();
+    const idx = items.indexOf(item);
     item.current = value;
     item.priceChanged = todayText();
     save();
     render();
+    if (fromPage) { closePriceModal(); showPriceDone("lowered", idx, snap); return; }
     showUndo("Price changed on " + item.name + ".", snap);
   }
   closePriceModal();
@@ -4722,7 +4854,7 @@ function openWithdrawSheet() {
   scanBody.appendChild(wrap);
   scanModal.hidden = false;
 }
-document.getElementById("withdraw-button").addEventListener("click", function () { openWithdraw("choose"); });
+document.getElementById("withdraw-button").addEventListener("click", function (event) { event.stopPropagation(); openWithdraw("choose"); });
 document.getElementById("withdraw-button2").addEventListener("click", function () {
   document.getElementById("balance-drop").open = false;
   openWithdraw("choose");
@@ -4795,7 +4927,11 @@ function openDueSheet() {
   scanModal.hidden = false;
 }
 
-function lowerPrice(item) {
+// Every "Lower price" button opens the Lower price page (see "Home action pages" below).
+function lowerPrice(item) { openPricePage([items.indexOf(item)], 0); }
+
+// The small pop-up with a custom amount. The Lower price page opens it from "Different amount".
+function openPriceModal(item) {
   // Vinted won't change the price while a bump runs, so wait for the bump's last day.
   if (bumpLocked(item)) {
     openScanMessage("Price locked during the bump", "Vinted doesn't let you lower the price while a bump is running. This bump's last day is " + prettyDay(bumpEndDay(item)) + ", and the price reminder comes back then.");
@@ -6835,6 +6971,17 @@ function askArchive(item) {
   }));
   scanBody.appendChild(modalButton("Cancel", "", closeScanModal));
   scanModal.hidden = false;
+}
+// Archives right away (the Lower price page uses it; Undo is shown by the caller).
+function archiveNow(item) {
+  markFreed(item.bin, item.slot);
+  item.archivedFrom = item.status === "Listed" ? "Listed" : "In progress";
+  item.archivedOn = todayText();
+  item.status = "Archived";
+  item.bin = "";
+  item.slot = 0;
+  openCards.delete(item);
+  openMenus.delete(item);
 }
 function restoreArchived(item) {
   const snap = captureState();
@@ -9747,6 +9894,7 @@ function showView(name) {
   if (!VIEW_TITLES[name]) name = "home";
   if (name === "plan" && !features.planner) name = "home";
   currentView = name;
+  closeActionPages();
   Object.keys(VIEW_TITLES).forEach(function (key) {
     const section = $("view-" + key);
     if (section) section.hidden = key !== name;
@@ -10226,34 +10374,465 @@ function alertCard(kind, label, item, sub, btnText, onClick, onDismiss) {
   api = attachSwipe(c, 0, 1);
   return wrap;
 }
+// ---- Home: "Needs you" tiles ----
+// Sold items that still have to ship, soonest deadline first.
+function shipList() {
+  return items.filter(function (it) { return it.status === "Sold"; }).sort(function (a, b) {
+    const x = a.sold ? shipByDate(a.sold) : "9999", y = b.sold ? shipByDate(b.sold) : "9999";
+    return x < y ? -1 : x > y ? 1 : 0;
+  });
+}
+function needTile(kind, count, label, sub, subClass, onClick) {
+  const t = el("button", "need-tile " + kind);
+  t.type = "button";
+  t.appendChild(el("span", "need-count", String(count)));
+  t.appendChild(el("span", "need-label", label));
+  t.appendChild(el("span", "need-sub " + (subClass || ""), sub));
+  t.onclick = onClick;
+  return t;
+}
 function renderHomeAlerts() {
   const box = $("home-alerts");
   box.innerHTML = "";
-  currentOverdue.slice(0, 3).forEach(function (item) {
-    const ship = shipInfo(item);
-    box.appendChild(alertCard("ship", "Ship now", item,
-      (item.site ? item.site + " · " : "") + (ship && ship.late ? dayWord(ship.daysLate) + " late" : "late") + " · sold " + money(salePrice(item)),
-      "Mark shipped", function () { markShipped(item); }, function () { dismissShip([item]); }));
-  });
-  if (currentOverdue.length > 3) {
-    const more = el("button", "sec-link", "+" + (currentOverdue.length - 3) + " more late orders");
-    more.type = "button";
-    more.onclick = function () { $("ship-alert").click(); };
-    box.appendChild(more);
+  if (!items.length) return;
+  const toShip = shipList();
+  const late = toShip.filter(function (it) { const s = shipInfo(it); return s && (s.late || s.pastDue); }).length;
+  const due = currentDue.length;
+  box.appendChild(el("h2", "msec-title need-title", "Needs you"));
+  if (!toShip.length && !due) {
+    const ok = el("div", "need-ok");
+    ok.appendChild(icon("check"));
+    const text = el("div");
+    text.appendChild(el("b", "", "All caught up"));
+    text.appendChild(el("span", "", "Nothing to ship and no prices to check."));
+    ok.appendChild(text);
+    box.appendChild(ok);
+    return;
   }
-  currentDue.slice(0, 3).forEach(function (item) {
-    box.appendChild(alertCard("price", "Price check", item,
-      (item.site ? item.site + " · " : "") + dayWord(daysAtPrice(item) || 0) + " at " + money(item.current),
-      "Lower price", function () { lowerPrice(item); }, function () { dismissDue([item]); }));
-  });
-  if (currentDue.length > 3) {
-    const more = el("button", "sec-link", "+" + (currentDue.length - 3) + " more price checks");
-    more.type = "button";
-    more.onclick = openDueSheet;
-    box.appendChild(more);
+  const grid = el("div", "need-grid");
+  if (toShip.length) {
+    grid.appendChild(needTile("ship", toShip.length, "to ship", late ? late + " late" : "On time", late ? "bad" : "", function () { openShipPage(); }));
   }
-  if (box.children.length) box.style.marginBottom = "4px"; else box.style.marginBottom = "";
+  if (due) {
+    grid.appendChild(needTile("price", due, due === 1 ? "lower price" : "lower prices", "Not selling lately", "", function () {
+      openPricePage(currentDue.map(function (it) { return items.indexOf(it); }), 0);
+    }));
+  }
+  box.appendChild(grid);
 }
+// The green card: this month, last month, and the first investment.
+function paintHero() {
+  const box = $("hero-months");
+  if (!box) return;
+  box.innerHTML = "";
+  const now = ResaleLogic.monthOf(todayText());
+  [["This month", now], ["Last month", ResaleLogic.prevMonth(now)]].forEach(function (pair) {
+    const t = ResaleLogic.profitTable(items, pair[1], null);
+    const cell = el("div", "hero-month");
+    cell.appendChild(el("span", "hero-month-label", pair[0]));
+    cell.appendChild(el("b", "hero-month-value", money(t.profit)));
+    cell.appendChild(el("span", "hero-month-sub", t.count + (t.count === 1 ? " sale" : " sales")));
+    box.appendChild(cell);
+  });
+  const goalBox = $("hero-goal");
+  const active = goals.filter(function (g) { return !g.purchased; });
+  if (!features.investments || !active.length) { goalBox.hidden = true; return; }
+  const g = active[0];
+  const have = Math.min(Math.max(0, lastBalance), g.amount);
+  const pct = g.amount > 0 ? Math.round(have / g.amount * 100) : 0;
+  $("hero-goal-text").textContent = g.name + " · " + moneyShort(have) + " of " + moneyShort(g.amount) + " (" + pct + "%)";
+  $("hero-goal-fill").style.width = pct + "%";
+  goalBox.hidden = false;
+}
+
+// ---- Home action pages: Lower price and Pack and ship ----
+// Full-screen pages that sit above the screens but leave the bottom bar usable.
+function ensureActionPage(id) {
+  let page = $(id);
+  if (!page) { page = el("div", "apage"); page.id = id; page.hidden = true; document.body.appendChild(page); }
+  return page;
+}
+function closeActionPages() {
+  pricePage.active = false;
+  shipPage.active = false;
+  const a = $("price-page"), b = $("ship-page");
+  if (a) a.hidden = true;
+  if (b) b.hidden = true;
+  document.body.classList.remove("apage-open");
+}
+function refreshActionPages() {
+  if (pricePage.active && pricePage.mode === "choose") renderPricePage();
+  if (shipPage.active) renderShipPage();
+}
+function apageHead(title, sub, onBack) {
+  const head = el("div", "ap-head");
+  const back = el("button", "ap-back");
+  back.type = "button";
+  back.setAttribute("aria-label", "Back to Today");
+  back.appendChild(icon("back"));
+  back.onclick = onBack;
+  head.appendChild(back);
+  const h = el("div", "ap-title");
+  h.appendChild(el("h1", "", title));
+  if (sub) h.appendChild(el("span", "", sub));
+  head.appendChild(h);
+  return head;
+}
+function appLinkFor(item) {
+  const p = findPlatform(item.site);
+  return (p && p.url) || platformLink(item.site) || "";
+}
+// A big "Open Depop" button. It is a real link, so the phone can hand it to the app if the app is installed.
+function openAppButton(item, cls) {
+  const url = appLinkFor(item);
+  if (!url) return null;
+  const a = el("a", "ap-open " + (cls || ""));
+  a.href = url;
+  a.target = "_blank";
+  a.rel = "noopener";
+  a.appendChild(document.createTextNode("Open " + item.site));
+  a.appendChild(icon("external"));
+  return a;
+}
+
+// ---- Lower price page ----
+function pgItem() { return items[pricePage.queue[pricePage.at]]; }
+function openPricePage(queue, at) {
+  const list = queue.filter(function (i) { return i >= 0 && items[i]; });
+  if (!list.length) return;
+  const item = items[list[at] !== undefined ? list[at] : list[0]];
+  if (bumpLocked(item)) {
+    openScanMessage("Price locked during the bump", "Vinted doesn't let you lower the price while a bump is running. This bump's last day is " + prettyDay(bumpEndDay(item)) + ", and the price reminder comes back then.");
+    return;
+  }
+  closeActionPages();
+  ensureActionPage("price-page");
+  pricePage.active = true;
+  pricePage.queue = list;
+  pricePage.at = Math.min(at || 0, list.length - 1);
+  pricePage.mode = "choose";
+  document.body.classList.add("apage-open");
+  renderPricePage();
+  const page = ensureActionPage("price-page");
+  page.hidden = false;
+  page.scrollTop = 0;
+}
+function closePricePage() {
+  pricePage.active = false;
+  const page = $("price-page");
+  if (page) page.hidden = true;
+  document.body.classList.remove("apage-open");
+}
+// Moves on to the next item that still needs a price check, or closes.
+function pricePageNext() {
+  const rest = pricePage.queue.slice(pricePage.at + 1).filter(function (i) { return items[i] && items[i].status === "Listed"; });
+  if (!rest.length) { closePricePage(); return; }
+  pricePage.queue = rest;
+  pricePage.at = 0;
+  pricePage.mode = "choose";
+  renderPricePage();
+  ensureActionPage("price-page").scrollTop = 0;
+}
+function priceCard(opts) {
+  const c = el("div", "pc-card" + (opts.main ? " main" : ""));
+  c.appendChild(el("div", "pc-name", opts.name));
+  c.appendChild(el("div", "pc-k", "Buyers see"));
+  c.appendChild(el("div", "pc-big", opts.sees));
+  c.appendChild(el("div", "pc-k", "Costs you"));
+  c.appendChild(el("div", "pc-v", opts.cost));
+  const keep = el("div", "pc-keep" + (opts.main ? " main" : ""));
+  keep.appendChild(el("span", "", "You'd have when sold"));
+  keep.appendChild(el("b", opts.keepText ? "txt" : "", opts.keep));
+  c.appendChild(keep);
+  const b = el("button", "pc-btn" + (opts.main ? " main" : ""), opts.button);
+  b.type = "button";
+  if (opts.disabled) b.disabled = true;
+  b.onclick = opts.onClick;
+  c.appendChild(b);
+  return c;
+}
+function renderPricePage() {
+  const page = ensureActionPage("price-page");
+  const item = pgItem();
+  if (!item) { closePricePage(); return; }
+  page.innerHTML = "";
+  pricePage.mode = "choose";
+  const cfg = findPlatform(item.site);
+  const p = cfg || {};
+  const pct = lowerPercents[0] || 10;
+  const ch = ResaleLogic.priceChoices(p, item.current, pct);
+  const many = pricePage.queue.length > 1 ? "Price check " + (pricePage.at + 1) + " of " + pricePage.queue.length : "";
+  const body = el("div", "ap-body");
+  body.appendChild(apageHead(item.name, many, closePricePage));
+
+  const now = el("div", "ap-status warn");
+  const top = el("div", "ap-status-top");
+  const left = el("div");
+  left.appendChild(el("div", "ap-eyebrow", "NOT SELLING"));
+  const days = daysAtPrice(item);
+  left.appendChild(el("div", "ap-sub", (item.site ? item.site + " · " : "") + (days !== null ? dayWord(days) + " at this price" : "listed")));
+  top.appendChild(left);
+  const right = el("div", "ap-status-right");
+  right.appendChild(el("div", "ap-price", money(item.current)));
+  right.appendChild(el("div", "ap-sub", "you'd have " + money(ch.now.keep)));
+  top.appendChild(right);
+  now.appendChild(top);
+  const open = openAppButton(item, "small");
+  if (open) now.appendChild(open);
+  body.appendChild(now);
+
+  const locked = bumpLocked(item);
+  let boostKind = "none";
+  if (ch.boost) boostKind = "percent";
+  else if (cfg && (cfg.bumpType === "flat" || cfg.bumpType === "ask")) boostKind = "setup";
+  body.appendChild(el("div", "ap-eyebrow dim", boostKind === "setup" ? "PICK ONE" : "TAP ONE AND IT'S DONE"));
+  const grid = el("div", "pc-grid" + (boostKind === "none" || locked ? " one" : ""));
+
+  if (item.current > 0) {
+    grid.appendChild(priceCard({
+      main: true, name: "Lower price", sees: money(ch.lower.price),
+      cost: money(ch.lower.off) + " less (" + pct + "% off)", keep: money(ch.lower.keep), button: "Lower it",
+      onClick: function () {
+        const snap = captureState();
+        const idx = items.indexOf(item);
+        item.current = ch.lower.price;
+        item.priceChanged = todayText();
+        save();
+        render();
+        showPriceDone("lowered", idx, snap);
+      }
+    }));
+  }
+  if (boostKind === "percent") {
+    const already = !!(item.bump && item.bumpRate > 0);
+    grid.appendChild(priceCard({
+      name: already ? "Boosted" : "Boost", sees: money(ch.boost.price),
+      cost: money(ch.boost.cost) + " (" + p.bumpValue + "%), only if it sells", keep: money(ch.boost.keep),
+      button: already ? "Already on" : "Boost it", disabled: already,
+      onClick: function () {
+        const snap = captureState();
+        const idx = items.indexOf(item);
+        item.bump = true;
+        item.bumpRate = Number(p.bumpValue);
+        item.bumpAmount = 0;
+        // The reminder is answered, so it stops asking about this item for now.
+        dueDismissed[dueKey(item)] = 1;
+        try { localStorage.setItem("dueDismissed", JSON.stringify(dueDismissed)); } catch (e) {}
+        save();
+        render();
+        showPriceDone("boosted", idx, snap);
+      }
+    }));
+  } else if (boostKind === "setup" && !locked) {
+    const fixed = cfg.bumpType === "flat" && Number(cfg.bumpValue) > 0;
+    const after = fixed ? ResaleLogic.feeExample(p, item.current).keepWithBump : null;
+    grid.appendChild(priceCard({
+      name: "Bump", sees: money(item.current),
+      cost: fixed ? money(cfg.bumpValue) + " now" : (cfg.bumpDays ? "$1 to $3, you type it" : "You type the cost"),
+      keep: after === null ? "Less the bump" : money(after), keepText: after === null, button: "Set up bump",
+      onClick: function () { openBumpSheet(item); }
+    }));
+  }
+  body.appendChild(grid);
+  if (locked) body.appendChild(el("div", "ap-note", "Vinted won't let you change the price during a bump. It ends " + prettyDay(bumpEndDay(item)) + "."));
+  body.appendChild(el("div", "ap-note", "\"You'd have\" is the price minus " + (item.site || "the platform") + "'s fee" + (boostKind === "percent" ? " (and the boost, if used)" : "") + ", before what you paid for the item."));
+
+  if (item.current > 0 && !locked) {
+    const other = el("button", "ap-textbtn", "Different amount…");
+    other.type = "button";
+    other.onclick = function () { openPriceModal(item); };
+    body.appendChild(other);
+  }
+  const arch = el("button", "ap-archive");
+  arch.type = "button";
+  arch.appendChild(icon("archive"));
+  const at = el("span", "ap-archive-text");
+  at.appendChild(el("b", "", "Archive it"));
+  at.appendChild(el("span", "", "Stop selling this one. It leaves Stock."));
+  arch.appendChild(at);
+  arch.onclick = function () {
+    const snap = captureState();
+    archiveNow(item);
+    save();
+    render();
+    showUndo(item.name + " archived.", snap);
+    pricePageNext();
+  };
+  body.appendChild(arch);
+  const later = el("button", "ap-textbtn", "Not now, remind me later");
+  later.type = "button";
+  later.onclick = pricePageNext;
+  body.appendChild(later);
+  page.appendChild(body);
+}
+// What you see right after a one-tap choice.
+function showPriceDone(kind, idx, snap) {
+  const item = items[idx];
+  if (!item) return;
+  pricePage.mode = "done";
+  pricePage.active = true;
+  document.body.classList.add("apage-open");
+  const page = ensureActionPage("price-page");
+  page.hidden = false;
+  page.innerHTML = "";
+  const p = findPlatform(item.site) || {};
+  const body = el("div", "ap-body");
+  const hero = el("div", "ap-done");
+  const ring = el("div", "ap-done-ring");
+  ring.appendChild(icon("check"));
+  hero.appendChild(ring);
+  const keepNow = ResaleLogic.feeExample(p, item.current);
+  hero.appendChild(el("h1", "", kind === "lowered" ? "Lowered to " + money(item.current) : "Boosted"));
+  hero.appendChild(el("div", "ap-sub", item.name + (item.site ? " · " + item.site : "")));
+  body.appendChild(hero);
+  const keep = el("div", "ap-keep");
+  keep.appendChild(el("span", "", "You'd have when sold"));
+  const keepValue = kind === "boosted" && keepNow.keepWithBump !== null ? keepNow.keepWithBump : keepNow.keep;
+  keep.appendChild(el("b", "", money(keepValue)));
+  body.appendChild(keep);
+  const step = el("div", "ap-step");
+  step.appendChild(el("div", "ap-eyebrow", "ONE MORE STEP"));
+  step.appendChild(el("div", "ap-step-text", kind === "lowered"
+    ? "Change the price to " + money(item.current) + " on " + (item.site || "the app") + " too. This app can't do that part for you."
+    : "Turn the boost on in " + (item.site || "the app") + " too. This app can't do that part for you."));
+  const open = openAppButton(item, "big");
+  if (open) step.appendChild(open);
+  body.appendChild(step);
+  body.appendChild(el("div", "ap-spacer"));
+  const row = el("div", "ap-row");
+  const undo = el("button", "ap-sec", "Undo");
+  undo.type = "button";
+  undo.onclick = function () {
+    restoreState(snap);
+    pricePage.mode = "choose";
+    renderPricePage();
+    showToast("Undone.");
+  };
+  const back = el("button", "ap-sec", "Back to Today");
+  back.type = "button";
+  back.onclick = closePricePage;
+  row.appendChild(undo);
+  row.appendChild(back);
+  const rest = pricePage.queue.slice(pricePage.at + 1).filter(function (i) { return items[i] && items[i].status === "Listed" && isDue(items[i]); });
+  if (rest.length) {
+    const next = el("button", "ap-next", "Next price check (" + rest.length + " left)");
+    next.type = "button";
+    next.onclick = pricePageNext;
+    body.appendChild(next);
+  }
+  body.appendChild(row);
+  page.appendChild(body);
+  page.scrollTop = 0;
+}
+
+// ---- Pack and ship page ----
+function openShipPage() {
+  closeActionPages();
+  shipPage.active = true;
+  shipPage.ticked = new Set();
+  document.body.classList.add("apage-open");
+  renderShipPage();
+  const page = ensureActionPage("ship-page");
+  page.hidden = false;
+  page.scrollTop = 0;
+}
+function closeShipPage() {
+  shipPage.active = false;
+  const page = $("ship-page");
+  if (page) page.hidden = true;
+  document.body.classList.remove("apage-open");
+}
+function shipStatus(item) {
+  const info = shipInfo(item);
+  if (!info || info.unknown) return { text: "SHIP SOON", cls: "" };
+  if (info.late) return { text: "LATE BY " + dayWord(info.daysLate).toUpperCase(), cls: "bad" };
+  if (info.pastDue) return { text: "PAST DUE", cls: "bad" };
+  if (info.today) return { text: "DUE TODAY", cls: "warn" };
+  return { text: "DUE IN " + dayWord(Math.max(1, dayDiff(todayText(), info.by))).toUpperCase(), cls: "warn" };
+}
+function renderShipPage() {
+  const page = ensureActionPage("ship-page");
+  page.innerHTML = "";
+  const list = shipList();
+  const idxs = list.map(function (it) { return items.indexOf(it); });
+  shipPage.ticked.forEach(function (i) { if (idxs.indexOf(i) === -1) shipPage.ticked.delete(i); });
+  const body = el("div", "ap-body");
+  body.appendChild(apageHead("Pack and ship", "", closeShipPage));
+  if (!list.length) {
+    const ok = el("div", "need-ok big");
+    ok.appendChild(icon("check"));
+    const t = el("div");
+    t.appendChild(el("b", "", "Everything has shipped"));
+    t.appendChild(el("span", "", "Nothing is waiting to be packed."));
+    ok.appendChild(t);
+    body.appendChild(ok);
+    const done = el("button", "ap-next", "Back to Today");
+    done.type = "button";
+    done.onclick = closeShipPage;
+    body.appendChild(done);
+    page.appendChild(body);
+    return;
+  }
+  body.appendChild(el("div", "ap-intro", features.storage ? "Grab them from storage, pack, then tick each one off." : "Pack each one, then tick it off."));
+  const listBox = el("div", "sp-list");
+  list.forEach(function (item, n) {
+    const idx = idxs[n];
+    const st = shipStatus(item);
+    const row = el("label", "sp-row" + (st.cls === "bad" ? " late" : "") + (shipPage.ticked.has(idx) ? " on" : ""));
+    const box = document.createElement("input");
+    box.type = "checkbox";
+    box.checked = shipPage.ticked.has(idx);
+    box.setAttribute("aria-label", "Packed: " + item.name);
+    box.onchange = function () {
+      if (box.checked) shipPage.ticked.add(idx); else shipPage.ticked.delete(idx);
+      renderShipPage();
+    };
+    row.appendChild(box);
+    const text = el("div", "sp-text");
+    text.appendChild(el("div", "sp-name", item.name));
+    const meta = [];
+    if (item.site) meta.push(item.site);
+    if (Number(item.weight) > 0) meta.push(formatWeight(item.weight));
+    if (meta.length) text.appendChild(el("div", "sp-meta", meta.join(" · ")));
+    text.appendChild(el("div", "sp-status " + st.cls, st.text));
+    row.appendChild(text);
+    if (item.bin && item.slot > 0) {
+      const spot = el("div", "sp-spot");
+      spot.appendChild(el("span", "", "SPOT"));
+      spot.appendChild(el("b", "", slotLabel(item.bin, item.slot)));
+      row.appendChild(spot);
+    }
+    listBox.appendChild(row);
+  });
+  body.appendChild(listBox);
+  const count = el("div", "sp-count");
+  count.appendChild(el("span", "", "Parcels ticked"));
+  count.appendChild(el("b", "", shipPage.ticked.size + " of " + list.length));
+  body.appendChild(count);
+  body.appendChild(el("div", "ap-spacer"));
+  const go = el("button", "ap-next", shipPage.ticked.size ? "Mark " + shipPage.ticked.size + " as shipped" : "Mark ticked as shipped");
+  go.type = "button";
+  go.disabled = shipPage.ticked.size === 0;
+  go.onclick = function () {
+    const picked = Array.from(shipPage.ticked).map(function (i) { return items[i]; }).filter(Boolean);
+    if (!picked.length) return;
+    const snap = captureState();
+    picked.forEach(applyShipped);
+    shipPage.ticked.clear();
+    save();
+    render();
+    showUndo(picked.length === 1 ? picked[0].name + " marked as shipped." : picked.length + " parcels marked as shipped.", snap);
+  };
+  body.appendChild(go);
+  if (features.storage && bins.length) {
+    const store = el("button", "ap-textbtn", "Open storage view");
+    store.type = "button";
+    store.onclick = function () { showView("stock"); showStockPane("storage"); };
+    body.appendChild(store);
+  }
+  page.appendChild(body);
+}
+
 function paintGoalTile() {
   const mini = $("goals-mini");
   const active = goals.filter(function (g) { return !g.purchased; });
@@ -10406,8 +10985,8 @@ function renderHomeTodos() {
   if (!box) return;
   box.innerHTML = "";
   const rows = planRows(todayText(), true);
-  rows.slice(0, 4).forEach(function (r) { box.appendChild(todoRowEl(r)); });
-  if (rows.length > 4) box.appendChild(el("div", "todo-empty", "+" + (rows.length - 4) + " more" + (features.planner ? " in Plan" : "")));
+  rows.slice(0, 3).forEach(function (r) { box.appendChild(todoRowEl(r)); });
+  if (rows.length > 3) box.appendChild(el("div", "todo-empty", "+" + (rows.length - 3) + " more" + (features.planner ? " in Plan" : "")));
   if (!rows.length) box.appendChild(el("div", "todo-empty", "Nothing to do today."));
   $("home-todo").hidden = !features.timeline;
 }
@@ -11541,8 +12120,10 @@ $("settings-done").addEventListener("click", function () { toolsModal.hidden = t
 function renderViews() {
   try {
     paintGoalTile();
+    paintHero();
     renderHomeAlerts();
     renderHomeTodos();
+    refreshActionPages();
     renderHomeCalendar();
     renderStorage();
     renderMoney();

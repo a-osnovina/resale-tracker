@@ -387,4 +387,19 @@ test("fee and bump are written in words", () => {
   assert.strictEqual(L.bumpText({ bumpType: "ask", bumpValue: 0 }), "you type the bump cost");
   assert.strictEqual(L.bumpText({ bumpType: "percent", bumpValue: 0 }), "no bump cost set");
 });
+test("price choices: lower 10% and boost at the same price (Depop-like)", () => {
+  const c = L.priceChoices(depopLike, 18, 10);
+  assert.strictEqual(c.lower.price, 16.2);
+  assert.strictEqual(c.lower.off, 1.8);
+  assert.strictEqual(c.lower.keep, L.feeExample(depopLike, 16.2).keep);
+  assert.strictEqual(c.boost.price, 18);
+  assert.strictEqual(c.boost.cost, 2.16);
+  assert.strictEqual(c.boost.keep, L.feeExample(depopLike, 18).keepWithBump);
+  assert.strictEqual(c.now.keep, L.feeExample(depopLike, 18).keep);
+});
+test("price choices: no boost option when the bump cost is typed or missing", () => {
+  assert.strictEqual(L.priceChoices({ feePercent: 10, feeFlat: 0, bumpType: "ask", bumpValue: 0 }, 20, 10).boost, null);
+  assert.strictEqual(L.priceChoices({}, 20, 10).boost, null);
+  assert.strictEqual(L.priceChoices({}, 20, 10).lower.keep, 18);
+});
 console.log(passed + " tests passed" + (process.exitCode ? " (some failed)" : ""));
