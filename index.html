@@ -12199,7 +12199,7 @@ function renderSettingsHome() {
     return settingsRow(ICON_CLOCK, "Time estimates", "Per step", function () { openSettingsPage("time"); }, "help");
   };
   const optsRow = function () {
-    return settingsRow(ICON_CLOCK, "Plan options", (timeEstOn ? "Estimates on" : "Estimates off") + " · Home calendar: " + homeCal, function () { openSettingsPage("planopts"); }, "help");
+    return settingsRow(ICON_CLOCK, "Plan options", (timeEstOn ? "Estimates on" : "Estimates off"), function () { openSettingsPage("planopts"); }, "help");
   };
   const allRow = function () {
     return settingsRow('<path d="M4 7h9M17 7h3M4 17h3M11 17h9"/><circle cx="15" cy="7" r="2"/><circle cx="9" cy="17" r="2"/>', "All settings", "", function () { openSettingsScope("all", ""); });
@@ -12219,7 +12219,7 @@ function renderSettingsHome() {
     const tl = el("div", "sgroup");
     tl.appendChild(el("h2", "msec-title", "Timeline"));
     const tc = el("div", "set-card pad");
-    tc.appendChild(switchRow("Timeline", "Shows Where your items are at the top of Stock.", pipelineOn, function (on) { pipelineOn = on; savePlanOptions(); applyFeatures(); renderSettingsHome(); }));
+    tc.appendChild(switchRow("Timeline", "Shows Where your items are at the top of Plan.", pipelineOn, function (on) { pipelineOn = on; savePlanOptions(); applyFeatures(); renderSettingsHome(); }));
     if (pipelineOn) tc.appendChild(switchRow("Estimated times", "Show how long each step should take.", timeEstOn, function (on) { timeEstOn = on; savePlanOptions(); render(); renderPlanView(); renderSettingsHome(); }));
     tl.appendChild(tc);
     box.appendChild(tl);
@@ -12242,12 +12242,6 @@ function renderSettingsHome() {
   settingsGroup(box, "Your app", [
     settingsRow(ICON_LOOK, "Appearance", themeLabel() + " · " + unitsLabel(), function () { openSettingsPage("look"); })
   ]);
-  settingsGroup(box, "Pages", [
-    settingsRow('<path d="M3 11l9-7 9 7v9a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1v-9z"/>', "Home", "Nothing yet", function () { openSettingsScope("home", "all"); }),
-    settingsRow('<path d="M21 8 12 3 3 8v8l9 5 9-5V8z"/><path d="M3 8l9 5 9-5M12 13v8"/>', "Stock", "Items, storage, alerts", function () { openSettingsScope("stock", "all"); }),
-    settingsRow('<path d="M4 20V10M10 20V4M16 20v-8M22 20H2"/>', "Money", "Platforms and fees", function () { openSettingsScope("money", "all"); }),
-    settingsRow('<rect x="4" y="5" width="16" height="15" rx="2"/><path d="M4 10h16M8 3v4M16 3v4"/>', "Plan", "Time estimates", function () { openSettingsScope("plan", "all"); })
-  ]);
   const shop = [platformsRow(), cardsRow()];
   if (features.storage) shop.push(storageRow());
   shop.push(archiveRow());
@@ -12260,7 +12254,7 @@ function renderSettingsHome() {
     settingsRow('<path d="M12 3v12M8 11l4 4 4-4M4 19h16"/>', "Back up and export", age.text, function () { openSettingsPage("backup"); }, "data", age.level)
   ]);
 }
-// Plan options page: show or hide time estimates, and pick the calendar shown on Home.
+// Plan options page: show or hide time estimates.
 function renderPlanOptions() {
   const body = $("planopts-body");
   body.innerHTML = "";
@@ -12270,19 +12264,6 @@ function renderPlanOptions() {
   }));
   body.appendChild(el("h2", "msec-title", "Time"));
   body.appendChild(card);
-  body.appendChild(el("h2", "msec-title", "Calendar on Home"));
-  const c2 = el("div", "set-card pad");
-  const seg = el("div", "mode-seg");
-  [["none", "None"], ["week", "Week"], ["month", "Month"]].forEach(function (o) {
-    const b = el("button", homeCal === o[0] ? "on" : "", o[1]);
-    b.type = "button";
-    b.setAttribute("aria-pressed", homeCal === o[0] ? "true" : "false");
-    b.onclick = function () { homeCal = o[0]; savePlanOptions(); renderHomeCalendar(); renderPlanOptions(); };
-    seg.appendChild(b);
-  });
-  c2.appendChild(seg);
-  c2.appendChild(el("p", "set-hint", "Shows this week or this month from Plan on your Home page. Tap a day to open it in Plan."));
-  body.appendChild(c2);
 }
 // Units page: US or Metric. Weights are always saved in ounces, so switching never changes what you saved.
 function weightIsUS() { return ["oz", "lb", "lboz"].indexOf(weightUnit) !== -1; }
