@@ -1328,6 +1328,10 @@ progress::-moz-progress-bar { background: var(--primary); border-radius: 5px; }
 .to-group-tag .sp-status { margin: 0; }
 .to-group .to-wrap { margin-top: 0; border-radius: 0; }
 .to-group .to-wrap + .to-wrap { border-top: 1px solid var(--line-soft); }
+.to-ack { position: absolute; inset: 0; z-index: 3; display: flex; align-items: center; justify-content: center; gap: 8px; background: var(--sold-edge); color: #ffffff; font-size: 17px; font-weight: 800; opacity: 0; transition: opacity .15s; pointer-events: none; }
+.to-ack .ico { width: 26px; height: 26px; }
+.swipe-wrap.acking .to-ack { opacity: 1; }
+.swipe-wrap.fading { opacity: 0; max-height: 0 !important; transition: opacity .25s, max-height .25s; }
 .to-quiet { cursor: pointer; }
 .to-quiet > * { opacity: 0.6; }
 .to-done.back { background: var(--muted); }
@@ -1589,10 +1593,6 @@ body.modal-open #undo-bar { visibility: hidden; }
     </div>
     <div id="home-alerts"></div>
     <section id="home-cal" class="msec" hidden></section>
-    <section id="home-todo" class="msec">
-      <div class="sec-head"><h2 class="msec-title">To do</h2><button type="button" id="home-todo-all" class="sec-link">See all in Plan</button></div>
-      <div id="home-todo-list"></div>
-    </section>
   <div id="backup-banner" class="banner" hidden>
     <div id="backup-banner-text"></div>
     <div class="banner-buttons">
@@ -6932,8 +6932,8 @@ function attachSwipe(card, leadCount, trailCount, onCommit) {
     const x = base + dx;
     // A swipe all the way acts right away, with no button to tap.
     if (onCommit && x < -Math.min(110, card.offsetWidth * 0.4)) {
-      setX(-card.offsetWidth - 20, true);
-      setTimeout(onCommit, 180);
+      closeIt();
+      setTimeout(onCommit, 120);
       return;
     }
     if (leadPx > 0 && x > leadPx / 2) {
@@ -8488,6 +8488,18 @@ function openPlatformLink(name) {
   if (url) window.open(url, "_blank", "noopener");
 }
 // Sold items still sitting in storage: they need to be taken out and packed.
+// Shows a green check over a line for a moment, fades it away, then does the change.
+function ackThen(wrap, text, change) {
+  const ack = el("div", "to-ack");
+  ack.appendChild(icon("check"));
+  ack.appendChild(document.createTextNode(text));
+  wrap.appendChild(ack);
+  wrap.style.maxHeight = wrap.offsetHeight + "px";
+  void wrap.offsetHeight;
+  wrap.classList.add("acking");
+  setTimeout(function () { wrap.classList.add("fading"); }, 650);
+  setTimeout(change, 900);
+}
 // One line of Take out of storage: photo, name, spot. Swipe it to the left to say it is out of storage.
 function takeoutLine(it, showStatus) {
   const row = el("div", "to-row");
@@ -8510,11 +8522,13 @@ function takeoutLine(it, showStatus) {
   wrap.appendChild(el("div", "swipe-bg to-done", "Taken out"));
   wrap.appendChild(row);
   attachSwipe(row, 0, 0, function () {
-    const snap = captureState();
-    it.takenOut = true;
-    save();
-    render();
-    showUndo(it.name + " taken out. It still has to ship.", snap);
+    ackThen(wrap, "Taken out", function () {
+      const snap = captureState();
+      it.takenOut = true;
+      save();
+      render();
+      showUndo(it.name + " taken out. It still has to ship.", snap);
+    });
   });
   return wrap;
 }
@@ -8536,11 +8550,13 @@ function takeoutDoneLine(it) {
   wrap.appendChild(el("div", "swipe-bg to-done back", "Put back"));
   wrap.appendChild(line);
   attachSwipe(line, 0, 0, function () {
-    const snap = captureState();
-    it.takenOut = false;
-    save();
-    render();
-    showUndo(it.name + " put back in Take out of storage.", snap);
+    ackThen(wrap, "Put back", function () {
+      const snap = captureState();
+      it.takenOut = false;
+      save();
+      render();
+      showUndo(it.name + " put back in Take out of storage.", snap);
+    });
   });
   return wrap;
 }
@@ -9779,7 +9795,6 @@ function applyFeatures() {
   document.getElementById("inv-wrap").hidden = !features.investments;
   document.getElementById("sales-section").hidden = !features.sales;
   document.getElementById("mtab-profit").hidden = !features.sales;
-  document.getElementById("home-todo-all").hidden = !features.planner;
   document.body.classList.toggle("no-invest", !features.investments);
   updateSummaryBox();
 }
@@ -11133,7 +11148,6 @@ function renderHomeTodos() {
   rows.slice(0, 3).forEach(function (r) { box.appendChild(todoRowEl(r)); });
   if (rows.length > 3) box.appendChild(el("div", "todo-empty", "+" + (rows.length - 3) + " more" + (features.planner ? " in Plan" : "")));
   if (!rows.length) box.appendChild(el("div", "todo-empty", "Nothing to do today."));
-  $("home-todo").hidden = !features.timeline;
 }
 
 // ---- Money ----
@@ -12315,7 +12329,6 @@ updateBell();
 function goMoney() { showView("money"); showMoneyTab("overview"); }
 $("home-balance-tile").addEventListener("click", goMoney);
 $("goals-mini").addEventListener("click", goMoney);
-$("home-todo-all").addEventListener("click", function () { showView("plan"); });
 document.querySelectorAll("#money-tabs button").forEach(function (b) {
   b.addEventListener("click", function () { showMoneyTab(b.getAttribute("data-t")); });
 });
