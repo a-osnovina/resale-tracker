@@ -1318,12 +1318,14 @@ progress::-moz-progress-bar { background: var(--primary); border-radius: 5px; }
 .theme-row .dot svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; }
 .pv { display: flex; align-items: center; gap: 12px; padding: 12px; background: var(--tint); border: 1px solid var(--line-soft); border-radius: 14px; }
 .pv-pic { flex: none; width: 48px; height: 48px; border-radius: 10px; background: var(--thumb-bg); }
-.to-row { width: 100%; min-height: 60px; margin-top: 8px; padding: 8px 12px; display: flex; align-items: center; gap: 12px; text-align: left; background: var(--sold-bg); border: 1px solid var(--line-soft); border-left: 5px solid var(--sold-edge); border-radius: 14px; color: var(--text); }
+.to-row { flex-wrap: wrap; width: 100%; min-height: 60px; margin-top: 8px; padding: 8px 12px; display: flex; align-items: center; gap: 12px; text-align: left; background: var(--sold-bg); border: 1px solid var(--line-soft); border-left: 5px solid var(--sold-edge); border-radius: 14px; color: var(--text); }
 .to-slot { flex: 0 1 auto; min-width: 44px; max-width: 36%; padding: 6px 8px; border-radius: 10px; background: var(--surface); font-weight: 800; line-height: 1.15; text-align: center; overflow-wrap: anywhere; }
 .sp-name, .to-text b { display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
 .to-x { flex: none; width: 36px; height: 36px; min-height: 36px; padding: 0; border: 0; border-radius: 18px; background: var(--surface); color: var(--muted); display: flex; align-items: center; justify-content: center; }
 .to-row .sthumb { width: 52px; height: 52px; }
 .to-row .sp-spot { background: var(--surface); }
+.to-row .sp-toggle { background: var(--surface); }
+.to-row .sp-line .sp-spot { width: 88px; }
 .to-text { flex: 1 1 0; min-width: 90px; display: flex; flex-direction: column; gap: 1px; }
 .to-text b { font-size: 16px; overflow-wrap: anywhere; }
 .to-text span { font-size: 13px; color: var(--muted); }
@@ -8456,43 +8458,92 @@ function openPlatformLink(name) {
   if (url) window.open(url, "_blank", "noopener");
 }
 // Sold items still sitting in storage: they need to be taken out and packed.
+var takeoutOpen = new Set();   // parcels expanded in Take out of storage
 function renderStockTakeout() {
   const box = $("stock-takeout");
   if (!box) return;
   box.innerHTML = "";
-  const list = features.storage ? items.filter(function (it) { return it.status === "Sold" && it.bin && it.slot > 0 && !it.takenOut; }) : [];
-  box.hidden = list.length === 0;
-  if (!list.length) return;
+  const stored = features.storage ? items.filter(function (it) { return it.status === "Sold" && it.bin && it.slot > 0 && !it.takenOut; }) : [];
+  // Items sold together are one parcel, so they are one card.
+  const groups = [];
+  const seen = {};
+  stored.forEach(function (it) {
+    if (it.parcel) {
+      if (seen[it.parcel]) { seen[it.parcel].items.push(it); return; }
+      seen[it.parcel] = { key: it.parcel, items: [it] };
+      groups.push(seen[it.parcel]);
+    } else {
+      groups.push({ key: "", items: [it] });
+    }
+  });
+  box.hidden = groups.length === 0;
+  if (!groups.length) return;
   const head = el("div", "sec-head");
   head.appendChild(el("h2", "msec-title", "Take out of storage"));
   box.appendChild(head);
-  list.slice().sort(function (a, b) { return slotLabel(a.bin, a.slot).localeCompare(slotLabel(b.bin, b.slot), undefined, { numeric: true }); }).forEach(function (it) {
+  function firstSpot(g) { return slotLabel(g.items[0].bin, g.items[0].slot); }
+  groups.sort(function (a, b) { return firstSpot(a).localeCompare(firstSpot(b), undefined, { numeric: true }); }).forEach(function (g) {
+    const it = g.items[0];
+    const many = g.items.length > 1;
+    const isOpen = many && takeoutOpen.has(g.key);
     const row = el("div", "to-row");
     row.setAttribute("role", "button");
     row.tabIndex = 0;
-    row.appendChild(itemThumb(it));
+    const wrap = el("div", "sp-thumbwrap");
+    wrap.appendChild(itemThumb(it));
+    if (many) wrap.appendChild(el("span", "sp-badge", String(g.items.length)));
+    row.appendChild(wrap);
     const text = el("span", "to-text");
-    text.appendChild(el("b", "", it.name));
+    text.appendChild(el("b", "", many ? it.name + " + " + (g.items.length - 1) + " more" : it.name));
     const st = shipStatus(it);
     text.appendChild(el("span", "sp-status " + st.cls, st.text));
     row.appendChild(text);
-    const spot = el("span", "sp-spot");
-    spot.appendChild(el("span", "", "SPOT"));
-    spot.appendChild(el("b", "", slotLabel(it.bin, it.slot)));
-    row.appendChild(spot);
+    if (!many) {
+      const spot = el("span", "sp-spot");
+      spot.appendChild(el("span", "", "SPOT"));
+      spot.appendChild(el("b", "", slotLabel(it.bin, it.slot)));
+      row.appendChild(spot);
+    } else {
+      const tog = el("button", "sp-toggle" + (isOpen ? " open" : ""));
+      tog.type = "button";
+      tog.setAttribute("aria-label", (isOpen ? "Hide" : "Show") + " the items in this parcel");
+      tog.setAttribute("aria-expanded", isOpen ? "true" : "false");
+      tog.appendChild(icon("down"));
+      tog.onclick = function (event) {
+        event.stopPropagation();
+        if (takeoutOpen.has(g.key)) takeoutOpen.delete(g.key); else takeoutOpen.add(g.key);
+        renderStockTakeout();
+      };
+      row.appendChild(tog);
+    }
     const x = el("button", "to-x");
     x.type = "button";
-    x.setAttribute("aria-label", "Hide " + it.name + ": already out of storage");
+    x.setAttribute("aria-label", "Hide: already out of storage");
     x.innerHTML = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>';
     x.onclick = function (event) {
       event.stopPropagation();
       const snap = captureState();
-      it.takenOut = true;
+      g.items.forEach(function (i) { i.takenOut = true; });
       save();
       render();
-      showUndo(it.name + " hidden here. It still has to ship.", snap);
+      showUndo((many ? "Parcel of " + g.items.length + " items" : it.name) + " hidden here. It still has to ship.", snap);
     };
     row.appendChild(x);
+    if (isOpen) {
+      const more = el("div", "sp-more");
+      more.onclick = function (event) { event.stopPropagation(); };
+      g.items.forEach(function (i) {
+        const line = el("div", "sp-line");
+        line.appendChild(itemThumb(i));
+        line.appendChild(el("div", "sp-line-name", i.name));
+        const spot = el("div", "sp-spot");
+        spot.appendChild(el("span", "", "SPOT"));
+        spot.appendChild(el("b", "", slotLabel(i.bin, i.slot)));
+        line.appendChild(spot);
+        more.appendChild(line);
+      });
+      row.appendChild(more);
+    }
     row.onclick = function () { showCard(it); };
     box.appendChild(row);
   });
