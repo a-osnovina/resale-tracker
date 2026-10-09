@@ -1509,7 +1509,6 @@ body.modal-open #undo-bar { visibility: hidden; }
       <span id="app-title">Resale Tracker</span>
       <h1 id="view-title">Today</h1>
     </div>
-    <button type="button" id="top-bell" class="icon-btn" aria-label="Notifications"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg><span id="bell-badge" hidden></span></button>
     <button type="button" id="tools-button" aria-label="Settings"><span id="settings-label">Settings</span></button>
   </div>
 
@@ -12186,7 +12185,6 @@ $("select-btn").addEventListener("click", function () { setSelectMode(!selectMod
 $("seg-stock-overview").addEventListener("click", function () { showStockPane("overview"); });
 $("seg-stock-items").addEventListener("click", function () { showStockPane("items"); });
 $("seg-stock-storage").addEventListener("click", function () { showStockPane("storage"); });
-$("top-bell").addEventListener("click", openNotifSheet);
 // One time: alerts you dismissed before the bell existed only left a "dismissed" note, so rebuild them into the history.
 // The exact time is unknown, so each one is dated by its sold date (shipping) or its reminder date (price).
 function backfillDismissed() {
