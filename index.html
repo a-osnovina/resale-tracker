@@ -11211,6 +11211,7 @@ function todoRowEl(r) {
 }
 function renderHomeCalendar() {
   const box = $("home-cal");
+  if (box) { box.hidden = true; box.innerHTML = ""; return; }  // calendar removed from Home
   if (!box) return;
   box.innerHTML = "";
   box.hidden = homeCal === "none";
@@ -12072,10 +12073,7 @@ function renderPlanView() {
   const today = todayText();
   if (!calDay) calDay = today;
   if (!calMonth) calMonth = monthOf(today);
-  box.appendChild(planSeg([["overview", "Overview"], ["calendar", "Calendar"], ["goal", "Calculator"]], planPrefs.tab, showPlanTab, "Plan sections"));
-  if (planPrefs.tab === "calendar") renderPlanCalendar(box);
-  else if (planPrefs.tab === "goal") renderPlanGoal(box);
-  else renderPlanOverview(box);
+  renderPlanOverview(box);
 }
 function renderPlanner() { renderPlanView(); }
 
