@@ -1688,7 +1688,7 @@ body.modal-open #undo-bar { visibility: hidden; }
   </div>
     <div id="stock-takeout"></div>
     <div id="overview-off" class="small" hidden>Timeline is off.</div>
-    <section id="pipeline-box" class="msec" hidden>
+    <section id="pipeline-box" class="msec">
       <div class="sec-head"><h2 class="msec-title">Where your items are</h2></div>
       <div class="dropdown-panel" id="pipeline-panel"></div>
     </section>
@@ -1994,7 +1994,6 @@ body.modal-open #undo-bar { visibility: hidden; }
       <button type="button" class="bar-tab" id="tab-stock" data-view="stock"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 11l9-7 9 7v9a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1v-9z"/></svg>Home</button>
       <button type="button" class="tab-add" id="tab-add" aria-label="Add item"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg></button>
       <button type="button" class="bar-tab" id="tab-money" data-view="money"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20V10M10 20V4M16 20v-8M22 20H2"/></svg>Money</button>
-      <button type="button" class="bar-tab" id="tab-plan" data-view="plan"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="5" width="16" height="15" rx="2"/><path d="M4 10h16M8 3v4M16 3v4"/></svg>Plan</button>
     </div>
   </nav>
 
@@ -9897,10 +9896,9 @@ function applyFeatures() {
   document.getElementById("platforms-drop").hidden = !features.platforms;
   document.body.classList.toggle("no-storage", !features.storage);
   binFilterInput.closest("label").hidden = !features.storage;
-  document.getElementById("pipeline-box").hidden = true;  // Where your items are now lives in Plan > Overview
-  document.getElementById("overview-off").hidden = true;
+  document.getElementById("pipeline-box").hidden = !pipelineOn;
+  document.getElementById("overview-off").hidden = pipelineOn;
   document.getElementById("planner-button").hidden = !features.planner;
-  document.getElementById("tab-plan").hidden = !features.planner;
   if (!features.planner && currentView === "plan") showView("stock");
   document.getElementById("seg-stock-storage").hidden = !features.storage;
   if (!features.storage && !$("stock-storage").hidden) showStockPane("items");
@@ -10172,7 +10170,7 @@ function moneyShort(v) {
 // ---- Bottom bar: Home, Stock, Money, Plan ----
 var currentView = "stock";
 var stockPane = "overview";
-var VIEW_TITLES = { stock: "Today", money: "Money", plan: "Plan" };
+var VIEW_TITLES = { stock: "Today", money: "Money" };
 var VIEW_EYEBROW = { stock: "Your items", money: "Balance, sales and fees", plan: "Your week" };
 var MONTHS = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
 var WEEKDAYS = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
@@ -11276,7 +11274,7 @@ function renderHomeTodos() {
   box.innerHTML = "";
   const rows = planRows(todayText(), true);
   rows.slice(0, 3).forEach(function (r) { box.appendChild(todoRowEl(r)); });
-  if (rows.length > 3) box.appendChild(el("div", "todo-empty", "+" + (rows.length - 3) + " more" + (features.planner ? " in Plan" : "")));
+  if (rows.length > 3) box.appendChild(el("div", "todo-empty", "+" + (rows.length - 3) + " more" + ""));
   if (!rows.length) box.appendChild(el("div", "todo-empty", "Nothing to do today."));
 }
 
